@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B9543CE3-CB0D-41D2-9CEC-17941BBB968E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Splatoon</RootNamespace>
+    <AssemblyName>Splatoon</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CGui.cs" />
+    <Compile Include="Element.cs" />
+    <Compile Include="Gui.cs" />
+    <Compile Include="IElement.cs" />
+    <Compile Include="Splatoon.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Dalamud">
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\Dalamud.dll</HintPath>
+    </Reference>
+    <Reference Include="FFXIVClientStructs">
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\FFXIVClientStructs.dll</HintPath>
+    </Reference>
+    <Reference Include="ImGui.NET">
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\ImGui.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="ImGuiScene">
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\ImGuiScene.dll</HintPath>
+    </Reference>
+    <Reference Include="Lumina">
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\Lumina.dll</HintPath>
+    </Reference>
+    <Reference Include="Lumina.Generated">
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\Lumina.Generated.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
