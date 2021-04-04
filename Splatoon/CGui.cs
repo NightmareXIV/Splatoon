@@ -1,10 +1,12 @@
 ﻿using ImGuiNET;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Splatoon
 {
@@ -35,6 +37,7 @@ namespace Splatoon
             if (!Open) return;
             if(ImGui.Begin("Splatoon", ref Open))
             {
+                ImGui.SetNextItemWidth(350f);
                 ImGui.InputTextWithHint("##lname", "Unique layout name", ref lname, 100);
                 lname.Trim();
                 ImGui.SameLine();
@@ -48,10 +51,42 @@ namespace Splatoon
                     {
                         p.Log("Error: you must name layout");
                     }
+                    else if(lname.Contains("~"))
+                    {
+                        p.Log("Name can't contain reserved characters: ~");
+                    }
                     else
                     {
                         p.Config.Layouts.Add(lname, new Layout());
                         lname = "";
+                    }
+                }
+                ImGui.SameLine();
+                if (ImGui.Button("Import layout from clipboard"))
+                {
+                    try
+                    {
+                        var import = Clipboard.GetText();
+                        var name = import.Split('~')[0];
+                        var json = import.Substring(name.Length + 1);
+                        if (p.Config.Layouts.ContainsKey(name))
+                        {
+                            p.Log("Error: this name already exists");
+                        }
+                        else if (name.Length == 0)
+                        {
+                            p.Log("Error: name not present");
+                        }
+                        else
+                        {
+                            p.Config.Layouts.Add(name, JsonConvert.DeserializeObject<Layout>(json));
+                            import = "";
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        p.Log("Error importing: "+e.Message);
+                        p.Log(e.StackTrace);
                     }
                 }
                 ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
@@ -74,6 +109,11 @@ namespace Splatoon
                         }
                         ImGui.PushStyleColor(ImGuiCol.Text, Colors.LightYellow);
                         ImGui.Checkbox("Enabled##" + i, ref p.Config.Layouts[i].Enabled);
+                        ImGui.SameLine();
+                        if(ImGui.Button("Copy to clipboard"))
+                        {
+                            Clipboard.SetText(i+"~"+JsonConvert.SerializeObject(p.Config.Layouts[i]));
+                        }
                         ImGui.Text("Display conditions:");
                         ImGui.SameLine();
                         ImGui.Combo("##dcn" + i, ref p.Config.Layouts[i].DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
@@ -153,7 +193,11 @@ namespace Splatoon
                             }
                             else
                             {
-                                p.Config.Layouts[i].Elements.Add(ename, new Element(etype));
+                                var el = new Element(etype);
+                                el.refX = p._pi.ClientState.LocalPlayer.Position.X;
+                                el.refY = p._pi.ClientState.LocalPlayer.Position.Y;
+                                el.refZ = p._pi.ClientState.LocalPlayer.Position.Z;
+                                p.Config.Layouts[i].Elements.Add(ename, el);
                                 ename = "";
                             }
                         }
