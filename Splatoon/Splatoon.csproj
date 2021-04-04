@@ -44,6 +44,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Gui.cs" />
+    <Compile Include="ImGuiEx.cs" />
     <Compile Include="Layout.cs" />
     <Compile Include="Splatoon.cs" />
   </ItemGroup>

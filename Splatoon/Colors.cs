@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 namespace Splatoon
 {
     class Colors
-    {
-        public static uint LightYellow = 0xffaaffff;
+    { //abgr
+        public const uint LightYellow = 0xffaaffff;
+        public const uint Red = 0xff0000ff;
+        public const uint Orange = 0xff0099ff;
     }
 }
