@@ -371,13 +371,18 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             ImGui.SetNextItemWidth(60f);
                                             ImGui.DragFloat("##radius" + i + k, ref el.radius, 0.01f, 0, float.MaxValue);
+                                            if (ImGui.IsItemHovered())
+                                                ImGui.SetTooltip("Leave at 0 to draw single dot");
                                             if (el.type == 1)
                                             {
+                                                if (el.refActorType != 1)
+                                                {
+                                                    ImGui.SameLine();
+                                                    ImGui.Checkbox("+target hitbox##" + i + k, ref el.includeHitbox);
+                                                }
                                                 ImGui.SameLine();
-                                                ImGui.Checkbox("+hitbox", ref el.includeHitbox);
+                                                ImGui.Checkbox("+your hitbox##" + i + k, ref el.includeOwnHitbox);
                                             }
-                                            ImGui.SameLine();
-                                            ImGui.Text("Leave at 0 to draw a single dot");
                                         }
                                         ImGuiEx.SizedText("Overlay text:", WidthElement);
                                         ImGui.SameLine();

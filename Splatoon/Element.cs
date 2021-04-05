@@ -34,5 +34,6 @@ namespace Splatoon
         [DefaultValue("")] public string refActorName = "";
         public int refActorType = 0;
         public bool includeHitbox = false;
+        public bool includeOwnHitbox = false;
     }
 }

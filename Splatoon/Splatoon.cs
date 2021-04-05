@@ -94,6 +94,7 @@ namespace Splatoon
 
         public void HandleUpdate(Framework framework)
         {
+            if (_pi.ClientState == null) return;
             if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
             {
                 if (CombatStarted == 0)
