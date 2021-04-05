@@ -39,7 +39,8 @@ namespace Splatoon
         void Draw()
         {
             if (!Open) return;
-            if(ImGui.Begin("Splatoon", ref Open))
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(680, 200));
+            if (ImGui.Begin("Splatoon", ref Open))
             {
                 ImGui.SetNextItemWidth(350f);
                 ImGui.InputTextWithHint("##lname", "Unique layout name", ref lname, 100);
@@ -411,6 +412,7 @@ namespace Splatoon
                 if (!open) curEdit = null;
                 ImGui.EndChild();
             }
+            ImGui.PopStyleVar();
         }
     }
 }
