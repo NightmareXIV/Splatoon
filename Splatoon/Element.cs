@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,8 @@ namespace Splatoon
     [Serializable]
     public class Element
     {
-        public static string[] ElementTypes = { "Shape at fixed coordinates", "Shape relative to visible actor position" };
-        public static string[] ActorTypes = { "Actor with specific name", "Self", "Target" };
+        [NonSerialized] public static string[] ElementTypes = { "Shape at fixed coordinates", "Shape relative to actor position" };
+        [NonSerialized] public static string[] ActorTypes = { "Player with specific name", "Self", "Target" };
         public int type;
         public Element(int t)
         {
@@ -29,8 +30,9 @@ namespace Splatoon
         public uint overlayTextColor = 0xC8FFFFFF;
         public float overlayVOffset = 0f;
         public float thicc = 2f;
-        public string overlayText = "";
-        public string refActorName = "";
+        [DefaultValue("")] public string overlayText = "";
+        [DefaultValue("")] public string refActorName = "";
         public int refActorType = 0;
+        public bool includeHitbox = false;
     }
 }

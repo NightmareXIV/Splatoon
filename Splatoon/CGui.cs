@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using Dalamud.Game.ClientState.Actors.Types;
+using ImGuiNET;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,6 @@ namespace Splatoon
         string lname = "";
         string ename = "";
         string zlockf = "";
-        int etype = 0;
         string curEdit = null;
         bool enableDeletion = false;
         bool enableDeletionElement = false;
@@ -93,6 +93,11 @@ namespace Splatoon
                         p.Log(e.StackTrace);
                     }
                 }
+                ImGui.SameLine();
+                if (ImGui.Button("Debug"))
+                {
+                    p.DebugGui.Open = true;
+                }
                 ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
                 ImGui.SameLine();
                 ImGui.Checkbox("Allow elements deletion", ref enableDeletionElement);
@@ -100,8 +105,24 @@ namespace Splatoon
                 var open = false;
                 foreach (var i in p.Config.Layouts.Keys.ToArray())
                 {
+                    var colored = false;
+                    if(!p.Config.Layouts[i].Enabled)
+                    {
+                        colored = true;
+                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.Gray);
+                    }
+                    else if (p.Config.Layouts[i].DisableDisabling)
+                    {
+                        colored = true;
+                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
+                    }
                     if ((curEdit == null || curEdit == i) && ImGui.CollapsingHeader(i))
                     {
+                        if (colored)
+                        {
+                            ImGui.PopStyleColor();
+                            colored = false;
+                        }
                         open = true;
                         curEdit = i;
                         if (enableDeletion)
@@ -119,9 +140,20 @@ namespace Splatoon
                         {
                             ImGui.Checkbox("Enabled##" + i, ref p.Config.Layouts[i].Enabled);
                             ImGui.SameLine();
-                            if (ImGui.Button("Copy to clipboard"))
+                            ImGui.Checkbox("Prevent disabling with commands##" + i, ref p.Config.Layouts[i].DisableDisabling);
+                            if (ImGui.Button("Export to clipboard"))
                             {
-                                Clipboard.SetText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i]));
+                                Clipboard.SetText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+                            }
+                            ImGui.SameLine();
+                            if (ImGui.Button("Copy enable command"))
+                            {
+                                Clipboard.SetText("/splatoon enable " + i);
+                            }
+                            ImGui.SameLine();
+                            if (ImGui.Button("Copy disable command"))
+                            {
+                                Clipboard.SetText("/splatoon disable " + i);
                             }
                             ImGuiEx.SizedText("Display conditions:", WidthLayout);
                             ImGui.SameLine();
@@ -148,10 +180,10 @@ namespace Splatoon
                             }
                             if (p.Config.Layouts[i].Visibility == 2 || p.Config.Layouts[i].Visibility == 3)
                             {
-                                ImGuiEx.SizedText("Actor name:", WidthLayout);
+                                ImGuiEx.SizedText("Message:", WidthLayout);
                                 ImGui.SameLine();
                                 ImGui.SetNextItemWidth(WidthCombo);
-                                ImGui.InputTextWithHint("##acname" + i, "Case-insensitive (partial) name", ref p.Config.Layouts[i].ActorName, 100);
+                                ImGui.InputTextWithHint("##acname" + i, "Case-insensitive (partial) message", ref p.Config.Layouts[i].MessageToWatch, 100);
                             }
                             ImGuiEx.SizedText("Zone lock: ", WidthLayout);
                             ImGui.SameLine();
@@ -272,6 +304,11 @@ namespace Splatoon
                                                 ImGui.SameLine();
                                                 ImGui.SetNextItemWidth(WidthCombo);
                                                 ImGui.InputTextWithHint("##actorname" + i + k, "Case-insensitive (partial) name", ref el.refActorName, 100);
+                                                if (p._pi.ClientState.Targets.CurrentTarget != null && p._pi.ClientState.Targets.CurrentTarget is PlayerCharacter)
+                                                {
+                                                    ImGui.SameLine();
+                                                    if(ImGui.Button("Target##btarget" + i + k)) el.refActorName = p._pi.ClientState.Targets.CurrentTarget.Name;
+                                                }
                                             }
                                         }
 
@@ -322,6 +359,11 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             ImGui.SetNextItemWidth(60f);
                                             ImGui.DragFloat("##radius" + i + k, ref el.radius, 0.01f, 0, float.MaxValue);
+                                            if (el.type == 1)
+                                            {
+                                                ImGui.SameLine();
+                                                ImGui.Checkbox("+hitbox", ref el.includeHitbox);
+                                            }
                                             ImGui.SameLine();
                                             ImGui.Text("Leave at 0 to draw a single dot");
                                         }
@@ -335,7 +377,7 @@ namespace Splatoon
                                             ImGui.Text("Vertical offset:");
                                             ImGui.SameLine();
                                             ImGui.SetNextItemWidth(60f);
-                                            ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.5f);
+                                            ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.02f);
                                             ImGui.SameLine();
                                             ImGui.Text("BG color:");
                                             ImGui.SameLine();
@@ -359,6 +401,11 @@ namespace Splatoon
                                 }
                             }
                         }
+                    }
+                    if (colored) 
+                    { 
+                        ImGui.PopStyleColor();
+                        colored = false;
                     }
                 }
                 if (!open) curEdit = null;
