@@ -61,15 +61,15 @@ namespace Splatoon
                 {
                     if (p.Config.Layouts.ContainsKey(lname))
                     {
-                        p.Log("Error: this name already exists");
+                        p.Log("Error: this name already exists", true);
                     }
                     else if (lname.Length == 0)
                     {
-                        p.Log("Error: you must name layout");
+                        p.Log("Error: you must name layout", true);
                     }
                     else if(lname.Contains("~"))
                     {
-                        p.Log("Name can't contain reserved characters: ~");
+                        p.Log("Name can't contain reserved characters: ~", true);
                     }
                     else
                     {
@@ -87,11 +87,11 @@ namespace Splatoon
                         var json = import.Substring(name.Length + 1);
                         if (p.Config.Layouts.ContainsKey(name))
                         {
-                            p.Log("Error: this name already exists");
+                            p.Log("Error: this name already exists", true);
                         }
                         else if (name.Length == 0)
                         {
-                            p.Log("Error: name not present");
+                            p.Log("Error: name not present", true);
                         }
                         else
                         {
@@ -101,7 +101,7 @@ namespace Splatoon
                     }
                     catch(Exception e)
                     {
-                        p.Log("Error importing: "+e.Message);
+                        p.Log("Error importing: "+e.Message, true);
                         p.Log(e.StackTrace);
                     }
                 }
@@ -235,11 +235,11 @@ namespace Splatoon
                             {
                                 if (p.Config.Layouts[i].Elements.ContainsKey(ename))
                                 {
-                                    p.Log("Error: this name already exists");
+                                    p.Log("Error: this name already exists", true);
                                 }
                                 else if (ename.Length == 0)
                                 {
-                                    p.Log("Error: you must name layout");
+                                    p.Log("Error: you must name layout", true);
                                 }
                                 else
                                 {

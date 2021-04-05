@@ -16,6 +16,8 @@ namespace Splatoon
 
         public int Version { get; set; } = 1;
         public Dictionary<string, Layout> Layouts = new Dictionary<string, Layout>();
+        public bool dumplog = false;
+        public bool verboselog = false;
 
         public void Initialize(Splatoon plugin)
         {

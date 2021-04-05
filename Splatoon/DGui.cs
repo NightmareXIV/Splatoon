@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Splatoon
 {
@@ -13,6 +14,7 @@ namespace Splatoon
     {
         private Splatoon p;
         public bool Open = false;
+        bool autoscrollLog = true;
         public DGui(Splatoon p)
         {
             this.p = p;
@@ -32,7 +34,8 @@ namespace Splatoon
                 ImGui.Columns(2);
                 ImGui.BeginChild("##splatoondbg1");
                 var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
-                ImGui.Text("CStarted: " + t);
+                ImGui.Text("CombatStarted = " + t);
+                ImGui.Text("Players:");
                 foreach (var a in p._pi.ClientState.Actors)
                 {
                     if (a is PlayerCharacter)
@@ -49,7 +52,36 @@ namespace Splatoon
                 }
                 ImGui.EndChild();
                 ImGui.NextColumn();
+                ImGui.Text("Log:");
+                ImGui.SameLine();
+                ImGui.Checkbox("Autoscroll##log", ref autoscrollLog);
+                ImGui.SameLine();
+                if (ImGui.Button("Copy all"))
+                {
+                    var s = new StringBuilder();
+                    for (int i = 0; i < p.LogStorage.Length; i++)
+                    {
+                        if (p.LogStorage[i] != null)
+                        {
+                            s.AppendLine(p.LogStorage[i]);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    Clipboard.SetText(s.ToString());
+                }
+
+                ImGui.Checkbox("Copy in Dalamud.log##log", ref p.Config.dumplog);
+                ImGui.SameLine();
+                ImGui.Checkbox("Verbose##log", ref p.Config.verboselog);
                 ImGui.BeginChild("##splatoondbg2");
+                for (var i = 0; i < p.LogStorage.Length; i++)
+                {
+                    if (p.LogStorage[i] != null) ImGui.TextWrapped(p.LogStorage[i]);
+                }
+                if (autoscrollLog) ImGui.SetScrollHereY();
                 ImGui.EndChild();
                 ImGui.Columns(1);
             }

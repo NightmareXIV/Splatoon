@@ -87,11 +87,6 @@ namespace Splatoon
             _pi.Framework.OnUpdateEvent += HandleUpdate;
         }
 
-        public void Log(string s)
-        {
-            _pi.Framework.Gui.Chat.Print(s);
-        }
-
         public void HandleUpdate(Framework framework)
         {
             if (_pi.ClientState == null) return;
@@ -110,6 +105,33 @@ namespace Splatoon
                 }
             }
         }
+
+        public void Log(string s, bool tochat = false)
+        {
+            if (tochat)
+            {
+                _pi.Framework.Gui.Chat.Print("[Splatoon]" + s);
+            }
+            if (Config.dumplog)
+            {
+                PluginLog.Log(s);
+            }
+            var line = DateTimeOffset.Now.ToString() + ": " + s;
+            for (var i = 0; i < LogStorage.Length; i++)
+            {
+                if (LogStorage[i] == null)
+                {
+                    LogStorage[i] = line;
+                    return;
+                }
+            }
+            for (var i = 1; i < LogStorage.Length; i++)
+            {
+                LogStorage[i - 1] = LogStorage[i];
+            }
+            LogStorage[LogStorage.Length - 1] = line;
+        }
+
 
         public void HandleChat()
         {
