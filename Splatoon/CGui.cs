@@ -24,6 +24,7 @@ namespace Splatoon
         string curEdit = null;
         bool enableDeletion = false;
         bool enableDeletionElement = false;
+        bool WasOpen = false;
 
         public CGui(Splatoon p)
         {
@@ -38,7 +39,17 @@ namespace Splatoon
 
         void Draw()
         {
-            if (!Open) return;
+            if (!Open) 
+            { 
+                if(WasOpen)
+                {
+                    p.Config.Save();
+                    WasOpen = false;
+                    p.Log("Configuration saved");
+                }
+                return;
+            }
+            WasOpen = true;
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(680, 200));
             if (ImGui.Begin("Splatoon", ref Open))
             {
