@@ -7,4 +7,7 @@ Alpha version is available through Dalamud custom repo:
 `https://raw.githubusercontent.com/Eternita-S/MyDalamudPlugins/main/pluginmaster.json`
 
 # WARNING!
-This is very alpha, very testing version. Expect bugs! Always keep backup of your configuration!
+This is very alpha, very testing version. 
+* Expect bugs! 
+* Always keep backup of your configuration!
+* Gui sucks, I'll do something with it later (maybe)
