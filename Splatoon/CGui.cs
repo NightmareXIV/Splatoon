@@ -14,6 +14,7 @@ namespace Splatoon
     {
         const float WidthLayout = 150f;
         const float WidthElement = 150f;
+        const float WidthCombo = 200f;
         readonly Splatoon p;
         public bool Open = false;
         string lname = "";
@@ -124,11 +125,11 @@ namespace Splatoon
                             }
                             ImGuiEx.SizedText("Display conditions:", WidthLayout);
                             ImGui.SameLine();
-                            ImGui.SetNextItemWidth(200f);
+                            ImGui.SetNextItemWidth(WidthCombo);
                             ImGui.Combo("##dcn" + i, ref p.Config.Layouts[i].DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
                             ImGuiEx.SizedText("Visibility of layout:", WidthLayout);
                             ImGui.SameLine();
-                            ImGui.SetNextItemWidth(200f);
+                            ImGui.SetNextItemWidth(WidthCombo);
                             ImGui.Combo("##vsb" + i, ref p.Config.Layouts[i].Visibility, Layout.VisibilityType, Layout.VisibilityType.Length);
                             if (p.Config.Layouts[i].Visibility == 1 || p.Config.Layouts[i].Visibility == 2)
                             {
@@ -149,12 +150,12 @@ namespace Splatoon
                             {
                                 ImGuiEx.SizedText("Actor name:", WidthLayout);
                                 ImGui.SameLine();
-                                ImGui.SetNextItemWidth(200f);
+                                ImGui.SetNextItemWidth(WidthCombo);
                                 ImGui.InputTextWithHint("##acname" + i, "Case-insensitive (partial) name", ref p.Config.Layouts[i].ActorName, 100);
                             }
                             ImGuiEx.SizedText("Zone lock: ", WidthLayout);
                             ImGui.SameLine();
-                            ImGui.SetNextItemWidth(200f);
+                            ImGui.SetNextItemWidth(WidthCombo);
                             if (ImGui.BeginCombo("##zlk" + i, p.Config.Layouts[i].ZoneLock == 0 ? "All zones" : p.Config.Layouts[i].ZoneLock + " / "
                                 + p.Zones[p.Config.Layouts[i].ZoneLock].PlaceName.Value.Name))
                             {
@@ -182,10 +183,8 @@ namespace Splatoon
                                 }
                                 ImGui.EndCombo();
                             }
-                            ImGui.PushItemWidth(200f);
+                            ImGui.PushItemWidth(WidthCombo);
                             ImGui.InputTextWithHint("##elnameadd" + i, "Unique element name", ref ename, 100);
-                            ImGui.SameLine();
-                            ImGui.Combo("##elemselecttype" + i, ref etype, Element.ElementTypes, Element.ElementTypes.Length);
                             ImGui.PopItemWidth();
                             ImGui.SameLine();
                             if (ImGui.Button("Add element##addelement" + i))
@@ -200,7 +199,7 @@ namespace Splatoon
                                 }
                                 else
                                 {
-                                    var el = new Element(etype);
+                                    var el = new Element(0);
                                     el.refX = p._pi.ClientState.LocalPlayer.Position.X;
                                     el.refY = p._pi.ClientState.LocalPlayer.Position.Y;
                                     el.refZ = p._pi.ClientState.LocalPlayer.Position.Z;
@@ -211,7 +210,7 @@ namespace Splatoon
                             foreach (var k in p.Config.Layouts[i].Elements.Keys.ToArray())
                             {
                                 var el = p.Config.Layouts[i].Elements[k];
-                                if (ImGui.CollapsingHeader(k + " (" + Element.ElementTypes[el.type] + ")##elem" + i + k))
+                                if (ImGui.CollapsingHeader(i + " / " + k + "##elem" + i + k))
                                 {
                                     if (enableDeletionElement)
                                     {
@@ -226,7 +225,11 @@ namespace Splatoon
                                     if (p.Config.Layouts[i].Elements.ContainsKey(k))
                                     {
                                         ImGui.Checkbox("Enabled##" + i + k, ref el.Enabled);
-                                        if (el.type == 0) // fixed point
+                                        ImGuiEx.SizedText("Element type:", WidthElement);
+                                        ImGui.SameLine();
+                                        ImGui.SetNextItemWidth(WidthCombo);
+                                        ImGui.Combo("##elemselecttype" + i+k, ref el.type, Element.ElementTypes, Element.ElementTypes.Length);
+                                        if (el.type == 0)
                                         {
                                             ImGuiEx.SizedText("Reference position: ", WidthElement);
                                             ImGui.SameLine();
@@ -257,81 +260,100 @@ namespace Splatoon
                                                 el.refZ = 0;
                                             }
                                             ImGui.PopItemWidth();
-
-                                            ImGuiEx.SizedText("Offset: ", WidthElement);
+                                        }
+                                        else if(el.type == 1)
+                                        {
+                                            ImGuiEx.SizedText("Targeted actor: ", WidthElement);
                                             ImGui.SameLine();
-                                            ImGui.PushItemWidth(60f);
-                                            ImGui.Text("X:");
-                                            ImGui.SameLine();
-                                            ImGui.DragFloat("##offx" + i + k, ref el.offX, 0.02f, float.MinValue, float.MaxValue);
-                                            ImGui.SameLine();
-                                            ImGui.Text("Y:");
-                                            ImGui.SameLine();
-                                            ImGui.DragFloat("##offy" + i + k, ref el.offY, 0.02f, float.MinValue, float.MaxValue);
-                                            ImGui.SameLine();
-                                            ImGui.Text("Z:");
-                                            ImGui.SameLine();
-                                            ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
-                                            ImGui.SameLine();
-                                            if (ImGui.Button("Set to 0 0 0##off" + i + k))
+                                            ImGui.SetNextItemWidth(WidthCombo);
+                                            ImGui.Combo("##actortype" + i + k, ref el.refActorType, Element.ActorTypes, Element.ActorTypes.Length);
+                                            if(el.refActorType == 0)
                                             {
-                                                el.offX = 0;
-                                                el.offY = 0;
-                                                el.offZ = 0;
+                                                ImGui.SameLine();
+                                                ImGui.SetNextItemWidth(WidthCombo);
+                                                ImGui.InputTextWithHint("##actorname" + i + k, "Case-insensitive (partial) name", ref el.refActorName, 100);
                                             }
-                                            ImGuiEx.SizedText("Radius:", WidthElement);
-                                            ImGui.SameLine();
-                                            ImGui.DragFloat("##radius" + i + k, ref el.radius, 0.01f, 0, float.MaxValue);
-                                            ImGui.SameLine();
-                                            ImGui.Text("Leave at 0 to draw a single dot");
+                                        }
+
+                                        ImGuiEx.SizedText("Offset: ", WidthElement);
+                                        ImGui.SameLine();
+                                        ImGui.PushItemWidth(60f);
+                                        ImGui.Text("X:");
+                                        ImGui.SameLine();
+                                        ImGui.DragFloat("##offx" + i + k, ref el.offX, 0.02f, float.MinValue, float.MaxValue);
+                                        ImGui.SameLine();
+                                        ImGui.Text("Y:");
+                                        ImGui.SameLine();
+                                        ImGui.DragFloat("##offy" + i + k, ref el.offY, 0.02f, float.MinValue, float.MaxValue);
+                                        ImGui.SameLine();
+                                        ImGui.Text("Z:");
+                                        ImGui.SameLine();
+                                        ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
+                                        ImGui.SameLine();
+                                        if (ImGui.Button("Set to 0 0 0##off" + i + k))
+                                        {
+                                            el.offX = 0;
+                                            el.offY = 0;
+                                            el.offZ = 0;
+                                        }
                                             
-                                            ImGuiEx.SizedText("Line thickness:", WidthElement);
-                                            ImGui.SameLine();
-                                            ImGui.DragFloat("##thicc" + i + k, ref el.thicc, 0.1f, 0.1f, float.MaxValue);
-                                            ImGui.PopItemWidth();
+                                        ImGuiEx.SizedText("Line thickness:", WidthElement);
+                                        ImGui.SameLine();
+                                        ImGui.DragFloat("##thicc" + i + k, ref el.thicc, 0.1f, 0f, float.MaxValue);
+                                        ImGui.PopItemWidth();
+                                        if (el.thicc > 0)
+                                        {
                                             ImGui.SameLine();
                                             var v4 = ImGui.ColorConvertU32ToFloat4(el.color);
-                                            ImGui.PushItemWidth(20f);
-                                            ImGui.SetColorEditOptions(ImGuiColorEditFlags.None);
-                                            if (ImGui.ColorEdit4("##colorbutton" + i + k, ref v4))
+                                            if (ImGui.ColorEdit4("##colorbutton" + i + k, ref v4, ImGuiColorEditFlags.NoInputs))
                                             {
                                                 el.color = ImGui.ColorConvertFloat4ToU32(v4);
                                             }
                                             ImGui.PopItemWidth();
-                                            ImGuiEx.SizedText("Overlay text:", WidthElement);
+                                        }
+                                        else
+                                        {
                                             ImGui.SameLine();
-                                            ImGui.SetNextItemWidth(150f);
-                                            ImGui.InputTextWithHint("##overlaytext" + i + k, "Text to display as overlay", ref el.overlayText, 30);
-                                            if (el.overlayText.Length > 0)
+                                            ImGui.Text("Thickness is set to 0: only text overlay will be drawn.");
+                                        }
+                                        if (el.thicc > 0)
+                                        {
+                                            ImGuiEx.SizedText("Radius:", WidthElement);
+                                            ImGui.SameLine();
+                                            ImGui.SetNextItemWidth(60f);
+                                            ImGui.DragFloat("##radius" + i + k, ref el.radius, 0.01f, 0, float.MaxValue);
+                                            ImGui.SameLine();
+                                            ImGui.Text("Leave at 0 to draw a single dot");
+                                        }
+                                        ImGuiEx.SizedText("Overlay text:", WidthElement);
+                                        ImGui.SameLine();
+                                        ImGui.SetNextItemWidth(150f);
+                                        ImGui.InputTextWithHint("##overlaytext" + i + k, "Text to display as overlay", ref el.overlayText, 30);
+                                        if (el.overlayText.Length > 0)
+                                        {
+                                            ImGui.SameLine();
+                                            ImGui.Text("Vertical offset:");
+                                            ImGui.SameLine();
+                                            ImGui.SetNextItemWidth(60f);
+                                            ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.5f);
+                                            ImGui.SameLine();
+                                            ImGui.Text("BG color:");
+                                            ImGui.SameLine();
+                                            var v4b = ImGui.ColorConvertU32ToFloat4(el.overlayBGColor);
+                                            if (ImGui.ColorEdit4("##colorbuttonbg" + i + k, ref v4b, ImGuiColorEditFlags.NoInputs))
                                             {
-                                                ImGui.SameLine();
-                                                ImGui.Text("Vertical offset:");
-                                                ImGui.SameLine();
-                                                ImGui.SetNextItemWidth(60f);
-                                                ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.5f);
-                                                ImGui.SameLine();
-                                                ImGui.Text("BG color:");
-                                                ImGui.SameLine();
-                                                var v4b = ImGui.ColorConvertU32ToFloat4(el.overlayBGColor);
-                                                ImGui.PushItemWidth(20f);
-                                                ImGui.SetColorEditOptions(ImGuiColorEditFlags.None);
-                                                if (ImGui.ColorEdit4("##colorbuttonbg" + i + k, ref v4b))
-                                                {
-                                                    el.overlayBGColor = ImGui.ColorConvertFloat4ToU32(v4b);
-                                                }
-                                                ImGui.PopItemWidth();
-                                                ImGui.SameLine();
-                                                ImGui.Text("Text color:");
-                                                ImGui.SameLine();
-                                                var v4t = ImGui.ColorConvertU32ToFloat4(el.overlayTextColor);
-                                                ImGui.PushItemWidth(20f);
-                                                ImGui.SetColorEditOptions(ImGuiColorEditFlags.None);
-                                                if (ImGui.ColorEdit4("##colorbuttonfg" + i + k, ref v4t))
-                                                {
-                                                    el.overlayTextColor = ImGui.ColorConvertFloat4ToU32(v4t);
-                                                }
-                                                ImGui.PopItemWidth();
+                                                el.overlayBGColor = ImGui.ColorConvertFloat4ToU32(v4b);
                                             }
+                                            ImGui.PopItemWidth();
+                                            ImGui.SameLine();
+                                            ImGui.Text("Text color:");
+                                            ImGui.SameLine();
+                                            var v4t = ImGui.ColorConvertU32ToFloat4(el.overlayTextColor);
+                                            if (ImGui.ColorEdit4("##colorbuttonfg" + i + k, ref v4t, ImGuiColorEditFlags.NoInputs))
+                                            {
+                                                el.overlayTextColor = ImGui.ColorConvertFloat4ToU32(v4t);
+                                            }
+                                            ImGui.PopItemWidth();
                                         }
                                     }
                                 }

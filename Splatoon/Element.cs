@@ -9,7 +9,8 @@ namespace Splatoon
     [Serializable]
     public class Element
     {
-        public static string[] ElementTypes = { "Shape at fixed coordinates", "Shape relative to actor position" };
+        public static string[] ElementTypes = { "Shape at fixed coordinates", "Shape relative to visible actor position" };
+        public static string[] ActorTypes = { "Actor with specific name", "Self", "Target" };
         public int type;
         public Element(int t)
         {
@@ -29,5 +30,7 @@ namespace Splatoon
         public float overlayVOffset = 0f;
         public float thicc = 2f;
         public string overlayText = "";
+        public string refActorName = "";
+        public int refActorType = 0;
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Splatoon
 {
-    class ImGuiEx
+    class ImGuiEx //came here to laugh on how scuffed it is? let's do so together.
     {
         public static void SizedText(string text, float width)
         {
@@ -18,7 +18,7 @@ namespace Splatoon
             var s = ImGui.CalcTextSize(text);
             ImGui.Text(text);
             ImGui.SameLine();
-            if(width > s.X) ImGui.Button("", new Vector2(width-s.X, s.Y));
+            if(width > s.X) ImGui.Button("", new Vector2(width-s.X, 1f));
             ImGui.PopStyleColor(3);
         }
     }

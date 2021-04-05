@@ -41,13 +41,16 @@ namespace Splatoon
                     if (!e.Enabled) continue;
                     if(e.type == 0)
                     {
-                        if(e.radius > 0)
+                        if (e.thicc > 0)
                         {
-                            DrawRingWorld(e.refX + e.offX, e.refY + e.offY, e.refZ + e.offZ, e.radius, 100, e.thicc, e.color);
-                        }
-                        else
-                        {
-                            DrawPoint(e.refX + e.offX, e.refY + e.offY, e.refZ + e.offZ, e.thicc, e.color);
+                            if (e.radius > 0)
+                            {
+                                DrawRingWorld(e.refX + e.offX, e.refY + e.offY, e.refZ + e.offZ, e.radius, 100, e.thicc, e.color);
+                            }
+                            else
+                            {
+                                DrawPoint(e.refX + e.offX, e.refY + e.offY, e.refZ + e.offZ, e.thicc, e.color);
+                            }
                         }
                         if (e.overlayText.Length > 0)
                         {
