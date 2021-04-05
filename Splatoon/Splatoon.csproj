@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Splatoon.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CGui.cs" />
