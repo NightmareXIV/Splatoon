@@ -110,6 +110,21 @@ namespace Splatoon
                 {
                     p.DebugGui.Open = true;
                 }
+                ImGuiEx.SizedText("Circle smoothness:", WidthLayout);
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(100f);
+                ImGui.DragInt("##circlesmoothness", ref p.Config.segments, 0.1f, 10, 150);
+                ImGui.SameLine();
+                ImGui.Text("(?)");
+                if (ImGui.IsItemHovered())
+                    ImGui.SetTooltip("You can't draw circles. They are all fake.\n" +
+                        "Every circle is techincally a polygon.\n" +
+                        "The higher this number is, the rounder your circle will be.\n" +
+                        "But it will also increase processing power needed to display circles.\n" +
+                        "If you are using many circles or your CPU is on weaker side,\n" +
+                        "consider lowering this value. Generally it's best to keep it\n" +
+                        "as low as possible as long as you are satisfied with look.");
+
                 ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
                 ImGui.SameLine();
                 ImGui.Checkbox("Allow elements deletion", ref enableDeletionElement);

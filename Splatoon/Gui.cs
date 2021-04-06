@@ -29,6 +29,11 @@ namespace Splatoon
         void Draw()
         {
             uid = 0;
+            if(p.Config.segments > 1000 || p.Config.segments < 4)
+            {
+                p.Config.segments = 100;
+                p.Log("Your smoothness setting was unsafe. It was reset to 100.", true);
+            }
             try
             {
                 if(p.Config.verboselog) p.Log("d:begin draw sequence");
@@ -44,7 +49,7 @@ namespace Splatoon
                     if(element is DisplayObjectCircle)
                     {
                         var e = (DisplayObjectCircle)element;
-                        DrawRingWorld(e.x, e.y, e.z, e.radius, 100, e.thickness, e.color);
+                        DrawRingWorld(e.x, e.y, e.z, e.radius, p.Config.segments, e.thickness, e.color);
                     }
                     else if (element is DisplayObjectDot)
                     {
