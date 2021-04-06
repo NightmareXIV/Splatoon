@@ -1,8 +1,10 @@
 ﻿using Dalamud.Game.ClientState.Actors.Types.NonPlayer;
+using Dalamud.Plugin;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 using Num = System.Numerics;
@@ -27,15 +29,25 @@ namespace Splatoon
         {
             try
             {
+                if(p.Config.verboselog) p.Log("d:begin draw sequence");
                 int uid = 0;
                 if (p._pi.ClientState == null || p._pi.ClientState.LocalPlayer == null) return;
+                if (p._pi.ClientState.LocalPlayer.Address == IntPtr.Zero) //let's try to catch this event actually
+                {
+                    try { PluginLog.Fatal("Pointer to LocalPlayer.Address is zero"); } catch (Exception) { }
+                    p.Log("Pointer to LocalPlayer.Address is zero");
+                    return;
+                } 
                 ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0, 0));
                 ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
                     | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground);
                 ImGui.SetWindowPos(new Num.Vector2(0, 0));
+                if (p.Config.verboselog) p.Log("d:1");
                 ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
+                if (p.Config.verboselog) p.Log("d:2");
                 foreach (var i in p.Config.Layouts.Values)
                 {
+                    if (p.Config.verboselog) p.Log("d:3 "+i);
                     if (!i.Enabled) continue;
                     if (i.ZoneLock != 0 && i.ZoneLock != p._pi.ClientState.TerritoryType) continue;
                     if ((i.DCond == 1 || i.DCond == 3) && !p._pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
@@ -71,24 +83,28 @@ namespace Splatoon
                                 z = p._pi.ClientState.LocalPlayer.Position.Z;
                             }
                             else if (e.refActorType == 2 && p._pi.ClientState.Targets.CurrentTarget != null
-                                && p._pi.ClientState.Targets.CurrentTarget is BattleNpc)
+                                && p._pi.ClientState.Targets.CurrentTarget is BattleNpc
+                                && p._pi.ClientState.Targets.CurrentTarget.Address != IntPtr.Zero)
                             {
                                 draw = true;
                                 x = p._pi.ClientState.Targets.CurrentTarget.Position.X;
                                 y = p._pi.ClientState.Targets.CurrentTarget.Position.Y;
                                 z = p._pi.ClientState.Targets.CurrentTarget.Position.Z;
+                                if (p.Config.verboselog) p.Log("d:ptr1");
                                 if (e.includeHitbox) radius += *(float*)(p._pi.ClientState.Targets.CurrentTarget.Address + 0xC0);
                             }
                             else if (e.refActorType == 0 && e.refActorName.Length > 0)
                             {
                                 foreach (var a in p._pi.ClientState.Actors)
                                 {
-                                    if (a.Name.ToLower().Contains(e.refActorName.ToLower()))
+                                    if (a.Name.ToLower().Contains(e.refActorName.ToLower())
+                                         && a.Address != IntPtr.Zero)
                                     {
                                         draw = true;
                                         x = a.Position.X;
                                         y = a.Position.Y;
                                         z = a.Position.Z;
+                                        if (p.Config.verboselog) p.Log("d:ptr2");
                                         if (e.includeHitbox) radius += *(float*)(a.Address + 0xC0);
                                         break;
                                     }
@@ -96,6 +112,7 @@ namespace Splatoon
                             }
                             if (e.includeOwnHitbox)
                             {
+                                if (p.Config.verboselog) p.Log("d:ptr3");
                                 radius += *(float*)(p._pi.ClientState.LocalPlayer.Address + 0xC0);
                             }
                         }
@@ -104,15 +121,18 @@ namespace Splatoon
                         {
                             if (radius > 0)
                             {
+                                if (p.Config.verboselog) p.Log("d:draw1");
                                 DrawRingWorld(x + e.offX, y + e.offY, z + e.offZ, radius, 100, e.thicc, e.color);
                             }
                             else
                             {
+                                if (p.Config.verboselog) p.Log("d:draw2");
                                 DrawPoint(x + e.offX, y + e.offY, z + e.offZ, e.thicc, e.color);
                             }
                         }
                         if (e.overlayText.Length > 0)
                         {
+                            if (p.Config.verboselog) p.Log("d:txt1");
                             if (p._pi.Framework.Gui.WorldToScreen(
                                 new SharpDX.Vector3(x + e.offX, z + e.offZ + e.overlayVOffset, y + e.offY),
                                 out SharpDX.Vector2 pos))
@@ -136,12 +156,13 @@ namespace Splatoon
                 }
                 ImGui.End();
                 ImGui.PopStyleVar();
+                if (p.Config.verboselog) p.Log("d:endsequence");
             }
             catch(Exception e)
             {
-                p.Log("Splatoon exception: please report it to developer");
-                p.Log(e.Message);
-                p.Log(e.StackTrace);
+                p.Log("Splatoon exception: please report it to developer", true);
+                p.Log(e.Message, true);
+                p.Log(e.StackTrace, true);
             }
         }
 
@@ -152,7 +173,7 @@ namespace Splatoon
             for (int i = 0; i <= num_segments; i++)
             {
                 p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin((Math.PI / seg) * i)), z, y + (radius * (float)Math.Cos((Math.PI / seg) * i))), out SharpDX.Vector2 pos);
-                ImGui.GetWindowDrawList().PathLineTo(new System.Numerics.Vector2(pos.X, pos.Y));
+                ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
             }
             ImGui.GetWindowDrawList().PathStroke(colour, true, thicc);
         }

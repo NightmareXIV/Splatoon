@@ -40,9 +40,6 @@ namespace Splatoon
         {
             _pi = pluginInterface;
             Zones = _pi.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
-            DrawingGui = new Gui(this);
-            ConfigGui = new CGui(this);
-            DebugGui = new DGui(this);
             _pi.UiBuilder.OnOpenConfigUi += delegate
             {
                 ConfigGui.Open = true;
@@ -85,6 +82,9 @@ namespace Splatoon
             Config = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Config.Initialize(this);
             _pi.Framework.OnUpdateEvent += HandleUpdate;
+            DrawingGui = new Gui(this);
+            ConfigGui = new CGui(this);
+            DebugGui = new DGui(this);
         }
 
         public void HandleUpdate(Framework framework)
@@ -114,7 +114,7 @@ namespace Splatoon
             }
             if (Config.dumplog)
             {
-                PluginLog.Log(s);
+                try { PluginLog.Log(s); } catch (Exception) { }
             }
             var line = DateTimeOffset.Now.ToString() + ": " + s;
             for (var i = 0; i < LogStorage.Length; i++)
