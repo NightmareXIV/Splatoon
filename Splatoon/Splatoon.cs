@@ -13,7 +13,7 @@ using Dalamud.Game.Internal;
 
 namespace Splatoon
 {
-    class Splatoon : IDalamudPlugin
+    unsafe class Splatoon : IDalamudPlugin
     {
         public string Name => "Splatoon";
         internal DalamudPluginInterface _pi;
@@ -24,6 +24,7 @@ namespace Splatoon
         internal Dictionary<ushort, TerritoryType> Zones;
         internal string[] LogStorage = new string[100];
         internal long CombatStarted = 0;
+        internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
 
         public void Dispose()
         {
@@ -89,7 +90,15 @@ namespace Splatoon
 
         public void HandleUpdate(Framework framework)
         {
-            if (_pi.ClientState == null) return;
+            displayObjects.Clear();
+            if (_pi.ClientState == null || _pi.ClientState.LocalPlayer == null) return;
+
+            if (_pi.ClientState.LocalPlayer.Address == IntPtr.Zero) 
+            {
+                Log("Pointer to LocalPlayer.Address is zero");
+                return;
+            }
+
             if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
             {
                 if (CombatStarted == 0)
@@ -104,6 +113,94 @@ namespace Splatoon
                     CombatStarted = 0;
                 }
             }
+
+            foreach (var i in Config.Layouts.Values)
+            {
+                if (Config.verboselog) Log("d:3 " + i);
+                if (!i.Enabled) continue;
+                if (i.ZoneLock != 0 && i.ZoneLock != _pi.ClientState.TerritoryType) continue;
+                if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
+                if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty]) continue;
+                if (i.DCond == 4 && !(_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]
+                    || _pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty])) continue;
+                if (i.Visibility == 1)
+                {
+                    if (!_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
+                    var tic = DateTimeOffset.Now.ToUnixTimeSeconds() - CombatStarted;
+                    if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) continue;
+                }
+                foreach (var e in i.Elements.Values.ToArray())
+                {
+                    if (!e.Enabled) continue;
+                    float x = 0f, y = 0f, z = 0f;
+                    bool draw = false;
+                    float radius = e.radius;
+                    if (e.type == 0)
+                    {
+                        draw = true;
+                        x = e.refX;
+                        y = e.refY;
+                        z = e.refZ;
+                    }
+                    else if (e.type == 1)
+                    {
+                        if (e.refActorType == 1)
+                        {
+                            draw = true;
+                            x = _pi.ClientState.LocalPlayer.Position.X;
+                            y = _pi.ClientState.LocalPlayer.Position.Y;
+                            z = _pi.ClientState.LocalPlayer.Position.Z;
+                        }
+                        else if (e.refActorType == 2 && _pi.ClientState.Targets.CurrentTarget != null
+                            && _pi.ClientState.Targets.CurrentTarget is BattleNpc
+                            && _pi.ClientState.Targets.CurrentTarget.Address != IntPtr.Zero)
+                        {
+                            draw = true;
+                            x = _pi.ClientState.Targets.CurrentTarget.Position.X;
+                            y = _pi.ClientState.Targets.CurrentTarget.Position.Y;
+                            z = _pi.ClientState.Targets.CurrentTarget.Position.Z;
+                            if (e.includeHitbox) radius += *(float*)(_pi.ClientState.Targets.CurrentTarget.Address + 0xC0);
+                        }
+                        else if (e.refActorType == 0 && e.refActorName.Length > 0)
+                        {
+                            foreach (var a in _pi.ClientState.Actors)
+                            {
+                                if (a.Name.ToLower().Contains(e.refActorName.ToLower())
+                                     && a.Address != IntPtr.Zero)
+                                {
+                                    draw = true;
+                                    x = a.Position.X;
+                                    y = a.Position.Y;
+                                    z = a.Position.Z;
+                                    if (e.includeHitbox) radius += *(float*)(a.Address + 0xC0);
+                                    break;
+                                }
+                            }
+                        }
+                        if (e.includeOwnHitbox)
+                        {
+                            radius += *(float*)(_pi.ClientState.LocalPlayer.Address + 0xC0);
+                        }
+                    }
+                    if (!draw) continue;
+                    if (e.thicc > 0)
+                    {
+                        if (radius > 0)
+                        {
+                            displayObjects.Add(new DisplayObjectCircle(x + e.offX, y + e.offY, z + e.offZ, radius, e.thicc, e.color));
+                        }
+                        else
+                        {
+                            displayObjects.Add(new DisplayObjectDot(x + e.offX, y + e.offY, z + e.offZ, e.thicc, e.color));
+                        }
+                    }
+                    if (e.overlayText.Length > 0)
+                    {
+                        displayObjects.Add(new DisplayObjectText(x + e.offX, y + e.offY, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
+                    }
+                }
+            }
+
         }
 
         public void Log(string s, bool tochat = false)
