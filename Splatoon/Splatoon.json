@@ -2,7 +2,7 @@
   "Author": "Eternita",
   "Name": "Splatoon [ALPHA]",
   "InternalName": "Splatoon",
-  "AssemblyVersion": "0.0.0.3",
+  "AssemblyVersion": "0.0.0.4",
   "Description": "Infinite waymarks in the world and target circles",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Eternita-S/Splatoon",
