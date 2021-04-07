@@ -27,6 +27,6 @@ namespace Splatoon
         [NonSerialized] internal long MessageTimeStarted = 0;
         public Dictionary<string, Element> Elements = new Dictionary<string, Element>();
         public bool DisableDisabling = false;
-        public long JobLock = 0;
+        public ulong JobLock = 0;
     }
 }

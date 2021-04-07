@@ -27,7 +27,8 @@ namespace Splatoon
         internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
         internal IntPtr CameraAddress;
         internal double CamAngleX;
-        internal double CamAngleY;
+        internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
+        //internal double CamAngleY;
 
         public void Dispose()
         {
@@ -44,6 +45,7 @@ namespace Splatoon
         {
             _pi = pluginInterface;
             Zones = _pi.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
+            Jobs = _pi.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name);
             _pi.UiBuilder.OnOpenConfigUi += delegate
             {
                 ConfigGui.Open = true;
@@ -105,7 +107,7 @@ namespace Splatoon
 
             CamAngleX = *(float*)(CameraAddress + 0x130) + Math.PI;
             if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-            CamAngleY = *(float*)(CameraAddress + 0x134) + Math.PI;
+            //CamAngleY = *(float*)(CameraAddress + 0x134) + Math.PI;
 
             if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
             {
@@ -124,9 +126,9 @@ namespace Splatoon
 
             foreach (var i in Config.Layouts.Values)
             {
-                if (Config.verboselog) Log("d:3 " + i);
                 if (!i.Enabled) continue;
                 if (i.ZoneLock != 0 && i.ZoneLock != _pi.ClientState.TerritoryType) continue;
+                if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)_pi.ClientState.LocalPlayer.ClassJob.Id)) continue;
                 if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
                 if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty]) continue;
                 if (i.DCond == 4 && !(_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]

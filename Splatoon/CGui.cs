@@ -25,6 +25,7 @@ namespace Splatoon
         bool enableDeletion = false;
         bool enableDeletionElement = false;
         bool WasOpen = false;
+        string jobFilter = "";
 
         public CGui(Splatoon p)
         {
@@ -50,7 +51,7 @@ namespace Splatoon
                 return;
             }
             WasOpen = true;
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(680, 200));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             if (ImGui.Begin("Splatoon", ref Open))
             {
                 ImGui.SetNextItemWidth(350f);
@@ -124,7 +125,7 @@ namespace Splatoon
                         "If you are using many circles or your CPU is on weaker side,\n" +
                         "consider lowering this value. Generally it's best to keep it\n" +
                         "as low as possible as long as you are satisfied with look.");
-
+                ImGui.SameLine();
                 ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
                 ImGui.SameLine();
                 ImGui.Checkbox("Allow elements deletion", ref enableDeletionElement);
@@ -242,6 +243,55 @@ namespace Splatoon
                                 }
                                 ImGui.EndCombo();
                             }
+
+                            var jprev = new List<string>();
+                            if(p.Config.Layouts[i].JobLock == 0)
+                            {
+                                jprev.Add("All jobs");
+                            }
+                            else
+                            {
+                                foreach(var k in p.Jobs)
+                                {
+                                    if(Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, k.Key))
+                                    {
+                                        jprev.Add(k.Value);
+                                    }
+                                }
+                            }
+                            ImGuiEx.SizedText("Job lock", WidthLayout);
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(WidthCombo);
+                            if (ImGui.BeginCombo("##joblock"+i, jprev.Count<3?string.Join(", ", jprev): jprev.Count+" jobs"))
+                            {
+                                ImGui.InputTextWithHint("##joblockfltr"+i, "Filter", ref jobFilter, 100);
+                                foreach(var k in p.Jobs)
+                                {
+                                    if (!k.Key.ToString().Contains(jobFilter) && !k.Value.Contains(jobFilter)) continue ;
+                                    if (k.Key == 0) continue;
+                                    var col = false;
+                                    if(Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, k.Key))
+                                    {
+                                        ImGui.PushStyleColor(ImGuiCol.Button, Colors.Red);
+                                        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Colors.Red);
+                                        col = true;
+                                    }
+                                    if (ImGui.SmallButton(k.Key + " / " + k.Value + "##selectjob" + i))
+                                    {
+                                        if(Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, k.Key))
+                                        {
+                                            Bitmask.ResetBit(ref p.Config.Layouts[i].JobLock, k.Key);
+                                        }
+                                        else
+                                        {
+                                            Bitmask.SetBit(ref p.Config.Layouts[i].JobLock, k.Key);
+                                        }
+                                    }
+                                    if (col) ImGui.PopStyleColor(2);
+                                }
+                                ImGui.EndCombo();
+                            }
+
                             ImGui.PushItemWidth(WidthCombo);
                             ImGui.InputTextWithHint("##elnameadd" + i, "Unique element name", ref ename, 100);
                             ImGui.PopItemWidth();

@@ -42,10 +42,10 @@
     <None Include="Splatoon.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bitmask.cs" />
     <Compile Include="CGui.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="Data.cs" />
     <Compile Include="DGui.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Gui.cs" />
