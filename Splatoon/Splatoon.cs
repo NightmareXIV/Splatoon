@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Command;
 using Dalamud.Game.Internal;
+using Dalamud.Game.ClientState.Actors.Types;
 
 namespace Splatoon
 {
@@ -28,6 +29,7 @@ namespace Splatoon
         internal IntPtr CameraAddress;
         internal double CamAngleX;
         internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
+        internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
         //internal double CamAngleY;
 
         public void Dispose()
@@ -142,71 +144,62 @@ namespace Splatoon
                 foreach (var e in i.Elements.Values.ToArray())
                 {
                     if (!e.Enabled) continue;
-                    float x = 0f, y = 0f, z = 0f;
-                    bool draw = false;
+                    draw.Clear();
                     float radius = e.radius;
                     if (e.type == 0)
                     {
-                        draw = true;
-                        x = e.refX;
-                        y = e.refY;
-                        z = e.refZ;
+                        draw.Add((e.refX, e.refY, e.refZ, radius));
                     }
                     else if (e.type == 1)
                     {
+                        if (e.includeOwnHitbox) radius += *(float*)(_pi.ClientState.LocalPlayer.Address + 0xC0);
                         if (e.refActorType == 1)
                         {
-                            draw = true;
-                            x = _pi.ClientState.LocalPlayer.Position.X;
-                            y = _pi.ClientState.LocalPlayer.Position.Y;
-                            z = _pi.ClientState.LocalPlayer.Position.Z;
+                            draw.Add((_pi.ClientState.LocalPlayer.Position.X, _pi.ClientState.LocalPlayer.Position.Y,
+                                _pi.ClientState.LocalPlayer.Position.Z, radius));
                         }
                         else if (e.refActorType == 2 && _pi.ClientState.Targets.CurrentTarget != null
                             && _pi.ClientState.Targets.CurrentTarget is BattleNpc
                             && _pi.ClientState.Targets.CurrentTarget.Address != IntPtr.Zero)
                         {
-                            draw = true;
-                            x = _pi.ClientState.Targets.CurrentTarget.Position.X;
-                            y = _pi.ClientState.Targets.CurrentTarget.Position.Y;
-                            z = _pi.ClientState.Targets.CurrentTarget.Position.Z;
                             if (e.includeHitbox) radius += *(float*)(_pi.ClientState.Targets.CurrentTarget.Address + 0xC0);
+                            draw.Add((_pi.ClientState.Targets.CurrentTarget.Position.X, _pi.ClientState.Targets.CurrentTarget.Position.Y,
+                                _pi.ClientState.Targets.CurrentTarget.Position.Z, radius));
                         }
                         else if (e.refActorType == 0 && e.refActorName.Length > 0)
                         {
                             foreach (var a in _pi.ClientState.Actors)
                             {
-                                if (a.Name.ToLower().Contains(e.refActorName.ToLower())
+                                if ((a is PlayerCharacter || a is BattleNpc) && 
+                                    a.Name.ToLower().Contains(e.refActorName.ToLower())
                                      && a.Address != IntPtr.Zero)
                                 {
-                                    draw = true;
-                                    x = a.Position.X;
-                                    y = a.Position.Y;
-                                    z = a.Position.Z;
-                                    if (e.includeHitbox) radius += *(float*)(a.Address + 0xC0);
-                                    break;
+                                    var aradius = radius;
+                                    if (e.includeHitbox) aradius += *(float*)(a.Address + 0xC0);
+                                    draw.Add((a.Position.X, a.Position.Y, a.Position.Z, aradius));
                                 }
                             }
                         }
-                        if (e.includeOwnHitbox)
-                        {
-                            radius += *(float*)(_pi.ClientState.LocalPlayer.Address + 0xC0);
-                        }
+                        
                     }
-                    if (!draw) continue;
-                    if (e.thicc > 0)
+                    if (draw.Count == 0) continue;
+                    foreach (var pos in draw)
                     {
-                        if (radius > 0)
+                        if (e.thicc > 0)
                         {
-                            displayObjects.Add(new DisplayObjectCircle(x + e.offX, y + e.offY, z + e.offZ, radius, e.thicc, e.color));
+                            if (pos.r > 0)
+                            {
+                                displayObjects.Add(new DisplayObjectCircle(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ, pos.r, e.thicc, e.color));
+                            }
+                            else
+                            {
+                                displayObjects.Add(new DisplayObjectDot(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ, e.thicc, e.color));
+                            }
                         }
-                        else
+                        if (e.overlayText.Length > 0)
                         {
-                            displayObjects.Add(new DisplayObjectDot(x + e.offX, y + e.offY, z + e.offZ, e.thicc, e.color));
+                            displayObjects.Add(new DisplayObjectText(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
                         }
-                    }
-                    if (e.overlayText.Length > 0)
-                    {
-                        displayObjects.Add(new DisplayObjectText(x + e.offX, y + e.offY, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
                     }
                 }
             }

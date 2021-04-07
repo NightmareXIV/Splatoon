@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Actors.Types;
+using Dalamud.Game.ClientState.Actors.Types.NonPlayer;
 using ImGuiNET;
 using Newtonsoft.Json;
 using System;
@@ -319,8 +320,18 @@ namespace Splatoon
                             foreach (var k in p.Config.Layouts[i].Elements.Keys.ToArray())
                             {
                                 var el = p.Config.Layouts[i].Elements[k];
+                                var elcolored = false;
+                                if(!el.Enabled)
+                                {
+                                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.Gray);
+                                    elcolored = true;
+                                }
                                 if (ImGui.CollapsingHeader(i + " / " + k + "##elem" + i + k))
                                 {
+                                    if (elcolored) { 
+                                        ImGui.PopStyleColor();
+                                        elcolored = false;
+                                    }
                                     if (enableDeletionElement)
                                     {
                                         ImGui.PushStyleColor(ImGuiCol.Button, Colors.Orange);
@@ -376,12 +387,20 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             ImGui.SetNextItemWidth(WidthCombo);
                                             ImGui.Combo("##actortype" + i + k, ref el.refActorType, Element.ActorTypes, Element.ActorTypes.Length);
-                                            if(el.refActorType == 0)
+                                            if (el.refActorType == 0)
                                             {
+                                                if (ImGui.IsItemHovered())
+                                                {
+                                                    ImGui.SetTooltip("Warning! Targeting actor with specific name\n" +
+                                                        "is EXPENSIVE operation!\n" +
+                                                        "Please only use if really necessary.");
+                                                }
                                                 ImGui.SameLine();
                                                 ImGui.SetNextItemWidth(WidthCombo);
                                                 ImGui.InputTextWithHint("##actorname" + i + k, "Case-insensitive (partial) name", ref el.refActorName, 100);
-                                                if (p._pi.ClientState.Targets.CurrentTarget != null && p._pi.ClientState.Targets.CurrentTarget is PlayerCharacter)
+                                                if (p._pi.ClientState.Targets.CurrentTarget != null &&
+                                                    (p._pi.ClientState.Targets.CurrentTarget is PlayerCharacter
+                                                    || p._pi.ClientState.Targets.CurrentTarget is BattleNpc))
                                                 {
                                                     ImGui.SameLine();
                                                     if(ImGui.Button("Target##btarget" + i + k)) el.refActorName = p._pi.ClientState.Targets.CurrentTarget.Name;
@@ -410,6 +429,8 @@ namespace Splatoon
                                             el.offY = 0;
                                             el.offZ = 0;
                                         }
+                                        ImGui.SameLine();
+                                        ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);
                                             
                                         ImGuiEx.SizedText("Line thickness:", WidthElement);
                                         ImGui.SameLine();
@@ -480,6 +501,11 @@ namespace Splatoon
                                             ImGui.PopItemWidth();
                                         }
                                     }
+                                }
+                                if (elcolored)
+                                {
+                                    ImGui.PopStyleColor();
+                                    elcolored = false;
                                 }
                             }
                         }

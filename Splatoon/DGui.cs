@@ -35,10 +35,10 @@ namespace Splatoon
                 ImGui.BeginChild("##splatoondbg1");
                 var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
                 ImGui.Text("CombatStarted = " + t);
-                ImGui.Text("Players:");
+                ImGui.Text("Actors:");
                 foreach (var a in p._pi.ClientState.Actors)
                 {
-                    if (a is PlayerCharacter)
+                    if (a is PlayerCharacter || a is BattleNpc)
                     {
                         try
                         {
