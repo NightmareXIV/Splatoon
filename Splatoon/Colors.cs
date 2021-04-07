@@ -13,5 +13,6 @@ namespace Splatoon
         public const uint Red = 0xff0000ff;
         public const uint Orange = 0xff0099ff;
         public const uint Gray = 0xff999999;
+        public const uint Transparent = 0x00000000;
     }
 }

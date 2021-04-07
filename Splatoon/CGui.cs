@@ -4,6 +4,8 @@ using ImGuiNET;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -55,63 +57,15 @@ namespace Splatoon
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             if (ImGui.Begin("Splatoon", ref Open))
             {
-                ImGui.SetNextItemWidth(350f);
-                ImGui.InputTextWithHint("##lname", "Unique layout name", ref lname, 100);
-                lname.Trim();
-                ImGui.SameLine();
-                if(ImGui.Button("Add layout"))
+                if (!Splatoon.Limited) 
                 {
-                    if (p.Config.Layouts.ContainsKey(lname))
-                    {
-                        p.Log("Error: this name already exists", true);
-                    }
-                    else if (lname.Length == 0)
-                    {
-                        p.Log("Error: you must name layout", true);
-                    }
-                    else if(lname.Contains("~"))
-                    {
-                        p.Log("Name can't contain reserved characters: ~", true);
-                    }
-                    else
-                    {
-                        p.Config.Layouts.Add(lname, new Layout());
-                        lname = "";
-                    }
+                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
+                    ImGuiEx.TextCentered("Unlimited edition - for help contact developer directly on github");
+                    if (ImGui.IsItemHovered()) ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                    if (ImGui.IsItemClicked()) Process.Start("https://github.com/Eternita-S/Splatoon");
+                    ImGui.PopStyleColor();
                 }
-                ImGui.SameLine();
-                if (ImGui.Button("Import layout from clipboard"))
-                {
-                    try
-                    {
-                        var import = Clipboard.GetText();
-                        var name = import.Split('~')[0];
-                        var json = import.Substring(name.Length + 1);
-                        if (p.Config.Layouts.ContainsKey(name))
-                        {
-                            p.Log("Error: this name already exists", true);
-                        }
-                        else if (name.Length == 0)
-                        {
-                            p.Log("Error: name not present", true);
-                        }
-                        else
-                        {
-                            p.Config.Layouts.Add(name, JsonConvert.DeserializeObject<Layout>(json));
-                            import = "";
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        p.Log("Error importing: "+e.Message, true);
-                        p.Log(e.StackTrace);
-                    }
-                }
-                ImGui.SameLine();
-                if (ImGui.Button("Debug"))
-                {
-                    p.DebugGui.Open = true;
-                }
+                
                 ImGuiEx.SizedText("Circle smoothness:", WidthLayout);
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(100f);
@@ -130,6 +84,80 @@ namespace Splatoon
                 ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
                 ImGui.SameLine();
                 ImGui.Checkbox("Allow elements deletion", ref enableDeletionElement);
+                ImGui.SameLine();
+                if (ImGui.Button("Debug"))
+                {
+                    p.DebugGui.Open = true;
+                }
+
+                ImGui.SetNextItemWidth(350f);
+                ImGui.InputTextWithHint("##lname", "Unique layout name", ref lname, 100);
+                lname.Trim();
+                ImGui.SameLine();
+                if (ImGui.Button("Add layout"))
+                {
+                    if (p.Config.Layouts.ContainsKey(lname))
+                    {
+                        p.Log("Error: this name already exists", true);
+                    }
+                    else if (lname.Length == 0)
+                    {
+                        p.Log("Error: you must name layout", true);
+                    }
+                    else if (lname.Contains("~"))
+                    {
+                        p.Log("Name can't contain reserved characters: ~", true);
+                    }
+                    else
+                    {
+                        p.Config.Layouts.Add(lname, new Layout());
+                        lname = "";
+                    }
+                }
+                ImGui.SameLine();
+                ImGui.Text("Import layout from:");
+                ImGui.SameLine();
+                if (ImGui.Button("clipboard"))
+                {
+                    try
+                    {
+                        ImportFromText(Clipboard.GetText());
+                    }
+                    catch (Exception e)
+                    {
+                        p.Log(e.Message + "\n" + e.StackTrace);
+                    } 
+                }
+                /*ImGui.SameLine();
+                if (ImGui.Button("file"))
+                {
+                    try
+                    {
+                        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                        {
+                            openFileDialog.Filter = "json files (*.json)|*.json";
+                            openFileDialog.FilterIndex = 0;
+                            openFileDialog.RestoreDirectory = true;
+                            openFileDialog.Title = "Select file to import";
+
+                            if (openFileDialog.ShowDialog() == DialogResult.OK)
+                            {
+                                //Read the contents of the file into a stream
+                                var fileStream = openFileDialog.OpenFile();
+
+                                using (StreamReader reader = new StreamReader(fileStream))
+                                {
+                                    ImportFromText(reader.ReadToEnd());
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        p.Log(e.Message + "\n" + e.StackTrace);
+                    }
+                }*/
+
                 ImGui.BeginChild("##layoutlist");
                 var open = false;
                 foreach (var i in p.Config.Layouts.Keys.ToArray())
@@ -520,6 +548,33 @@ namespace Splatoon
                 ImGui.EndChild();
             }
             ImGui.PopStyleVar();
+        }
+
+        private void ImportFromText(string import)
+        {
+            try
+            {
+                var name = import.Split('~')[0];
+                var json = import.Substring(name.Length + 1);
+                if (p.Config.Layouts.ContainsKey(name))
+                {
+                    p.Log("Error: this name already exists", true);
+                }
+                else if (name.Length == 0)
+                {
+                    p.Log("Error: name not present", true);
+                }
+                else
+                {
+                    p.Config.Layouts.Add(name, JsonConvert.DeserializeObject<Layout>(json));
+                    import = "";
+                }
+            }
+            catch (Exception e)
+            {
+                p.Log("Error importing: " + e.Message, true);
+                p.Log(e.StackTrace);
+            }
         }
     }
 }
