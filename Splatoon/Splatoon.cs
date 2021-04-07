@@ -11,6 +11,7 @@ using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Command;
 using Dalamud.Game.Internal;
 using Dalamud.Game.ClientState.Actors.Types;
+using System.Runtime.ExceptionServices;
 
 namespace Splatoon
 {
@@ -31,6 +32,7 @@ namespace Splatoon
         internal double CamAngleX;
         internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
         internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
+        internal bool AccessViolation = false;
         //internal double CamAngleY;
 
         public void Dispose()
@@ -97,114 +99,127 @@ namespace Splatoon
             CameraAddress = *(IntPtr*)_pi.TargetModuleScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
         }
 
+        [HandleProcessCorruptedStateExceptions]
         public void HandleUpdate(Framework framework)
         {
-            displayObjects.Clear();
-            if (_pi.ClientState == null || _pi.ClientState.LocalPlayer == null) return;
-            var pl = _pi.ClientState.LocalPlayer;
-            if (_pi.ClientState.LocalPlayer.Address == IntPtr.Zero) 
+            try
             {
-                Log("Pointer to LocalPlayer.Address is zero");
-                return;
-            }
-
-            CamAngleX = *(float*)(CameraAddress + 0x130) + Math.PI;
-            if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-            //CamAngleY = *(float*)(CameraAddress + 0x134) + Math.PI;
-
-            if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
-            {
-                if (CombatStarted == 0)
+                if (AccessViolation)
                 {
-                    CombatStarted = DateTimeOffset.Now.ToUnixTimeSeconds();
+                    AccessViolation = false;
+                    var a = *(float*)new IntPtr(0x12345678);
                 }
-            }
-            else
-            {
-                if (CombatStarted != 0)
+                displayObjects.Clear();
+                if (_pi.ClientState == null || _pi.ClientState.LocalPlayer == null) return;
+                var pl = _pi.ClientState.LocalPlayer;
+                if (_pi.ClientState.LocalPlayer.Address == IntPtr.Zero)
                 {
-                    CombatStarted = 0;
+                    Log("Pointer to LocalPlayer.Address is zero");
+                    return;
                 }
-            }
 
-            foreach (var i in Config.Layouts.Values)
-            {
-                if (!i.Enabled) continue;
-                if (i.ZoneLock != 0 && i.ZoneLock != _pi.ClientState.TerritoryType) continue;
-                if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)_pi.ClientState.LocalPlayer.ClassJob.Id)) continue;
-                if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
-                if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty]) continue;
-                if (i.DCond == 4 && !(_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]
-                    || _pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty])) continue;
-                if (i.Visibility == 1)
+                CamAngleX = *(float*)(CameraAddress + 0x130) + Math.PI;
+                if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
+                //CamAngleY = *(float*)(CameraAddress + 0x134) + Math.PI;
+
+                if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
                 {
-                    if (!_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
-                    var tic = DateTimeOffset.Now.ToUnixTimeSeconds() - CombatStarted;
-                    if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) continue;
-                }
-                foreach (var e in i.Elements.Values.ToArray())
-                {
-                    if (!e.Enabled) continue;
-                    draw.Clear();
-                    float radius = e.radius;
-                    if (e.type == 0)
+                    if (CombatStarted == 0)
                     {
-                        draw.Add((e.refX, e.refY, e.refZ, radius));
+                        CombatStarted = DateTimeOffset.Now.ToUnixTimeSeconds();
                     }
-                    else if (e.type == 1)
+                }
+                else
+                {
+                    if (CombatStarted != 0)
                     {
-                        if (e.includeOwnHitbox) radius += *(float*)(_pi.ClientState.LocalPlayer.Address + 0xC0);
-                        if (e.refActorType == 1)
+                        CombatStarted = 0;
+                    }
+                }
+
+                foreach (var i in Config.Layouts.Values)
+                {
+                    if (!i.Enabled) continue;
+                    if (i.ZoneLock != 0 && i.ZoneLock != _pi.ClientState.TerritoryType) continue;
+                    if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)_pi.ClientState.LocalPlayer.ClassJob.Id)) continue;
+                    if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
+                    if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty]) continue;
+                    if (i.DCond == 4 && !(_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]
+                        || _pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty])) continue;
+                    if (i.Visibility == 1)
+                    {
+                        if (!_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
+                        var tic = DateTimeOffset.Now.ToUnixTimeSeconds() - CombatStarted;
+                        if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) continue;
+                    }
+                    foreach (var e in i.Elements.Values.ToArray())
+                    {
+                        if (!e.Enabled) continue;
+                        draw.Clear();
+                        float radius = e.radius;
+                        if (e.type == 0)
                         {
-                            draw.Add((_pi.ClientState.LocalPlayer.Position.X, _pi.ClientState.LocalPlayer.Position.Y,
-                                _pi.ClientState.LocalPlayer.Position.Z, radius));
+                            draw.Add((e.refX, e.refY, e.refZ, radius));
                         }
-                        else if (e.refActorType == 2 && _pi.ClientState.Targets.CurrentTarget != null
-                            && _pi.ClientState.Targets.CurrentTarget is BattleNpc
-                            && _pi.ClientState.Targets.CurrentTarget.Address != IntPtr.Zero)
+                        else if (e.type == 1)
                         {
-                            if (e.includeHitbox) radius += *(float*)(_pi.ClientState.Targets.CurrentTarget.Address + 0xC0);
-                            draw.Add((_pi.ClientState.Targets.CurrentTarget.Position.X, _pi.ClientState.Targets.CurrentTarget.Position.Y,
-                                _pi.ClientState.Targets.CurrentTarget.Position.Z, radius));
-                        }
-                        else if (e.refActorType == 0 && e.refActorName.Length > 0)
-                        {
-                            foreach (var a in _pi.ClientState.Actors)
+                            if (e.includeOwnHitbox) radius += *(float*)(_pi.ClientState.LocalPlayer.Address + 0xC0);
+                            if (e.refActorType == 1)
                             {
-                                if ((a is PlayerCharacter || a is BattleNpc) && 
-                                    a.Name.ToLower().Contains(e.refActorName.ToLower())
-                                     && a.Address != IntPtr.Zero)
+                                draw.Add((_pi.ClientState.LocalPlayer.Position.X, _pi.ClientState.LocalPlayer.Position.Y,
+                                    _pi.ClientState.LocalPlayer.Position.Z, radius));
+                            }
+                            else if (e.refActorType == 2 && _pi.ClientState.Targets.CurrentTarget != null
+                                && _pi.ClientState.Targets.CurrentTarget is BattleNpc
+                                && _pi.ClientState.Targets.CurrentTarget.Address != IntPtr.Zero)
+                            {
+                                if (e.includeHitbox) radius += *(float*)(_pi.ClientState.Targets.CurrentTarget.Address + 0xC0);
+                                draw.Add((_pi.ClientState.Targets.CurrentTarget.Position.X, _pi.ClientState.Targets.CurrentTarget.Position.Y,
+                                    _pi.ClientState.Targets.CurrentTarget.Position.Z, radius));
+                            }
+                            else if (e.refActorType == 0 && e.refActorName.Length > 0)
+                            {
+                                foreach (var a in _pi.ClientState.Actors)
                                 {
-                                    var aradius = radius;
-                                    if (e.includeHitbox) aradius += *(float*)(a.Address + 0xC0);
-                                    draw.Add((a.Position.X, a.Position.Y, a.Position.Z, aradius));
+                                    if ((a is PlayerCharacter || a is BattleNpc) &&
+                                        a.Name.ToLower().Contains(e.refActorName.ToLower())
+                                         && a.Address != IntPtr.Zero)
+                                    {
+                                        var aradius = radius;
+                                        if (e.includeHitbox) aradius += *(float*)(a.Address + 0xC0);
+                                        draw.Add((a.Position.X, a.Position.Y, a.Position.Z, aradius));
+                                    }
                                 }
                             }
+
                         }
-                        
-                    }
-                    if (draw.Count == 0) continue;
-                    foreach (var pos in draw)
-                    {
-                        if (e.thicc > 0)
+                        if (draw.Count == 0) continue;
+                        foreach (var pos in draw)
                         {
-                            if (pos.r > 0)
+                            if (e.thicc > 0)
                             {
-                                displayObjects.Add(new DisplayObjectCircle(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ, pos.r, e.thicc, e.color));
+                                if (pos.r > 0)
+                                {
+                                    displayObjects.Add(new DisplayObjectCircle(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ, pos.r, e.thicc, e.color));
+                                }
+                                else
+                                {
+                                    displayObjects.Add(new DisplayObjectDot(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ, e.thicc, e.color));
+                                }
                             }
-                            else
+                            if (e.overlayText.Length > 0)
                             {
-                                displayObjects.Add(new DisplayObjectDot(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ, e.thicc, e.color));
+                                displayObjects.Add(new DisplayObjectText(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
                             }
-                        }
-                        if (e.overlayText.Length > 0)
-                        {
-                            displayObjects.Add(new DisplayObjectText(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
                         }
                     }
                 }
             }
-
+            catch(Exception e)
+            {
+                Log("Caught exception: "+e.Message, true);
+                Log(e.StackTrace, true);
+            }
         }
 
         public void Log(string s, bool tochat = false)

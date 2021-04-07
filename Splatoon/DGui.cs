@@ -35,6 +35,8 @@ namespace Splatoon
                 ImGui.BeginChild("##splatoondbg1");
                 var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
                 ImGui.Text("CombatStarted = " + t);
+                ImGui.Checkbox("Access violation on update", ref p.AccessViolation);
+                ImGui.Checkbox("Access violation on draw", ref p.DrawingGui.AccessViolation);
                 ImGui.Text("Actors:");
                 foreach (var a in p._pi.ClientState.Actors)
                 {

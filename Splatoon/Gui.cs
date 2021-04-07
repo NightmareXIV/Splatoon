@@ -11,10 +11,11 @@ using Num = System.Numerics;
 
 namespace Splatoon
 {
-    class Gui : IDisposable
+    unsafe class Gui : IDisposable
     {
         readonly Splatoon p;
         int uid = 0;
+        internal bool AccessViolation = false;
         public Gui(Splatoon p)
         {
             this.p = p;
@@ -26,46 +27,60 @@ namespace Splatoon
             p._pi.UiBuilder.OnBuildUi -= Draw;
         }
 
+        [HandleProcessCorruptedStateExceptions]
         void Draw()
         {
-            uid = 0;
-            if(p.Config.segments > 1000 || p.Config.segments < 4)
-            {
-                p.Config.segments = 100;
-                p.Log("Your smoothness setting was unsafe. It was reset to 100.");
-            }
             try
             {
-                ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0, 0));
-                ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
-                    | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground);
-                ImGui.SetWindowPos(new Num.Vector2(0, 0));
-                ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
-                foreach(var element in p.displayObjects)
+                if (AccessViolation)
                 {
-                    if(element is DisplayObjectCircle)
-                    {
-                        var e = (DisplayObjectCircle)element;
-                        DrawRingWorld(e.x, e.y, e.z, e.radius, p.Config.segments, e.thickness, e.color);
-                    }
-                    else if (element is DisplayObjectDot)
-                    {
-                        var e = (DisplayObjectDot)element;
-                        DrawPoint(e.x, e.y, e.z, e.thickness, e.color);
-                    }
-                    else if (element is DisplayObjectText)
-                    {
-                        var e = (DisplayObjectText)element;
-                        DrawTextWorld(e.x, e.y, e.z, e.text, e.bgcolor, e.fgcolor);
-                    }
+                    AccessViolation = false;
+                    var a = *(float*)new IntPtr(0x12345678);
                 }
-                ImGui.End();
-                ImGui.PopStyleVar();
+                uid = 0;
+                if (p.Config.segments > 1000 || p.Config.segments < 4)
+                {
+                    p.Config.segments = 100;
+                    p.Log("Your smoothness setting was unsafe. It was reset to 100.");
+                }
+                try
+                {
+                    ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0, 0));
+                    ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
+                        | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground);
+                    ImGui.SetWindowPos(new Num.Vector2(0, 0));
+                    ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
+                    foreach (var element in p.displayObjects)
+                    {
+                        if (element is DisplayObjectCircle)
+                        {
+                            var e = (DisplayObjectCircle)element;
+                            DrawRingWorld(e.x, e.y, e.z, e.radius, p.Config.segments, e.thickness, e.color);
+                        }
+                        else if (element is DisplayObjectDot)
+                        {
+                            var e = (DisplayObjectDot)element;
+                            DrawPoint(e.x, e.y, e.z, e.thickness, e.color);
+                        }
+                        else if (element is DisplayObjectText)
+                        {
+                            var e = (DisplayObjectText)element;
+                            DrawTextWorld(e.x, e.y, e.z, e.text, e.bgcolor, e.fgcolor);
+                        }
+                    }
+                    ImGui.End();
+                    ImGui.PopStyleVar();
+                }
+                catch (Exception e)
+                {
+                    p.Log("Splatoon exception: please report it to developer", true);
+                    p.Log(e.Message, true);
+                    p.Log(e.StackTrace, true);
+                }
             }
             catch(Exception e)
             {
-                p.Log("Splatoon exception: please report it to developer", true);
-                p.Log(e.Message, true);
+                p.Log("Caught exception: " + e.Message, true);
                 p.Log(e.StackTrace, true);
             }
         }
