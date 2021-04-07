@@ -26,6 +26,7 @@ namespace Splatoon
         internal long CombatStarted = 0;
         internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
         internal IntPtr CameraAddress;
+        internal double CamAngleY;
 
         public void Dispose()
         {
@@ -95,14 +96,14 @@ namespace Splatoon
             displayObjects.Clear();
             if (_pi.ClientState == null || _pi.ClientState.LocalPlayer == null) return;
             var pl = _pi.ClientState.LocalPlayer;
-            //var angle = pl.Rotation;
-            //_pi.Framework.Gui.Chat.Print(angle.ToString());
-            //displayObjects.Add(new DisplayObjectDot(pl.Position.X + 1f*(float)Math.Sin(angle), pl.Position.Y + 1f*(float)Math.Cos(angle), pl.Position.Z, 5f, 0xff0000ff));
             if (_pi.ClientState.LocalPlayer.Address == IntPtr.Zero) 
             {
                 Log("Pointer to LocalPlayer.Address is zero");
                 return;
             }
+
+            CamAngleY = *(float*)(CameraAddress + 0x130) + Math.PI;
+            if (CamAngleY > Math.PI) CamAngleY -= 2 * Math.PI;
 
             if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
             {

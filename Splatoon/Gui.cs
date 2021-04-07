@@ -11,7 +11,7 @@ using Num = System.Numerics;
 
 namespace Splatoon
 {
-    unsafe class Gui : IDisposable
+    class Gui : IDisposable
     {
         readonly Splatoon p;
         int uid = 0;
@@ -95,11 +95,7 @@ namespace Splatoon
         public void DrawRingWorld(float x, float y, float z, float radius, int num_segments, float thicc, uint colour)
         {
             int seg = num_segments / 2;
-            var pr = (*(float*)(p.CameraAddress + 0x130) + Math.PI);
-            if (pr > Math.PI) pr -= 2*Math.PI;
-            //if (p.CameraAddress != null) p._pi.Framework.Gui.Chat.Print(pr.ToString());
-            //if (p.CameraAddress != null) p._pi.Framework.Gui.Chat.Print(p._pi.ClientState.LocalPlayer.Rotation.ToString());
-            p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin(pr)), z, y + (radius * (float)Math.Cos(pr))), out SharpDX.Vector2 refpos);
+            p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin(p.CamAngleY)), z, y + (radius * (float)Math.Cos(p.CamAngleY))), out SharpDX.Vector2 refpos);
 
             for (int i = 0; i <= num_segments; i++)
             {
