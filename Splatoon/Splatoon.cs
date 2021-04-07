@@ -25,6 +25,7 @@ namespace Splatoon
         internal string[] LogStorage = new string[100];
         internal long CombatStarted = 0;
         internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
+        internal IntPtr CameraAddress;
 
         public void Dispose()
         {
@@ -86,13 +87,17 @@ namespace Splatoon
             DrawingGui = new Gui(this);
             ConfigGui = new CGui(this);
             DebugGui = new DGui(this);
+            CameraAddress = *(IntPtr*)_pi.TargetModuleScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
         }
 
         public void HandleUpdate(Framework framework)
         {
             displayObjects.Clear();
             if (_pi.ClientState == null || _pi.ClientState.LocalPlayer == null) return;
-
+            var pl = _pi.ClientState.LocalPlayer;
+            //var angle = pl.Rotation;
+            //_pi.Framework.Gui.Chat.Print(angle.ToString());
+            //displayObjects.Add(new DisplayObjectDot(pl.Position.X + 1f*(float)Math.Sin(angle), pl.Position.Y + 1f*(float)Math.Cos(angle), pl.Position.Z, 5f, 0xff0000ff));
             if (_pi.ClientState.LocalPlayer.Address == IntPtr.Zero) 
             {
                 Log("Pointer to LocalPlayer.Address is zero");

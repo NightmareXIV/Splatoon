@@ -32,18 +32,15 @@ namespace Splatoon
             if(p.Config.segments > 1000 || p.Config.segments < 4)
             {
                 p.Config.segments = 100;
-                p.Log("Your smoothness setting was unsafe. It was reset to 100.", true);
+                p.Log("Your smoothness setting was unsafe. It was reset to 100.");
             }
             try
             {
-                if(p.Config.verboselog) p.Log("d:begin draw sequence");
                 ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0, 0));
                 ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
                     | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground);
                 ImGui.SetWindowPos(new Num.Vector2(0, 0));
-                if (p.Config.verboselog) p.Log("d:1");
                 ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
-                if (p.Config.verboselog) p.Log("d:2");
                 foreach(var element in p.displayObjects)
                 {
                     if(element is DisplayObjectCircle)
@@ -64,7 +61,6 @@ namespace Splatoon
                 }
                 ImGui.End();
                 ImGui.PopStyleVar();
-                if (p.Config.verboselog) p.Log("d:endsequence");
             }
             catch(Exception e)
             {
@@ -99,11 +95,16 @@ namespace Splatoon
         public void DrawRingWorld(float x, float y, float z, float radius, int num_segments, float thicc, uint colour)
         {
             int seg = num_segments / 2;
+            var pr = (*(float*)(p.CameraAddress + 0x130) + Math.PI);
+            if (pr > Math.PI) pr -= 2*Math.PI;
+            //if (p.CameraAddress != null) p._pi.Framework.Gui.Chat.Print(pr.ToString());
+            //if (p.CameraAddress != null) p._pi.Framework.Gui.Chat.Print(p._pi.ClientState.LocalPlayer.Rotation.ToString());
+            p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin(pr)), z, y + (radius * (float)Math.Cos(pr))), out SharpDX.Vector2 refpos);
 
             for (int i = 0; i <= num_segments; i++)
             {
                 p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin((Math.PI / seg) * i)), z, y + (radius * (float)Math.Cos((Math.PI / seg) * i))), out SharpDX.Vector2 pos);
-                ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
+                if(pos.Y > refpos.Y) ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
             }
             ImGui.GetWindowDrawList().PathStroke(colour, true, thicc);
         }
