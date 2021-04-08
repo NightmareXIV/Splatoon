@@ -194,22 +194,22 @@ namespace Splatoon
 
                         }
                         if (draw.Count == 0) continue;
-                        foreach (var pos in draw)
+                        foreach (var (x, y, z, r) in draw)
                         {
                             if (e.thicc > 0)
                             {
-                                if (pos.r > 0)
+                                if (r > 0)
                                 {
-                                    displayObjects.Add(new DisplayObjectCircle(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ, pos.r, e.thicc, e.color));
+                                    displayObjects.Add(new DisplayObjectCircle(x + e.offX, y + e.offY, z + e.offZ, r, e.thicc, e.color));
                                 }
                                 else
                                 {
-                                    displayObjects.Add(new DisplayObjectDot(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ, e.thicc, e.color));
+                                    displayObjects.Add(new DisplayObjectDot(x + e.offX, y + e.offY, z + e.offZ, e.thicc, e.color));
                                 }
                             }
                             if (e.overlayText.Length > 0)
                             {
-                                displayObjects.Add(new DisplayObjectText(pos.x + e.offX, pos.y + e.offY, pos.z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
+                                displayObjects.Add(new DisplayObjectText(x + e.offX, y + e.offY, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
                             }
                         }
                     }

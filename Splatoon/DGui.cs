@@ -29,63 +29,77 @@ namespace Splatoon
         public void Draw()
         {
             if (!Open) return;
-            if(ImGui.Begin("Splatoon debug", ref Open))
+            try
             {
-                ImGui.Columns(2);
-                ImGui.BeginChild("##splatoondbg1");
-                var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
-                ImGui.Text("CombatStarted = " + t);
-                ImGui.Checkbox("Access violation on update", ref p.AccessViolation);
-                ImGui.Checkbox("Access violation on draw", ref p.DrawingGui.AccessViolation);
-                ImGui.Text("Actors:");
-                foreach (var a in p._pi.ClientState.Actors)
+                if (ImGui.Begin("Splatoon debug", ref Open))
                 {
-                    if (a is PlayerCharacter || a is BattleNpc)
+                    ImGui.Columns(2);
+                    ImGui.BeginChild("##splatoondbg1");
+                    var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
+                    ImGui.Text("CombatStarted = " + t);
+                    ImGui.Checkbox("Cause AV on update", ref p.AccessViolation);
+                    ImGui.Checkbox("Cause AV on draw", ref p.DrawingGui.AccessViolation);
+                    var mypos = p._pi.ClientState.LocalPlayer.Position;
+                    ImGui.Text("My pos: " + mypos.X + ", " + mypos.Y + ", " + mypos.Z);
+                    var tar = p._pi.ClientState.Targets.CurrentTarget;
+                    if (tar != null)
                     {
-                        try
+                        ImGui.Text("Target pos: " + tar.Position.X + ", " + tar.Position.Y + ", " + tar.Position.Z);
+                    }
+                    ImGui.Text("Actors:");
+                    foreach (var a in p._pi.ClientState.Actors)
+                    {
+                        if (a is PlayerCharacter || a is BattleNpc)
                         {
-                            ImGui.Text(a.Name);
-                        }
-                        catch (Exception e)
-                        {
-                            ImGui.Text(e.Message);
+                            try
+                            {
+                                ImGui.Text(a.Name);
+                            }
+                            catch (Exception e)
+                            {
+                                ImGui.Text(e.Message);
+                            }
                         }
                     }
-                }
-                ImGui.EndChild();
-                ImGui.NextColumn();
-                ImGui.Text("Log:");
-                ImGui.SameLine();
-                ImGui.Checkbox("Autoscroll##log", ref autoscrollLog);
-                ImGui.SameLine();
-                if (ImGui.Button("Copy all"))
-                {
-                    var s = new StringBuilder();
-                    for (int i = 0; i < p.LogStorage.Length; i++)
+                    ImGui.EndChild();
+                    ImGui.NextColumn();
+                    ImGui.Text("Log:");
+                    ImGui.SameLine();
+                    ImGui.Checkbox("Autoscroll##log", ref autoscrollLog);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Copy all"))
                     {
-                        if (p.LogStorage[i] != null)
+                        var s = new StringBuilder();
+                        for (int i = 0; i < p.LogStorage.Length; i++)
                         {
-                            s.AppendLine(p.LogStorage[i]);
+                            if (p.LogStorage[i] != null)
+                            {
+                                s.AppendLine(p.LogStorage[i]);
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-                        else
-                        {
-                            break;
-                        }
+                        Clipboard.SetText(s.ToString());
                     }
-                    Clipboard.SetText(s.ToString());
-                }
 
-                ImGui.Checkbox("Copy in Dalamud.log##log", ref p.Config.dumplog);
-                ImGui.SameLine();
-                ImGui.Checkbox("Verbose##log", ref p.Config.verboselog);
-                ImGui.BeginChild("##splatoondbg2");
-                for (var i = 0; i < p.LogStorage.Length; i++)
-                {
-                    if (p.LogStorage[i] != null) ImGui.TextWrapped(p.LogStorage[i]);
+                    ImGui.Checkbox("Copy in Dalamud.log##log", ref p.Config.dumplog);
+                    ImGui.SameLine();
+                    ImGui.Checkbox("Verbose##log", ref p.Config.verboselog);
+                    ImGui.BeginChild("##splatoondbg2");
+                    for (var i = 0; i < p.LogStorage.Length; i++)
+                    {
+                        if (p.LogStorage[i] != null) ImGui.TextWrapped(p.LogStorage[i]);
+                    }
+                    if (autoscrollLog) ImGui.SetScrollHereY();
+                    ImGui.EndChild();
+                    ImGui.Columns(1);
                 }
-                if (autoscrollLog) ImGui.SetScrollHereY();
-                ImGui.EndChild();
-                ImGui.Columns(1);
+            }
+            catch(Exception e)
+            {
+                p.Log("Minor error: " + e.Message);
             }
         }
     }
