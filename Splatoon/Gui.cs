@@ -27,7 +27,7 @@ namespace Splatoon
             p._pi.UiBuilder.OnBuildUi -= Draw;
         }
 
-        [HandleProcessCorruptedStateExceptions]
+        //[HandleProcessCorruptedStateExceptions]
         void Draw()
         {
             try

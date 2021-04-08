@@ -419,9 +419,9 @@ namespace Splatoon
                                             {
                                                 if (ImGui.IsItemHovered())
                                                 {
-                                                    ImGui.SetTooltip("Warning! Targeting actor with specific name\n" +
-                                                        "is EXPENSIVE operation!\n" +
-                                                        "Please only use if really necessary.");
+                                                    ImGui.SetTooltip("Keep in mind that searching actor by name is\n" +
+                                                        "relatively resource expensive operation. Try to keep\n" +
+                                                        "amount of these down to reasonable number.");
                                                 }
                                                 ImGui.SameLine();
                                                 ImGui.SetNextItemWidth(WidthCombo);

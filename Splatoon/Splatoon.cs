@@ -99,7 +99,7 @@ namespace Splatoon
             CameraAddress = *(IntPtr*)_pi.TargetModuleScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
         }
 
-        [HandleProcessCorruptedStateExceptions]
+        //[HandleProcessCorruptedStateExceptions]
         public void HandleUpdate(Framework framework)
         {
             try
