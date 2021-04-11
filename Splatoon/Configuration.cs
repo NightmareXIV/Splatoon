@@ -19,6 +19,7 @@ namespace Splatoon
         public bool dumplog = false;
         public bool verboselog = false;
         public int segments = 100;
+        public float maxdistance = 100;
 
         public void Initialize(Splatoon plugin)
         {

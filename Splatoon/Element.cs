@@ -11,7 +11,7 @@ namespace Splatoon
     public class Element
     {
         [NonSerialized] public static string[] ElementTypes = { "Shape at fixed coordinates", "Shape relative to actor position" };
-        [NonSerialized] public static string[] ActorTypes = { "Actor with specific name (expensive!)", "Self", "Targeted enemy" };
+        [NonSerialized] public static string[] ActorTypes = { "Player or enemy with specific name", "Self", "Targeted enemy" };
         public int type;
         public Element(int t)
         {

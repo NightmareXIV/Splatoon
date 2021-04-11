@@ -29,7 +29,7 @@ namespace Splatoon
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Colors.Transparent);
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, Colors.Transparent);
             var s = ImGui.CalcTextSize(text);
-            ImGui.Button("", new Vector2(ImGui.GetColumnWidth()/2 - s.X/2, 1f));
+            ImGui.Button("", new Vector2(ImGui.GetColumnWidth()/2f - s.X/2f, 1f));
             ImGui.PopStyleColor(3);
             ImGui.SameLine();
             ImGui.Text(text);

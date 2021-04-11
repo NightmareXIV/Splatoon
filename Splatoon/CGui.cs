@@ -62,9 +62,7 @@ namespace Splatoon
                 if (!Splatoon.Limited) 
                 {
                     ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
-                    ImGuiEx.TextCentered("Unlimited edition - for help contact developer directly on github");
-                    if (ImGui.IsItemHovered()) ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-                    if (ImGui.IsItemClicked()) Process.Start("https://github.com/Eternita-S/Splatoon");
+                    ImGuiEx.TextCentered("Unlimited edition");
                     ImGui.PopStyleColor();
                 }
                 
@@ -83,14 +81,23 @@ namespace Splatoon
                         "consider lowering this value. Generally it's best to keep it\n" +
                         "as low as possible as long as you are satisfied with look.");
                 ImGui.SameLine();
-                ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
+                ImGuiEx.SizedText("Drawing distance:", WidthLayout);
                 ImGui.SameLine();
-                ImGui.Checkbox("Allow elements deletion", ref enableDeletionElement);
+                ImGui.SetNextItemWidth(100f);
+                ImGui.DragFloat("##maxdistance", ref p.Config.maxdistance, 0.25f, 10f, 200f);
+                ImGui.SameLine();
+                ImGui.Text("(?)");
+                if (ImGui.IsItemHovered())
+                    ImGui.SetTooltip("Only try to draw objects that are not \n" +
+                        "further away from you than this value");
                 ImGui.SameLine();
                 if (ImGui.Button("Debug"))
                 {
                     p.DebugGui.Open = true;
                 }
+                ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
+                ImGui.SameLine();
+                ImGui.Checkbox("Allow elements deletion", ref enableDeletionElement);
 
                 ImGui.SetNextItemWidth(350f);
                 ImGui.InputTextWithHint("##lname", "Unique layout name", ref lname, 100);
@@ -199,7 +206,7 @@ namespace Splatoon
                         {
                             ImGui.Checkbox("Enabled##" + i, ref p.Config.Layouts[i].Enabled);
                             ImGui.SameLine();
-                            ImGui.Checkbox("Prevent disabling with commands##" + i, ref p.Config.Layouts[i].DisableDisabling);
+                            ImGui.Checkbox("Prevent disabling with mass disabling commands##" + i, ref p.Config.Layouts[i].DisableDisabling);
                             if (ImGui.Button("Export to clipboard"))
                             {
                                 Clipboard.SetText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
@@ -222,6 +229,23 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(WidthCombo);
                             ImGui.Combo("##vsb" + i, ref p.Config.Layouts[i].Visibility, Layout.VisibilityType, Layout.VisibilityType.Length);
+                            if (ImGui.IsItemHovered())
+                            {
+                                ImGui.SetTooltip("Not yet implemented"); 
+                            }
+                            p.Config.Layouts[i].Visibility = 0;
+                            if (p.Config.Layouts[i].Visibility > 0)
+                            {
+                                ImGui.SameLine();
+                                ImGui.Checkbox("Auto-hide on leaving combat##"+i, ref p.Config.Layouts[i].AutoHideOutCombat);
+                            }
+                            if (p.Config.Layouts[i].Visibility == 2 || p.Config.Layouts[i].Visibility == 3)
+                            {
+                                ImGuiEx.SizedText("Message trigger to show:", WidthLayout);
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(WidthCombo);
+                                ImGui.InputTextWithHint("##msgshow" + i, "Case-insensitive (partial) message", ref p.Config.Layouts[i].MessageToWatch, 100);
+                            }
                             if (p.Config.Layouts[i].Visibility == 1 || p.Config.Layouts[i].Visibility == 2)
                             {
                                 ImGuiEx.SizedText("Visibility time:", WidthLayout);
@@ -234,15 +258,15 @@ namespace Splatoon
                                 ImGui.SetNextItemWidth(50f);
                                 ImGui.DragInt("##bte" + i, ref p.Config.Layouts[i].BattleTimeEnd, 1f, p.Config.Layouts[i].BattleTimeBegin, 60 * 20);
                                 ImGui.SameLine();
-                                ImGui.Text(DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].BattleTimeBegin).ToString("mm:ss") +" - "+
+                                ImGui.Text(DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].BattleTimeBegin).ToString("mm:ss") + " - " +
                                     DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].BattleTimeEnd).ToString("mm:ss"));
                             }
-                            if (p.Config.Layouts[i].Visibility == 2 || p.Config.Layouts[i].Visibility == 3)
+                            if (p.Config.Layouts[i].Visibility == 3)
                             {
-                                ImGuiEx.SizedText("Message:", WidthLayout);
+                                ImGuiEx.SizedText("Message trigger to hide:", WidthLayout);
                                 ImGui.SameLine();
                                 ImGui.SetNextItemWidth(WidthCombo);
-                                ImGui.InputTextWithHint("##acname" + i, "Case-insensitive (partial) message", ref p.Config.Layouts[i].MessageToWatch, 100);
+                                ImGui.InputTextWithHint("##msghide" + i, "Case-insensitive (partial) message", ref p.Config.Layouts[i].MessageToWatchForEnd, 100);
                             }
                             ImGuiEx.SizedText("Zone lock: ", WidthLayout);
                             ImGui.SameLine();
@@ -419,15 +443,15 @@ namespace Splatoon
                                             ImGui.Combo("##actortype" + i + k, ref el.refActorType, Element.ActorTypes, Element.ActorTypes.Length);
                                             if (el.refActorType == 0)
                                             {
-                                                if (ImGui.IsItemHovered())
-                                                {
-                                                    ImGui.SetTooltip("Keep in mind that searching actor by name is\n" +
-                                                        "relatively resource expensive operation. Try to keep\n" +
-                                                        "amount of these down to reasonable number.");
-                                                }
                                                 ImGui.SameLine();
                                                 ImGui.SetNextItemWidth(WidthCombo);
                                                 ImGui.InputTextWithHint("##actorname" + i + k, "Case-insensitive (partial) name", ref el.refActorName, 100);
+                                                if (ImGui.IsItemHovered())
+                                                {
+                                                    ImGui.SetTooltip("Keep in mind that searching actor by name is\n" +
+                                                        "relatively resource expensive operation. \n" +
+                                                        "Try to keep amount of these down to reasonable number.");
+                                                }
                                                 if (p._pi.ClientState.Targets.CurrentTarget != null &&
                                                     (p._pi.ClientState.Targets.CurrentTarget is PlayerCharacter
                                                     || p._pi.ClientState.Targets.CurrentTarget is BattleNpc))
@@ -459,8 +483,8 @@ namespace Splatoon
                                             el.offY = 0;
                                             el.offZ = 0;
                                         }
-                                        ImGui.SameLine();
-                                        ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);
+                                        //ImGui.SameLine();
+                                        //ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);
                                             
                                         ImGuiEx.SizedText("Line thickness:", WidthElement);
                                         ImGui.SameLine();
@@ -498,6 +522,23 @@ namespace Splatoon
                                                 }
                                                 ImGui.SameLine();
                                                 ImGui.Checkbox("+your hitbox##" + i + k, ref el.includeOwnHitbox);
+                                                ImGui.SameLine();
+                                                ImGui.Text("(?)");
+                                                if (ImGui.IsItemHovered())
+                                                {
+                                                    ImGui.SetTooltip("When the game tells you that ability A has distance D,\n" +
+                                                        "in fact it means that you are allowed to execute\n" +
+                                                        "ability A if distance between edge of your hitbox\n" +
+                                                        "and enemy's hitbox is less or equal than distance D,\n" +
+                                                        "that is for targeted abilities.\n" +
+                                                        "If an ability is AoE, such check is performed between\n" +
+                                                        "middle point of your character and edge of enemy's hitbox.\n\n" +
+                                                        "Summary: if you are trying to make targeted ability indicator -\n" +
+                                                        "enable both \"+your hitbox\" and \"+target hitbox\".\n" +
+                                                        "If you are trying to make AoE ability indicator - \n" +
+                                                        "enable only \"+target hitbox\" to make indicators valid.\n" +
+                                                        "And if it's healing AoE ability, enable only \"+your hitbox\".");
+                                                }
                                             }
                                         }
                                         ImGuiEx.SizedText("Overlay text:", WidthElement);

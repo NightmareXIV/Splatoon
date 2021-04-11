@@ -14,9 +14,12 @@ namespace Splatoon
         [NonSerialized] public static readonly string[] DisplayConditions = 
             //0               1                 2                   3                              4
             { "Always shown", "Only in combat", "Only in instance", "Only in combat AND instance", "Only in combat OR instance" }; 
-        [NonSerialized] public static readonly string[] VisibilityType =
-            //0                 1                                 2                                                  3
-            { "Always visible", "Between A and B time in combat", "Between A and B time since receiving chat message in combat" };
+        [NonSerialized] public static readonly string[] VisibilityType =                                 
+            { "Always visible", 
+            "Show between A and B time since combat has started",
+            "Show between A and B time since receiving a message in combat", 
+            "Show on receiving message A, hide on receiving message B in combat", 
+            "External control, hidden by default" };
         public bool Enabled = true;
         public ushort ZoneLock = 0;
         public int DCond = 0;
@@ -28,5 +31,7 @@ namespace Splatoon
         public Dictionary<string, Element> Elements = new Dictionary<string, Element>();
         public bool DisableDisabling = false;
         public ulong JobLock = 0;
+        [DefaultValue("")] public string MessageToWatchForEnd = "";
+        public bool AutoHideOutCombat = true;
     }
 }

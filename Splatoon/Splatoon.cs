@@ -196,6 +196,7 @@ namespace Splatoon
                         if (draw.Count == 0) continue;
                         foreach (var (x, y, z, r) in draw)
                         {
+                            if (!ShouldDraw(x + e.offX, _pi.ClientState.LocalPlayer.Position.X, y + e.offY, _pi.ClientState.LocalPlayer.Position.Y)) continue;
                             if (e.thicc > 0)
                             {
                                 if (r > 0)
@@ -220,6 +221,11 @@ namespace Splatoon
                 Log("Caught exception: "+e.Message, true);
                 Log(e.StackTrace, true);
             }
+        }
+
+        public bool ShouldDraw(float x1, float x2, float y1, float y2)
+        {
+            return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < Config.maxdistance * Config.maxdistance;
         }
 
         public void Log(string s, bool tochat = false)
