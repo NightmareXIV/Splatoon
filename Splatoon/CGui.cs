@@ -20,7 +20,7 @@ namespace Splatoon
         const float WidthLayout = 150f;
         const float WidthElement = 150f;
         const float WidthCombo = 200f;
-        readonly Splatoon p;
+        internal readonly Splatoon p;
         public bool Open = false;
         string lname = "";
         string ename = "";
@@ -59,13 +59,12 @@ namespace Splatoon
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             if (ImGui.Begin("Splatoon", ref Open))
             {
-                if (!Splatoon.Limited) 
-                {
-                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
-                    ImGuiEx.TextCentered("Unlimited edition");
-                    ImGui.PopStyleColor();
-                }
-                
+                #if DEBUG
+                ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
+                ImGuiEx.TextCentered("Unlimited edition");
+                ImGui.PopStyleColor();
+                #endif
+
                 ImGuiEx.SizedText("Circle smoothness:", WidthLayout);
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(100f);
@@ -288,7 +287,7 @@ namespace Splatoon
                                 ImGui.PopStyleColor();
                                 foreach (var z in p.Zones)
                                 {
-                                    if (z.Value.PlaceName.Value.Name.Length == 0) continue;
+                                    if (z.Value.PlaceName.Value.Name.ToString().Length == 0) continue;
                                     var s = z.Key + " / " + z.Value.PlaceName.Value.Name;
                                     if (!s.ToLower().Contains(zlockf)) continue;
                                     if (ImGui.Selectable(s))

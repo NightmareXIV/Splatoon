@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Actors.Types.NonPlayer;
+using Dalamud.Interface;
 using Dalamud.Plugin;
 using ImGuiNET;
 using System;
@@ -45,6 +46,7 @@ namespace Splatoon
                 }
                 try
                 {
+                    ImGuiHelpers.ForceNextWindowMainViewport();
                     ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0, 0));
                     ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
                         | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground);
@@ -119,7 +121,7 @@ namespace Splatoon
                         y + (radius * (float)Math.Cos((Math.PI / seg) * i))), out SharpDX.Vector2 pos)
                         && pos.Y > refpos.Y) ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
                 }
-                ImGui.GetWindowDrawList().PathStroke(colour, true, thicc);
+                ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.Closed, thicc);
             }
         }
 

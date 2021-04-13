@@ -1,11 +1,11 @@
 ﻿{
   "Author": "Eternita",
-  "Name": "Splatoon [ALPHA]",
+  "Name": "Splatoon Unlimited",
   "InternalName": "Splatoon",
-  "AssemblyVersion": "0.0.0.5",
+  "AssemblyVersion": "0.0.1.0",
   "Description": "Infinite waymarks in the world and target circles",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Eternita-S/Splatoon",
-  "DalamudApiLevel": 2,
+  "DalamudApiLevel": 3,
   "LoadPriority": 0
 }

@@ -60,7 +60,8 @@
     <Reference Include="FFXIVClientStructs">
       <HintPath>..\..\..\..\..\..\VS\DalamudBin\FFXIVClientStructs.dll</HintPath>
     </Reference>
-    <Reference Include="ImGui.NET">
+    <Reference Include="ImGui.NET, Version=1.72.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\VS\DalamudBin\ImGui.NET.dll</HintPath>
     </Reference>
     <Reference Include="ImGuiScene">
@@ -69,8 +70,9 @@
     <Reference Include="Lumina">
       <HintPath>..\..\..\..\..\..\VS\DalamudBin\Lumina.dll</HintPath>
     </Reference>
-    <Reference Include="Lumina.Generated">
-      <HintPath>..\..\..\..\..\..\VS\DalamudBin\Lumina.Generated.dll</HintPath>
+    <Reference Include="Lumina.Excel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\VS\DalamudBin\Lumina.Excel.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -7,17 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Command;
 using Dalamud.Game.Internal;
 using Dalamud.Game.ClientState.Actors.Types;
 using System.Runtime.ExceptionServices;
+using Lumina.Excel.GeneratedSheets;
 
 namespace Splatoon
 {
     unsafe class Splatoon : IDalamudPlugin
     {
-        public const bool Limited = false;
         public string Name => "Splatoon";
         internal DalamudPluginInterface _pi;
         internal Gui DrawingGui;
@@ -50,7 +49,7 @@ namespace Splatoon
         {
             _pi = pluginInterface;
             Zones = _pi.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
-            Jobs = _pi.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name);
+            Jobs = _pi.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
             _pi.UiBuilder.OnOpenConfigUi += delegate
             {
                 ConfigGui.Open = true;
