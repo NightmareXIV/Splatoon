@@ -18,6 +18,7 @@ namespace Splatoon
     unsafe class Splatoon : IDalamudPlugin
     {
         public string Name => "Splatoon";
+        public const string Ver = "0.0.1.1";
         internal DalamudPluginInterface _pi;
         internal Gui DrawingGui;
         internal CGui ConfigGui;

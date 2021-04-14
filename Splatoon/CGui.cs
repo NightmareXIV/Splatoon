@@ -61,7 +61,7 @@ namespace Splatoon
             {
                 #if DEBUG
                 ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
-                ImGuiEx.TextCentered("Unlimited edition");
+                ImGuiEx.TextCentered("Unlimited edition v"+Splatoon.Ver);
                 ImGui.PopStyleColor();
                 #endif
 

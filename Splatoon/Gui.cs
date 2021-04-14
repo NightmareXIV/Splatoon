@@ -123,7 +123,7 @@ namespace Splatoon
                     out SharpDX.Vector2 pos);
                 if (pos.Y > refpos.Y) ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
             }
-            ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.Closed, thicc);
+            ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.None, thicc);
         }
 
         public void DrawPoint(float x, float y, float z, float thicc, uint col)
