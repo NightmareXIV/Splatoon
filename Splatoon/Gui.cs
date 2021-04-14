@@ -112,17 +112,18 @@ namespace Splatoon
         public void DrawRingWorld(float x, float y, float z, float radius, int num_segments, float thicc, uint colour)
         {
             int seg = num_segments / 2;
-            if (p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin(p.CamAngleX)), z,
-                y + (radius * (float)Math.Cos(p.CamAngleX))), out SharpDX.Vector2 refpos))
+            p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin(p.CamAngleX)), z,
+            y + (radius * (float)Math.Cos(p.CamAngleX))), out SharpDX.Vector2 refpos); 
+            for (int i = 0; i <= num_segments; i++)
             {
-                for (int i = 0; i <= num_segments; i++)
-                {
-                    if (p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin((Math.PI / seg) * i)), z, 
-                        y + (radius * (float)Math.Cos((Math.PI / seg) * i))), out SharpDX.Vector2 pos)
-                        && pos.Y > refpos.Y) ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
-                }
-                ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.Closed, thicc);
+                p._pi.Framework.Gui.WorldToScreen(
+                    new SharpDX.Vector3(x + (radius * (float)Math.Sin((Math.PI / seg) * i)),
+                    z,
+                    y + (radius * (float)Math.Cos((Math.PI / seg) * i))),
+                    out SharpDX.Vector2 pos);
+                if (pos.Y > refpos.Y) ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
             }
+            ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.Closed, thicc);
         }
 
         public void DrawPoint(float x, float y, float z, float thicc, uint col)

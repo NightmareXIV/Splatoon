@@ -217,8 +217,8 @@ namespace Splatoon
             }
             catch(Exception e)
             {
-                Log("Caught exception: "+e.Message, true);
-                Log(e.StackTrace, true);
+                Log("Caught exception: "+e.Message);
+                Log(e.StackTrace);
             }
         }
 
