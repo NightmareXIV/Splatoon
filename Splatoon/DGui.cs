@@ -78,6 +78,9 @@ namespace Splatoon
                     }
                     ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(w2sb?Colors.Green:Colors.Red), "X:"+w2srx+"\nY:"+ w2sry);
                     ImGui.Separator();
+                    ImGui.Text("Camera angle X:" + p.CamAngleX);
+                    ImGui.Text("Camera angle Y:" + p.CamAngleY);
+                    ImGui.Separator();
                     ImGui.Text("Actors:");
                     foreach (var a in p._pi.ClientState.Actors)
                     {

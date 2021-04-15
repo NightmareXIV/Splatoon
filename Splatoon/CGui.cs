@@ -63,36 +63,46 @@ namespace Splatoon
                 ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
                 ImGuiEx.TextCentered("Unlimited edition v"+Splatoon.Ver);
                 ImGui.PopStyleColor();
-                #endif
+#endif
 
-                ImGuiEx.SizedText("Circle smoothness:", WidthLayout);
-                ImGui.SameLine();
-                ImGui.SetNextItemWidth(100f);
-                ImGui.DragInt("##circlesmoothness", ref p.Config.segments, 0.1f, 10, 150);
-                ImGui.SameLine();
-                ImGui.Text("(?)");
-                if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip("You can't draw circles. They are all fake.\n" +
-                        "Every circle is techincally a polygon.\n" +
-                        "The higher this number is, the rounder your circle will be.\n" +
-                        "But it will also increase processing power needed to display circles.\n" +
-                        "If you are using many circles or your CPU is on weaker side,\n" +
-                        "consider lowering this value. Generally it's best to keep it\n" +
-                        "as low as possible as long as you are satisfied with look.");
-                ImGui.SameLine();
-                ImGuiEx.SizedText("Drawing distance:", WidthLayout);
-                ImGui.SameLine();
-                ImGui.SetNextItemWidth(100f);
-                ImGui.DragFloat("##maxdistance", ref p.Config.maxdistance, 0.25f, 10f, 200f);
-                ImGui.SameLine();
-                ImGui.Text("(?)");
-                if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip("Only try to draw objects that are not \n" +
-                        "further away from you than this value");
-                ImGui.SameLine();
-                if (ImGui.Button("Debug"))
+                if (ImGui.CollapsingHeader("General settings"))
                 {
-                    p.DebugGui.Open = true;
+
+                    ImGuiEx.SizedText("Circle smoothness:", WidthLayout);
+                    ImGui.SameLine();
+                    ImGui.SetNextItemWidth(100f);
+                    ImGui.DragInt("##circlesmoothness", ref p.Config.segments, 0.1f, 10, 150);
+                    ImGui.SameLine();
+                    ImGui.Text("(?)");
+                    if (ImGui.IsItemHovered())
+                        ImGui.SetTooltip("You can't draw circles. They are all fake.\n" +
+                            "Every circle is techincally a polygon.\n" +
+                            "The higher this number is, the rounder your circle will be.\n" +
+                            "But it will also increase processing power needed to display circles.\n" +
+                            "If you are using many circles or your CPU is on weaker side,\n" +
+                            "consider lowering this value. Generally it's best to keep it\n" +
+                            "as low as possible as long as you are satisfied with look.");
+
+                    ImGuiEx.SizedText("Drawing distance:", WidthLayout);
+                    ImGui.SameLine();
+                    ImGui.SetNextItemWidth(100f);
+                    ImGui.DragFloat("##maxdistance", ref p.Config.maxdistance, 0.25f, 10f, 200f);
+                    ImGui.SameLine();
+                    ImGui.Text("(?)");
+                    if (ImGui.IsItemHovered())
+                        ImGui.SetTooltip("Only try to draw objects that are not \n" +
+                            "further away from you than this value");
+
+                    ImGuiEx.SizedText("Draw only when Y camera rotation is higher than:", WidthLayout * 2);
+                    ImGui.SameLine();
+                    ImGui.SetNextItemWidth(150f);
+                    ImGui.DragFloat("##camymax", ref p.Config.maxcamY, 0.005f, -1.48353f, 0.78540f, p.Config.maxcamY.ToString("0.#####"));
+                    ImGui.SameLine();
+                    ImGui.Text("Current: "+p.CamAngleY);
+                    if (ImGui.Button("Open debug window"))
+                    {
+                        p.DebugGui.Open = true;
+                    }
                 }
                 ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
                 ImGui.SameLine();

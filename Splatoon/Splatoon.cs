@@ -18,7 +18,7 @@ namespace Splatoon
     unsafe class Splatoon : IDalamudPlugin
     {
         public string Name => "Splatoon";
-        public const string Ver = "0.0.1.1";
+        public const string Ver = "0.0.1.2";
         internal DalamudPluginInterface _pi;
         internal Gui DrawingGui;
         internal CGui ConfigGui;
@@ -33,7 +33,7 @@ namespace Splatoon
         internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
         internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
         internal bool AccessViolation = false;
-        //internal double CamAngleY;
+        internal double CamAngleY;
 
         public void Dispose()
         {
@@ -120,7 +120,7 @@ namespace Splatoon
 
                 CamAngleX = *(float*)(CameraAddress + 0x130) + Math.PI;
                 if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-                //CamAngleY = *(float*)(CameraAddress + 0x134) + Math.PI;
+                CamAngleY = *(float*)(CameraAddress + 0x134);
 
                 if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
                 {
@@ -136,6 +136,8 @@ namespace Splatoon
                         CombatStarted = 0;
                     }
                 }
+
+                if (CamAngleY > Config.maxcamY) return;
 
                 foreach (var i in Config.Layouts.Values)
                 {
