@@ -451,9 +451,7 @@ namespace Splatoon
                                                         "relatively resource expensive operation. \n" +
                                                         "Try to keep amount of these down to reasonable number.");
                                                 }
-                                                if (p._pi.ClientState.Targets.CurrentTarget != null &&
-                                                    (p._pi.ClientState.Targets.CurrentTarget is PlayerCharacter
-                                                    || p._pi.ClientState.Targets.CurrentTarget is BattleNpc))
+                                                if (p._pi.ClientState.Targets.CurrentTarget != null)
                                                 {
                                                     ImGui.SameLine();
                                                     if(ImGui.Button("Target##btarget" + i + k)) el.refActorName = p._pi.ClientState.Targets.CurrentTarget.Name;

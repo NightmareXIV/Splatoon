@@ -181,8 +181,7 @@ namespace Splatoon
                             {
                                 foreach (var a in _pi.ClientState.Actors)
                                 {
-                                    if ((a is PlayerCharacter || a is BattleNpc) &&
-                                        a.Name.ToLower().Contains(e.refActorName.ToLower())
+                                    if (a.Name.ToLower().Contains(e.refActorName.ToLower())
                                          && a.Address != IntPtr.Zero)
                                     {
                                         var aradius = radius;

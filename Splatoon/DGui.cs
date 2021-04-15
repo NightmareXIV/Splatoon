@@ -81,16 +81,13 @@ namespace Splatoon
                     ImGui.Text("Actors:");
                     foreach (var a in p._pi.ClientState.Actors)
                     {
-                        if (a is PlayerCharacter || a is BattleNpc)
+                        try
                         {
-                            try
-                            {
-                                ImGui.Text(a.Name);
-                            }
-                            catch (Exception e)
-                            {
-                                ImGui.Text(e.Message);
-                            }
+                            ImGui.Text(a.Name);
+                        }
+                        catch (Exception e)
+                        {
+                            ImGui.Text(e.Message);
                         }
                     }
                     ImGui.EndChild();
