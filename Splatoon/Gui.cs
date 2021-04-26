@@ -69,6 +69,15 @@ namespace Splatoon
                             var e = (DisplayObjectText)element;
                             DrawTextWorld(e.x, e.y, e.z, e.text, e.bgcolor, e.fgcolor);
                         }
+                        else if (element is DisplayObjectLine)
+                        {
+                            var e = (DisplayObjectLine)element;
+                            p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.ax, e.az, e.ay), out SharpDX.Vector2 pos);
+                            ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
+                            p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.bx, e.bz, e.by), out SharpDX.Vector2 pos2);
+                            ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos2.X, pos2.Y));
+                            ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.None, e.thickness);
+                        }
                     }
                     ImGui.End();
                     ImGui.PopStyleVar();
@@ -162,6 +171,24 @@ namespace Splatoon
             this.y = y;
             this.z = z;
             this.radius = radius;
+            this.thickness = thickness;
+            this.color = color;
+        }
+    }
+
+    internal class DisplayObjectLine : DisplayObject
+    {
+        public float ax, ay, az, bx, by, bz, thickness;
+        public uint color;
+
+        public DisplayObjectLine(float ax, float ay, float az, float bx, float by, float bz, float thickness, uint color)
+        {
+            this.ax = ax;
+            this.ay = ay;
+            this.az = az;
+            this.bx = bx;
+            this.by = by;
+            this.bz = bz;
             this.thickness = thickness;
             this.color = color;
         }

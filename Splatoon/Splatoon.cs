@@ -194,6 +194,12 @@ namespace Splatoon
                             }
 
                         }
+                        else if (e.type == 2)
+                        {
+                            if (ShouldDraw(e.offX, _pi.ClientState.LocalPlayer.Position.X, e.offY, _pi.ClientState.LocalPlayer.Position.Y)
+                                || ShouldDraw(e.refX, _pi.ClientState.LocalPlayer.Position.X, e.refY, _pi.ClientState.LocalPlayer.Position.Y))
+                            displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
+                        }
                         if (draw.Count == 0) continue;
                         foreach (var (x, y, z, r) in draw)
                         {

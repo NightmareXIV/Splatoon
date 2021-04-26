@@ -10,7 +10,8 @@ namespace Splatoon
     [Serializable]
     public class Element
     {
-        [NonSerialized] public static string[] ElementTypes = { "Shape at fixed coordinates", "Shape relative to actor position" };
+        [NonSerialized] public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to actor position", 
+        "Line between two fixed coordinates"};
         [NonSerialized] public static string[] ActorTypes = { "Game object with specific name", "Self", "Targeted enemy" };
         public int type;
         public Element(int t)

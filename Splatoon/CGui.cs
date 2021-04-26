@@ -412,7 +412,7 @@ namespace Splatoon
                                         ImGui.SameLine();
                                         ImGui.SetNextItemWidth(WidthCombo);
                                         ImGui.Combo("##elemselecttype" + i+k, ref el.type, Element.ElementTypes, Element.ElementTypes.Length);
-                                        if (el.type == 0)
+                                        if (el.type == 0 || el.type == 2)
                                         {
                                             ImGuiEx.SizedText("Reference position: ", WidthElement);
                                             ImGui.SameLine();
@@ -483,6 +483,14 @@ namespace Splatoon
                                         ImGui.Text("Z:");
                                         ImGui.SameLine();
                                         ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
+
+                                        ImGui.SameLine();
+                                        if (ImGui.Button("Set to my position##off" + i + k))
+                                        {
+                                            el.offX = p._pi.ClientState.LocalPlayer.Position.X;
+                                            el.offY = p._pi.ClientState.LocalPlayer.Position.Y;
+                                            el.offZ = p._pi.ClientState.LocalPlayer.Position.Z;
+                                        }
                                         ImGui.SameLine();
                                         if (ImGui.Button("Set to 0 0 0##off" + i + k))
                                         {
