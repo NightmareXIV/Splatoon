@@ -565,8 +565,7 @@ namespace Splatoon
                                                         "Summary: if you are trying to make targeted ability indicator -\n" +
                                                         "enable both \"+your hitbox\" and \"+target hitbox\".\n" +
                                                         "If you are trying to make AoE ability indicator - \n" +
-                                                        "enable only \"+target hitbox\" to make indicators valid.\n" +
-                                                        "And if it's healing AoE ability, enable only \"+your hitbox\".");
+                                                        "enable only \"+target hitbox\" to make indicators valid.");
                                                 }
                                             }
                                         }
