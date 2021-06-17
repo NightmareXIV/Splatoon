@@ -24,7 +24,6 @@ namespace Splatoon
 
         public static void TextCentered(string text)
         {
-
             ImGui.PushStyleColor(ImGuiCol.Button, Colors.Transparent);
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Colors.Transparent);
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, Colors.Transparent);
@@ -33,6 +32,22 @@ namespace Splatoon
             ImGui.PopStyleColor(3);
             ImGui.SameLine();
             ImGui.Text(text);
+        }
+
+        static int StyleColors = 0;
+        public static void ColorButton(uint color)
+        {
+            ImGui.PushStyleColor(ImGuiCol.Button, color);
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, color);
+            ImGui.PushStyleColor(ImGuiCol.ButtonActive, color);
+            StyleColors += 3;
+        }
+
+        public static void UncolorButton()
+        {
+            if (StyleColors == 0) return;
+            ImGui.PopStyleColor(StyleColors);
+            StyleColors = 0;
         }
     }
 }

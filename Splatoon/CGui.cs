@@ -25,6 +25,7 @@ namespace Splatoon
         string lname = "";
         string ename = "";
         string zlockf = "";
+        bool zlockcur = false;
         string curEdit = null;
         bool enableDeletion = false;
         bool enableDeletionElement = false;
@@ -59,12 +60,6 @@ namespace Splatoon
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             if (ImGui.Begin("Splatoon", ref Open))
             {
-                #if DEBUG
-                ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
-                ImGuiEx.TextCentered("Unlimited edition v"+Splatoon.Ver);
-                ImGui.PopStyleColor();
-#endif
-
                 if (ImGui.CollapsingHeader("General settings"))
                 {
 
@@ -191,6 +186,12 @@ namespace Splatoon
                         colored = true;
                         ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
                     }
+                    if(curEdit == i)
+                    {
+                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.Green);
+                        ImGuiEx.TextCentered("Editing layout: " + curEdit);
+                        ImGui.PopStyleColor();
+                    }
                     if ((curEdit == null || curEdit == i) && ImGui.CollapsingHeader(i))
                     {
                         if (colored)
@@ -234,7 +235,7 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(WidthCombo);
                             ImGui.Combo("##dcn" + i, ref p.Config.Layouts[i].DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
-                            ImGuiEx.SizedText("Visibility of layout:", WidthLayout);
+                            /*ImGuiEx.SizedText("Visibility of layout:", WidthLayout);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(WidthCombo);
                             ImGui.Combo("##vsb" + i, ref p.Config.Layouts[i].Visibility, Layout.VisibilityType, Layout.VisibilityType.Length);
@@ -276,34 +277,47 @@ namespace Splatoon
                                 ImGui.SameLine();
                                 ImGui.SetNextItemWidth(WidthCombo);
                                 ImGui.InputTextWithHint("##msghide" + i, "Case-insensitive (partial) message", ref p.Config.Layouts[i].MessageToWatchForEnd, 100);
-                            }
+                            }*/
                             ImGuiEx.SizedText("Zone lock: ", WidthLayout);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(WidthCombo);
-                            if (ImGui.BeginCombo("##zlk" + i, p.Config.Layouts[i].ZoneLock == 0 ? "All zones" : p.Config.Layouts[i].ZoneLock + " / "
-                                + p.Zones[p.Config.Layouts[i].ZoneLock].PlaceName.Value.Name))
+                            if (ImGui.BeginCombo("##zlk" + i, p.Config.Layouts[i].ZoneLockH.Count == 0 ? "All zones" :
+                                p.Config.Layouts[i].ZoneLockH.Count == 1? p.Config.Layouts[i].ZoneLockH.First() + " / "
+                                + p.Zones[p.Config.Layouts[i].ZoneLockH.First()].PlaceName.Value.Name :
+                                p.Config.Layouts[i].ZoneLockH.Count + " zones"
+                                ))
                             {
+                                ImGui.SetNextItemWidth(100f);
                                 ImGui.InputTextWithHint("##zfltr" + i, "Filter", ref zlockf, 100);
-                                if (ImGui.Selectable("All zones"))
+                                ImGui.SameLine();
+                                ImGui.Checkbox("Only selected", ref zlockcur);
+                                ImGui.PushStyleColor(ImGuiCol.Text, Colors.Yellow);
+                                if(p.Config.Layouts[i].ZoneLockH.Contains(p._pi.ClientState.TerritoryType))
                                 {
-                                    p.Config.Layouts[i].ZoneLock = 0;
+                                    ImGuiEx.ColorButton(Colors.Red);
                                 }
-                                ImGui.PushStyleColor(ImGuiCol.Text, 0xff00ffff);
-                                if (ImGui.Selectable("Current zone: " + p._pi.ClientState.TerritoryType + " / "
+                                if (ImGui.SmallButton("Current zone: " + p._pi.ClientState.TerritoryType + " / "
                                     + p.Zones[p._pi.ClientState.TerritoryType].PlaceName.Value.Name))
                                 {
-                                    p.Config.Layouts[i].ZoneLock = p._pi.ClientState.TerritoryType;
+                                    Helpers.ToggleHashSet(ref p.Config.Layouts[i].ZoneLockH, p._pi.ClientState.TerritoryType);
                                 }
+                                ImGuiEx.UncolorButton();
                                 ImGui.PopStyleColor();
                                 foreach (var z in p.Zones)
                                 {
                                     if (z.Value.PlaceName.Value.Name.ToString().Length == 0) continue;
                                     var s = z.Key + " / " + z.Value.PlaceName.Value.Name;
                                     if (!s.ToLower().Contains(zlockf)) continue;
-                                    if (ImGui.Selectable(s))
+                                    if (zlockcur && !p.Config.Layouts[i].ZoneLockH.Contains(z.Key)) continue;
+                                    if (p.Config.Layouts[i].ZoneLockH.Contains(z.Key))
                                     {
-                                        p.Config.Layouts[i].ZoneLock = z.Key;
+                                        ImGuiEx.ColorButton(Colors.Red);
                                     }
+                                    if (ImGui.SmallButton(s))
+                                    {
+                                        Helpers.ToggleHashSet(ref p.Config.Layouts[i].ZoneLockH, z.Key);
+                                    }
+                                    ImGuiEx.UncolorButton();
                                 }
                                 ImGui.EndCombo();
                             }
@@ -414,7 +428,7 @@ namespace Splatoon
                                         ImGui.Combo("##elemselecttype" + i+k, ref el.type, Element.ElementTypes, Element.ElementTypes.Length);
                                         if (el.type == 0 || el.type == 2)
                                         {
-                                            ImGuiEx.SizedText("Reference position: ", WidthElement);
+                                            ImGuiEx.SizedText(el.type == 2? "Point A":"Reference position: ", WidthElement);
                                             ImGui.SameLine();
                                             ImGui.PushItemWidth(60f);
                                             ImGui.Text("X:");
@@ -469,7 +483,7 @@ namespace Splatoon
                                             }
                                         }
 
-                                        ImGuiEx.SizedText("Offset: ", WidthElement);
+                                        ImGuiEx.SizedText(el.type==2?"Point B":"Offset: ", WidthElement);
                                         ImGui.SameLine();
                                         ImGui.PushItemWidth(60f);
                                         ImGui.Text("X:");

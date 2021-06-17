@@ -21,7 +21,7 @@ namespace Splatoon
             "Show on receiving message A, hide on receiving message B in combat", 
             "External control, hidden by default" };
         public bool Enabled = true;
-        public ushort ZoneLock = 0;
+        public HashSet<ushort> ZoneLockH = new HashSet<ushort>();
         public int DCond = 0;
         public int BattleTimeBegin = 0;
         public int BattleTimeEnd = 0;

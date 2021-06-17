@@ -49,6 +49,7 @@
     <Compile Include="DGui.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Gui.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="ImGuiEx.cs" />
     <Compile Include="Layout.cs" />
     <Compile Include="Splatoon.cs" />

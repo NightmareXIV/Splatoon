@@ -18,7 +18,6 @@ namespace Splatoon
     unsafe class Splatoon : IDalamudPlugin
     {
         public string Name => "Splatoon";
-        public const string Ver = "0.0.1.2";
         internal DalamudPluginInterface _pi;
         internal Gui DrawingGui;
         internal CGui ConfigGui;
@@ -142,7 +141,7 @@ namespace Splatoon
                 foreach (var i in Config.Layouts.Values)
                 {
                     if (!i.Enabled) continue;
-                    if (i.ZoneLock != 0 && i.ZoneLock != _pi.ClientState.TerritoryType) continue;
+                    if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(_pi.ClientState.TerritoryType)) continue;
                     if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)_pi.ClientState.LocalPlayer.ClassJob.Id)) continue;
                     if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
                     if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty]) continue;
