@@ -70,13 +70,7 @@ namespace Splatoon
                     ImGui.SameLine();
                     ImGui.Text("(?)");
                     if (ImGui.IsItemHovered())
-                        ImGui.SetTooltip("You can't draw circles. They are all fake.\n" +
-                            "Every circle is techincally a polygon.\n" +
-                            "The higher this number is, the rounder your circle will be.\n" +
-                            "But it will also increase processing power needed to display circles.\n" +
-                            "If you are using many circles or your CPU is on weaker side,\n" +
-                            "consider lowering this value. Generally it's best to keep it\n" +
-                            "as low as possible as long as you are satisfied with look.");
+                        ImGui.SetTooltip("Higher - smoother circle, higher cpu usage");
 
                     ImGuiEx.SizedText("Drawing distance:", WidthLayout);
                     ImGui.SameLine();
