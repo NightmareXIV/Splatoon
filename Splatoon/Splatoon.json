@@ -1,11 +1,6 @@
 ﻿{
-  "Author": "Eternita",
-  "Name": "Splatoon Unlimited",
-  "InternalName": "Splatoon",
-  "AssemblyVersion": "0.0.1.2",
-  "Description": "Infinite waymarks in the world and target circles",
-  "ApplicableVersion": "any",
-  "RepoUrl": "https://github.com/Eternita-S/Splatoon",
-  "DalamudApiLevel": 3,
-  "LoadPriority": 0
+	"Name": "Splatoon",
+	"Author": "Eternita",
+	"Description": "Adds custom waymark system into the game, allowing drawing infinite amount of waymarks in world and highlighting objects, players and enemies",
+	"RepoUrl": "https://github.com/Eternita-S/Splatoon"
 }
