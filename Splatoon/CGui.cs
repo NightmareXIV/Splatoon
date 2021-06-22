@@ -87,7 +87,10 @@ namespace Splatoon
                     ImGui.SetNextItemWidth(150f);
                     ImGui.DragFloat("##camymax", ref p.Config.maxcamY, 0.005f, -1.48353f, 0.78540f, p.Config.maxcamY.ToString("0.#####"));
                     ImGui.SameLine();
-                    ImGui.Text("Current: "+p.CamAngleY);
+                    if(ImGui.Button("Current: " + p.CamAngleY))
+                    {
+                        p.Config.maxcamY = p.CamAngleY;
+                    }
                     if (ImGui.Button("Open debug window"))
                     {
                         p.DebugGui.Open = true;

@@ -27,12 +27,13 @@ namespace Splatoon
         internal string[] LogStorage = new string[100];
         internal long CombatStarted = 0;
         internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
-        internal IntPtr CameraAddress;
+        internal float* CameraAddressX;
+        internal float* CameraAddressY;
         internal double CamAngleX;
         internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
         internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
         internal bool AccessViolation = false;
-        internal double CamAngleY;
+        internal float CamAngleY;
 
         public void Dispose()
         {
@@ -95,7 +96,9 @@ namespace Splatoon
             DrawingGui = new Gui(this);
             ConfigGui = new CGui(this);
             DebugGui = new DGui(this);
-            CameraAddress = *(IntPtr*)_pi.TargetModuleScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
+            var cameraAddress = *(IntPtr*)_pi.TargetModuleScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
+            CameraAddressX = (float*)(cameraAddress + 0x130);
+            CameraAddressY = (float*)(cameraAddress + 0x134);
         }
 
         [HandleProcessCorruptedStateExceptions]
@@ -103,11 +106,6 @@ namespace Splatoon
         {
             try
             {
-                if (AccessViolation)
-                {
-                    AccessViolation = false;
-                    var a = *(float*)new IntPtr(0x12345678);
-                }
                 displayObjects.Clear();
                 if (_pi.ClientState == null || _pi.ClientState.LocalPlayer == null) return;
                 var pl = _pi.ClientState.LocalPlayer;
@@ -116,10 +114,9 @@ namespace Splatoon
                     Log("Pointer to LocalPlayer.Address is zero");
                     return;
                 }
-
-                CamAngleX = *(float*)(CameraAddress + 0x130) + Math.PI;
+                CamAngleX = *CameraAddressX + Math.PI;
                 if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-                CamAngleY = *(float*)(CameraAddress + 0x134);
+                CamAngleY = *CameraAddressY;
 
                 if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
                 {
