@@ -12,6 +12,7 @@ using Dalamud.Game.Internal;
 using Dalamud.Game.ClientState.Actors.Types;
 using System.Runtime.ExceptionServices;
 using Lumina.Excel.GeneratedSheets;
+using System.Runtime.InteropServices;
 
 namespace Splatoon
 {
@@ -32,8 +33,9 @@ namespace Splatoon
         internal double CamAngleX;
         internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
         internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
-        internal bool AccessViolation = false;
         internal float CamAngleY;
+        internal bool S2WActive = false;
+        internal bool prevMouseState = false;
 
         public void Dispose()
         {
@@ -137,23 +139,49 @@ namespace Splatoon
 
                 foreach (var i in Config.Layouts.Values)
                 {
-                    if (!i.Enabled) continue;
-                    if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(_pi.ClientState.TerritoryType)) continue;
-                    if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)_pi.ClientState.LocalPlayer.ClassJob.Id)) continue;
-                    if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
-                    if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty]) continue;
-                    if (i.DCond == 4 && !(_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]
-                        || _pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty])) continue;
-                    if (i.Visibility == 1)
-                    {
-                        if (!_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) continue;
-                        var tic = DateTimeOffset.Now.ToUnixTimeSeconds() - CombatStarted;
-                        if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) continue;
-                    }
+                    if (!IsLayoutVisible(i)) continue;
                     foreach (var e in i.Elements.Values.ToArray())
                     {
                         if (!e.Enabled) continue;
                         draw.Clear();
+                        if (e.screen2world != 0)
+                        {
+                            var lmbdown = Bitmask.IsBitSet(GetKeyState(0x01), 15);
+                            S2WActive = true;
+                            //1: editing absolute point 
+                            //2: editing main point
+                            //3: editing secondary point
+                            var mousePos = ImGui.GetIO().MousePos;
+                            if (_pi.Framework.Gui.ScreenToWorld(new SharpDX.Vector2(mousePos.X, mousePos.Y), out var worldPos, Config.maxdistance * 5))
+                            {
+                                if (e.screen2world == 1 || e.screen2world == 2)
+                                {
+                                    e.refX = worldPos.X;
+                                    e.refY = worldPos.Z;
+                                    e.refZ = worldPos.Y;
+                                }
+                                else if (e.screen2world == 3)
+                                {
+                                    e.offX = worldPos.X;
+                                    e.offY = worldPos.Z;
+                                    e.offZ = worldPos.Y;
+                                }
+                            }
+                            if(!lmbdown && prevMouseState)
+                            {
+                                e.screen2world = 0;
+                                S2WActive = false;
+                            }
+                            prevMouseState = lmbdown;
+                        }
+                        if (e.screen2world != 0 && DateTimeOffset.Now.ToUnixTimeMilliseconds() % 500 < 250)
+                        {
+                            var x = e.screen2world == 3 ? e.offX : e.refX;
+                            var y = e.screen2world == 3 ? e.offY : e.refY;
+                            var z = e.screen2world == 3 ? e.offZ : e.refZ;
+                            displayObjects.Add(new DisplayObjectLine(x + 2f, y + 2f, z, x - 2f, y - 2f, z, 2f, Colors.Red));
+                            displayObjects.Add(new DisplayObjectLine(x - 2f, y + 2f, z, x + 2f, y - 2f, z, 2f, Colors.Red));
+                        }
                         float radius = e.radius;
                         if (e.type == 0)
                         {
@@ -161,7 +189,7 @@ namespace Splatoon
                         }
                         else if (e.type == 1)
                         {
-                            if (e.includeOwnHitbox) radius += *(float*)(_pi.ClientState.LocalPlayer.Address + 0xC0);
+                            if (e.includeOwnHitbox) radius += _pi.ClientState.LocalPlayer.HitboxRadius;
                             if (e.refActorType == 1)
                             {
                                 draw.Add((_pi.ClientState.LocalPlayer.Position.X, _pi.ClientState.LocalPlayer.Position.Y,
@@ -171,7 +199,7 @@ namespace Splatoon
                                 && _pi.ClientState.Targets.CurrentTarget is BattleNpc
                                 && _pi.ClientState.Targets.CurrentTarget.Address != IntPtr.Zero)
                             {
-                                if (e.includeHitbox) radius += *(float*)(_pi.ClientState.Targets.CurrentTarget.Address + 0xC0);
+                                if (e.includeHitbox) radius += _pi.ClientState.Targets.CurrentTarget.HitboxRadius;
                                 draw.Add((_pi.ClientState.Targets.CurrentTarget.Position.X, _pi.ClientState.Targets.CurrentTarget.Position.Y,
                                     _pi.ClientState.Targets.CurrentTarget.Position.Z, radius));
                             }
@@ -180,10 +208,10 @@ namespace Splatoon
                                 foreach (var a in _pi.ClientState.Actors)
                                 {
                                     if (a.Name.ToLower().Contains(e.refActorName.ToLower())
-                                         && a.Address != IntPtr.Zero)
+                                            && a.Address != IntPtr.Zero)
                                     {
                                         var aradius = radius;
-                                        if (e.includeHitbox) aradius += *(float*)(a.Address + 0xC0);
+                                        if (e.includeHitbox) aradius += a.HitboxRadius;
                                         draw.Add((a.Position.X, a.Position.Y, a.Position.Z, aradius));
                                     }
                                 }
@@ -194,7 +222,7 @@ namespace Splatoon
                         {
                             if (ShouldDraw(e.offX, _pi.ClientState.LocalPlayer.Position.X, e.offY, _pi.ClientState.LocalPlayer.Position.Y)
                                 || ShouldDraw(e.refX, _pi.ClientState.LocalPlayer.Position.X, e.refY, _pi.ClientState.LocalPlayer.Position.Y))
-                            displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
+                                displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
                         }
                         if (draw.Count == 0) continue;
                         foreach (var (x, y, z, r) in draw)
@@ -224,6 +252,24 @@ namespace Splatoon
                 Log("Caught exception: "+e.Message);
                 Log(e.StackTrace);
             }
+        }
+
+        internal bool IsLayoutVisible(Layout i)
+        {
+            if (!i.Enabled) return false;
+            if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(_pi.ClientState.TerritoryType)) return false;
+            if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)_pi.ClientState.LocalPlayer.ClassJob.Id)) return false;
+            if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) return false;
+            if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty]) return false;
+            if (i.DCond == 4 && !(_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]
+                || _pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty])) return false;
+            if (i.Visibility == 1)
+            {
+                if (!_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) return false;
+                var tic = DateTimeOffset.Now.ToUnixTimeSeconds() - CombatStarted;
+                if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) return false;
+            }
+            return true;
         }
 
         public bool ShouldDraw(float x1, float x2, float y1, float y2)
@@ -262,5 +308,8 @@ namespace Splatoon
         {
 
         }
+
+        [DllImport("User32.dll")]
+        static extern short GetKeyState(int nVirtKey);
     }
 }

@@ -43,15 +43,43 @@ namespace Splatoon
             p._pi.UiBuilder.OnBuildUi -= Draw;
         }
 
+        void UnsetS2W()
+        {
+            foreach (var l in p.Config.Layouts.Values)
+            {
+                foreach (var e in l.Elements.Values)
+                {
+                    e.screen2world = 0;
+                }
+            }
+            p.S2WActive = false;
+        }
+
         [HandleProcessCorruptedStateExceptions]
         void Draw()
         {
+            if (p.S2WActive)
+            {
+                foreach (var l in p.Config.Layouts.Values)
+                {
+                    foreach (var e in l.Elements.Values)
+                    {
+                        if(e.screen2world != 0 && (!e.Enabled || !p.IsLayoutVisible(l)))
+                        {
+                            UnsetS2W();
+                            break;
+                        }
+                    }
+                }
+            }
+            if (p.S2WActive) return;
             if (!Open) 
             { 
                 if(WasOpen)
                 {
                     p.Config.Save();
                     WasOpen = false;
+                    UnsetS2W();
                     p.Log("Configuration saved");
                 }
                 return;
@@ -120,7 +148,9 @@ namespace Splatoon
                     }
                     else
                     {
-                        p.Config.Layouts.Add(lname, new Layout());
+                        var l = new Layout();
+                        if(p._pi.ClientState != null) l.ZoneLockH.Add(p._pi.ClientState.TerritoryType);
+                        p.Config.Layouts.Add(lname, l);
                         lname = "";
                     }
                 }
@@ -440,18 +470,31 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             ImGui.DragFloat("##refz" + i + k, ref el.refZ, 0.02f, float.MinValue, float.MaxValue);
                                             ImGui.SameLine();
-                                            if (ImGui.Button("Set to my position##ref" + i + k))
+                                            if (ImGui.Button("My position##ref" + i + k))
                                             {
                                                 el.refX = p._pi.ClientState.LocalPlayer.Position.X;
                                                 el.refY = p._pi.ClientState.LocalPlayer.Position.Y;
                                                 el.refZ = p._pi.ClientState.LocalPlayer.Position.Z;
                                             }
                                             ImGui.SameLine();
-                                            if (ImGui.Button("Set to 0 0 0##ref" + i + k))
+                                            if (ImGui.Button("0 0 0##ref" + i + k))
                                             {
                                                 el.refX = 0;
                                                 el.refY = 0;
                                                 el.refZ = 0;
+                                            }
+                                            ImGui.SameLine();
+                                            if(ImGui.Button("Screen2World##s2w1" + i + k))
+                                            {
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
+                                                {
+                                                    UnsetS2W();
+                                                    el.screen2world = el.type == 0 ? 1 : 2;
+                                                }
+                                                else
+                                                {
+                                                    p._pi.Framework.Gui.Toast.ShowError("Unable to use for hidden element");
+                                                }
                                             }
                                             ImGui.PopItemWidth();
                                         }
@@ -494,16 +537,18 @@ namespace Splatoon
                                         ImGui.Text("Z:");
                                         ImGui.SameLine();
                                         ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
-
-                                        ImGui.SameLine();
-                                        if (ImGui.Button("Set to my position##off" + i + k))
+                                        if (el.type == 2)
                                         {
-                                            el.offX = p._pi.ClientState.LocalPlayer.Position.X;
-                                            el.offY = p._pi.ClientState.LocalPlayer.Position.Y;
-                                            el.offZ = p._pi.ClientState.LocalPlayer.Position.Z;
+                                            ImGui.SameLine();
+                                            if (ImGui.Button("My position##off" + i + k))
+                                            {
+                                                el.offX = p._pi.ClientState.LocalPlayer.Position.X;
+                                                el.offY = p._pi.ClientState.LocalPlayer.Position.Y;
+                                                el.offZ = p._pi.ClientState.LocalPlayer.Position.Z;
+                                            }
                                         }
                                         ImGui.SameLine();
-                                        if (ImGui.Button("Set to 0 0 0##off" + i + k))
+                                        if (ImGui.Button("0 0 0##off" + i + k))
                                         {
                                             el.offX = 0;
                                             el.offY = 0;
@@ -511,7 +556,23 @@ namespace Splatoon
                                         }
                                         //ImGui.SameLine();
                                         //ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);
-                                            
+                                        if (el.type == 2)
+                                        {
+                                            ImGui.SameLine();
+                                            if (ImGui.Button("Screen2World##s2w2" + i + k))
+                                            {
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
+                                                {
+                                                    UnsetS2W();
+                                                    el.screen2world = 3;
+                                                }
+                                                else
+                                                {
+                                                    p._pi.Framework.Gui.Toast.ShowError("Unable to use for hidden element");
+                                                }
+                                            }
+                                        }
+
                                         ImGuiEx.SizedText("Line thickness:", WidthElement);
                                         ImGui.SameLine();
                                         ImGui.DragFloat("##thicc" + i + k, ref el.thicc, 0.1f, 0f, float.MaxValue);

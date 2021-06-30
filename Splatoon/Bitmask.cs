@@ -22,5 +22,10 @@ namespace Splatoon
         {
             b &= ~(1UL << pos);
         }
+
+        public static bool IsBitSet(short b, int pos)
+        {
+            return (b & (1 << pos)) != 0;
+        }
     }
 }

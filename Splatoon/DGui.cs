@@ -15,8 +15,8 @@ namespace Splatoon
         private Splatoon p;
         public bool Open = false;
         bool autoscrollLog = true;
-        float w2sx, w2sy, w2sz, w2srx, w2sry;
-        bool w2sb = false;
+        float s2wx, s2wy, s2wz, s2wrx, s2wry;
+        bool s2wb = false;
         public DGui(Splatoon p)
         {
             this.p = p;
@@ -40,43 +40,40 @@ namespace Splatoon
                     var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
                     ImGui.Text("CombatStarted = " + t);
                     ImGui.Separator();
-                    ImGui.Checkbox("Cause AV on update", ref p.AccessViolation);
-                    ImGui.Checkbox("Cause AV on draw", ref p.DrawingGui.AccessViolation);
-                    ImGui.Separator();
                     if (p._pi.ClientState.LocalPlayer != null)
                     {
                         var mypos = p._pi.ClientState.LocalPlayer.Position;
-                        ImGui.Text("My pos: " + mypos.X + ", " + mypos.Y + ", " + mypos.Z);
+                        ImGui.Text("My pos XYZ: " + mypos.X + ", " + mypos.Y + ", " + mypos.Z);
                         var tar = p._pi.ClientState.Targets.CurrentTarget;
                         if (tar != null)
                         {
-                            ImGui.Text("Target pos: " + tar.Position.X + ", " + tar.Position.Y + ", " + tar.Position.Z);
+                            ImGui.Text("Target pos XYZ: " + tar.Position.X + ", " + tar.Position.Y + ", " + tar.Position.Z);
                         }
                     }
                     ImGui.Separator();
                     ImGui.Text("Query WorldToScreen");
                     ImGui.PushItemWidth(50f);
-                    ImGui.DragFloat("##qw2sx", ref w2sx);
+                    ImGui.DragFloat("##qs2wx", ref s2wx);
                     ImGui.SameLine();
-                    ImGui.DragFloat("##qw2sy", ref w2sy);
+                    ImGui.DragFloat("##qs2wy", ref s2wy);
                     ImGui.SameLine();
-                    ImGui.DragFloat("##qw2sz", ref w2sz);
+                    ImGui.DragFloat("##qs2wz", ref s2wz);
                     ImGui.PopItemWidth();
                     if (ImGui.Button("To my pos"))
                     {
                         var mypos = p._pi.ClientState.LocalPlayer.Position;
-                        w2sx = mypos.X;
-                        w2sy = mypos.Y;
-                        w2sz = mypos.Z;
+                        s2wx = mypos.X;
+                        s2wy = mypos.Y;
+                        s2wz = mypos.Z;
                     }
                     ImGui.SameLine();
                     if (ImGui.Button("Query"))
                     {
-                        w2sb = p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(w2sx, w2sz, w2sy), out SharpDX.Vector2 pos);
-                        w2srx = pos.X;
-                        w2sry = pos.Y;
+                        s2wb = p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(s2wx, s2wz, s2wy), out SharpDX.Vector2 pos);
+                        s2wrx = pos.X;
+                        s2wry = pos.Y;
                     }
-                    ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(w2sb?Colors.Green:Colors.Red), "X:"+w2srx+"\nY:"+ w2sry);
+                    ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(s2wb?Colors.Green:Colors.Red), "X:"+s2wrx+"\nY:"+ s2wry);
                     ImGui.Separator();
                     ImGui.Text("Camera angle X:" + p.CamAngleX);
                     ImGui.Text("Camera angle Y:" + p.CamAngleY);

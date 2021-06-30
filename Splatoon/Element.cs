@@ -13,6 +13,7 @@ namespace Splatoon
         [NonSerialized] public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to actor position", 
         "Line between two fixed coordinates"};
         [NonSerialized] public static string[] ActorTypes = { "Game object with specific name", "Self", "Targeted enemy" };
+        [NonSerialized] public int screen2world = 0;
         public int type;
         public Element(int t)
         {

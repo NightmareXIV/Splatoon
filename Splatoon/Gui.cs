@@ -5,6 +5,7 @@ using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,6 @@ namespace Splatoon
     {
         readonly Splatoon p;
         int uid = 0;
-        internal bool AccessViolation = false;
         public Gui(Splatoon p)
         {
             this.p = p;
@@ -33,11 +33,6 @@ namespace Splatoon
         {
             try
             {
-                if (AccessViolation)
-                {
-                    AccessViolation = false;
-                    var a = *(float*)new IntPtr(0x12345678);
-                }
                 uid = 0;
                 if (p.Config.segments > 1000 || p.Config.segments < 4)
                 {

@@ -55,6 +55,7 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="ImGuiEx.cs" />
     <Compile Include="Layout.cs" />
+    <Compile Include="Native.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Splatoon.cs" />
   </ItemGroup>
