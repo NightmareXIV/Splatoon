@@ -490,10 +490,7 @@ namespace Splatoon
                                                 if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
                                                 {
                                                     UnsetS2W();
-                                                    if(p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(el.refX, el.refZ, el.refY), out var screenPos))
-                                                    {
-                                                        Native.SetCursorPos((int)(screenPos.X + ImGuiHelpers.MainViewport.Pos.X), (int)(screenPos.Y + ImGuiHelpers.MainViewport.Pos.Y));
-                                                    }
+                                                    SetCursorTo(el.refX, el.refZ, el.refY);
                                                     el.screen2world = el.type == 0 ? 1 : 2;
                                                 }
                                                 else
@@ -569,10 +566,7 @@ namespace Splatoon
                                                 if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
                                                 {
                                                     UnsetS2W();
-                                                    if (p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(el.offX, el.offZ, el.offY), out var screenPos))
-                                                    {
-                                                        Native.SetCursorPos((int)(screenPos.X+ImGuiHelpers.MainViewport.Pos.X), (int)(screenPos.Y + ImGuiHelpers.MainViewport.Pos.Y));
-                                                    }
+                                                    SetCursorTo(el.offX, el.offZ, el.offY);
                                                     el.screen2world = 3;
                                                 }
                                                 else
@@ -686,6 +680,20 @@ namespace Splatoon
                 ImGui.EndChild();
             }
             ImGui.PopStyleVar();
+        }
+
+        private void SetCursorTo(float refX, float refZ, float refY)
+        {
+            if (p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(refX, refZ, refY), out var screenPos))
+            {
+                var point = new Native.POINT() { X = (int)screenPos.X, Y = (int)screenPos.Y };
+                //p._pi.Framework.Gui.Chat.Print(point.X + "/" + point.Y);
+                if (Native.ClientToScreen(Process.GetCurrentProcess().MainWindowHandle, ref point))
+                {
+                    //p._pi.Framework.Gui.Chat.Print(point.X + "/" + point.Y);
+                    Native.SetCursorPos(point.X, point.Y);
+                }
+            }
         }
 
         private void ImportFromText(string import)
