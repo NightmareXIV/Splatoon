@@ -12,5 +12,8 @@ namespace Splatoon
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        public static extern bool SetCursorPos(int x, int y);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Actors.Types;
 using Dalamud.Game.ClientState.Actors.Types.NonPlayer;
+using Dalamud.Interface;
 using ImGuiNET;
 using Newtonsoft.Json;
 using System;
@@ -489,6 +490,10 @@ namespace Splatoon
                                                 if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
                                                 {
                                                     UnsetS2W();
+                                                    if(p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(el.refX, el.refZ, el.refY), out var screenPos))
+                                                    {
+                                                        Native.SetCursorPos((int)(screenPos.X + ImGuiHelpers.MainViewport.Pos.X), (int)(screenPos.Y + ImGuiHelpers.MainViewport.Pos.Y));
+                                                    }
                                                     el.screen2world = el.type == 0 ? 1 : 2;
                                                 }
                                                 else
@@ -564,6 +569,10 @@ namespace Splatoon
                                                 if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
                                                 {
                                                     UnsetS2W();
+                                                    if (p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(el.offX, el.offZ, el.offY), out var screenPos))
+                                                    {
+                                                        Native.SetCursorPos((int)(screenPos.X+ImGuiHelpers.MainViewport.Pos.X), (int)(screenPos.Y + ImGuiHelpers.MainViewport.Pos.Y));
+                                                    }
                                                     el.screen2world = 3;
                                                 }
                                                 else
