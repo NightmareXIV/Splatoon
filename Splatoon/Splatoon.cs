@@ -13,6 +13,7 @@ using Dalamud.Game.ClientState.Actors.Types;
 using System.Runtime.ExceptionServices;
 using Lumina.Excel.GeneratedSheets;
 using System.Runtime.InteropServices;
+using Dalamud.Game.ClientState;
 
 namespace Splatoon
 {
@@ -120,7 +121,7 @@ namespace Splatoon
                 if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
                 CamAngleY = *CameraAddressY;
 
-                if (_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat])
+                if (_pi.ClientState.Condition[ConditionFlag.InCombat])
                 {
                     if (CombatStarted == 0)
                     {

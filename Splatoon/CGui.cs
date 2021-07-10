@@ -89,6 +89,13 @@ namespace Splatoon
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             if (ImGui.Begin("Splatoon", ref Open))
             {
+                if(p.CamAngleY > p.Config.maxcamY)
+                {
+                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
+                    ImGuiEx.TextCentered("Your camera settings prevent waymarks from displaying in your current camera position.");
+                    ImGuiEx.TextCentered("Either lift your camera up or adjust camera settings in general settings below.");
+                    ImGui.PopStyleColor();
+                }
                 if (ImGui.CollapsingHeader("General settings"))
                 {
 
@@ -111,14 +118,19 @@ namespace Splatoon
                         ImGui.SetTooltip("Only try to draw objects that are not \n" +
                             "further away from you than this value");
 
-                    ImGuiEx.SizedText("Draw only when Y camera rotation is higher than:", WidthLayout * 2);
+                    ImGuiEx.SizedText("Draw only when Y camera rotation is lower than:", WidthLayout * 2);
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(150f);
                     ImGui.DragFloat("##camymax", ref p.Config.maxcamY, 0.005f, -1.48353f, 0.78540f, p.Config.maxcamY.ToString("0.#####"));
                     ImGui.SameLine();
-                    if(ImGui.Button("Current: " + p.CamAngleY))
+                    if (ImGui.Button("Current: " + p.CamAngleY))
                     {
                         p.Config.maxcamY = p.CamAngleY;
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.Button("Default"))
+                    {
+                        p.Config.maxcamY = 0.05f;
                     }
                     if (ImGui.Button("Open debug window"))
                     {
@@ -306,15 +318,22 @@ namespace Splatoon
                                 ImGui.SetNextItemWidth(WidthCombo);
                                 ImGui.InputTextWithHint("##msghide" + i, "Case-insensitive (partial) message", ref p.Config.Layouts[i].MessageToWatchForEnd, 100);
                             }*/
+                            var colorZLock = p._pi.ClientState?.TerritoryType != null
+                                && p.Config.Layouts[i].ZoneLockH.Count != 0 
+                                && !p.Config.Layouts[i].ZoneLockH.Contains(p._pi.ClientState.TerritoryType)
+                                && DateTimeOffset.Now.ToUnixTimeMilliseconds() % 1000 < 500;
+                            if (colorZLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
                             ImGuiEx.SizedText("Zone lock: ", WidthLayout);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(WidthCombo);
+                            p.Config.Layouts[i].ZoneLockH.RemoveWhere(el => !p.Zones.ContainsKey(el));
                             if (ImGui.BeginCombo("##zlk" + i, p.Config.Layouts[i].ZoneLockH.Count == 0 ? "All zones" :
                                 p.Config.Layouts[i].ZoneLockH.Count == 1? p.Config.Layouts[i].ZoneLockH.First() + " / "
                                 + p.Zones[p.Config.Layouts[i].ZoneLockH.First()].PlaceName.Value.Name :
                                 p.Config.Layouts[i].ZoneLockH.Count + " zones"
                                 ))
                             {
+                                if (colorZLock) ImGui.PopStyleColor();
                                 ImGui.SetNextItemWidth(100f);
                                 ImGui.InputTextWithHint("##zfltr" + i, "Filter", ref zlockf, 100);
                                 ImGui.SameLine();
@@ -349,6 +368,10 @@ namespace Splatoon
                                 }
                                 ImGui.EndCombo();
                             }
+                            else
+                            {
+                                if (colorZLock) ImGui.PopStyleColor();
+                            }
 
                             var jprev = new List<string>();
                             if(p.Config.Layouts[i].JobLock == 0)
@@ -365,11 +388,17 @@ namespace Splatoon
                                     }
                                 }
                             }
+                            var colorJLock = p._pi.ClientState?.LocalPlayer?.ClassJob != null
+                                && p.Config.Layouts[i].JobLock != 0
+                                && !Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, (int)p._pi.ClientState.LocalPlayer.ClassJob.Id)
+                                && DateTimeOffset.Now.ToUnixTimeMilliseconds() % 1000 < 500;
+                            if (colorJLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
                             ImGuiEx.SizedText("Job lock", WidthLayout);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(WidthCombo);
                             if (ImGui.BeginCombo("##joblock"+i, jprev.Count<3?string.Join(", ", jprev): jprev.Count+" jobs"))
                             {
+                                if (colorJLock) ImGui.PopStyleColor();
                                 ImGui.InputTextWithHint("##joblockfltr"+i, "Filter", ref jobFilter, 100);
                                 foreach(var k in p.Jobs)
                                 {
@@ -397,7 +426,12 @@ namespace Splatoon
                                 }
                                 ImGui.EndCombo();
                             }
-
+                            else
+                            {
+                                if (colorJLock) ImGui.PopStyleColor();
+                            }
+                            ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(Colors.Green), "Add elements to the layout to create markers:");
+                            ImGui.SameLine();
                             ImGui.PushItemWidth(WidthCombo);
                             ImGui.InputTextWithHint("##elnameadd" + i, "Unique element name", ref ename, 100);
                             ImGui.PopItemWidth();
@@ -487,7 +521,7 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if(ImGui.Button("Screen2World##s2w1" + i + k))
                                             {
-                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled && p.CamAngleY <= p.Config.maxcamY)
                                                 {
                                                     UnsetS2W();
                                                     SetCursorTo(el.refX, el.refZ, el.refY);
@@ -563,7 +597,7 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if (ImGui.Button("Screen2World##s2w2" + i + k))
                                             {
-                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled && p.CamAngleY <= p.Config.maxcamY)
                                                 {
                                                     UnsetS2W();
                                                     SetCursorTo(el.offX, el.offZ, el.offY);
