@@ -24,6 +24,7 @@ namespace Splatoon
         internal Gui DrawingGui;
         internal CGui ConfigGui;
         internal DGui DebugGui;
+        internal ChlogGui ChangelogGui;
         internal Configuration Config;
         internal Dictionary<ushort, TerritoryType> Zones;
         internal string[] LogStorage = new string[100];
@@ -37,6 +38,8 @@ namespace Splatoon
         internal float CamAngleY;
         internal bool S2WActive = false;
         internal bool prevMouseState = false;
+        public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
+        private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
         public void Dispose()
         {
@@ -102,6 +105,10 @@ namespace Splatoon
             var cameraAddress = *(IntPtr*)_pi.TargetModuleScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
             CameraAddressX = (float*)(cameraAddress + 0x130);
             CameraAddressY = (float*)(cameraAddress + 0x134);
+            if(ChlogGui.ChlogVersion > Config.ChlogReadVer)
+            {
+                ChangelogGui = new ChlogGui(this);
+            }
         }
 
         [HandleProcessCorruptedStateExceptions]

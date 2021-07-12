@@ -78,6 +78,7 @@ namespace Splatoon
             { 
                 if(WasOpen)
                 {
+                    p.Config.Backup();
                     p.Config.Save();
                     WasOpen = false;
                     UnsetS2W();
@@ -136,10 +137,25 @@ namespace Splatoon
                     {
                         p.DebugGui.Open = true;
                     }
+                    ImGui.SameLine();
+                    ImGui.Text("Contact developer:");
+                    ImGui.SameLine();
+                    if (ImGui.Button("Github"))
+                    {
+                        Process.Start("https://github.com/Eternita-S/Splatoon/issues");
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.Button("Discord"))
+                    {
+                        Process.Start("https://discord.gg/NUjuWKZexb");
+                    }
+
                 }
                 ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
                 ImGui.SameLine();
                 ImGui.Checkbox("Allow elements deletion", ref enableDeletionElement);
+
+                ImGui.Separator();
 
                 ImGui.SetNextItemWidth(350f);
                 ImGui.InputTextWithHint("##lname", "Unique layout name", ref lname, 100);
