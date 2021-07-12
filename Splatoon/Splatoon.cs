@@ -136,7 +136,7 @@ namespace Splatoon
                     }
                 }
 
-                if (CamAngleY > Config.maxcamY) return;
+                //if (CamAngleY > Config.maxcamY) return;
 
                 foreach (var i in Config.Layouts.Values)
                 {

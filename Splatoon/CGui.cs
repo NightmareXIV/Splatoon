@@ -89,13 +89,13 @@ namespace Splatoon
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             if (ImGui.Begin("Splatoon", ref Open))
             {
-                if(p.CamAngleY > p.Config.maxcamY)
+                /*if(p.CamAngleY > p.Config.maxcamY)
                 {
                     ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
                     ImGuiEx.TextCentered("Your camera settings prevent waymarks from displaying in your current camera position.");
                     ImGuiEx.TextCentered("Either lift your camera up or adjust camera settings in general settings below.");
                     ImGui.PopStyleColor();
-                }
+                }*/
                 if (ImGui.CollapsingHeader("General settings"))
                 {
 
@@ -118,7 +118,7 @@ namespace Splatoon
                         ImGui.SetTooltip("Only try to draw objects that are not \n" +
                             "further away from you than this value");
 
-                    ImGuiEx.SizedText("Draw only when Y camera rotation is lower than:", WidthLayout * 2);
+                    /*ImGuiEx.SizedText("Draw only when Y camera rotation is lower than:", WidthLayout * 2);
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(150f);
                     ImGui.DragFloat("##camymax", ref p.Config.maxcamY, 0.005f, -1.48353f, 0.78540f, p.Config.maxcamY.ToString("0.#####"));
@@ -131,7 +131,7 @@ namespace Splatoon
                     if (ImGui.Button("Default"))
                     {
                         p.Config.maxcamY = 0.05f;
-                    }
+                    }*/
                     if (ImGui.Button("Open debug window"))
                     {
                         p.DebugGui.Open = true;
@@ -521,7 +521,7 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if(ImGui.Button("Screen2World##s2w1" + i + k))
                                             {
-                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled && p.CamAngleY <= p.Config.maxcamY)
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
                                                 {
                                                     UnsetS2W();
                                                     SetCursorTo(el.refX, el.refZ, el.refY);
@@ -597,7 +597,7 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if (ImGui.Button("Screen2World##s2w2" + i + k))
                                             {
-                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled && p.CamAngleY <= p.Config.maxcamY)
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
                                                 {
                                                     UnsetS2W();
                                                     SetCursorTo(el.offX, el.offZ, el.offY);

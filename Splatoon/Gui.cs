@@ -117,17 +117,28 @@ namespace Splatoon
         {
             int seg = num_segments / 2;
             p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(x + (radius * (float)Math.Sin(p.CamAngleX)), z,
-            y + (radius * (float)Math.Cos(p.CamAngleX))), out SharpDX.Vector2 refpos); 
+            y + (radius * (float)Math.Cos(p.CamAngleX))), out SharpDX.Vector2 refpos);
+            var visible = false;
+            Num.Vector2?[] elements = new Num.Vector2?[num_segments+1];
             for (int i = 0; i <= num_segments; i++)
             {
-                p._pi.Framework.Gui.WorldToScreen(
+                visible = p._pi.Framework.Gui.WorldToScreen(
                     new SharpDX.Vector3(x + (radius * (float)Math.Sin((Math.PI / seg) * i)),
                     z,
                     y + (radius * (float)Math.Cos((Math.PI / seg) * i))),
-                    out SharpDX.Vector2 pos);
-                if (pos.Y > refpos.Y) ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
+                    out SharpDX.Vector2 pos) 
+                    || visible;
+                if (pos.Y > refpos.Y) elements[i] = new Num.Vector2(pos.X, pos.Y);
             }
-            ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.Closed, thicc);
+            if (visible)
+            {
+                foreach(var pos in elements)
+                {
+                    if (pos == null) continue;
+                    ImGui.GetWindowDrawList().PathLineTo(pos.Value);
+                }
+                ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.Closed, thicc);
+            }
         }
 
         public void DrawPoint(float x, float y, float z, float thicc, uint col)
