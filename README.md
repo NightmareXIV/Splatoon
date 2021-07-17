@@ -2,9 +2,11 @@
 Splatoon plugin allows you to put infinite amount of waymarks in the world of different size, colors, allows to add custom text to them as well. 
 
 # Download
-Beta version is available through Dalamud custom repo:
+Dalamud repository:
 
 `https://raw.githubusercontent.com/Eternita-S/MyDalamudPlugins/main/pluginmaster.json`
+
+Detailed instructions available here: https://github.com/Eternita-S/MyDalamudPlugins
 
 # WARNING!
 This project is in beta test. 
