@@ -558,6 +558,7 @@ namespace Splatoon
                                             ImGui.Combo("##actortype" + i + k, ref el.refActorType, Element.ActorTypes, Element.ActorTypes.Length);
                                             if (el.refActorType == 0)
                                             {
+                                                ImGuiEx.SizedText("", WidthElement);
                                                 ImGui.SameLine();
                                                 ImGui.SetNextItemWidth(WidthCombo);
                                                 ImGui.InputTextWithHint("##actorname" + i + k, "Case-insensitive (partial) name", ref el.refActorName, 100);
@@ -567,6 +568,8 @@ namespace Splatoon
                                                         "relatively resource expensive operation. \n" +
                                                         "Try to keep amount of these down to reasonable number.");
                                                 }
+                                                ImGui.SameLine();
+                                                ImGui.Checkbox("Targetable only##"+i+k, ref el.onlyTargetable);
                                                 if (p._pi.ClientState.Targets.CurrentTarget != null)
                                                 {
                                                     ImGui.SameLine();

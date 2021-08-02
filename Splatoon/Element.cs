@@ -38,5 +38,6 @@ namespace Splatoon
         public bool includeHitbox = false;
         public bool includeOwnHitbox = false;
         public bool includeRotation = false;
+        public bool onlyTargetable = false;
     }
 }

@@ -40,6 +40,15 @@ namespace Splatoon
         internal bool S2WActive = false;
         internal bool prevMouseState = false;
         internal string SFind = null;
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        internal delegate byte Character_GetIsTargetable(IntPtr characterPtr);
+        internal Character_GetIsTargetable GetIsTargetable_Character;
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        internal delegate byte GameObject_GetIsTargetable(IntPtr characterPtr);
+        internal GameObject_GetIsTargetable GetIsTargetable_GameObject;
+
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
@@ -59,6 +68,10 @@ namespace Splatoon
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             _pi = pluginInterface;
+            GetIsTargetable_Character = Marshal.GetDelegateForFunctionPointer<Character_GetIsTargetable>(
+                _pi.TargetModuleScanner.ScanText("F3 0F 10 89 ?? ?? ?? ?? 0F 57 C0 0F 2E C8 7A 05 75 03 32 C0 C3 80 B9"));
+            GetIsTargetable_GameObject = Marshal.GetDelegateForFunctionPointer<GameObject_GetIsTargetable>(
+                _pi.TargetModuleScanner.ScanText("0F B6 91 ?? ?? ?? ?? F6 C2 02"));
             Zones = _pi.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
             Jobs = _pi.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
             _pi.UiBuilder.OnOpenConfigUi += delegate
@@ -145,11 +158,11 @@ namespace Splatoon
 
         private void TerritoryChangedEvent(object sender, ushort e)
         {
-            SFind = null;
-            _pi.Framework.Gui.Toast.ShowNormal("[Splatoon] Search stopped", new ToastOptions()
+            if (SFind != null)
             {
-                Position = ToastPosition.Top
-            });
+                SFind = null;
+                _pi.Framework.Gui.Toast.ShowQuest("[Splatoon] Search stopped");
+            }
         }
 
         [HandleProcessCorruptedStateExceptions]
@@ -198,7 +211,8 @@ namespace Splatoon
                         overlayVOffset = 1.7f,
                         overlayTextColor = col,
                         color = col,
-                        includeHitbox = true
+                        includeHitbox = true,
+                        onlyTargetable = true
                     };
                     ProcessElement(findEl);
                 }
@@ -286,8 +300,8 @@ namespace Splatoon
                 {
                     foreach (var a in _pi.ClientState.Actors)
                     {
-                        if (a.Name.ToLower().Contains(e.refActorName.ToLower())
-                                && a.Address != IntPtr.Zero)
+                        if ((e.refActorName == "*" || a.Name.ToLower().Contains(e.refActorName.ToLower()))
+                                && a.Address != IntPtr.Zero && (!e.onlyTargetable || GetIsTargetable(a)))
                         {
                             var aradius = radius;
                             if (e.includeHitbox) aradius += a.HitboxRadius;
@@ -330,13 +344,13 @@ namespace Splatoon
             if (!i.Enabled) return false;
             if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(_pi.ClientState.TerritoryType)) return false;
             if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)_pi.ClientState.LocalPlayer.ClassJob.Id)) return false;
-            if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) return false;
-            if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty]) return false;
-            if (i.DCond == 4 && !(_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]
-                || _pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.BoundByDuty])) return false;
+            if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[ConditionFlag.InCombat]) return false;
+            if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[ConditionFlag.BoundByDuty]) return false;
+            if (i.DCond == 4 && !(_pi.ClientState.Condition[ConditionFlag.InCombat]
+                || _pi.ClientState.Condition[ConditionFlag.BoundByDuty])) return false;
             if (i.Visibility == 1)
             {
-                if (!_pi.ClientState.Condition[Dalamud.Game.ClientState.ConditionFlag.InCombat]) return false;
+                if (!_pi.ClientState.Condition[ConditionFlag.InCombat]) return false;
                 var tic = DateTimeOffset.Now.ToUnixTimeSeconds() - CombatStarted;
                 if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) return false;
             }
@@ -372,6 +386,18 @@ namespace Splatoon
                 LogStorage[i - 1] = LogStorage[i];
             }
             LogStorage[LogStorage.Length - 1] = line;
+        }
+
+        internal bool GetIsTargetable(Actor a)
+        {
+            if(a is Chara)
+            {
+                return GetIsTargetable_Character(a.Address) != 0;
+            }
+            else
+            {
+                return GetIsTargetable_GameObject(a.Address) != 0;
+            }
         }
 
 
