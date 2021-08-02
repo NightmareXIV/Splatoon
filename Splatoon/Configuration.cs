@@ -24,7 +24,7 @@ namespace Splatoon
         public int segments = 100;
         public float maxdistance = 100;
         //public float maxcamY = 0.05f;
-        public int ChlogReadVer = 0;
+        public int ChlogReadVer = ChlogGui.ChlogVersion;
 
         public void Initialize(Splatoon plugin)
         {
