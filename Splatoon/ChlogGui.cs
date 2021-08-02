@@ -10,7 +10,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 6;
+        public const int ChlogVersion = 8;
         readonly Splatoon p;
         bool open = true;
         public ChlogGui(Splatoon p)
@@ -30,13 +30,9 @@ namespace Splatoon
             if (!p._pi.ClientState.IsLoggedIn) return;
             ImGui.Begin("Splatoon has been updated", ref open, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.Text("Changes in this version:\n" +
-                "Introducing player/NPC searching!\n" +
-                "Use the command:\n" +
-                "/sf Partial Case-insensitive name\n" +
-                "to temporarily highlight NPCs and players\n" +
-                "whose name contains specified substring.\n" +
-                "Use the command /sf without arguments\n" +
-                "to remove highlighting.");
+                "- Object search (/sf) no longer highlights uninteractable objects\n" +
+                "- Added an option to only display targetable (interactable) objects when using an option to highlight objects by name\n" +
+                "- You may now use * in place of object name to highlight ALL objects at once (including /sf *)");
             if(ImGui.Button("Close this window"))
             {
                 open = false;
