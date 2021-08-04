@@ -50,6 +50,7 @@ namespace Splatoon
             DrawingGui.Dispose();
             ConfigGui.Dispose();
             DebugGui.Dispose();
+            CommandManager.Dispose();
             pi.ClientState.TerritoryChanged -= TerritoryChangedEvent;
             pi.Framework.OnUpdateEvent -= HandleUpdate;
             pi.Dispose();

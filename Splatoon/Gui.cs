@@ -42,9 +42,9 @@ namespace Splatoon
                 try
                 {
                     ImGuiHelpers.ForceNextWindowMainViewport();
-                    ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(0, 0));
+                    ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                     ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
-                        | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground);
+                        | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.AlwaysUseWindowPadding);
                     ImGui.SetWindowPos(new Num.Vector2(0, 0));
                     ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
                     foreach (var element in p.displayObjects)
@@ -85,11 +85,52 @@ namespace Splatoon
 
         void DrawLineWorld(DisplayObjectLine e)
         {
-            p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.ax, e.az, e.ay), out SharpDX.Vector2 pos);
-            ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos.X, pos.Y));
-            p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.bx, e.bz, e.by), out SharpDX.Vector2 pos2);
-            ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(pos2.X, pos2.Y));
+            var resultA = p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.ax, e.az, e.ay), out SharpDX.Vector2 posA);
+            if (!resultA)
+            {
+                var posA2 = GetLineClosestToVisiblePoint(new Vector3(e.ax, e.ay, e.az),
+                (new Vector3(e.bx, e.by, e.bz) - new Vector3(e.ax, e.ay, e.az)) / p.Config.segments, 0, posA);
+                if (posA2 == null)
+                {
+                    return;
+                }
+                else
+                {
+                    posA = posA2.Value;
+                }
+            }
+            var resultB = p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.bx, e.bz, e.by), out SharpDX.Vector2 posB);
+            if (!resultB)
+            {
+                var posB2 = GetLineClosestToVisiblePoint(new Vector3(e.bx, e.by, e.bz),
+                (new Vector3(e.ax, e.ay, e.az) - new Vector3(e.bx, e.by, e.bz)) / p.Config.segments, 0, posB);
+                if (posB2 == null)
+                {
+                    return;
+                }
+                else
+                {
+                    posB = posB2.Value;
+                }
+            }
+
+            ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(posA.X, posA.Y));
+            ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(posB.X, posB.Y));
             ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.None, e.thickness);
+        }
+
+        SharpDX.Vector2? GetLineClosestToVisiblePoint(Vector3 currentPos, Vector3 delta, int curSegment, SharpDX.Vector2 prevSPos)
+        {
+            if (curSegment >= p.Config.segments) return null;
+            var nextPos = currentPos + delta;
+            if(p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(nextPos.X, nextPos.Z, nextPos.Y), out SharpDX.Vector2 pos))
+            {
+                return p.Config.fixLongLines?pos:prevSPos;
+            }
+            else
+            {
+                return GetLineClosestToVisiblePoint(nextPos, delta, ++curSegment, pos);
+            }
         }
 
         public void DrawTextWorld(DisplayObjectText e)
@@ -120,8 +161,8 @@ namespace Splatoon
             p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.x + (e.radius * (float)Math.Sin(p.CamAngleX)), e.z,
             e.y + (e.radius * (float)Math.Cos(p.CamAngleX))), out SharpDX.Vector2 refpos);
             var visible = false;
-            Num.Vector2?[] elements = new Num.Vector2?[seg+1];
-            for (int i = 0; i <= seg; i++)
+            Num.Vector2?[] elements = new Num.Vector2?[p.Config.segments+1];
+            for (int i = 0; i <= p.Config.segments; i++)
             {
                 visible = p.pi.Framework.Gui.WorldToScreen(
                     new SharpDX.Vector3(e.x + (e.radius * (float)Math.Sin((Math.PI / seg) * i)),

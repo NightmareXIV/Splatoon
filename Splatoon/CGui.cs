@@ -119,6 +119,13 @@ namespace Splatoon
                         ImGui.SetTooltip("Only try to draw objects that are not \n" +
                             "further away from you than this value");
 
+                    ImGui.Checkbox("Extra long lines support", ref p.Config.fixLongLines);
+                    if (ImGui.IsItemHovered())
+                        ImGui.SetTooltip("Enables fix for extra long lines so they don't jump around on the screen.\n" +
+                            "As a side effect line will be cut near the edge of the screen.\n" +
+                            "Generally it's recommended to keep this unchecked and avoid very long lines.\n\n" +
+                            "This is workaround and I'm looking for better solution.");
+
                     /*ImGuiEx.SizedText("Draw only when Y camera rotation is lower than:", WidthLayout * 2);
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(150f);
@@ -147,7 +154,8 @@ namespace Splatoon
                     ImGui.SameLine();
                     if (ImGui.Button("Discord"))
                     {
-                        Process.Start("https://discord.gg/NUjuWKZexb");
+                        Clipboard.SetText("Eternita#4037");
+                        p.pi.Framework.Gui.Chat.Print("[Splatoon] Contact me in discord: Eternita#4037. Discord ID copied into your clipboard.");
                     }
 
                 }
