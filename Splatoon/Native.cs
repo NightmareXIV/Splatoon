@@ -26,5 +26,8 @@ namespace Splatoon
             public int X;
             public int Y;
         }
+
+        [DllImport("User32.dll")]
+        public static extern short GetKeyState(int nVirtKey);
     }
 }

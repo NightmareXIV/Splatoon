@@ -20,12 +20,12 @@ namespace Splatoon
         public DGui(Splatoon p)
         {
             this.p = p;
-            p._pi.UiBuilder.OnBuildUi += Draw;
+            p.pi.UiBuilder.OnBuildUi += Draw;
         }
 
         public void Dispose()
         {
-            p._pi.UiBuilder.OnBuildUi -= Draw;
+            p.pi.UiBuilder.OnBuildUi -= Draw;
         }
 
         public void Draw()
@@ -40,11 +40,11 @@ namespace Splatoon
                     var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
                     ImGui.Text("CombatStarted = " + t);
                     ImGui.Separator();
-                    if (p._pi.ClientState.LocalPlayer != null)
+                    if (p.pi.ClientState.LocalPlayer != null)
                     {
-                        var mypos = p._pi.ClientState.LocalPlayer.Position;
+                        var mypos = p.pi.ClientState.LocalPlayer.Position;
                         ImGui.Text("My pos XYZ: " + mypos.X + ", " + mypos.Y + ", " + mypos.Z);
-                        var tar = p._pi.ClientState.Targets.CurrentTarget;
+                        var tar = p.pi.ClientState.Targets.CurrentTarget;
                         if (tar != null)
                         {
                             ImGui.Text("Target pos XYZ: " + tar.Position.X + ", " + tar.Position.Y + ", " + tar.Position.Z);
@@ -61,7 +61,7 @@ namespace Splatoon
                     ImGui.PopItemWidth();
                     if (ImGui.Button("To my pos"))
                     {
-                        var mypos = p._pi.ClientState.LocalPlayer.Position;
+                        var mypos = p.pi.ClientState.LocalPlayer.Position;
                         s2wx = mypos.X;
                         s2wy = mypos.Y;
                         s2wz = mypos.Z;
@@ -69,7 +69,7 @@ namespace Splatoon
                     ImGui.SameLine();
                     if (ImGui.Button("Query"))
                     {
-                        s2wb = p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(s2wx, s2wz, s2wy), out SharpDX.Vector2 pos);
+                        s2wb = p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(s2wx, s2wz, s2wy), out SharpDX.Vector2 pos);
                         s2wrx = pos.X;
                         s2wry = pos.Y;
                     }
@@ -79,7 +79,7 @@ namespace Splatoon
                     ImGui.Text("Camera angle Y:" + p.CamAngleY);
                     ImGui.Separator();
                     ImGui.Text("Actors:");
-                    foreach (var a in p._pi.ClientState.Actors)
+                    foreach (var a in p.pi.ClientState.Actors)
                     {
                         try
                         {

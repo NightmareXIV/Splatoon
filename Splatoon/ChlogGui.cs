@@ -16,18 +16,18 @@ namespace Splatoon
         public ChlogGui(Splatoon p)
         {
             this.p = p;
-            p._pi.UiBuilder.OnBuildUi += Draw;
+            p.pi.UiBuilder.OnBuildUi += Draw;
         }
 
         public void Dispose()
         {
-            p._pi.UiBuilder.OnBuildUi -= Draw;
+            p.pi.UiBuilder.OnBuildUi -= Draw;
         }
 
         void Draw()
         {
             if (!open) return;
-            if (!p._pi.ClientState.IsLoggedIn) return;
+            if (!p.pi.ClientState.IsLoggedIn) return;
             ImGui.Begin("Splatoon has been updated", ref open, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.Text("Changes in this version:\n" +
                 "- Object search (/sf) no longer highlights uninteractable objects\n" +

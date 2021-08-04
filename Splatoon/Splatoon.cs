@@ -21,18 +21,18 @@ namespace Splatoon
     unsafe class Splatoon : IDalamudPlugin
     {
         public string Name => "Splatoon";
-        internal DalamudPluginInterface _pi;
+        internal DalamudPluginInterface pi;
         internal Gui DrawingGui;
         internal CGui ConfigGui;
         internal DGui DebugGui;
+        internal Commands CommandManager;
+        internal Memory MemoryManager;
         internal ChlogGui ChangelogGui;
         internal Configuration Config;
         internal Dictionary<ushort, TerritoryType> Zones;
         internal string[] LogStorage = new string[100];
         internal long CombatStarted = 0;
         internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
-        internal float* CameraAddressX;
-        internal float* CameraAddressY;
         internal double CamAngleX;
         internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
         internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
@@ -40,14 +40,6 @@ namespace Splatoon
         internal bool S2WActive = false;
         internal bool prevMouseState = false;
         internal string SFind = null;
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        internal delegate byte Character_GetIsTargetable(IntPtr characterPtr);
-        internal Character_GetIsTargetable GetIsTargetable_Character;
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        internal delegate byte GameObject_GetIsTargetable(IntPtr characterPtr);
-        internal GameObject_GetIsTargetable GetIsTargetable_GameObject;
 
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -58,98 +50,25 @@ namespace Splatoon
             DrawingGui.Dispose();
             ConfigGui.Dispose();
             DebugGui.Dispose();
-            _pi.ClientState.TerritoryChanged -= TerritoryChangedEvent;
-            _pi.Framework.OnUpdateEvent -= HandleUpdate;
-            _pi.CommandManager.RemoveHandler("/splatoon");
-            _pi.CommandManager.RemoveHandler("/sf");
-            _pi.Dispose();
+            pi.ClientState.TerritoryChanged -= TerritoryChangedEvent;
+            pi.Framework.OnUpdateEvent -= HandleUpdate;
+            pi.Dispose();
         }
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
-            _pi = pluginInterface;
-            GetIsTargetable_Character = Marshal.GetDelegateForFunctionPointer<Character_GetIsTargetable>(
-                _pi.TargetModuleScanner.ScanText("F3 0F 10 89 ?? ?? ?? ?? 0F 57 C0 0F 2E C8 7A 05 75 03 32 C0 C3 80 B9"));
-            GetIsTargetable_GameObject = Marshal.GetDelegateForFunctionPointer<GameObject_GetIsTargetable>(
-                _pi.TargetModuleScanner.ScanText("0F B6 91 ?? ?? ?? ?? F6 C2 02"));
-            Zones = _pi.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
-            Jobs = _pi.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
-            _pi.UiBuilder.OnOpenConfigUi += delegate
-            {
-                ConfigGui.Open = true;
-            };
-            _pi.CommandManager.AddHandler("/sf", new CommandInfo(delegate (string command, string arguments) 
-            { 
-                if(arguments == "")
-                {
-                    if(SFind != null)
-                    {
-                        _pi.Framework.Gui.Toast.ShowNormal("[Splatoon] Search stopped", new ToastOptions()
-                        {
-                            Position = ToastPosition.Top
-                        }) ;
-                        SFind = null;
-                    }
-                    else
-                    {
-                        _pi.Framework.Gui.Toast.ShowError("[Splatoon] Please specify target name");
-                    }
-                }
-                else
-                {
-                    SFind = arguments.Trim().ToLower();
-                    _pi.Framework.Gui.Toast.ShowQuest("[Splatoon] Searching for: " + SFind, new QuestToastOptions()
-                    {
-                        DisplayCheckmark = true,
-                        PlaySound = true
-                    });
-                }
-            }));
-            _pi.ClientState.TerritoryChanged += TerritoryChangedEvent;
-            _pi.CommandManager.AddHandler("/splatoon", new CommandInfo(delegate(string command, string arguments)
-            {
-                if(arguments == "")
-                {
-                    ConfigGui.Open = true;
-                }
-                else if(arguments == "d")
-                {
-                    DebugGui.Open = true;
-                }
-                else if (arguments.StartsWith("enable "))
-                {
-                    try
-                    {
-                        var name = arguments.Substring(arguments.IndexOf("enable ") + 7);
-                        Config.Layouts[name].Enabled = true;
-                    }
-                    catch (Exception e)
-                    {
-                        Log(e.Message);
-                    }
-                }
-                else if (arguments.StartsWith("disable "))
-                {
-                    try
-                    {
-                        var name = arguments.Substring(arguments.IndexOf("disable ") + 8);
-                        Config.Layouts[name].Enabled = false;
-                    }
-                    catch (Exception e)
-                    {
-                        Log(e.Message);
-                    }
-                }
-            }) { });
+            pi = pluginInterface;
+            CommandManager = new Commands(this);
+            Zones = pi.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
+            Jobs = pi.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
+            pi.ClientState.TerritoryChanged += TerritoryChangedEvent;
+            MemoryManager = new Memory(this);
             Config = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Config.Initialize(this);
-            _pi.Framework.OnUpdateEvent += HandleUpdate;
+            pi.Framework.OnUpdateEvent += HandleUpdate;
             DrawingGui = new Gui(this);
             ConfigGui = new CGui(this);
             DebugGui = new DGui(this);
-            var cameraAddress = *(IntPtr*)_pi.TargetModuleScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
-            CameraAddressX = (float*)(cameraAddress + 0x130);
-            CameraAddressY = (float*)(cameraAddress + 0x134);
             if(ChlogGui.ChlogVersion > Config.ChlogReadVer)
             {
                 ChangelogGui = new ChlogGui(this);
@@ -161,7 +80,7 @@ namespace Splatoon
             if (SFind != null)
             {
                 SFind = null;
-                _pi.Framework.Gui.Toast.ShowQuest("[Splatoon] Search stopped");
+                pi.Framework.Gui.Toast.ShowQuest("[Splatoon] Search stopped");
             }
         }
 
@@ -171,18 +90,18 @@ namespace Splatoon
             try
             {
                 displayObjects.Clear();
-                if (_pi.ClientState == null || _pi.ClientState.LocalPlayer == null) return;
-                var pl = _pi.ClientState.LocalPlayer;
-                if (_pi.ClientState.LocalPlayer.Address == IntPtr.Zero)
+                if (pi.ClientState == null || pi.ClientState.LocalPlayer == null) return;
+                var pl = pi.ClientState.LocalPlayer;
+                if (pi.ClientState.LocalPlayer.Address == IntPtr.Zero)
                 {
                     Log("Pointer to LocalPlayer.Address is zero");
                     return;
                 }
-                CamAngleX = *CameraAddressX + Math.PI;
+                CamAngleX = *MemoryManager.CameraAddressX + Math.PI;
                 if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-                CamAngleY = *CameraAddressY;
+                CamAngleY = *MemoryManager.CameraAddressY;
 
-                if (_pi.ClientState.Condition[ConditionFlag.InCombat])
+                if (pi.ClientState.Condition[ConditionFlag.InCombat])
                 {
                     if (CombatStarted == 0)
                     {
@@ -239,13 +158,13 @@ namespace Splatoon
             draw.Clear();
             if (e.screen2world != 0)
             {
-                var lmbdown = Bitmask.IsBitSet(GetKeyState(0x01), 15);
+                var lmbdown = Bitmask.IsBitSet(Native.GetKeyState(0x01), 15);
                 S2WActive = true;
                 //1: editing absolute point 
                 //2: editing main point
                 //3: editing secondary point
                 var mousePos = ImGui.GetIO().MousePos;
-                if (_pi.Framework.Gui.ScreenToWorld(new SharpDX.Vector2(mousePos.X, mousePos.Y), out var worldPos, Config.maxdistance * 5))
+                if (pi.Framework.Gui.ScreenToWorld(new SharpDX.Vector2(mousePos.X, mousePos.Y), out var worldPos, Config.maxdistance * 5))
                 {
                     if (e.screen2world == 1 || e.screen2world == 2)
                     {
@@ -282,25 +201,25 @@ namespace Splatoon
             }
             else if (e.type == 1)
             {
-                if (e.includeOwnHitbox) radius += _pi.ClientState.LocalPlayer.HitboxRadius;
+                if (e.includeOwnHitbox) radius += pi.ClientState.LocalPlayer.HitboxRadius;
                 if (e.refActorType == 1)
                 {
-                    draw.Add((_pi.ClientState.LocalPlayer.Position.X, _pi.ClientState.LocalPlayer.Position.Y,
-                        _pi.ClientState.LocalPlayer.Position.Z, radius));
+                    draw.Add((pi.ClientState.LocalPlayer.Position.X, pi.ClientState.LocalPlayer.Position.Y,
+                        pi.ClientState.LocalPlayer.Position.Z, radius));
                 }
-                else if (e.refActorType == 2 && _pi.ClientState.Targets.CurrentTarget != null
-                    && _pi.ClientState.Targets.CurrentTarget is BattleNpc
-                    && _pi.ClientState.Targets.CurrentTarget.Address != IntPtr.Zero)
+                else if (e.refActorType == 2 && pi.ClientState.Targets.CurrentTarget != null
+                    && pi.ClientState.Targets.CurrentTarget is BattleNpc
+                    && pi.ClientState.Targets.CurrentTarget.Address != IntPtr.Zero)
                 {
-                    if (e.includeHitbox) radius += _pi.ClientState.Targets.CurrentTarget.HitboxRadius;
-                    draw.Add((_pi.ClientState.Targets.CurrentTarget.Position.X, _pi.ClientState.Targets.CurrentTarget.Position.Y,
-                        _pi.ClientState.Targets.CurrentTarget.Position.Z, radius));
+                    if (e.includeHitbox) radius += pi.ClientState.Targets.CurrentTarget.HitboxRadius;
+                    draw.Add((pi.ClientState.Targets.CurrentTarget.Position.X, pi.ClientState.Targets.CurrentTarget.Position.Y,
+                        pi.ClientState.Targets.CurrentTarget.Position.Z, radius));
                 }
                 else if (e.refActorType == 0 && e.refActorName.Length > 0)
                 {
-                    foreach (var a in _pi.ClientState.Actors)
+                    foreach (var a in pi.ClientState.Actors)
                     {
-                        if ((e.refActorName == "*" || a.Name.ToLower().Contains(e.refActorName.ToLower()))
+                        if ((e.refActorName == "*" || a.Name.ContainsIgnoreCase(e.refActorName))
                                 && a.Address != IntPtr.Zero && (!e.onlyTargetable || GetIsTargetable(a)))
                         {
                             var aradius = radius;
@@ -313,14 +232,14 @@ namespace Splatoon
             }
             else if (e.type == 2)
             {
-                if (ShouldDraw(e.offX, _pi.ClientState.LocalPlayer.Position.X, e.offY, _pi.ClientState.LocalPlayer.Position.Y)
-                    || ShouldDraw(e.refX, _pi.ClientState.LocalPlayer.Position.X, e.refY, _pi.ClientState.LocalPlayer.Position.Y))
+                if (ShouldDraw(e.offX, pi.ClientState.LocalPlayer.Position.X, e.offY, pi.ClientState.LocalPlayer.Position.Y)
+                    || ShouldDraw(e.refX, pi.ClientState.LocalPlayer.Position.X, e.refY, pi.ClientState.LocalPlayer.Position.Y))
                     displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
             }
             if (draw.Count == 0) return;
             foreach (var (x, y, z, r) in draw)
             {
-                if (!ShouldDraw(x + e.offX, _pi.ClientState.LocalPlayer.Position.X, y + e.offY, _pi.ClientState.LocalPlayer.Position.Y)) continue;
+                if (!ShouldDraw(x + e.offX, pi.ClientState.LocalPlayer.Position.X, y + e.offY, pi.ClientState.LocalPlayer.Position.Y)) continue;
                 if (e.thicc > 0)
                 {
                     if (r > 0)
@@ -342,15 +261,15 @@ namespace Splatoon
         internal bool IsLayoutVisible(Layout i)
         {
             if (!i.Enabled) return false;
-            if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(_pi.ClientState.TerritoryType)) return false;
-            if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)_pi.ClientState.LocalPlayer.ClassJob.Id)) return false;
-            if ((i.DCond == 1 || i.DCond == 3) && !_pi.ClientState.Condition[ConditionFlag.InCombat]) return false;
-            if ((i.DCond == 2 || i.DCond == 3) && !_pi.ClientState.Condition[ConditionFlag.BoundByDuty]) return false;
-            if (i.DCond == 4 && !(_pi.ClientState.Condition[ConditionFlag.InCombat]
-                || _pi.ClientState.Condition[ConditionFlag.BoundByDuty])) return false;
+            if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(pi.ClientState.TerritoryType)) return false;
+            if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)pi.ClientState.LocalPlayer.ClassJob.Id)) return false;
+            if ((i.DCond == 1 || i.DCond == 3) && !pi.ClientState.Condition[ConditionFlag.InCombat]) return false;
+            if ((i.DCond == 2 || i.DCond == 3) && !pi.ClientState.Condition[ConditionFlag.BoundByDuty]) return false;
+            if (i.DCond == 4 && !(pi.ClientState.Condition[ConditionFlag.InCombat]
+                || pi.ClientState.Condition[ConditionFlag.BoundByDuty])) return false;
             if (i.Visibility == 1)
             {
-                if (!_pi.ClientState.Condition[ConditionFlag.InCombat]) return false;
+                if (!pi.ClientState.Condition[ConditionFlag.InCombat]) return false;
                 var tic = DateTimeOffset.Now.ToUnixTimeSeconds() - CombatStarted;
                 if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) return false;
             }
@@ -366,7 +285,7 @@ namespace Splatoon
         {
             if (tochat)
             {
-                _pi.Framework.Gui.Chat.Print("[Splatoon]" + s);
+                pi.Framework.Gui.Chat.Print("[Splatoon]" + s);
             }
             if (Config.dumplog)
             {
@@ -392,21 +311,17 @@ namespace Splatoon
         {
             if(a is Chara)
             {
-                return GetIsTargetable_Character(a.Address) != 0;
+                return MemoryManager.GetIsTargetable_Character(a.Address) != 0;
             }
             else
             {
-                return GetIsTargetable_GameObject(a.Address) != 0;
+                return MemoryManager.GetIsTargetable_GameObject(a.Address) != 0;
             }
         }
-
 
         public void HandleChat()
         {
 
         }
-
-        [DllImport("User32.dll")]
-        static extern short GetKeyState(int nVirtKey);
     }
 }

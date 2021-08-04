@@ -49,11 +49,13 @@
     <Compile Include="CGui.cs" />
     <Compile Include="ChlogGui.cs" />
     <Compile Include="Colors.cs" />
+    <Compile Include="Commands.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DGui.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Gui.cs" />
-    <Compile Include="Helpers.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="Static.cs" />
     <Compile Include="ImGuiEx.cs" />
     <Compile Include="Layout.cs" />
     <Compile Include="Native.cs" />

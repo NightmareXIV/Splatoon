@@ -36,12 +36,12 @@ namespace Splatoon
         public CGui(Splatoon p)
         {
             this.p = p;
-            p._pi.UiBuilder.OnBuildUi += Draw;
+            p.pi.UiBuilder.OnBuildUi += Draw;
         }
 
         public void Dispose()
         {
-            p._pi.UiBuilder.OnBuildUi -= Draw;
+            p.pi.UiBuilder.OnBuildUi -= Draw;
         }
 
         void UnsetS2W()
@@ -178,7 +178,7 @@ namespace Splatoon
                     else
                     {
                         var l = new Layout();
-                        if(p._pi.ClientState != null) l.ZoneLockH.Add(p._pi.ClientState.TerritoryType);
+                        if(p.pi.ClientState != null) l.ZoneLockH.Add(p.pi.ClientState.TerritoryType);
                         p.Config.Layouts.Add(lname, l);
                         lname = "";
                     }
@@ -334,9 +334,9 @@ namespace Splatoon
                                 ImGui.SetNextItemWidth(WidthCombo);
                                 ImGui.InputTextWithHint("##msghide" + i, "Case-insensitive (partial) message", ref p.Config.Layouts[i].MessageToWatchForEnd, 100);
                             }*/
-                            var colorZLock = p._pi.ClientState?.TerritoryType != null
+                            var colorZLock = p.pi.ClientState?.TerritoryType != null
                                 && p.Config.Layouts[i].ZoneLockH.Count != 0 
-                                && !p.Config.Layouts[i].ZoneLockH.Contains(p._pi.ClientState.TerritoryType)
+                                && !p.Config.Layouts[i].ZoneLockH.Contains(p.pi.ClientState.TerritoryType)
                                 && DateTimeOffset.Now.ToUnixTimeMilliseconds() % 1000 < 500;
                             if (colorZLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
                             ImGuiEx.SizedText("Zone lock: ", WidthLayout);
@@ -355,14 +355,14 @@ namespace Splatoon
                                 ImGui.SameLine();
                                 ImGui.Checkbox("Only selected", ref zlockcur);
                                 ImGui.PushStyleColor(ImGuiCol.Text, Colors.Yellow);
-                                if(p.Config.Layouts[i].ZoneLockH.Contains(p._pi.ClientState.TerritoryType))
+                                if(p.Config.Layouts[i].ZoneLockH.Contains(p.pi.ClientState.TerritoryType))
                                 {
                                     ImGuiEx.ColorButton(Colors.Red);
                                 }
-                                if (ImGui.SmallButton("Current zone: " + p._pi.ClientState.TerritoryType + " / "
-                                    + p.Zones[p._pi.ClientState.TerritoryType].PlaceName.Value.Name))
+                                if (ImGui.SmallButton("Current zone: " + p.pi.ClientState.TerritoryType + " / "
+                                    + p.Zones[p.pi.ClientState.TerritoryType].PlaceName.Value.Name))
                                 {
-                                    Helpers.ToggleHashSet(ref p.Config.Layouts[i].ZoneLockH, p._pi.ClientState.TerritoryType);
+                                    Static.ToggleHashSet(ref p.Config.Layouts[i].ZoneLockH, p.pi.ClientState.TerritoryType);
                                 }
                                 ImGuiEx.UncolorButton();
                                 ImGui.PopStyleColor();
@@ -378,7 +378,7 @@ namespace Splatoon
                                     }
                                     if (ImGui.SmallButton(s))
                                     {
-                                        Helpers.ToggleHashSet(ref p.Config.Layouts[i].ZoneLockH, z.Key);
+                                        Static.ToggleHashSet(ref p.Config.Layouts[i].ZoneLockH, z.Key);
                                     }
                                     ImGuiEx.UncolorButton();
                                 }
@@ -404,9 +404,9 @@ namespace Splatoon
                                     }
                                 }
                             }
-                            var colorJLock = p._pi.ClientState?.LocalPlayer?.ClassJob != null
+                            var colorJLock = p.pi.ClientState?.LocalPlayer?.ClassJob != null
                                 && p.Config.Layouts[i].JobLock != 0
-                                && !Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, (int)p._pi.ClientState.LocalPlayer.ClassJob.Id)
+                                && !Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, (int)p.pi.ClientState.LocalPlayer.ClassJob.Id)
                                 && DateTimeOffset.Now.ToUnixTimeMilliseconds() % 1000 < 500;
                             if (colorJLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
                             ImGuiEx.SizedText("Job lock", WidthLayout);
@@ -465,9 +465,9 @@ namespace Splatoon
                                 else
                                 {
                                     var el = new Element(0);
-                                    el.refX = p._pi.ClientState.LocalPlayer.Position.X;
-                                    el.refY = p._pi.ClientState.LocalPlayer.Position.Y;
-                                    el.refZ = p._pi.ClientState.LocalPlayer.Position.Z;
+                                    el.refX = p.pi.ClientState.LocalPlayer.Position.X;
+                                    el.refY = p.pi.ClientState.LocalPlayer.Position.Y;
+                                    el.refZ = p.pi.ClientState.LocalPlayer.Position.Z;
                                     p.Config.Layouts[i].Elements.Add(ename, el);
                                     ename = "";
                                 }
@@ -523,9 +523,9 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if (ImGui.Button("My position##ref" + i + k))
                                             {
-                                                el.refX = p._pi.ClientState.LocalPlayer.Position.X;
-                                                el.refY = p._pi.ClientState.LocalPlayer.Position.Y;
-                                                el.refZ = p._pi.ClientState.LocalPlayer.Position.Z;
+                                                el.refX = p.pi.ClientState.LocalPlayer.Position.X;
+                                                el.refY = p.pi.ClientState.LocalPlayer.Position.Y;
+                                                el.refZ = p.pi.ClientState.LocalPlayer.Position.Z;
                                             }
                                             ImGui.SameLine();
                                             if (ImGui.Button("0 0 0##ref" + i + k))
@@ -545,7 +545,7 @@ namespace Splatoon
                                                 }
                                                 else
                                                 {
-                                                    p._pi.Framework.Gui.Toast.ShowError("Unable to use for hidden element");
+                                                    p.pi.Framework.Gui.Toast.ShowError("Unable to use for hidden element");
                                                 }
                                             }
                                             ImGui.PopItemWidth();
@@ -570,10 +570,10 @@ namespace Splatoon
                                                 }
                                                 ImGui.SameLine();
                                                 ImGui.Checkbox("Targetable only##"+i+k, ref el.onlyTargetable);
-                                                if (p._pi.ClientState.Targets.CurrentTarget != null)
+                                                if (p.pi.ClientState.Targets.CurrentTarget != null)
                                                 {
                                                     ImGui.SameLine();
-                                                    if(ImGui.Button("Target##btarget" + i + k)) el.refActorName = p._pi.ClientState.Targets.CurrentTarget.Name;
+                                                    if(ImGui.Button("Target##btarget" + i + k)) el.refActorName = p.pi.ClientState.Targets.CurrentTarget.Name;
                                                 }
                                             }
                                         }
@@ -597,9 +597,9 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if (ImGui.Button("My position##off" + i + k))
                                             {
-                                                el.offX = p._pi.ClientState.LocalPlayer.Position.X;
-                                                el.offY = p._pi.ClientState.LocalPlayer.Position.Y;
-                                                el.offZ = p._pi.ClientState.LocalPlayer.Position.Z;
+                                                el.offX = p.pi.ClientState.LocalPlayer.Position.X;
+                                                el.offY = p.pi.ClientState.LocalPlayer.Position.Y;
+                                                el.offZ = p.pi.ClientState.LocalPlayer.Position.Z;
                                             }
                                         }
                                         ImGui.SameLine();
@@ -624,7 +624,7 @@ namespace Splatoon
                                                 }
                                                 else
                                                 {
-                                                    p._pi.Framework.Gui.Toast.ShowError("Unable to use for hidden element");
+                                                    p.pi.Framework.Gui.Toast.ShowError("Unable to use for hidden element");
                                                 }
                                             }
                                         }
@@ -737,13 +737,13 @@ namespace Splatoon
 
         private void SetCursorTo(float refX, float refZ, float refY)
         {
-            if (p._pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(refX, refZ, refY), out var screenPos))
+            if (p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(refX, refZ, refY), out var screenPos))
             {
                 var point = new Native.POINT() { X = (int)screenPos.X, Y = (int)screenPos.Y };
-                //p._pi.Framework.Gui.Chat.Print(point.X + "/" + point.Y);
+                //p.pi.Framework.Gui.Chat.Print(point.X + "/" + point.Y);
                 if (Native.ClientToScreen(Process.GetCurrentProcess().MainWindowHandle, ref point))
                 {
-                    //p._pi.Framework.Gui.Chat.Print(point.X + "/" + point.Y);
+                    //p.pi.Framework.Gui.Chat.Print(point.X + "/" + point.Y);
                     Native.SetCursorPos(point.X, point.Y);
                 }
             }

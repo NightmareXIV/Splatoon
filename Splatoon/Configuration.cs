@@ -30,11 +30,15 @@ namespace Splatoon
         {
             this.plugin = plugin;
             ZipSemaphore = new SemaphoreSlim(1);
+            plugin.pi.UiBuilder.OnOpenConfigUi += delegate
+            {
+                plugin.ConfigGui.Open = true;
+            };
         }
 
         public void Save()
         {
-            plugin._pi.SavePluginConfig(this);
+            plugin.pi.SavePluginConfig(this);
         }
 
         public void Backup()
@@ -44,9 +48,9 @@ namespace Splatoon
                 plugin.Log("Failed to create backup: previous backup did not completed yet. ", true);
                 return;
             }
-            var cFile = Path.Combine(plugin._pi.GetPluginConfigDirectory(), "..", "Splatoon.json");
+            var cFile = Path.Combine(plugin.pi.GetPluginConfigDirectory(), "..", "Splatoon.json");
             var configStr = File.ReadAllText(cFile);
-            var bkpFPath = Path.Combine(plugin._pi.GetPluginConfigDirectory(), "Backups");
+            var bkpFPath = Path.Combine(plugin.pi.GetPluginConfigDirectory(), "Backups");
             Directory.CreateDirectory(bkpFPath);
             var tempDir = Path.Combine(bkpFPath, "temp");
             Directory.CreateDirectory(tempDir);
