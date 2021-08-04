@@ -52,6 +52,7 @@
     <Compile Include="Commands.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DGui.cs" />
+    <Compile Include="DisplayObjectInterfaces.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Gui.cs" />
     <Compile Include="Memory.cs" />
