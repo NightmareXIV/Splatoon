@@ -119,13 +119,17 @@ namespace Splatoon
                         ImGui.SetTooltip("Only try to draw objects that are not \n" +
                             "further away from you than this value");
 
-                    ImGui.Checkbox("Extra long lines support", ref p.Config.fixLongLines);
+                    ImGuiEx.SizedText("Line segments:", WidthLayout);
+                    ImGui.SameLine();
+                    ImGui.SetNextItemWidth(100f);
+                    ImGui.DragInt("##linesegments", ref p.Config.lineSegments, 0.1f, 10, 50);
+                    ImGui.SameLine();
+                    ImGui.Text("(?)");
                     if (ImGui.IsItemHovered())
-                        ImGui.SetTooltip("Enables fix for extra long lines so they don't jump around on the screen.\n" +
-                            "As a side effect line will be cut near the edge of the screen.\n" +
-                            "Generally it's recommended to keep this unchecked and avoid very long lines.\n\n" +
-                            "This is workaround and I'm looking for better solution.");
-
+                        ImGui.SetTooltip("Increase this if your lines stop drawing too far from the screen edges \n" +
+                            "   or if line disappears when you are zoomed in and near it's edge. \n" +
+                            "Increasing this setting SIGNIFICANTLY increases processing time.");
+                    
                     /*ImGuiEx.SizedText("Draw only when Y camera rotation is lower than:", WidthLayout * 2);
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(150f);

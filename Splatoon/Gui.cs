@@ -39,6 +39,11 @@ namespace Splatoon
                     p.Config.segments = 100;
                     p.Log("Your smoothness setting was unsafe. It was reset to 100.");
                 }
+                if (p.Config.lineSegments > 50 || p.Config.lineSegments < 4)
+                {
+                    p.Config.lineSegments = 20;
+                    p.Log("Your line segment setting was unsafe. It was reset to 20.");
+                }
                 try
                 {
                     ImGuiHelpers.ForceNextWindowMainViewport();
@@ -85,11 +90,13 @@ namespace Splatoon
 
         void DrawLineWorld(DisplayObjectLine e)
         {
+            var pointA = new Vector3(e.ax, e.ay, e.az);
+            var pointB = new Vector3(e.bx, e.by, e.bz);
             var resultA = p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.ax, e.az, e.ay), out SharpDX.Vector2 posA);
             if (!resultA)
             {
-                var posA2 = GetLineClosestToVisiblePoint(new Vector3(e.ax, e.ay, e.az),
-                (new Vector3(e.bx, e.by, e.bz) - new Vector3(e.ax, e.ay, e.az)) / p.Config.segments, 0, posA);
+                var posA2 = GetLineClosestToVisiblePoint(pointA,
+                (pointB - pointA) / p.CurrentLineSegments, 0, p.CurrentLineSegments);
                 if (posA2 == null)
                 {
                     return;
@@ -102,8 +109,8 @@ namespace Splatoon
             var resultB = p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.bx, e.bz, e.by), out SharpDX.Vector2 posB);
             if (!resultB)
             {
-                var posB2 = GetLineClosestToVisiblePoint(new Vector3(e.bx, e.by, e.bz),
-                (new Vector3(e.ax, e.ay, e.az) - new Vector3(e.bx, e.by, e.bz)) / p.Config.segments, 0, posB);
+                var posB2 = GetLineClosestToVisiblePoint(pointB,
+                (pointA - pointB) / p.CurrentLineSegments, 0, p.CurrentLineSegments);
                 if (posB2 == null)
                 {
                     return;
@@ -119,17 +126,19 @@ namespace Splatoon
             ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.None, e.thickness);
         }
 
-        SharpDX.Vector2? GetLineClosestToVisiblePoint(Vector3 currentPos, Vector3 delta, int curSegment, SharpDX.Vector2 prevSPos)
+        SharpDX.Vector2? GetLineClosestToVisiblePoint(Vector3 currentPos, Vector3 delta, int curSegment, int numSegments)
         {
-            if (curSegment >= p.Config.segments) return null;
+            if (curSegment > numSegments) return null;
             var nextPos = currentPos + delta;
             if(p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(nextPos.X, nextPos.Z, nextPos.Y), out SharpDX.Vector2 pos))
             {
-                return p.Config.fixLongLines?pos:prevSPos;
+                var preciseDelta = (nextPos - currentPos) / p.Config.lineSegments;
+                var preciseVector = GetLineClosestToVisiblePoint(currentPos, preciseDelta, 0, p.Config.lineSegments);
+                return preciseVector.HasValue?preciseVector.Value:pos;
             }
             else
             {
-                return GetLineClosestToVisiblePoint(nextPos, delta, ++curSegment, pos);
+                return GetLineClosestToVisiblePoint(nextPos, delta, ++curSegment, numSegments);
             }
         }
 

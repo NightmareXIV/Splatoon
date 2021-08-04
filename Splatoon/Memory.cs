@@ -11,6 +11,7 @@ namespace Splatoon
     {
         internal float* CameraAddressX;
         internal float* CameraAddressY;
+        internal float* CameraZoom;
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         internal delegate byte Character_GetIsTargetable(IntPtr characterPtr);
@@ -29,6 +30,7 @@ namespace Splatoon
             var cameraAddress = *(IntPtr*)p.pi.TargetModuleScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
             CameraAddressX = (float*)(cameraAddress + 0x130);
             CameraAddressY = (float*)(cameraAddress + 0x134);
+            CameraZoom = (float*)(cameraAddress + 0x114);
         }
     }
 }

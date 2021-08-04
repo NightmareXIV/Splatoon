@@ -37,9 +37,11 @@ namespace Splatoon
         internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
         internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
         internal float CamAngleY;
+        internal float CamZoom;
         internal bool S2WActive = false;
         internal bool prevMouseState = false;
         internal string SFind = null;
+        internal int CurrentLineSegments;
 
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -101,6 +103,11 @@ namespace Splatoon
                 CamAngleX = *MemoryManager.CameraAddressX + Math.PI;
                 if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
                 CamAngleY = *MemoryManager.CameraAddressY;
+                CamZoom = *MemoryManager.CameraZoom;
+                /*Range conversion https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
+                slope = (output_end - output_start) / (input_end - input_start)
+                output = output_start + slope * (input - input_start) */
+                CurrentLineSegments = (int)((3f + -0.108108f * (CamZoom - 1.5f)) * Config.lineSegments);
 
                 if (pi.ClientState.Condition[ConditionFlag.InCombat])
                 {

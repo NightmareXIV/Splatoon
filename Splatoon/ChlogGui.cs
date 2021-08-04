@@ -10,7 +10,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 8;
+        public const int ChlogVersion = 9;
         readonly Splatoon p;
         bool open = true;
         public ChlogGui(Splatoon p)
@@ -29,10 +29,11 @@ namespace Splatoon
             if (!open) return;
             if (!p.pi.ClientState.IsLoggedIn) return;
             ImGui.Begin("Splatoon has been updated", ref open, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
-            ImGui.Text("Changes in this version:\n" +
-                "- Object search (/sf) no longer highlights uninteractable objects\n" +
-                "- Added an option to only display targetable (interactable) objects when using an option to highlight objects by name\n" +
-                "- You may now use * in place of object name to highlight ALL objects at once (including /sf *)");
+            ImGui.TextUnformatted("Changes in this version:\n" +
+                "- Weird lines behavior should be fixed now.\n" +
+                "- In addition, an option has been added to allow for further fix of very long lines, \n" +
+                "   which is disabled by default because it has side effects.\n" +
+                "- Lines fix still needs some testing.");
             if(ImGui.Button("Close this window"))
             {
                 open = false;
