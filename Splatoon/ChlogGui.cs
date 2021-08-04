@@ -10,7 +10,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 9;
+        public const int ChlogVersion = 10;
         readonly Splatoon p;
         bool open = true;
         public ChlogGui(Splatoon p)
@@ -31,9 +31,11 @@ namespace Splatoon
             ImGui.Begin("Splatoon has been updated", ref open, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.TextUnformatted("Changes in this version:\n" +
                 "- Weird lines behavior should be fixed now.\n" +
-                "- In addition, an option has been added to allow for further fix of very long lines, \n" +
-                "   which is disabled by default because it has side effects.\n" +
-                "- Lines fix still needs some testing.");
+                "- In addition, an option has been added to allow configuring amount of line segments, \n" +
+                "   which you can increase if you have lines disappearing (that only should happen on very long lines).\n" +
+                "- Lines fix still needs some testing.\n" +
+                "- Added /splatoon settarget command, which allows you to quickly replace targeted object name for\n" +
+                "   elements of \"Game object with specific name\" type");
             if(ImGui.Button("Close this window"))
             {
                 open = false;

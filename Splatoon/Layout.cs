@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,5 +34,6 @@ namespace Splatoon
         public ulong JobLock = 0;
         [DefaultValue("")] public string MessageToWatchForEnd = "";
         public bool AutoHideOutCombat = true;
+        [NonSerialized] public Stopwatch sw = new Stopwatch();
     }
 }

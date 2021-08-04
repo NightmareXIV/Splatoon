@@ -15,6 +15,7 @@ using Lumina.Excel.GeneratedSheets;
 using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.Internal.Gui.Toast;
+using System.Diagnostics;
 
 namespace Splatoon
 {

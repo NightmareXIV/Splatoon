@@ -26,6 +26,7 @@ namespace Splatoon
         //public float maxcamY = 0.05f;
         public int ChlogReadVer = ChlogGui.ChlogVersion;
         public int lineSegments = 10;
+        [NonSerialized] public bool StopwatchEnabled = false;
 
         public void Initialize(Splatoon plugin)
         {

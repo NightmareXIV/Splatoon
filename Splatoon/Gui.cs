@@ -132,8 +132,7 @@ namespace Splatoon
             var nextPos = currentPos + delta;
             if(p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(nextPos.X, nextPos.Z, nextPos.Y), out SharpDX.Vector2 pos))
             {
-                var preciseDelta = (nextPos - currentPos) / p.Config.lineSegments;
-                var preciseVector = GetLineClosestToVisiblePoint(currentPos, preciseDelta, 0, p.Config.lineSegments);
+                var preciseVector = GetLineClosestToVisiblePoint(currentPos, (nextPos - currentPos) / p.Config.lineSegments, 0, p.Config.lineSegments);
                 return preciseVector.HasValue?preciseVector.Value:pos;
             }
             else

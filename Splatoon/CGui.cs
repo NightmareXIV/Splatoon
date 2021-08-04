@@ -570,6 +570,17 @@ namespace Splatoon
                                             ImGui.Combo("##actortype" + i + k, ref el.refActorType, Element.ActorTypes, Element.ActorTypes.Length);
                                             if (el.refActorType == 0)
                                             {
+                                                ImGui.SameLine();
+                                                if (ImGui.Button("Copy settarget command##"+i+k))
+                                                {
+                                                    Clipboard.SetText("/splatoon settarget " + i + "~" + k);
+                                                }
+                                                if (ImGui.IsItemHovered())
+                                                {
+                                                    ImGui.SetTooltip("This command allows you to quickly change\n" +
+                                                        "search name to your active target's name.\n" +
+                                                        "You can use it with macro.");
+                                                }
                                                 ImGuiEx.SizedText("", WidthElement);
                                                 ImGui.SameLine();
                                                 ImGui.SetNextItemWidth(WidthCombo);

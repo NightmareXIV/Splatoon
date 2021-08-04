@@ -48,11 +48,31 @@ namespace Splatoon
                         p.Log(e.Message);
                     }
                 }
+                else if (arguments.StartsWith("settarget "))
+                {
+                    try
+                    {
+                        if (p.pi.ClientState?.Targets?.CurrentTarget == null)
+                        {
+                            p.pi.Framework.Gui.Toast.ShowError("Target not selected");
+                        }
+                        else 
+                        {
+                            var name = arguments.Substring(arguments.IndexOf("settarget ") + 10).Split('~');
+                            p.Config.Layouts[name[0]].Elements[name[1]].refActorName = p.pi.ClientState.Targets.CurrentTarget.Name;
+                            p.pi.Framework.Gui.Toast.ShowQuest("Successfully set target");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        p.Log(e.Message);
+                    }
+                }
             })
             {
                 HelpMessage = "open Splatoon configuration menu \n" +
                 "/splatoon disable <PresetName> → disable specified preset \n" +
-                "/splatoon enable <PresetName> → enable specified preset \n"
+                "/splatoon enable <PresetName> → enable specified preset"
             });
 
             p.pi.CommandManager.AddHandler("/sf", new CommandInfo(delegate (string command, string arguments)
