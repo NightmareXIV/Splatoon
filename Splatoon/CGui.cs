@@ -287,7 +287,7 @@ namespace Splatoon
                             ImGui.Checkbox("Prevent disabling with mass disabling commands##" + i, ref p.Config.Layouts[i].DisableDisabling);
                             if (ImGui.Button("Export to clipboard"))
                             {
-                                Clipboard.SetText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+                                Clipboard.SetText(i + "~" + Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }))));
                             }
                             ImGui.SameLine();
                             if (ImGui.Button("Copy enable command"))
@@ -784,8 +784,17 @@ namespace Splatoon
         {
             try
             {
+                
                 var name = import.Split('~')[0];
                 var json = import.Substring(name.Length + 1);
+                try
+                {
+                    json = Encoding.UTF8.GetString(Convert.FromBase64String(json));
+                }
+                catch (Exception e)
+                {
+                    p.Log("Unable to parse input as Base64. Assuming raw JSON.", true);
+                }
                 if (p.Config.Layouts.ContainsKey(name))
                 {
                     p.Log("Error: this name already exists", true);
