@@ -486,9 +486,10 @@ namespace Splatoon
                             }
                             foreach (var k in p.Config.Layouts[i].Elements.Keys.ToArray())
                             {
+                                var cursor = ImGui.GetCursorPos();
                                 var el = p.Config.Layouts[i].Elements[k];
                                 var elcolored = false;
-                                if(!el.Enabled)
+                                if (!el.Enabled)
                                 {
                                     ImGui.PushStyleColor(ImGuiCol.Text, Colors.Gray);
                                     elcolored = true;
@@ -743,6 +744,13 @@ namespace Splatoon
                                     ImGui.PopStyleColor();
                                     elcolored = false;
                                 }
+                                var currentCursor = ImGui.GetCursorPos();
+                                var text = Element.ElementTypes[el.type] + (el.type == 1 ? " ["+(el.refActorType == 0?el.refActorName:Element.ActorTypes[el.refActorType])+"]" : "");
+                                var textSize = ImGui.CalcTextSize(text);
+                                ImGui.SetCursorPosX(ImGui.GetColumnWidth() - textSize.X - ImGui.GetStyle().ItemInnerSpacing.X);
+                                ImGui.SetCursorPosY(cursor.Y + ImGui.GetStyle().ItemInnerSpacing.Y / 2);
+                                ImGui.TextUnformatted(text);
+                                ImGui.SetCursorPos(currentCursor);
                             }
                         }
                     }
