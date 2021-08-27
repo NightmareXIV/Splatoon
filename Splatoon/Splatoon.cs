@@ -61,7 +61,7 @@ namespace Splatoon
             CommandManager.Dispose();
             pi.ClientState.TerritoryChanged -= TerritoryChangedEvent;
             pi.Framework.OnUpdateEvent -= HandleUpdate;
-            HttpServer.Dispose();
+            SetupShutdownHttp(false);
             pi.Dispose();
         }
 
@@ -85,7 +85,36 @@ namespace Splatoon
             }
             tickScheduler = new ConcurrentQueue<System.Action>();
             dynamicElements = new List<DynamicElement>();
-            HttpServer = new HTTPServer(this);
+            SetupShutdownHttp(Config.UseHttpServer);
+        }
+
+        internal void SetupShutdownHttp(bool enable)
+        {
+            if (enable)
+            {
+                if(HttpServer == null)
+                {
+                    try
+                    {
+                        HttpServer = new HTTPServer(this);
+                    }
+                    catch(Exception e)
+                    {
+                        Log("Critical error occurred while starting HTTP server.", true);
+                        Log(e.Message, true);
+                        Log(e.StackTrace);
+                        HttpServer = null;
+                    }
+                }
+            }
+            else
+            {
+                if (HttpServer != null)
+                {
+                    HttpServer.Dispose();
+                    HttpServer = null;
+                }
+            }
         }
 
         private void TerritoryChangedEvent(object sender, ushort e)

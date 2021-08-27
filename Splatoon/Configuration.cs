@@ -26,7 +26,8 @@ namespace Splatoon
         //public float maxcamY = 0.05f;
         public int ChlogReadVer = ChlogGui.ChlogVersion;
         public int lineSegments = 10;
-        [NonSerialized] public bool StopwatchEnabled = false;
+        public bool UseHttpServer = false;
+        public int port = 47774;
 
         public void Initialize(Splatoon plugin)
         {
@@ -57,7 +58,7 @@ namespace Splatoon
             var tempDir = Path.Combine(bkpFPath, "temp");
             Directory.CreateDirectory(tempDir);
             var tempFile = Path.Combine(tempDir, "Splatoon.json");
-            var bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-mm-dd hh-mm-ss-fffffff") + ".zip");
+            var bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-MM-dd hh-mm-ss-fffffff") + ".zip");
             File.Copy(cFile, tempFile, true);
             Task.Run(new Action(delegate { 
                 try

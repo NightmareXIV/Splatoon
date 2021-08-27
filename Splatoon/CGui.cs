@@ -100,7 +100,50 @@ namespace Splatoon
                 }*/
                 if (ImGui.CollapsingHeader("General settings"))
                 {
-
+                    ImGuiEx.SizedText("Use web API", WidthLayout);
+                    ImGui.SameLine();
+                    if(ImGui.Checkbox("##usewebapi", ref p.Config.UseHttpServer))
+                    {
+                        p.SetupShutdownHttp(p.Config.UseHttpServer);
+                    }
+                    ImGui.SameLine();
+                    if (p.Config.UseHttpServer)
+                    {
+                        ImGui.TextUnformatted("http://127.0.0.1:" + p.Config.port + "/");
+                        if (ImGui.IsItemHovered()) 
+                        {
+                            ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                            if (ImGui.IsMouseReleased(ImGuiMouseButton.Left) && ImGui.GetMouseDragDelta(ImGuiMouseButton.Left) == Vector2.Zero)
+                            {
+                                Process.Start("http://127.0.0.1:" + p.Config.port + "/");
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        ImGui.TextUnformatted("Port: ");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(100f);
+                        ImGui.DragInt("##webapiport", ref p.Config.port, float.Epsilon, 1, 65535);
+                        if (ImGui.IsItemHovered())
+                        {
+                            ImGui.SetTooltip("Please only change if you have really good reason");
+                        }
+                        if (p.Config.port < 1 || p.Config.port > 65535) p.Config.port = 47774;
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(100f);
+                        if (ImGui.Button("Default"))
+                        {
+                            p.Config.port = 47774;
+                        }
+                    }
+                    ImGui.SameLine();
+                    ImGui.SetNextItemWidth(250f);
+                    if(ImGui.Button("Open web API guide"))
+                    {
+                        Process.Start("https://github.com/Eternita-S/Splatoon#web-api-beta");
+                    }
+                    
                     ImGuiEx.SizedText("Circle smoothness:", WidthLayout);
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(100f);
@@ -311,7 +354,7 @@ namespace Splatoon
                             }
                             if (ImGui.IsItemHovered())
                             {
-                                ImGui.SetTooltip("Hold CTRL and click to copy raw");
+                                ImGui.SetTooltip("Hold CTRL and click to copy urlencoded raw\nHold ALT to copy raw JSON (you will have to urlencode it yourself)");
                             }
                             ImGuiEx.SizedText("Display conditions:", WidthLayout);
                             ImGui.SameLine();
@@ -535,7 +578,7 @@ namespace Splatoon
 
                                         if (ImGui.IsItemHovered())
                                         {
-                                            ImGui.SetTooltip("Hold CTRL and click to copy raw");
+                                            ImGui.SetTooltip("Hold CTRL and click to copy urlencoded raw\nHold ALT to copy raw JSON (you will have to urlencode it yourself)");
                                         }
                                         ImGuiEx.SizedText("Element type:", WidthElement);
                                         ImGui.SameLine();
@@ -793,7 +836,7 @@ namespace Splatoon
         private void HTTPExportToClipboard(object el)
         {
             var json = (el is Layout?"~":"")+JsonConvert.SerializeObject(el, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-            Clipboard.SetText(ImGui.GetIO().KeyCtrl ? HttpUtility.UrlEncode(json) : Static.Compress(json));
+            Clipboard.SetText(ImGui.GetIO().KeyAlt?json:ImGui.GetIO().KeyCtrl ? HttpUtility.UrlEncode(json) : Static.Compress(json));
         }
 
         private void SetCursorTo(float refX, float refZ, float refY)

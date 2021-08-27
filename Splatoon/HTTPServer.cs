@@ -12,7 +12,6 @@ namespace Splatoon
 {
     class HTTPServer : IDisposable
     {
-        const int port = 47774;
         HttpListener listener;
         Splatoon p;
         public HTTPServer(Splatoon p)
@@ -20,7 +19,7 @@ namespace Splatoon
             this.p = p;
             listener = new HttpListener()
             {
-                Prefixes = { "http://127.0.0.1:" + port + "/" }
+                Prefixes = { "http://127.0.0.1:" + p.Config.port + "/" }
             };
             listener.Start();
             new Thread((ThreadStart)delegate
@@ -38,7 +37,7 @@ namespace Splatoon
                         var destroyAt = request.QueryString.Get("destroyAt");
                         var enableElements = request.QueryString.Get("enable");
                         var disableElements = request.QueryString.Get("disable");
-                        var raw = request.QueryString.Get("raw") != null;
+                        var rawElement = request.QueryString.Get("raw");
                         try
                         {
                             if (elementsName == null)
@@ -84,7 +83,7 @@ namespace Splatoon
                                 }
                             }
 
-                            if (directElements != null)
+                            if (directElements != null || rawElement != null)
                             {
                                 var dynElem = new DynamicElement()
                                 {
@@ -105,13 +104,13 @@ namespace Splatoon
                                         dynElem.DestroyTime = (long)Enum.Parse(typeof(DestroyCondition), destroyAt, true);
                                     }
                                 }
-                                if (raw)
+                                if (rawElement != null)
                                 {
-                                    status.Add("Raw element processing enabled");
-                                    //status.Add(directElements);
-                                    ProcessElement(directElements, ref Layouts, ref Elements);
+                                    status.Add("Raw payload found");
+                                    //status.Add(rawElement);
+                                    ProcessElement(rawElement, ref Layouts, ref Elements);
                                 }
-                                else
+                                if(directElements != null)
                                 {
                                     var encodedElements = directElements.Split(',');
                                     foreach (var e in encodedElements)
