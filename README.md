@@ -18,6 +18,7 @@ This project is in beta test.
 Splatoon now supports web API to remotely manage layouts and elements.
 Request http://127.0.0.1:47774/ with parameters specified in table.
 **I'm actively accepting suggestions about web API.** 
+**Note: params are QueryString params, not JSON**
 <table>
   <tr>
     <th>Parameter</td>
