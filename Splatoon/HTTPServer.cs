@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Splatoon
 {
@@ -40,9 +41,9 @@ namespace Splatoon
                         var raw = request.QueryString.Get("raw") != null;
                         try
                         {
-                            if (directElements != null && elementsName == null)
+                            if (elementsName == null)
                             {
-                                status.Add("Warning: elements param is present but namespace is not, direct elements will not be processed!");
+                                elementsName = "";
                             }
                             if (disableElements != null)
                             {
@@ -83,7 +84,7 @@ namespace Splatoon
                                 }
                             }
 
-                            if (elementsName != null && directElements != null)
+                            if (directElements != null)
                             {
                                 var dynElem = new DynamicElement()
                                 {
@@ -106,6 +107,8 @@ namespace Splatoon
                                 }
                                 if (raw)
                                 {
+                                    status.Add("Raw element processing enabled");
+                                    //status.Add(directElements);
                                     ProcessElement(directElements, ref Layouts, ref Elements);
                                 }
                                 else

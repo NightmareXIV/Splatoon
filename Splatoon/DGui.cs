@@ -35,7 +35,7 @@ namespace Splatoon
             {
                 if (ImGui.Begin("Splatoon debug", ref Open))
                 {
-                    ImGui.Columns(2);
+                    ImGui.Columns(3);
                     ImGui.BeginChild("##splatoondbg1");
                     var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
                     ImGui.Text("CombatStarted = " + t);
@@ -122,6 +122,31 @@ namespace Splatoon
                         if (p.LogStorage[i] != null) ImGui.TextWrapped(p.LogStorage[i]);
                     }
                     if (autoscrollLog) ImGui.SetScrollHereY();
+                    ImGui.EndChild();
+                    ImGui.NextColumn();
+                    ImGui.BeginChild("#slatoondynamics");
+                    ImGui.Text("Dynamic elements");
+                    if(ImGui.Button("Destroy all"))
+                    {
+                        p.dynamicElements.Clear();
+                    }
+                    for (var i = p.dynamicElements.Count - 1; i >= 0; i--)
+                    {
+                        var dynElem = p.dynamicElements[i];
+                        ImGui.TextWrapped($"[{dynElem.Name}]\n(Elements: {dynElem.Elements.Length}, " +
+                                    $"Layouts: {dynElem.Layouts.Length}, destroyAt: {dynElem.DestroyTime})");
+                        if (ImGui.SmallButton("Destroy##"+i))
+                        {
+                            p.dynamicElements.RemoveAt(i);
+                        }
+                        ImGui.SameLine();
+                        if (ImGui.SmallButton("Destroy namespace##" + i))
+                        {
+                            p.dynamicElements.RemoveAll(e => e.Name == dynElem.Name);
+                            break;
+                        }
+                        ImGui.Separator();
+                    }
                     ImGui.EndChild();
                     ImGui.Columns(1);
                 }

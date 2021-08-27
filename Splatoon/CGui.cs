@@ -12,6 +12,7 @@ using System.Numerics;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 namespace Splatoon
@@ -306,8 +307,11 @@ namespace Splatoon
                             ImGui.SameLine();
                             if(ImGui.Button("Copy as HTTP param##" + i))
                             {
-                                var json = JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-                                Clipboard.SetText(Static.Compress("~" + json));
+                                HTTPExportToClipboard(p.Config.Layouts[i]);
+                            }
+                            if (ImGui.IsItemHovered())
+                            {
+                                ImGui.SetTooltip("Hold CTRL and click to copy raw");
                             }
                             ImGuiEx.SizedText("Display conditions:", WidthLayout);
                             ImGui.SameLine();
@@ -526,10 +530,13 @@ namespace Splatoon
                                         ImGui.SameLine();
                                         if (ImGui.Button("Copy as HTTP param##" + i + k))
                                         {
-                                            var json = JsonConvert.SerializeObject(el, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-                                            Clipboard.SetText(Static.Compress(json));
+                                            HTTPExportToClipboard(el);
                                         }
 
+                                        if (ImGui.IsItemHovered())
+                                        {
+                                            ImGui.SetTooltip("Hold CTRL and click to copy raw");
+                                        }
                                         ImGuiEx.SizedText("Element type:", WidthElement);
                                         ImGui.SameLine();
                                         ImGui.SetNextItemWidth(WidthCombo);
@@ -781,6 +788,12 @@ namespace Splatoon
                 ImGui.EndChild();
             }
             ImGui.PopStyleVar();
+        }
+
+        private void HTTPExportToClipboard(object el)
+        {
+            var json = (el is Layout?"~":"")+JsonConvert.SerializeObject(el, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+            Clipboard.SetText(ImGui.GetIO().KeyCtrl ? HttpUtility.UrlEncode(json) : Static.Compress(json));
         }
 
         private void SetCursorTo(float refX, float refZ, float refY)
