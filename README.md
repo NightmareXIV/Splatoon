@@ -17,6 +17,7 @@ This project is in beta test.
 # Web API (beta)
 Splatoon now supports web API to remotely manage layouts and elements.
 Request http://127.0.0.1:47774/ with parameters specified in table.
+**I'm actively accepting suggestions about web API.** 
 <table>
   <tr>
     <th>Parameter</td>
@@ -37,7 +38,7 @@ Request http://127.0.0.1:47774/ with parameters specified in table.
     <td>elements</td>
     <td>Directly transfer encoded element into Splatoon without need of any configuration from inside plugin. They are temporary and will not be stored by Splatoon between restarts.
 <ul>
-      <li> Multiple comma-separated elements allowed unless also using `raw` parameter.</li>
+      <li> Multiple comma-separated elements allowed.</li>
       <li> Can contain layouts and elements at the same time. To obtain layout/element code, use appropriate button inside Splatoon configuration after setting them up.</li>
       <li> If you are exporting layout, it's display conditions, zone/job lock, etc preserved. You do not need to enable layouts/elements before exporting, it will be done automatically.</li>
       </ul>
@@ -45,18 +46,26 @@ Request http://127.0.0.1:47774/ with parameters specified in table.
   </tr>
   <tr>
     <td>namespace</td>
-    <td>Add element to specific named namespace instead of default one. If you are not using `destroyAt` parameter, always specify namespace so you can destroy element manually later.</td>
+    <td>Add elements to specific named namespace instead of default one. If you are not using `destroyAt` parameter, always specify namespace so you can destroy element manually later. This will apply to all layouts/elements passed in current request. Namespaces are not unique: you can reuse same namespace in further queries to add more layouts/elements to a single namespace.</td>
   </tr>
   <tr>
     <td>destroyAt</td>
-    <td></td>
+    <td>Passing this parameter let you specify when layouts/elements you have defined in request should be destroyed automatically by Splatoon. This parameter can take the following values:
+  <ul>
+    <li>`NEVER` or `0` - do not use auto-destroy. This is default value. </li>
+    <li>`COMBAT_EXIT` - destroy layouts/elements next time player exits combat.</li>
+    <li>`TERRITORY_CHANGE` - destroy layouts/elements next time player changes territory (enters/exits dungeon, for example)</li>
+    <li>Numeric value greater than 0 - destroy layouts/elements after this much <b>milli</b>seconds have passed.</li>
+      </ul>
+      This will apply to all layouts/elements passed in current request.
+  </td>
   </tr>
   <tr>
     <td>destroy</td>
-    <td></td>
+    <td>Comma-separated namespaces that will be destroyed. All elements that were added under namespace you specified will be destroyed at once. Destruction is always processed before addition of new layouts/elements, so if you want to clear your namespace from possible remainings from previous additions, just pass it's name in `destroy` parameter as well.</td>
   </tr>
   <tr>
     <td>raw</td>
-    <td></td>
+    <td>By default you have to pass layouts/elements in encoded format. However that makes it difficult to edit from outside of Splatoon. Should you require this possibility - hold ALT while copying layout/element from Splatoon to obtain it in raw JSON format to which you can easily make changes and then pass it to `raw` parameter in your query. Don't forget to urlencode it. <b>Only one raw layout/element can be passed in a single query</b>, but you can freely pass encoded and raw at the same time.</td>
   </tr>
 </table>
