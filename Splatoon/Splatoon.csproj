@@ -53,8 +53,10 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="DGui.cs" />
     <Compile Include="DisplayObjectInterfaces.cs" />
+    <Compile Include="DynamicElement.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Gui.cs" />
+    <Compile Include="HTTPServer.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="ImGuiEx.cs" />

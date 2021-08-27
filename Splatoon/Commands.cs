@@ -29,7 +29,7 @@ namespace Splatoon
                     try
                     {
                         var name = arguments.Substring(arguments.IndexOf("enable ") + 7);
-                        p.Config.Layouts[name].Enabled = true;
+                        SwitchState(name, true);
                     }
                     catch (Exception e)
                     {
@@ -41,7 +41,7 @@ namespace Splatoon
                     try
                     {
                         var name = arguments.Substring(arguments.IndexOf("disable ") + 8);
-                        p.Config.Layouts[name].Enabled = false;
+                        SwitchState(name, false);
                     }
                     catch (Exception e)
                     {
@@ -105,6 +105,19 @@ namespace Splatoon
             {
                 HelpMessage = "highlight objects containing specified phrase"
             });
+        }
+
+        internal void SwitchState(string name, bool enable)
+        {
+            if (name.Contains("~"))
+            {
+                var aname = name.Split('~');
+                p.Config.Layouts[aname[0]].Elements[aname[1]].Enabled = enable;
+            }
+            else
+            {
+                p.Config.Layouts[name].Enabled = enable;
+            }
         }
 
         public void Dispose()

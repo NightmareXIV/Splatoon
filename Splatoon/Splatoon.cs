@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.Internal.Gui.Toast;
 using System.Diagnostics;
+using System.Collections.Concurrent;
 
 namespace Splatoon
 {
@@ -43,6 +44,9 @@ namespace Splatoon
         internal bool prevMouseState = false;
         internal string SFind = null;
         internal int CurrentLineSegments;
+        internal ConcurrentQueue<System.Action> tickScheduler;
+        internal List<DynamicElement> dynamicElements;
+        internal HTTPServer HttpServer;
 
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -56,6 +60,7 @@ namespace Splatoon
             CommandManager.Dispose();
             pi.ClientState.TerritoryChanged -= TerritoryChangedEvent;
             pi.Framework.OnUpdateEvent -= HandleUpdate;
+            HttpServer.Dispose();
             pi.Dispose();
         }
 
@@ -77,6 +82,9 @@ namespace Splatoon
             {
                 ChangelogGui = new ChlogGui(this);
             }
+            tickScheduler = new ConcurrentQueue<System.Action>();
+            dynamicElements = new List<DynamicElement>();
+            HttpServer = new HTTPServer(this);
         }
 
         private void TerritoryChangedEvent(object sender, ushort e)
@@ -93,6 +101,10 @@ namespace Splatoon
         {
             try
             {
+                if(tickScheduler.TryDequeue(out var action))
+                {
+                    action.Invoke();
+                }
                 displayObjects.Clear();
                 if (pi.ClientState == null || pi.ClientState.LocalPlayer == null) return;
                 var pl = pi.ClientState.LocalPlayer;
@@ -149,6 +161,39 @@ namespace Splatoon
                 {
                     if (!IsLayoutVisible(i)) continue;
                     foreach (var e in i.Elements.Values.ToArray())
+                    {
+                        ProcessElement(e);
+                    }
+                }
+
+                for(var i = dynamicElements.Count-1; i>=0; i++)
+                {
+                    var de = dynamicElements[i];
+                    if (de.DestroyTime == DestroyAt.COMBAT_EXIT)
+                    {
+                        if (!pi.ClientState.Condition[ConditionFlag.InCombat])
+                        {
+                            dynamicElements.RemoveAt(i);
+                            continue;
+                        }
+                    }
+                    else if(de.DestroyTime > 0)
+                    {
+                        if(DateTimeOffset.Now.ToUnixTimeMilliseconds() > (long)de.DestroyTime)
+                        {
+                            dynamicElements.RemoveAt(i);
+                            continue;
+                        }
+                    }
+                    foreach(var l in de.Layouts)
+                    {
+                        if (!IsLayoutVisible(l)) continue;
+                        foreach (var e in l.Elements.Values.ToArray())
+                        {
+                            ProcessElement(e);
+                        }
+                    }
+                    foreach(var e in de.Elements)
                     {
                         ProcessElement(e);
                     }

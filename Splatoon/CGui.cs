@@ -187,6 +187,10 @@ namespace Splatoon
                     {
                         p.Log("Name can't contain reserved characters: ~", true);
                     }
+                    else if (lname.Contains(","))
+                    {
+                        p.Log("Name can't contain reserved characters: ,", true);
+                    }
                     else
                     {
                         var l = new Layout();
@@ -287,7 +291,7 @@ namespace Splatoon
                             ImGui.Checkbox("Prevent disabling with mass disabling commands##" + i, ref p.Config.Layouts[i].DisableDisabling);
                             if (ImGui.Button("Export to clipboard"))
                             {
-                                Clipboard.SetText(i + "~" + Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }))));
+                                Clipboard.SetText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
                             }
                             ImGui.SameLine();
                             if (ImGui.Button("Copy enable command"))
@@ -298,6 +302,12 @@ namespace Splatoon
                             if (ImGui.Button("Copy disable command"))
                             {
                                 Clipboard.SetText("/splatoon disable " + i);
+                            }
+                            ImGui.SameLine();
+                            if(ImGui.Button("Copy as HTTP param##" + i))
+                            {
+                                var json = JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+                                Clipboard.SetText(Static.Compress("~" + json));
                             }
                             ImGuiEx.SizedText("Display conditions:", WidthLayout);
                             ImGui.SameLine();
@@ -374,7 +384,7 @@ namespace Splatoon
                                 if (ImGui.SmallButton("Current zone: " + p.pi.ClientState.TerritoryType + " / "
                                     + p.Zones[p.pi.ClientState.TerritoryType].PlaceName.Value.Name))
                                 {
-                                    Static.ToggleHashSet(ref p.Config.Layouts[i].ZoneLockH, p.pi.ClientState.TerritoryType);
+                                    p.Config.Layouts[i].ZoneLockH.Toggle(p.pi.ClientState.TerritoryType);
                                 }
                                 ImGuiEx.UncolorButton();
                                 ImGui.PopStyleColor();
@@ -390,7 +400,7 @@ namespace Splatoon
                                     }
                                     if (ImGui.SmallButton(s))
                                     {
-                                        Static.ToggleHashSet(ref p.Config.Layouts[i].ZoneLockH, z.Key);
+                                        p.Config.Layouts[i].ZoneLockH.Toggle(z.Key);
                                     }
                                     ImGuiEx.UncolorButton();
                                 }
@@ -513,6 +523,13 @@ namespace Splatoon
                                     if (p.Config.Layouts[i].Elements.ContainsKey(k))
                                     {
                                         ImGui.Checkbox("Enabled##" + i + k, ref el.Enabled);
+                                        ImGui.SameLine();
+                                        if (ImGui.Button("Copy as HTTP param##" + i + k))
+                                        {
+                                            var json = JsonConvert.SerializeObject(el, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+                                            Clipboard.SetText(Static.Compress(json));
+                                        }
+
                                         ImGuiEx.SizedText("Element type:", WidthElement);
                                         ImGui.SameLine();
                                         ImGui.SetNextItemWidth(WidthCombo);
@@ -790,10 +807,11 @@ namespace Splatoon
                 try
                 {
                     json = Encoding.UTF8.GetString(Convert.FromBase64String(json));
+                    p.Log("Import type: Base64");
                 }
                 catch (Exception e)
                 {
-                    p.Log("Unable to parse input as Base64. Assuming raw JSON.", true);
+                    p.Log("Import type: JSON", true);
                 }
                 if (p.Config.Layouts.ContainsKey(name))
                 {
@@ -802,6 +820,10 @@ namespace Splatoon
                 else if (name.Length == 0)
                 {
                     p.Log("Error: name not present", true);
+                }
+                else if (name.Contains(","))
+                {
+                    p.Log("Name can't contain reserved characters: ,", true);
                 }
                 else
                 {
