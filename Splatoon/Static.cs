@@ -38,7 +38,7 @@ namespace Splatoon
             return a.ToLower(CultureInfo.InvariantCulture).Contains(b.ToLower(CultureInfo.InvariantCulture));
         }
 
-        public static string Compress(string s)
+        public static string Compress(this string s)
         {
             var bytes = Encoding.Unicode.GetBytes(s);
             using (var msi = new MemoryStream(bytes))
@@ -48,13 +48,13 @@ namespace Splatoon
                 {
                     msi.CopyTo(gs);
                 }
-                return Convert.ToBase64String(mso.ToArray());
+                return Convert.ToBase64String(mso.ToArray()).Replace('+', '-').Replace('/', '_');
             }
         }
 
-        public static string Decompress(string s)
+        public static string Decompress(this string s)
         {
-            var bytes = Convert.FromBase64String(s);
+            var bytes = Convert.FromBase64String(s.Replace('-', '+').Replace('_', '/'));
             using (var msi = new MemoryStream(bytes))
             using (var mso = new MemoryStream())
             {

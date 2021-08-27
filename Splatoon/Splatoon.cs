@@ -47,6 +47,7 @@ namespace Splatoon
         internal ConcurrentQueue<System.Action> tickScheduler;
         internal List<DynamicElement> dynamicElements;
         internal HTTPServer HttpServer;
+        internal bool prevCombatState = false;
 
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -93,6 +94,14 @@ namespace Splatoon
             {
                 SFind = null;
                 pi.Framework.Gui.Toast.ShowQuest("[Splatoon] Search stopped");
+            }
+            for (var i = dynamicElements.Count - 1; i >= 0; i--)
+            {
+                var de = dynamicElements[i];
+                if(de.DestroyTime == (long)DestroyCondition.TERRITORY_CHANGE)
+                {
+                    dynamicElements.RemoveAt(i);
+                }
             }
         }
 
@@ -166,12 +175,12 @@ namespace Splatoon
                     }
                 }
 
-                for(var i = dynamicElements.Count-1; i>=0; i++)
+                for(var i = dynamicElements.Count-1; i>=0; i--)
                 {
                     var de = dynamicElements[i];
-                    if (de.DestroyTime == DestroyAt.COMBAT_EXIT)
+                    if (de.DestroyTime == (long)DestroyCondition.COMBAT_EXIT)
                     {
-                        if (!pi.ClientState.Condition[ConditionFlag.InCombat])
+                        if (!pi.ClientState.Condition[ConditionFlag.InCombat] && prevCombatState)
                         {
                             dynamicElements.RemoveAt(i);
                             continue;
@@ -179,7 +188,7 @@ namespace Splatoon
                     }
                     else if(de.DestroyTime > 0)
                     {
-                        if(DateTimeOffset.Now.ToUnixTimeMilliseconds() > (long)de.DestroyTime)
+                        if(DateTimeOffset.Now.ToUnixTimeMilliseconds() > de.DestroyTime)
                         {
                             dynamicElements.RemoveAt(i);
                             continue;
@@ -198,6 +207,7 @@ namespace Splatoon
                         ProcessElement(e);
                     }
                 }
+                prevCombatState = pi.ClientState.Condition[ConditionFlag.InCombat];
             }
             catch(Exception e)
             {
