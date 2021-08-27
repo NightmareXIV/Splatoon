@@ -11,6 +11,5 @@ Detailed instructions available here: https://github.com/Eternita-S/MyDalamudPlu
 # WARNING!
 This project is in beta test. 
 * Expect bugs! But critical bugs that could potentially break/crash the game should be fixed by now.
-* Always keep backup of your configuration!
-* Gui sucks, I'll do something with it later (maybe)
-* Some functions may not be working yet
+* ~~Always keep backup of your configuration!~~ Plugin will do backups for you now!
+* Gui sucks, I'll do something with it later (never)
