@@ -332,7 +332,7 @@ namespace Splatoon
                         {
                             ImGui.Checkbox("Enabled##" + i, ref p.Config.Layouts[i].Enabled);
                             ImGui.SameLine();
-                            ImGui.Checkbox("Prevent disabling with mass disabling commands##" + i, ref p.Config.Layouts[i].DisableDisabling);
+                            ImGui.Checkbox("Prevent controlling with web api##" + i, ref p.Config.Layouts[i].DisableDisabling);
                             if (ImGui.Button("Export to clipboard"))
                             {
                                 Clipboard.SetText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));

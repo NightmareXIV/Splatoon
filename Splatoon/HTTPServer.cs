@@ -49,7 +49,7 @@ namespace Splatoon
                                 var names = disableElements.Split(',');
                                 foreach (var n in names)
                                 {
-                                    p.tickScheduler.Enqueue(delegate { p.CommandManager.SwitchState(n, false); });
+                                    p.tickScheduler.Enqueue(delegate { p.CommandManager.SwitchState(n, false, true); });
                                     status.Add("Disabling: " + n);
                                 }
                             }
@@ -59,7 +59,7 @@ namespace Splatoon
                                 var names = enableElements.Split(',');
                                 foreach (var n in names)
                                 {
-                                    p.tickScheduler.Enqueue(delegate { p.CommandManager.SwitchState(n, true); });
+                                    p.tickScheduler.Enqueue(delegate { p.CommandManager.SwitchState(n, true, true); });
                                     status.Add("Enabling: " + n);
                                 }
                             }

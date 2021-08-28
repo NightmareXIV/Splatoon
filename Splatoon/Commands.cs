@@ -107,15 +107,17 @@ namespace Splatoon
             });
         }
 
-        internal void SwitchState(string name, bool enable)
+        internal void SwitchState(string name, bool enable, bool web = false)
         {
             if (name.Contains("~"))
             {
                 var aname = name.Split('~');
+                if (web && p.Config.Layouts[aname[0]].DisableDisabling) return;
                 p.Config.Layouts[aname[0]].Elements[aname[1]].Enabled = enable;
             }
             else
             {
+                if (web && p.Config.Layouts[name].DisableDisabling) return;
                 p.Config.Layouts[name].Enabled = enable;
             }
         }
