@@ -37,12 +37,12 @@ Request http://127.0.0.1:47774/ with parameters specified in table.
   </tr>
   <tr>
     <td>elements</td>
-    <td>Directly transfer encoded element into Splatoon without need of any configuration from inside plugin. They are temporary and will not be stored by Splatoon between restarts.
+    <td>Directly transfer encoded element into Splatoon without need of any preconfiguration from inside plugin. They are temporary and will not be stored by Splatoon between restarts.
 <ul>
+  <li>To obtain encoded layout/element, press <b>Copy as HTTP param</b> button inside Splatoon plugin. These buttons are located inside every layout and element.</li>
       <li> Multiple comma-separated elements allowed.</li>
       <li> Can contain layouts and elements at the same time. To obtain layout/element code, use appropriate button inside Splatoon configuration after setting them up.</li>
-      <li> If you are exporting layout, it's display conditions, zone/job lock, etc preserved. You do not need to enable layouts/elements before exporting, it will be done automatically.</li>
-      </ul>
+      <li> If you are exporting layout, it's display conditions, zone/job lock, etc preserved. You do not need to enable layouts/elements before exporting, it will be done automatically.</li>      </ul>
   </td>
   </tr>
   <tr>
