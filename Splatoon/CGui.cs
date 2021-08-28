@@ -833,10 +833,25 @@ namespace Splatoon
             ImGui.PopStyleVar();
         }
 
-        private void HTTPExportToClipboard(object el)
+        private void HTTPExportToClipboard(Layout el)
         {
-            var json = (el is Layout?"~":"")+JsonConvert.SerializeObject(el, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-            Clipboard.SetText(ImGui.GetIO().KeyAlt?json:ImGui.GetIO().KeyCtrl ? HttpUtility.UrlEncode(json) : Static.Compress(json));
+            var l = JsonConvert.DeserializeObject<Layout>(JsonConvert.SerializeObject(el));
+            l.Enabled = true;
+            foreach (var e in l.Elements.Values) e.Enabled = true;
+            var json = "~" + JsonConvert.SerializeObject(l, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+            var compressed = json.Compress();
+            var base64 = json.ToBase64UrlSafe();
+            Clipboard.SetText(ImGui.GetIO().KeyAlt ? json : ImGui.GetIO().KeyCtrl ? HttpUtility.UrlEncode(json) : compressed.Length>base64.Length?base64:compressed);
+        }
+
+        private void HTTPExportToClipboard(Element el)
+        {
+            var l = JsonConvert.DeserializeObject<Element>(JsonConvert.SerializeObject(el)); ;
+            l.Enabled = true;
+            var json = JsonConvert.SerializeObject(l, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+            var compressed = json.Compress();
+            var base64 = json.ToBase64UrlSafe();
+            Clipboard.SetText(ImGui.GetIO().KeyAlt ? json : ImGui.GetIO().KeyCtrl ? HttpUtility.UrlEncode(json) : compressed.Length > base64.Length ? base64 : compressed);
         }
 
         private void SetCursorTo(float refX, float refZ, float refY)

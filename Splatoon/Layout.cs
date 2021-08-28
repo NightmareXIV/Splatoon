@@ -21,18 +21,18 @@ namespace Splatoon
             "Show between A and B time since receiving a message in combat", 
             "Show on receiving message A, hide on receiving message B in combat", 
             "External control, hidden by default" };
-        public bool Enabled = true;
+        [DefaultValue(true)] public bool Enabled = true;
         public HashSet<ushort> ZoneLockH = new HashSet<ushort>();
-        public int DCond = 0;
-        public int BattleTimeBegin = 0;
-        public int BattleTimeEnd = 0;
-        public int Visibility = 0;
+        [DefaultValue(0)] public int DCond = 0;
+        [DefaultValue(0)] public int BattleTimeBegin = 0;
+        [DefaultValue(0)] public int BattleTimeEnd = 0;
+        [DefaultValue(0)] public int Visibility = 0;
         [DefaultValue("")] public string MessageToWatch = "";
         [NonSerialized] internal long MessageTimeStarted = 0;
         public Dictionary<string, Element> Elements = new Dictionary<string, Element>();
-        public bool DisableDisabling = false;
-        public ulong JobLock = 0;
+        [DefaultValue(false)] public bool DisableDisabling = false;
+        [DefaultValue(0)] public ulong JobLock = 0;
         [DefaultValue("")] public string MessageToWatchForEnd = "";
-        public bool AutoHideOutCombat = true;
+        [DefaultValue(true)] public bool AutoHideOutCombat = true;
     }
 }

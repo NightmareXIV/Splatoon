@@ -52,6 +52,16 @@ namespace Splatoon
             }
         }
 
+        public static string ToBase64UrlSafe(this string s)
+        {
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(s)).Replace('+', '-').Replace('/', '_');
+        }
+
+        public static string FromBase64UrlSafe(this string s)
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(s.Replace('-', '+').Replace('_', '/')));
+        }
+
         public static string Decompress(this string s)
         {
             var bytes = Convert.FromBase64String(s.Replace('-', '+').Replace('_', '/'));

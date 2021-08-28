@@ -116,7 +116,15 @@ namespace Splatoon
                                     foreach (var e in encodedElements)
                                     {
                                         //status.Add(directElements);
-                                        var decoded = Static.Decompress(e);
+                                        string decoded;
+                                        try
+                                        {
+                                            decoded = e.Decompress();
+                                        }
+                                        catch(Exception)
+                                        {
+                                            decoded = e.FromBase64UrlSafe();
+                                        }
                                         ProcessElement(decoded, ref Layouts, ref Elements);
                                     }
                                 }
