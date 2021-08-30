@@ -48,6 +48,7 @@ namespace Splatoon
         internal List<DynamicElement> dynamicElements;
         internal HTTPServer HttpServer;
         internal bool prevCombatState = false;
+        internal bool isPvpZone = false;
 
         public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
         private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -61,6 +62,7 @@ namespace Splatoon
             CommandManager.Dispose();
             pi.ClientState.TerritoryChanged -= TerritoryChangedEvent;
             pi.Framework.OnUpdateEvent -= HandleUpdate;
+            pi.ClientState.OnLogin -= UpdatePvpZone;
             SetupShutdownHttp(false);
             pi.Dispose();
         }
@@ -86,6 +88,8 @@ namespace Splatoon
             tickScheduler = new ConcurrentQueue<System.Action>();
             dynamicElements = new List<DynamicElement>();
             SetupShutdownHttp(Config.UseHttpServer);
+            UpdatePvpZone(pi.ClientState.TerritoryType);
+            pi.ClientState.OnLogin += UpdatePvpZone;
         }
 
         internal void SetupShutdownHttp(bool enable)
@@ -119,6 +123,7 @@ namespace Splatoon
 
         private void TerritoryChangedEvent(object sender, ushort e)
         {
+            UpdatePvpZone(e);
             if (SFind != null)
             {
                 SFind = null;
@@ -131,6 +136,24 @@ namespace Splatoon
                 {
                     dynamicElements.RemoveAt(i);
                 }
+            }
+        }
+
+        void UpdatePvpZone(object sender, EventArgs e)
+        {
+            UpdatePvpZone(pi.ClientState.TerritoryType);
+        }
+
+        void UpdatePvpZone(uint terr)
+        {
+            try
+            {
+                isPvpZone = pi.Data.GetExcelSheet<TerritoryType>().GetRow(terr).IsPvpZone;
+            }
+            catch (KeyNotFoundException)
+            {
+                isPvpZone = false;
+                PluginLog.Warning("Could not get territory for current zone");
             }
         }
 

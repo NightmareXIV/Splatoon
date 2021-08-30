@@ -89,6 +89,13 @@ namespace Splatoon
             }
             WasOpen = true;
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
+            var titleColored = false;
+            if (p.isPvpZone)
+            {
+                ImGui.PushStyleColor(ImGuiCol.TitleBg, Colors.DarkRed);
+                ImGui.PushStyleColor(ImGuiCol.TitleBgActive, Colors.DarkRed);
+                titleColored = true;
+            }
             if (ImGui.Begin("Splatoon", ref Open))
             {
                 /*if(p.CamAngleY > p.Config.maxcamY)
@@ -98,6 +105,13 @@ namespace Splatoon
                     ImGuiEx.TextCentered("Either lift your camera up or adjust camera settings in general settings below.");
                     ImGui.PopStyleColor();
                 }*/
+                if (p.isPvpZone)
+                {
+                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
+                    ImGuiEx.TextCentered("Splatoon will not work in PvP zones.");
+                    ImGuiEx.TextCentered("You can only view and edit settings.");
+                    ImGui.PopStyleColor();
+                }
                 if (ImGui.CollapsingHeader("General settings"))
                 {
                     ImGuiEx.SizedText("Use web API", WidthLayout);
@@ -617,7 +631,7 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if(ImGui.Button("Screen2World##s2w1" + i + k))
                                             {
-                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled && !p.isPvpZone/* && p.CamAngleY <= p.Config.maxcamY*/)
                                                 {
                                                     UnsetS2W();
                                                     SetCursorTo(el.refX, el.refZ, el.refY);
@@ -707,7 +721,7 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if (ImGui.Button("Screen2World##s2w2" + i + k))
                                             {
-                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled && !p.isPvpZone/* && p.CamAngleY <= p.Config.maxcamY*/)
                                                 {
                                                     UnsetS2W();
                                                     SetCursorTo(el.offX, el.offZ, el.offY);
@@ -831,6 +845,10 @@ namespace Splatoon
                 ImGui.EndChild();
             }
             ImGui.PopStyleVar();
+            if (titleColored)
+            {
+                ImGui.PopStyleColor(2);
+            }
         }
 
         private void HTTPExportToClipboard(Layout el)

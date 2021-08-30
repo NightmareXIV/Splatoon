@@ -17,20 +17,24 @@ namespace Splatoon
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, Colors.Transparent);
             var s = ImGui.CalcTextSize(text);
             ImGui.Text(text);
-            ImGui.SameLine();
-            if(width > s.X) ImGui.Button("", new Vector2(width-s.X, 1f));
+            if (width > s.X)
+            {
+                ImGui.SameLine();
+                ImGui.Button("", new Vector2(width - s.X, 1f));
+            }
             ImGui.PopStyleColor(3);
         }
 
         public static void TextCentered(string text)
         {
-            ImGui.PushStyleColor(ImGuiCol.Button, Colors.Transparent);
+            /*ImGui.PushStyleColor(ImGuiCol.Button, Colors.Transparent);
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Colors.Transparent);
-            ImGui.PushStyleColor(ImGuiCol.ButtonActive, Colors.Transparent);
+            ImGui.PushStyleColor(ImGuiCol.ButtonActive, Colors.Transparent);*/
             var s = ImGui.CalcTextSize(text);
-            ImGui.Button("", new Vector2(ImGui.GetColumnWidth()/2f - s.X/2f, 1f));
-            ImGui.PopStyleColor(3);
-            ImGui.SameLine();
+            //ImGui.Button("", new Vector2(ImGui.GetColumnWidth()/2f - s.X/2f, 1f));
+            ImGui.SetCursorPosX(ImGui.GetColumnWidth() / 2f - s.X / 2f);
+            //ImGui.PopStyleColor(3);
+            //ImGui.SameLine();
             ImGui.Text(text);
         }
 

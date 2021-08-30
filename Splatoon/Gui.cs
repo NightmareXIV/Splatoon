@@ -33,6 +33,7 @@ namespace Splatoon
         {
             try
             {
+                if (p.isPvpZone) return;
                 uid = 0;
                 if (p.Config.segments > 1000 || p.Config.segments < 4)
                 {
