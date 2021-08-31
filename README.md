@@ -68,7 +68,9 @@ Request http://127.0.0.1:47774/ with parameters specified in table.
   </tr>
   <tr>
     <td>raw</td>
-    <td>By default you have to pass layouts/elements in encoded format. However that makes it difficult to edit from outside of Splatoon. Should you require this possibility - hold ALT while copying layout/element from Splatoon to obtain it in raw JSON format to which you can easily make changes and then pass it to <code>raw</code> parameter in your query. Don't forget to urlencode it. <b>Only one raw layout/element can be passed in a single query</b>, but you can freely pass encoded and raw at the same time.</td>
+    <td>By default you have to pass layouts/elements in encoded format. However that makes it difficult to edit from outside of Splatoon. Should you require this possibility - hold CTRL while copying layout/element from Splatoon to obtain it in urlencoded JSON format to which you can easily make changes and then pass it to <code>raw</code> parameter in your query. <b>Only one raw layout/element can be passed in a single query</b>, but you can freely pass encoded and raw at the same time.</td>
   </tr>
 </table>
+<b>In addition to all this, you may send element/layout inside POST request body in raw, non-encoded format. To get pretty-printed json of layout/element, hold ALT while pressing "Copy as HTTP param" button.</b> Only one layout/element per query in the body is allowed.
+
 There is no difference between sending everything in one query and sending one layout/element per query. It also doesn't matters if you want to primarily use encoded or raw format. Just do it as you personally prefer.
