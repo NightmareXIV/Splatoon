@@ -59,7 +59,7 @@ Request http://127.0.0.1:47774/ with parameters specified in table.
     <li><code>TERRITORY_CHANGE</code> - destroy layouts/elements next time player changes territory (enters/exits dungeon, for example)</li>
     <li>Numeric value greater than 0 - destroy layouts/elements after this much <b>milli</b>seconds have passed.</li>
       </ul>
-      This will apply to all layouts/elements passed in current request.
+      This will apply to all layouts/elements passed in current request. <b>You can send multiple comma-separated values, as soon as any specified condition is met, elements will be removed.</b>
   </td>
   </tr>
   <tr>
