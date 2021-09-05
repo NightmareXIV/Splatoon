@@ -20,10 +20,6 @@ namespace Splatoon
                 {
                     p.ConfigGui.Open = true;
                 }
-                else if (arguments == "d")
-                {
-                    p.DebugGui.Open = true;
-                }
                 else if (arguments.StartsWith("enable "))
                 {
                     try

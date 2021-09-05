@@ -11,7 +11,7 @@ namespace Splatoon
         public string Name;
         public Layout[] Layouts;
         public Element[] Elements;
-        public long DestroyTime; //-1 combat exit / -2 terr change
+        public long[] DestroyTime; //-1 combat exit / -2 terr change
     }
 
     public enum DestroyCondition : long

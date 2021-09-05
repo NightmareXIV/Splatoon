@@ -17,6 +17,7 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.Internal.Gui.Toast;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using Dalamud.Game.ClientState.Actors;
 
 namespace Splatoon
 {
@@ -26,7 +27,6 @@ namespace Splatoon
         internal DalamudPluginInterface pi;
         internal Gui DrawingGui;
         internal CGui ConfigGui;
-        internal DGui DebugGui;
         internal Commands CommandManager;
         internal Memory MemoryManager;
         internal ChlogGui ChangelogGui;
@@ -58,11 +58,10 @@ namespace Splatoon
             Config.Save();
             DrawingGui.Dispose();
             ConfigGui.Dispose();
-            DebugGui.Dispose();
             CommandManager.Dispose();
             pi.ClientState.TerritoryChanged -= TerritoryChangedEvent;
             pi.Framework.OnUpdateEvent -= HandleUpdate;
-            pi.ClientState.OnLogin -= UpdatePvpZone;
+            pi.ClientState.OnLogin -= OnLogin;
             SetupShutdownHttp(false);
             pi.Dispose();
         }
@@ -80,7 +79,6 @@ namespace Splatoon
             pi.Framework.OnUpdateEvent += HandleUpdate;
             DrawingGui = new Gui(this);
             ConfigGui = new CGui(this);
-            DebugGui = new DGui(this);
             if(ChlogGui.ChlogVersion > Config.ChlogReadVer)
             {
                 ChangelogGui = new ChlogGui(this);
@@ -89,7 +87,7 @@ namespace Splatoon
             dynamicElements = new List<DynamicElement>();
             SetupShutdownHttp(Config.UseHttpServer);
             UpdatePvpZone(pi.ClientState.TerritoryType);
-            pi.ClientState.OnLogin += UpdatePvpZone;
+            pi.ClientState.OnLogin += OnLogin;
         }
 
         internal void SetupShutdownHttp(bool enable)
@@ -132,14 +130,17 @@ namespace Splatoon
             for (var i = dynamicElements.Count - 1; i >= 0; i--)
             {
                 var de = dynamicElements[i];
-                if(de.DestroyTime == (long)DestroyCondition.TERRITORY_CHANGE)
+                foreach (var dt in de.DestroyTime)
                 {
-                    dynamicElements.RemoveAt(i);
+                    if (dt == (long)DestroyCondition.TERRITORY_CHANGE)
+                    {
+                        dynamicElements.RemoveAt(i);
+                    }
                 }
             }
         }
 
-        void UpdatePvpZone(object sender, EventArgs e)
+        void OnLogin(object sender, EventArgs e)
         {
             UpdatePvpZone(pi.ClientState.TerritoryType);
         }
@@ -150,10 +151,9 @@ namespace Splatoon
             {
                 isPvpZone = pi.Data.GetExcelSheet<TerritoryType>().GetRow(terr).IsPvpZone;
             }
-            catch (KeyNotFoundException)
+            catch (Exception)
             {
                 isPvpZone = false;
-                PluginLog.Warning("Could not get territory for current zone");
             }
         }
 
@@ -230,20 +230,24 @@ namespace Splatoon
                 for(var i = dynamicElements.Count-1; i>=0; i--)
                 {
                     var de = dynamicElements[i];
-                    if (de.DestroyTime == (long)DestroyCondition.COMBAT_EXIT)
+
+                    foreach (var dt in de.DestroyTime)
                     {
-                        if (!pi.ClientState.Condition[ConditionFlag.InCombat] && prevCombatState)
+                        if (dt == (long)DestroyCondition.COMBAT_EXIT)
                         {
-                            dynamicElements.RemoveAt(i);
-                            continue;
+                            if (!pi.ClientState.Condition[ConditionFlag.InCombat] && prevCombatState)
+                            {
+                                dynamicElements.RemoveAt(i);
+                                continue;
+                            }
                         }
-                    }
-                    else if(de.DestroyTime > 0)
-                    {
-                        if(DateTimeOffset.Now.ToUnixTimeMilliseconds() > de.DestroyTime)
+                        else if (dt > 0)
                         {
-                            dynamicElements.RemoveAt(i);
-                            continue;
+                            if (DateTimeOffset.Now.ToUnixTimeMilliseconds() > dt)
+                            {
+                                dynamicElements.RemoveAt(i);
+                                continue;
+                            }
                         }
                     }
                     foreach(var l in de.Layouts)
@@ -433,6 +437,12 @@ namespace Splatoon
             {
                 return MemoryManager.GetIsTargetable_GameObject(a.Address) != 0;
             }
+        }
+
+        internal Position3 GetPlayerPosition()
+        {
+            if (pi.ClientState.LocalPlayer != null) return pi.ClientState.LocalPlayer.Position;
+            return new Position3() { X = 0, Y = 0, Z = 0 };
         }
 
         public void HandleChat()

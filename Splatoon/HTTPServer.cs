@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -38,6 +39,13 @@ namespace Splatoon
                         var enableElements = request.QueryString.Get("enable");
                         var disableElements = request.QueryString.Get("disable");
                         var rawElement = request.QueryString.Get("raw");
+                        var contents = "";
+                        using (var a = new StreamReader(context.Request.InputStream)) 
+                        {
+                            contents = a.ReadToEnd();
+                            p.Log("Body length: " + contents.Length);
+                            p.Log(contents);
+                        }
                         try
                         {
                             if (elementsName == null)
@@ -83,11 +91,11 @@ namespace Splatoon
                                 }
                             }
 
-                            if (directElements != null || rawElement != null)
+                            if (directElements != null || rawElement != null || (contents != null && contents != ""))
                             {
                                 var dynElem = new DynamicElement()
                                 {
-                                    DestroyTime = 0,
+                                    DestroyTime = new long[] { 0 },
                                     Name = elementsName,
                                 };
 
@@ -95,14 +103,19 @@ namespace Splatoon
                                 var Elements = new List<Element>();
                                 if (destroyAt != null)
                                 {
-                                    if (long.TryParse(destroyAt, out var dAt) && dAt > 0)
+                                    var dAtArray = new List<long>();
+                                    foreach (var destr in destroyAt.Split(','))
                                     {
-                                        dynElem.DestroyTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() + dAt;
+                                        if (long.TryParse(destr, out var dAt) && dAt > 0)
+                                        {
+                                            dAtArray.Add(DateTimeOffset.Now.ToUnixTimeMilliseconds() + dAt);
+                                        }
+                                        else
+                                        {
+                                            dAtArray.Add((long)Enum.Parse(typeof(DestroyCondition), destr, true));
+                                        }
                                     }
-                                    else
-                                    {
-                                        dynElem.DestroyTime = (long)Enum.Parse(typeof(DestroyCondition), destroyAt, true);
-                                    }
+                                    dynElem.DestroyTime = dAtArray.ToArray();
                                 }
                                 if (rawElement != null)
                                 {
@@ -110,7 +123,13 @@ namespace Splatoon
                                     //status.Add(rawElement);
                                     ProcessElement(rawElement, ref Layouts, ref Elements);
                                 }
-                                if(directElements != null)
+                                if (contents != null && contents != "")
+                                {
+                                    status.Add("Body payload found");
+                                    //status.Add(rawElement);
+                                    ProcessElement(contents, ref Layouts, ref Elements);
+                                }
+                                if (directElements != null)
                                 {
                                     var encodedElements = directElements.Split(',');
                                     foreach (var e in encodedElements)

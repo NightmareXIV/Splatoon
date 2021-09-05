@@ -46,12 +46,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bitmask.cs" />
-    <Compile Include="CGui.cs" />
+    <Compile Include="ConfigGui\CGui.cs" />
     <Compile Include="ChlogGui.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="ConfigGui\CGuiDebug.cs" />
+    <Compile Include="ConfigGui\CGuiDynamicElements.cs" />
+    <Compile Include="ConfigGui\CGuiLayouts.cs" />
+    <Compile Include="ConfigGui\CGuiGeneralSettings.cs" />
+    <Compile Include="ConfigGui\CGuiLog.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="DGui.cs" />
     <Compile Include="DisplayObjectInterfaces.cs" />
     <Compile Include="DynamicElement.cs" />
     <Compile Include="Element.cs" />
