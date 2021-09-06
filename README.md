@@ -74,5 +74,6 @@ Request http://127.0.0.1:47774/ with parameters specified in table.
 <b>In addition to all this, you may send element/layout inside POST request body in raw, non-encoded format. To get pretty-printed json of layout/element, hold ALT while pressing "Copy as HTTP param" button.</b> Only one layout/element per query in the body is allowed.
 <br>
 There is no difference between sending everything in one query and sending one layout/element per query. It also doesn't matters if you want to primarily use encoded or raw format. Just do it as you personally prefer.
+
 ## Examples for Triggernometry
 Show standard/technical step radius while dancing: https://gist.github.com/Eternita-S/8788c387bfc5fcfd76499ef4e46d37d9
