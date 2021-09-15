@@ -1,17 +1,4 @@
-﻿using Dalamud.Game.ClientState.Actors.Types.NonPlayer;
-using Dalamud.Interface;
-using Dalamud.Plugin;
-using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.ExceptionServices;
-using System.Text;
-using System.Threading.Tasks;
-using Num = System.Numerics;
-
-namespace Splatoon
+﻿namespace Splatoon
 {
     unsafe class Gui : IDisposable
     {
@@ -20,12 +7,12 @@ namespace Splatoon
         public Gui(Splatoon p)
         {
             this.p = p;
-            p.pi.UiBuilder.OnBuildUi += Draw;
+            Svc.PluginInterface.UiBuilder.Draw += Draw;
         }
 
         public void Dispose()
         {
-            p.pi.UiBuilder.OnBuildUi -= Draw;
+            Svc.PluginInterface.UiBuilder.Draw -= Draw;
         }
 
         [HandleProcessCorruptedStateExceptions]
@@ -51,7 +38,7 @@ namespace Splatoon
                     ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                     ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
                         | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.AlwaysUseWindowPadding);
-                    ImGui.SetWindowPos(new Num.Vector2(0, 0));
+                    ImGui.SetWindowPos(new Vector2(0, 0));
                     ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
                     foreach (var element in p.displayObjects)
                     {
@@ -93,7 +80,7 @@ namespace Splatoon
         {
             var pointA = new Vector3(e.ax, e.ay, e.az);
             var pointB = new Vector3(e.bx, e.by, e.bz);
-            var resultA = p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.ax, e.az, e.ay), out SharpDX.Vector2 posA);
+            var resultA = Svc.GameGui.WorldToScreen(new Vector3(e.ax, e.az, e.ay), out Vector2 posA);
             if (!resultA)
             {
                 var posA2 = GetLineClosestToVisiblePoint(pointA,
@@ -107,7 +94,7 @@ namespace Splatoon
                     posA = posA2.Value;
                 }
             }
-            var resultB = p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.bx, e.bz, e.by), out SharpDX.Vector2 posB);
+            var resultB = Svc.GameGui.WorldToScreen(new Vector3(e.bx, e.bz, e.by), out Vector2 posB);
             if (!resultB)
             {
                 var posB2 = GetLineClosestToVisiblePoint(pointB,
@@ -122,16 +109,16 @@ namespace Splatoon
                 }
             }
 
-            ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(posA.X, posA.Y));
-            ImGui.GetWindowDrawList().PathLineTo(new Num.Vector2(posB.X, posB.Y));
+            ImGui.GetWindowDrawList().PathLineTo(new Vector2(posA.X, posA.Y));
+            ImGui.GetWindowDrawList().PathLineTo(new Vector2(posB.X, posB.Y));
             ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.None, e.thickness);
         }
 
-        SharpDX.Vector2? GetLineClosestToVisiblePoint(Vector3 currentPos, Vector3 delta, int curSegment, int numSegments)
+        Vector2? GetLineClosestToVisiblePoint(Vector3 currentPos, Vector3 delta, int curSegment, int numSegments)
         {
             if (curSegment > numSegments) return null;
             var nextPos = currentPos + delta;
-            if(p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(nextPos.X, nextPos.Z, nextPos.Y), out SharpDX.Vector2 pos))
+            if(Svc.GameGui.WorldToScreen(new Vector3(nextPos.X, nextPos.Z, nextPos.Y), out Vector2 pos))
             {
                 var preciseVector = GetLineClosestToVisiblePoint(currentPos, (nextPos - currentPos) / p.Config.lineSegments, 0, p.Config.lineSegments);
                 return preciseVector.HasValue?preciseVector.Value:pos;
@@ -144,14 +131,14 @@ namespace Splatoon
 
         public void DrawTextWorld(DisplayObjectText e)
         {
-            if (p.pi.Framework.Gui.WorldToScreen(
-                            new SharpDX.Vector3(e.x, e.z, e.y),
-                            out SharpDX.Vector2 pos))
+            if (Svc.GameGui.WorldToScreen(
+                            new Vector3(e.x, e.z, e.y),
+                            out Vector2 pos))
             {
                 var size = ImGui.CalcTextSize(e.text);
-                size = new Num.Vector2(size.X + 10f, size.Y + 10f);
-                ImGui.SetNextWindowPos(new Num.Vector2(pos.X - size.X / 2, pos.Y - size.Y / 2));
-                ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Num.Vector2(5, 5));
+                size = new Vector2(size.X + 10f, size.Y + 10f);
+                ImGui.SetNextWindowPos(new Vector2(pos.X - size.X / 2, pos.Y - size.Y / 2));
+                ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
                 ImGui.PushStyleVar(ImGuiStyleVar.ChildRounding, 10f);
                 ImGui.PushStyleColor(ImGuiCol.ChildBg, ImGui.ColorConvertU32ToFloat4(e.bgcolor));
                 ImGui.BeginChild("##child" + e.text + ++uid, size, false,
@@ -167,19 +154,23 @@ namespace Splatoon
         public void DrawRingWorld(DisplayObjectCircle e)
         {
             int seg = p.Config.segments / 2;
-            p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.x + (e.radius * (float)Math.Sin(p.CamAngleX)), e.z,
-            e.y + (e.radius * (float)Math.Cos(p.CamAngleX))), out SharpDX.Vector2 refpos);
+            Svc.GameGui.WorldToScreen(new Vector3(
+                e.x + (e.radius * (float)Math.Sin(p.CamAngleX)),
+                e.z, 
+                e.y + (e.radius * (float)Math.Cos(p.CamAngleX))
+                ), out Vector2 refpos);
             var visible = false;
-            Num.Vector2?[] elements = new Num.Vector2?[p.Config.segments+1];
-            for (int i = 0; i <= p.Config.segments; i++)
+            Vector2?[] elements = new Vector2?[p.Config.segments];
+            for (int i = 0; i < p.Config.segments; i++)
             {
-                visible = p.pi.Framework.Gui.WorldToScreen(
-                    new SharpDX.Vector3(e.x + (e.radius * (float)Math.Sin((Math.PI / seg) * i)),
+                visible = Svc.GameGui.WorldToScreen(
+                    new Vector3(e.x + (e.radius * (float)Math.Sin((Math.PI / seg) * i)),
                     e.z,
-                    e.y + (e.radius * (float)Math.Cos((Math.PI / seg) * i))),
-                    out SharpDX.Vector2 pos) 
+                    e.y + (e.radius * (float)Math.Cos((Math.PI / seg) * i))
+                    ),
+                    out Vector2 pos) 
                     || visible;
-                if (pos.Y > refpos.Y) elements[i] = new Num.Vector2(pos.X, pos.Y);
+                if (pos.Y > refpos.Y) elements[i] = new Vector2(pos.X, pos.Y);
             }
             if (visible)
             {
@@ -194,9 +185,9 @@ namespace Splatoon
 
         public void DrawPoint(DisplayObjectDot e)
         {
-            if(p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(e.x, e.z, e.y), out SharpDX.Vector2 pos)) 
+            if(Svc.GameGui.WorldToScreen(new Vector3(e.x, e.z, e.y), out Vector2 pos)) 
                 ImGui.GetWindowDrawList().AddCircleFilled(
-                new Num.Vector2(pos.X, pos.Y),
+                new Vector2(pos.X, pos.Y),
                 e.thickness,
                 ImGui.GetColorU32(e.color),
                 100);

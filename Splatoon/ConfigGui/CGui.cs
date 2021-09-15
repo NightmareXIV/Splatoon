@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.ClientState.Actors.Types;
-using Dalamud.Game.ClientState.Actors.Types.NonPlayer;
-using Dalamud.Interface;
+﻿using Dalamud.Interface;
 using ImGuiNET;
 using Newtonsoft.Json;
 using System;
@@ -38,12 +36,12 @@ namespace Splatoon
         public CGui(Splatoon p)
         {
             this.p = p;
-            p.pi.UiBuilder.OnBuildUi += Draw;
+            Svc.PluginInterface.UiBuilder.Draw += Draw;
         }
 
         public void Dispose()
         {
-            p.pi.UiBuilder.OnBuildUi -= Draw;
+            Svc.PluginInterface.UiBuilder.Draw -= Draw;
         }
 
         void UnsetS2W()
@@ -138,6 +136,7 @@ namespace Splatoon
                 ImGui.PopStyleColor(2);
             }
             ImGui.EndTabBar();
+            ImGui.End();
         }
 
         private void HTTPExportToClipboard(Layout el)
@@ -165,13 +164,13 @@ namespace Splatoon
 
         private void SetCursorTo(float refX, float refZ, float refY)
         {
-            if (p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(refX, refZ, refY), out var screenPos))
+            if (Svc.GameGui.WorldToScreen(new Vector3(refX, refZ, refY), out var screenPos))
             {
                 var point = new Native.POINT() { X = (int)screenPos.X, Y = (int)screenPos.Y };
-                //p.pi.Framework.Gui.Chat.Print(point.X + "/" + point.Y);
+                //Chat.Print(point.X + "/" + point.Y);
                 if (Native.ClientToScreen(Process.GetCurrentProcess().MainWindowHandle, ref point))
                 {
-                    //p.pi.Framework.Gui.Chat.Print(point.X + "/" + point.Y);
+                    //Chat.Print(point.X + "/" + point.Y);
                     Native.SetCursorPos(point.X, point.Y);
                 }
             }

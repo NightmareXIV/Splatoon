@@ -7,7 +7,6 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Splatoon
 {
@@ -43,8 +42,8 @@ namespace Splatoon
                         using (var a = new StreamReader(context.Request.InputStream)) 
                         {
                             contents = a.ReadToEnd();
-                            p.Log("Body length: " + contents.Length);
-                            p.Log(contents);
+                            //p.Log("Body length: " + contents.Length);
+                            //p.Log(contents);
                         }
                         try
                         {
@@ -174,7 +173,7 @@ namespace Splatoon
                     }
                     catch (Exception e)
                     {
-                        //p.pi.Framework.Gui.Chat.Print("Error: " + e + "\n" + e.StackTrace);
+                        //Chat.Print("Error: " + e + "\n" + e.StackTrace);
                     }
                 }
             }).Start();

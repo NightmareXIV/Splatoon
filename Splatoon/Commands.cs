@@ -1,5 +1,5 @@
 ﻿using Dalamud.Game.Command;
-using Dalamud.Game.Internal.Gui.Toast;
+using Dalamud.Game.Gui.Toast;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace Splatoon
         internal Commands(Splatoon p)
         {
             this.p = p;
-            p.pi.CommandManager.AddHandler("/splatoon", new CommandInfo(delegate (string command, string arguments)
+            Svc.Commands.AddHandler("/splatoon", new CommandInfo(delegate (string command, string arguments)
             {
                 if (arguments == "")
                 {
@@ -48,15 +48,15 @@ namespace Splatoon
                 {
                     try
                     {
-                        if (p.pi.ClientState?.Targets?.CurrentTarget == null)
+                        if (Svc.Targets.Target == null)
                         {
-                            p.pi.Framework.Gui.Toast.ShowError("Target not selected");
+                            Svc.Toasts.ShowError("Target not selected");
                         }
                         else 
                         {
                             var name = arguments.Substring(arguments.IndexOf("settarget ") + 10).Split('~');
-                            p.Config.Layouts[name[0]].Elements[name[1]].refActorName = p.pi.ClientState.Targets.CurrentTarget.Name;
-                            p.pi.Framework.Gui.Toast.ShowQuest("Successfully set target");
+                            p.Config.Layouts[name[0]].Elements[name[1]].refActorName = Svc.Targets.Target.Name.ToString();
+                            Svc.Toasts.ShowQuest("Successfully set target");
                         }
                     }
                     catch (Exception e)
@@ -71,13 +71,13 @@ namespace Splatoon
                 "/splatoon enable <PresetName> → enable specified preset"
             });
 
-            p.pi.CommandManager.AddHandler("/sf", new CommandInfo(delegate (string command, string arguments)
+            Svc.Commands.AddHandler("/sf", new CommandInfo(delegate (string command, string arguments)
             {
                 if (arguments == "")
                 {
                     if (p.SFind != null)
                     {
-                        p.pi.Framework.Gui.Toast.ShowNormal("[Splatoon] Search stopped", new ToastOptions()
+                        Svc.Toasts.ShowNormal("[Splatoon] Search stopped", new ToastOptions()
                         {
                             Position = ToastPosition.Top
                         });
@@ -85,13 +85,13 @@ namespace Splatoon
                     }
                     else
                     {
-                        p.pi.Framework.Gui.Toast.ShowError("[Splatoon] Please specify target name");
+                        Svc.Toasts.ShowError("[Splatoon] Please specify target name");
                     }
                 }
                 else
                 {
                     p.SFind = arguments.Trim();
-                    p.pi.Framework.Gui.Toast.ShowQuest("[Splatoon] Searching for: " + p.SFind, new QuestToastOptions()
+                    Svc.Toasts.ShowQuest("[Splatoon] Searching for: " + p.SFind, new QuestToastOptions()
                     {
                         DisplayCheckmark = true,
                         PlaySound = true
@@ -128,8 +128,8 @@ namespace Splatoon
 
         public void Dispose()
         {
-            p.pi.CommandManager.RemoveHandler("/splatoon");
-            p.pi.CommandManager.RemoveHandler("/sf");
+            Svc.Commands.RemoveHandler("/splatoon");
+            Svc.Commands.RemoveHandler("/sf");
         }
     }
 }

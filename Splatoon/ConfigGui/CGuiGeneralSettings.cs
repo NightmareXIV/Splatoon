@@ -102,7 +102,6 @@ namespace Splatoon
             {
                 p.Config.maxcamY = 0.05f;
             }*/
-            ImGui.SameLine();
             ImGui.Text("Contact developer:");
             ImGui.SameLine();
             if (ImGui.Button("Github"))
@@ -113,7 +112,7 @@ namespace Splatoon
             if (ImGui.Button("Discord"))
             {
                 Clipboard.SetText("Eternita#4037");
-                p.pi.Framework.Gui.Chat.Print("[Splatoon] Contact me in discord: Eternita#4037. Discord ID copied into your clipboard.");
+                Svc.Chat.Print("[Splatoon] Contact me in discord: Eternita#4037. Discord ID copied into your clipboard.");
             }
         }
     }

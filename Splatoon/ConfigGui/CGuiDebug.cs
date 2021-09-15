@@ -1,11 +1,4 @@
-﻿using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Splatoon
+﻿namespace Splatoon
 {
     partial class CGui
     {
@@ -19,14 +12,14 @@ namespace Splatoon
             var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
             ImGui.Text("CombatStarted = " + t);
             ImGui.Separator();
-            if (p.pi.ClientState.LocalPlayer != null)
+            if (Svc.ClientState.LocalPlayer != null)
             {
-                var mypos = p.GetPlayerPosition();
+                var mypos = GetPlayerPositionXZY();
                 ImGui.Text("My pos XYZ: \n" + mypos.X + "\n" + mypos.Y + "\n" + mypos.Z);
-                var tar = p.pi.ClientState.Targets.CurrentTarget;
+                var tar = Svc.Targets.Target;
                 if (tar != null)
                 {
-                    ImGui.Text("Target pos XYZ: \n" + tar.Position.X + "\n" + tar.Position.Y + "\n" + tar.Position.Z);
+                    ImGui.Text("Target pos XYZ: \n" + tar.GetPositionXZY().X + "\n" + tar.GetPositionXZY().Y + "\n" + tar.GetPositionXZY().Z);
                 }
             }
             ImGui.Separator();
@@ -40,7 +33,7 @@ namespace Splatoon
             ImGui.PopItemWidth();
             if (ImGui.Button("To my pos"))
             {
-                var mypos = p.GetPlayerPosition();
+                var mypos = GetPlayerPositionXZY();
                 s2wx = mypos.X;
                 s2wy = mypos.Y;
                 s2wz = mypos.Z;
@@ -48,7 +41,7 @@ namespace Splatoon
             ImGui.SameLine();
             if (ImGui.Button("Query"))
             {
-                s2wb = p.pi.Framework.Gui.WorldToScreen(new SharpDX.Vector3(s2wx, s2wz, s2wy), out SharpDX.Vector2 pos);
+                s2wb = Svc.GameGui.WorldToScreen(new Vector3(s2wx, s2wz, s2wy), out Vector2 pos);
                 s2wrx = pos.X;
                 s2wry = pos.Y;
             }
@@ -57,12 +50,12 @@ namespace Splatoon
             ImGui.Text("Camera angle X:" + p.CamAngleX);
             ImGui.Text("Camera angle Y:" + p.CamAngleY);
             ImGui.Separator();
-            ImGui.Text("Actors:");
-            foreach (var a in p.pi.ClientState.Actors)
+            ImGui.Text("Game objects:");
+            foreach (var a in Svc.Objects)
             {
                 try
                 {
-                    ImGui.Text(a.Name);
+                    ImGui.Text(a.Name.ToString());
                 }
                 catch (Exception e)
                 {

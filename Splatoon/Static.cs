@@ -1,11 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿global using Dalamud.Game.ClientState.Objects.Types;
+global using System.Globalization;
+global using System.IO;
+global using System.IO.Compression;
+global using System.Numerics;
+global using Dalamud.Plugin;
+global using ImGuiNET;
+global using System.Runtime.ExceptionServices;
+global using System.Collections.Concurrent;
+global using Dalamud.Logging;
+global using static Splatoon.Static;
+global using Dalamud.Interface;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Threading.Tasks;
 
 namespace Splatoon
 {
@@ -74,6 +83,25 @@ namespace Splatoon
                 }
                 return Encoding.Unicode.GetString(mso.ToArray());
             }
+        }
+
+
+
+        //because Dalamud changed Y and Z in actor positions I have to do emulate old behavior to not break old presets
+        public static Vector3 GetPlayerPositionXZY()
+        {
+            if (Svc.ClientState.LocalPlayer != null)
+                return new Vector3(Svc.ClientState.LocalPlayer.Position.X,
+                    Svc.ClientState.LocalPlayer.Position.Z,
+                    Svc.ClientState.LocalPlayer.Position.Y);
+            return new Vector3() { X = 0, Y = 0, Z = 0 };
+        }
+
+        public static Vector3 GetPositionXZY(this GameObject a)
+        {
+            return new Vector3(a.Position.X,
+                    a.Position.Z,
+                    a.Position.Y);
         }
     }
 }

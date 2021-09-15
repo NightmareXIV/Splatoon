@@ -33,7 +33,7 @@ namespace Splatoon
         {
             this.plugin = plugin;
             ZipSemaphore = new SemaphoreSlim(1);
-            plugin.pi.UiBuilder.OnOpenConfigUi += delegate
+            Svc.PluginInterface.UiBuilder.OpenConfigUi += delegate
             {
                 plugin.ConfigGui.Open = true;
             };
@@ -41,24 +41,24 @@ namespace Splatoon
 
         public void Save()
         {
-            plugin.pi.SavePluginConfig(this);
+            Svc.PluginInterface.SavePluginConfig(this);
         }
 
-        public void Backup()
+        public bool Backup()
         {
             if (!ZipSemaphore.Wait(0))
             {
                 plugin.Log("Failed to create backup: previous backup did not completed yet. ", true);
-                return;
+                return false;
             }
-            var cFile = Path.Combine(plugin.pi.GetPluginConfigDirectory(), "..", "Splatoon.json");
+            var cFile = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "..", "Splatoon.json");
             var configStr = File.ReadAllText(cFile);
-            var bkpFPath = Path.Combine(plugin.pi.GetPluginConfigDirectory(), "Backups");
+            var bkpFPath = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Backups");
             Directory.CreateDirectory(bkpFPath);
             var tempDir = Path.Combine(bkpFPath, "temp");
             Directory.CreateDirectory(tempDir);
             var tempFile = Path.Combine(tempDir, "Splatoon.json");
-            var bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-MM-dd hh-mm-ss-fffffff") + ".zip");
+            var bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-MM-dd HH-mm-ss-fffffff") + ".zip");
             File.Copy(cFile, tempFile, true);
             Task.Run(new Action(delegate { 
                 try
@@ -74,6 +74,7 @@ namespace Splatoon
                 }
                 ZipSemaphore.Release();
             }));
+            return true;
         }
     }
 }

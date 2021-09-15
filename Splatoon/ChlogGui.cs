@@ -10,32 +10,35 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 12;
+        public const int ChlogVersion = 13;
         readonly Splatoon p;
         bool open = true;
+        bool understood = false;
         public ChlogGui(Splatoon p)
         {
             this.p = p;
-            p.pi.UiBuilder.OnBuildUi += Draw;
+            Svc.PluginInterface.UiBuilder.Draw += Draw;
         }
 
         public void Dispose()
         {
-            p.pi.UiBuilder.OnBuildUi -= Draw;
+            Svc.PluginInterface.UiBuilder.Draw -= Draw;
         }
 
         void Draw()
         {
             if (!open) return;
-            if (!p.pi.ClientState.IsLoggedIn) return;
-            ImGui.Begin("Splatoon has been updated", ref open, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
+            if (!Svc.ClientState.IsLoggedIn) return;
+            ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.TextUnformatted("Changes in this version:\n" +
-                "- Web api. You can enable it in settings as well as find the link to the guide.\n" +
-                "   It allows you to control Splatoon externally from Triggernometry, Cactbot\n" +
-                "   and any other program that supports sending HTTP requests.\n" +
-                "   Please note that web API is in beta and requires a lot of testing ideally.\n" +
-                "- Minor fixes and gui improvements.");
-            if(ImGui.Button("Close this window"))
+                "This is the API 4 version. \n" +
+                "There may be major bugs. \n" +
+                "Please report any suspicious behavior. \n" +
+                "If your existing markers stopped working, DO NOT try fix them yourself. \n" +
+                "Instead, report about it to me and I will fix them instead.\n\n" +
+                "A backup of your current configuration will be created when you close this window.");
+            ImGui.Checkbox("I have read and understood this message. ", ref understood);
+            if(understood && ImGui.Button("Close this window"))
             {
                 open = false;
             }
@@ -45,6 +48,7 @@ namespace Splatoon
 
         void Close()
         {
+            p.Config.Backup();
             p.Config.ChlogReadVer = ChlogVersion;
             p.Config.Save();
             this.Dispose();
