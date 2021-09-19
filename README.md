@@ -1,5 +1,6 @@
 # Splatoon for FFXIV
 Splatoon plugin allows you to put infinite amount of waymarks in the world of different size, colors, allows to add custom text to them as well. 
+<p align="center"><img src="https://raw.githubusercontent.com/Eternita-S/Splatoon/master/Splatoon/res/icon.png"></p>
 
 # Install
 Dalamud repository:
