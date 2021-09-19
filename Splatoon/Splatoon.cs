@@ -68,7 +68,7 @@ unsafe class Splatoon : IDalamudPlugin
         tickScheduler = new ConcurrentQueue<System.Action>();
         dynamicElements = new List<DynamicElement>();
         SetupShutdownHttp(Config.UseHttpServer);
-        UpdatePvpZone(Svc.ClientState.TerritoryType);
+        UpdatePvpZone(Svc.ClientState?.TerritoryType);
         Svc.ClientState.Login += OnLogin;
     }
 
@@ -124,14 +124,19 @@ unsafe class Splatoon : IDalamudPlugin
 
     void OnLogin(object sender, EventArgs e)
     {
-        UpdatePvpZone(Svc.ClientState.TerritoryType);
+        UpdatePvpZone(Svc.ClientState?.TerritoryType);
     }
 
-    void UpdatePvpZone(uint terr)
+    void UpdatePvpZone(uint? terr)
     {
+        if(terr == null)
+        {
+            isPvpZone = false;
+            return;
+        }
         try
         {
-            isPvpZone = Svc.Data.GetExcelSheet<TerritoryType>().GetRow(terr).IsPvpZone;
+            isPvpZone = Svc.Data.GetExcelSheet<TerritoryType>().GetRow(terr.Value).IsPvpZone;
         }
         catch (Exception)
         {
@@ -149,7 +154,7 @@ unsafe class Splatoon : IDalamudPlugin
                 action.Invoke();
             }
             displayObjects.Clear();
-            if (Svc.ClientState.LocalPlayer == null) return;
+            if (Svc.ClientState?.LocalPlayer == null) return;
             var pl = Svc.ClientState.LocalPlayer;
             if (Svc.ClientState.LocalPlayer.Address == IntPtr.Zero)
             {

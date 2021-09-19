@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Splatoon
 {
@@ -28,7 +27,7 @@ namespace Splatoon
                         break;
                     }
                 }
-                Clipboard.SetText(s.ToString());
+                ImGui.SetClipboardText(s.ToString());
             }
 
             ImGui.Checkbox("Copy in Dalamud.log##log", ref p.Config.dumplog);

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Splatoon
 {
@@ -111,7 +110,7 @@ namespace Splatoon
             ImGui.SameLine();
             if (ImGui.Button("Discord"))
             {
-                Clipboard.SetText("Eternita#4037");
+                ImGui.SetClipboardText("Eternita#4037");
                 Svc.Chat.Print("[Splatoon] Contact me in discord: Eternita#4037. Discord ID copied into your clipboard.");
             }
         }

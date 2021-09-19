@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Splatoon
 {
@@ -71,7 +70,7 @@ namespace Splatoon
             {
                 try
                 {
-                    ImportFromText(Clipboard.GetText());
+                    ImportFromText(ImGui.GetClipboardText());
                 }
                 catch (Exception e)
                 {
@@ -156,17 +155,17 @@ namespace Splatoon
                         ImGui.Checkbox("Prevent controlling with web api##" + i, ref p.Config.Layouts[i].DisableDisabling);
                         if (ImGui.Button("Export to clipboard"))
                         {
-                            Clipboard.SetText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+                            ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
                         }
                         ImGui.SameLine();
                         if (ImGui.Button("Copy enable command"))
                         {
-                            Clipboard.SetText("/splatoon enable " + i);
+                            ImGui.SetClipboardText("/splatoon enable " + i);
                         }
                         ImGui.SameLine();
                         if (ImGui.Button("Copy disable command"))
                         {
-                            Clipboard.SetText("/splatoon disable " + i);
+                            ImGui.SetClipboardText("/splatoon disable " + i);
                         }
                         ImGui.SameLine();
                         if (ImGui.Button("Copy as HTTP param##" + i))
@@ -463,7 +462,7 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             if (ImGui.Button("Copy settarget command##" + i + k))
                                             {
-                                                Clipboard.SetText("/splatoon settarget " + i + "~" + k);
+                                                ImGui.SetClipboardText("/splatoon settarget " + i + "~" + k);
                                             }
                                             if (ImGui.IsItemHovered())
                                             {
