@@ -179,34 +179,72 @@ namespace Splatoon
         {
             try
             {
-                
-                var name = import.Split('~')[0];
-                var json = import.Substring(name.Length + 1);
-                try
+                if (import.Contains('~'))
                 {
-                    json = Encoding.UTF8.GetString(Convert.FromBase64String(json));
-                    p.Log("Import type: Base64");
-                }
-                catch (Exception e)
-                {
-                    p.Log("Import type: JSON", true);
-                }
-                if (p.Config.Layouts.ContainsKey(name))
-                {
-                    p.Log("Error: this name already exists", true);
-                }
-                else if (name.Length == 0)
-                {
-                    p.Log("Error: name not present", true);
-                }
-                else if (name.Contains(","))
-                {
-                    p.Log("Name can't contain reserved characters: ,", true);
+                    var name = import.Split('~')[0];
+                    var json = import.Substring(name.Length + 1);
+                    try
+                    {
+                        json = Encoding.UTF8.GetString(Convert.FromBase64String(json));
+                        p.Log("Import type: Base64");
+                    }
+                    catch (Exception e)
+                    {
+                        p.Log("Import type: JSON", true);
+                    }
+                    if (p.Config.Layouts.ContainsKey(name))
+                    {
+                        p.Log("Error: this name already exists", true);
+                    }
+                    else if (name.Length == 0)
+                    {
+                        p.Log("Error: name not present", true);
+                    }
+                    else if (name.Contains(","))
+                    {
+                        p.Log("Name can't contain reserved characters: ,", true);
+                    }
+                    else
+                    {
+                        p.Config.Layouts.Add(name, JsonConvert.DeserializeObject<Layout>(json));
+                        import = "";
+                    }
                 }
                 else
                 {
-                    p.Config.Layouts.Add(name, JsonConvert.DeserializeObject<Layout>(json));
-                    import = "";
+                    p.Log("Import type: Legacy/Paisley Park/Waymark preset plugin", true);
+                    var lp = JsonConvert.DeserializeObject<LegacyPreset>(import);
+                    if (lp.Name == null || lp.Name == "") lp.Name = DateTimeOffset.Now.ToLocalTime().ToString().Replace(",", ".");
+                    if(lp.A == null && lp.B == null && lp.C == null && lp.D == null &&
+                        lp.One == null && lp.Two == null && lp.Three == null && lp.Four == null)
+                    {
+                        p.Log("Error importing: invalid data", true);
+                    }
+                    else if (p.Config.Layouts.ContainsKey("Legacy preset: " + lp.Name))
+                    {
+                        p.Log("Error: this name already exists", true);
+                    }
+                    else if (lp.Name.Contains(",") || lp.Name.Contains("~"))
+                    {
+                        p.Log("Name can't contain reserved characters: , and ~", true);
+                    }
+                    else
+                    {
+                        Layout l = new Layout()
+                        {
+                            ZoneLockH = new HashSet<ushort>() { Svc.ClientState.TerritoryType }
+                        };
+                        if (lp.A != null && lp.A.Active) l.Elements.Add("A", lp.A.ToElement("A", 0xff00ff00));
+                        if (lp.B != null && lp.B.Active) l.Elements.Add("B", lp.B.ToElement("B", 0xff00ffff));
+                        if (lp.C != null && lp.C.Active) l.Elements.Add("C", lp.C.ToElement("C", 0xffffff00));
+                        if (lp.D != null && lp.D.Active) l.Elements.Add("D", lp.D.ToElement("D", 0xffff00ff));
+                        if (lp.One != null && lp.One.Active) l.Elements.Add("1", lp.One.ToElement("1", 0xff00ff00));
+                        if (lp.Two != null && lp.Two.Active) l.Elements.Add("2", lp.Two.ToElement("2", 0xff00ffff));
+                        if (lp.Three != null && lp.Three.Active) l.Elements.Add("3", lp.Three.ToElement("3", 0xffffff00));
+                        if (lp.Four != null && lp.Four.Active) l.Elements.Add("4", lp.Four.ToElement("4", 0xffff00ff));
+                        p.Config.Layouts.Add("Legacy preset: " + lp.Name, l);
+                        import = "";
+                    }
                 }
             }
             catch (Exception e)

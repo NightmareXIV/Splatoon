@@ -44,13 +44,13 @@ unsafe class Splatoon : IDalamudPlugin
         Svc.Framework.Update -= Tick;
         Svc.ClientState.Login -= OnLogin;
         SetupShutdownHttp(false);
-        Svc.Chat.Print("Disposing");
+        //Svc.Chat.Print("Disposing");
     }
 
     public Splatoon(DalamudPluginInterface pluginInterface)
     {
         pluginInterface.Create<Svc>();
-        Svc.Chat.Print("Loaded");
+        //Svc.Chat.Print("Loaded");
         CommandManager = new Commands(this);
         Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
         Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
