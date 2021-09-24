@@ -594,6 +594,12 @@ namespace Splatoon
                                                     "enable only \"+target hitbox\" to make indicators valid.");
                                             }
                                         }
+                                        if (el.type != 2)
+                                        {
+                                            ImGuiEx.SizedText("Tether:", WidthElement);
+                                            ImGui.SameLine();
+                                            ImGui.Checkbox("Enable##TetherEnable" + i + k, ref el.tether);
+                                        }
                                     }
                                     ImGuiEx.SizedText("Overlay text:", WidthElement);
                                     ImGui.SameLine();

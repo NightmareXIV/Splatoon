@@ -30,6 +30,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal HTTPServer HttpServer;
     internal bool prevCombatState = false;
     internal bool isPvpZone = false;
+    static internal Vector3? PlayerPosCache = null;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -149,6 +150,7 @@ unsafe class Splatoon : IDalamudPlugin
     {
         try
         {
+            PlayerPosCache = null;
             if(tickScheduler.TryDequeue(out var action))
             {
                 action.Invoke();
@@ -200,7 +202,8 @@ unsafe class Splatoon : IDalamudPlugin
                     overlayTextColor = col,
                     color = col,
                     includeHitbox = true,
-                    onlyTargetable = true
+                    onlyTargetable = true,
+                    tether = true
                 };
                 ProcessElement(findEl);
             }
@@ -305,6 +308,14 @@ unsafe class Splatoon : IDalamudPlugin
         if (e.type == 0)
         {
             draw.Add((e.refX, e.refY, e.refZ, radius));
+            if (e.tether)
+            {
+                displayObjects.Add(new DisplayObjectLine(e.refX + e.offX,
+                    e.refY + e.offY,
+                    e.refZ + e.offZ,
+                    GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
+                    e.thicc, e.color));
+            }
         }
         else if (e.type == 1)
         {
@@ -320,6 +331,15 @@ unsafe class Splatoon : IDalamudPlugin
                 if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
                 draw.Add((Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
                     Svc.Targets.Target.GetPositionXZY().Z, radius));
+
+                if (e.tether)
+                {
+                    displayObjects.Add(new DisplayObjectLine(Svc.Targets.Target.GetPositionXZY().X + e.offX,
+                        Svc.Targets.Target.GetPositionXZY().Y + e.offY,
+                        Svc.Targets.Target.GetPositionXZY().Z + e.offZ,
+                        GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
+                        e.thicc, e.color));
+                }
             }
             else if (e.refActorType == 0 && e.refActorName.Length > 0)
             {
@@ -331,6 +351,14 @@ unsafe class Splatoon : IDalamudPlugin
                         var aradius = radius;
                         if (e.includeHitbox) aradius += a.HitboxRadius;
                         draw.Add((a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius));
+                        if (e.tether)
+                        {
+                            displayObjects.Add(new DisplayObjectLine(a.GetPositionXZY().X + e.offX,
+                                a.GetPositionXZY().Y + e.offY,
+                                a.GetPositionXZY().Z + e.offZ,
+                                GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
+                                e.thicc, e.color));
+                        }
                     }
                 }
             }

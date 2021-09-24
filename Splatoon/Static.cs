@@ -91,10 +91,17 @@ namespace Splatoon
         public static Vector3 GetPlayerPositionXZY()
         {
             if (Svc.ClientState.LocalPlayer != null)
-                return new Vector3(Svc.ClientState.LocalPlayer.Position.X,
-                    Svc.ClientState.LocalPlayer.Position.Z,
-                    Svc.ClientState.LocalPlayer.Position.Y);
-            return new Vector3() { X = 0, Y = 0, Z = 0 };
+            {
+                if (Splatoon.PlayerPosCache == null)
+                {
+                    Splatoon.PlayerPosCache = new Vector3(
+                        Svc.ClientState.LocalPlayer.Position.X,
+                     Svc.ClientState.LocalPlayer.Position.Z,
+                     Svc.ClientState.LocalPlayer.Position.Y);
+                }
+                return Splatoon.PlayerPosCache.Value;
+            }
+            return Vector3.Zero;
         }
 
         public static Vector3 GetPositionXZY(this GameObject a)

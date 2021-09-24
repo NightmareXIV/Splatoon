@@ -39,5 +39,6 @@ namespace Splatoon
         [DefaultValue(false)] public bool includeOwnHitbox = false;
         [DefaultValue(false)] public bool includeRotation = false;
         [DefaultValue(false)] public bool onlyTargetable = false;
+        [DefaultValue(false)] public bool tether = false;
     }
 }
