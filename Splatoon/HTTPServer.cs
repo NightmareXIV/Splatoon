@@ -107,7 +107,7 @@ namespace Splatoon
                                     {
                                         if (long.TryParse(destr, out var dAt) && dAt > 0)
                                         {
-                                            dAtArray.Add(DateTimeOffset.Now.ToUnixTimeMilliseconds() + dAt);
+                                            dAtArray.Add(Environment.TickCount64 + dAt);
                                         }
                                         else
                                         {

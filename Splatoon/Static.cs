@@ -110,5 +110,10 @@ namespace Splatoon
                     a.Position.Z,
                     a.Position.Y);
         }
+
+        public static Vector4 ToVector4(this uint col)
+        {
+            return ImGui.ColorConvertU32ToFloat4(col);
+        }
     }
 }

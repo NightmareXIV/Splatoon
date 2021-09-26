@@ -18,55 +18,58 @@
         [HandleProcessCorruptedStateExceptions]
         void Draw()
         {
+            if (p.Profiler.Enabled) p.Profiler.Gui.StartTick();
             try
             {
-                if (p.isPvpZone) return;
-                uid = 0;
-                if (p.Config.segments > 1000 || p.Config.segments < 4)
+                if (!p.isPvpZone)
                 {
-                    p.Config.segments = 100;
-                    p.Log("Your smoothness setting was unsafe. It was reset to 100.");
-                }
-                if (p.Config.lineSegments > 50 || p.Config.lineSegments < 4)
-                {
-                    p.Config.lineSegments = 20;
-                    p.Log("Your line segment setting was unsafe. It was reset to 20.");
-                }
-                try
-                {
-                    ImGuiHelpers.ForceNextWindowMainViewport();
-                    ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
-                    ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
-                        | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.AlwaysUseWindowPadding);
-                    ImGui.SetWindowPos(new Vector2(0, 0));
-                    ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
-                    foreach (var element in p.displayObjects)
+                    uid = 0;
+                    if (p.Config.segments > 1000 || p.Config.segments < 4)
                     {
-                        if (element is DisplayObjectCircle elementCircle)
-                        {
-                            DrawRingWorld(elementCircle);
-                        }
-                        else if (element is DisplayObjectDot elementDot)
-                        {
-                            DrawPoint(elementDot);
-                        }
-                        else if (element is DisplayObjectText elementText)
-                        {
-                            DrawTextWorld(elementText);
-                        }
-                        else if (element is DisplayObjectLine elementLine)
-                        {
-                            DrawLineWorld(elementLine);
-                        }
+                        p.Config.segments = 100;
+                        p.Log("Your smoothness setting was unsafe. It was reset to 100.");
                     }
-                    ImGui.End();
-                    ImGui.PopStyleVar();
-                }
-                catch (Exception e)
-                {
-                    p.Log("Splatoon exception: please report it to developer", true);
-                    p.Log(e.Message, true);
-                    p.Log(e.StackTrace, true);
+                    if (p.Config.lineSegments > 50 || p.Config.lineSegments < 4)
+                    {
+                        p.Config.lineSegments = 20;
+                        p.Log("Your line segment setting was unsafe. It was reset to 20.");
+                    }
+                    try
+                    {
+                        ImGuiHelpers.ForceNextWindowMainViewport();
+                        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+                        ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
+                            | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.AlwaysUseWindowPadding);
+                        ImGui.SetWindowPos(new Vector2(0, 0));
+                        ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
+                        foreach (var element in p.displayObjects)
+                        {
+                            if (element is DisplayObjectCircle elementCircle)
+                            {
+                                DrawRingWorld(elementCircle);
+                            }
+                            else if (element is DisplayObjectDot elementDot)
+                            {
+                                DrawPoint(elementDot);
+                            }
+                            else if (element is DisplayObjectText elementText)
+                            {
+                                DrawTextWorld(elementText);
+                            }
+                            else if (element is DisplayObjectLine elementLine)
+                            {
+                                DrawLineWorld(elementLine);
+                            }
+                        }
+                        ImGui.End();
+                        ImGui.PopStyleVar();
+                    }
+                    catch (Exception e)
+                    {
+                        p.Log("Splatoon exception: please report it to developer", true);
+                        p.Log(e.Message, true);
+                        p.Log(e.StackTrace, true);
+                    }
                 }
             }
             catch(Exception e)
@@ -74,10 +77,12 @@
                 p.Log("Caught exception: " + e.Message, true);
                 p.Log(e.StackTrace, true);
             }
+            if (p.Profiler.Enabled) p.Profiler.Gui.StopTick();
         }
 
         void DrawLineWorld(DisplayObjectLine e)
         {
+            if (p.Profiler.Enabled) p.Profiler.GuiLines.StartTick();
             var pointA = new Vector3(e.ax, e.ay, e.az);
             var pointB = new Vector3(e.bx, e.by, e.bz);
             var resultA = Svc.GameGui.WorldToScreen(new Vector3(e.ax, e.az, e.ay), out Vector2 posA);
@@ -87,6 +92,7 @@
                 (pointB - pointA) / p.CurrentLineSegments, 0, p.CurrentLineSegments);
                 if (posA2 == null)
                 {
+                    if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
                     return;
                 }
                 else
@@ -101,6 +107,7 @@
                 (pointA - pointB) / p.CurrentLineSegments, 0, p.CurrentLineSegments);
                 if (posB2 == null)
                 {
+                    if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
                     return;
                 }
                 else
@@ -112,6 +119,7 @@
             ImGui.GetWindowDrawList().PathLineTo(new Vector2(posA.X, posA.Y));
             ImGui.GetWindowDrawList().PathLineTo(new Vector2(posB.X, posB.Y));
             ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.None, e.thickness);
+            if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
         }
 
         Vector2? GetLineClosestToVisiblePoint(Vector3 currentPos, Vector3 delta, int curSegment, int numSegments)

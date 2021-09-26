@@ -226,7 +226,7 @@ namespace Splatoon
                         var colorZLock = Svc.ClientState?.TerritoryType != null
                             && p.Config.Layouts[i].ZoneLockH.Count != 0
                             && !p.Config.Layouts[i].ZoneLockH.Contains(Svc.ClientState.TerritoryType)
-                            && DateTimeOffset.Now.ToUnixTimeMilliseconds() % 1000 < 500;
+                            && Environment.TickCount64 % 1000 < 500;
                         if (colorZLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
                         ImGuiEx.SizedText("Zone lock: ", WidthLayout);
                         ImGui.SameLine();
@@ -296,7 +296,7 @@ namespace Splatoon
                         var colorJLock = Svc.ClientState?.LocalPlayer?.ClassJob != null
                             && p.Config.Layouts[i].JobLock != 0
                             && !Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, (int)Svc.ClientState.LocalPlayer.ClassJob.Id)
-                            && DateTimeOffset.Now.ToUnixTimeMilliseconds() % 1000 < 500;
+                            && Environment.TickCount64 % 1000 < 500;
                         if (colorJLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
                         ImGuiEx.SizedText("Job lock", WidthLayout);
                         ImGui.SameLine();

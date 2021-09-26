@@ -31,6 +31,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal bool prevCombatState = false;
     internal bool isPvpZone = false;
     static internal Vector3? PlayerPosCache = null;
+    internal Profiling Profiler;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -52,6 +53,7 @@ unsafe class Splatoon : IDalamudPlugin
     {
         pluginInterface.Create<Svc>();
         //Svc.Chat.Print("Loaded");
+        Profiler = new Profiling(this);
         CommandManager = new Commands(this);
         Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
         Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
@@ -148,110 +150,143 @@ unsafe class Splatoon : IDalamudPlugin
     [HandleProcessCorruptedStateExceptions]
     public void Tick(Framework framework)
     {
+        if (Profiler.Enabled) Profiler.MainTick.StartTick();
         try
         {
-            PlayerPosCache = null;
-            if(tickScheduler.TryDequeue(out var action))
+            if (Profiler.Enabled) Profiler.MainTickDequeue.StartTick();
+            if (tickScheduler.TryDequeue(out var action))
             {
                 action.Invoke();
             }
+            if (Profiler.Enabled)
+            {
+                Profiler.MainTickDequeue.StopTick();
+                Profiler.MainTickPrepare.StartTick();
+            }
+            PlayerPosCache = null;
             displayObjects.Clear();
-            if (Svc.ClientState?.LocalPlayer == null) return;
-            var pl = Svc.ClientState.LocalPlayer;
-            if (Svc.ClientState.LocalPlayer.Address == IntPtr.Zero)
+            if (Svc.ClientState?.LocalPlayer != null)
             {
-                Log("Pointer to LocalPlayer.Address is zero");
-                return;
-            }
-            CamAngleX = *MemoryManager.CameraAddressX + Math.PI;
-            if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-            CamAngleY = *MemoryManager.CameraAddressY;
-            CamZoom = *MemoryManager.CameraZoom;
-            /*Range conversion https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
-            slope = (output_end - output_start) / (input_end - input_start)
-            output = output_start + slope * (input - input_start) */
-            CurrentLineSegments = (int)((3f + -0.108108f * (CamZoom - 1.5f)) * Config.lineSegments);
-
-            if (Svc.Condition[ConditionFlag.InCombat])
-            {
-                if (CombatStarted == 0)
+                var pl = Svc.ClientState.LocalPlayer;
+                if (Svc.ClientState.LocalPlayer.Address == IntPtr.Zero)
                 {
-                    CombatStarted = DateTimeOffset.Now.ToUnixTimeSeconds();
+                    Log("Pointer to LocalPlayer.Address is zero");
+                    return;
                 }
-            }
-            else
-            {
-                if (CombatStarted != 0)
+                CamAngleX = *MemoryManager.CameraAddressX + Math.PI;
+                if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
+                CamAngleY = *MemoryManager.CameraAddressY;
+                CamZoom = *MemoryManager.CameraZoom;
+                /*Range conversion https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
+                slope = (output_end - output_start) / (input_end - input_start)
+                output = output_start + slope * (input - input_start) */
+                CurrentLineSegments = (int)((3f + -0.108108f * (CamZoom - 1.5f)) * Config.lineSegments);
+
+                if (Svc.Condition[ConditionFlag.InCombat])
                 {
-                    CombatStarted = 0;
-                }
-            }
-
-            //if (CamAngleY > Config.maxcamY) return;
-
-            if(SFind != null)
-            {
-                var col = DateTimeOffset.Now.ToUnixTimeMilliseconds() % 1000 < 500 ? Colors.Red : Colors.Yellow;
-                var findEl = new Element(1)
-                {
-                    thicc = 3f,
-                    radius = 0f,
-                    refActorName = SFind,
-                    overlayText = "Search: " + SFind,
-                    overlayVOffset = 1.7f,
-                    overlayTextColor = col,
-                    color = col,
-                    includeHitbox = true,
-                    onlyTargetable = true,
-                    tether = Config.TetherOnFind,
-                };
-                ProcessElement(findEl);
-            }
-
-            foreach (var i in Config.Layouts.Values)
-            {
-                if (!IsLayoutVisible(i)) continue;
-                foreach (var e in i.Elements.Values.ToArray())
-                {
-                    ProcessElement(e);
-                }
-            }
-
-            for(var i = dynamicElements.Count-1; i>=0; i--)
-            {
-                var de = dynamicElements[i];
-
-                foreach (var dt in de.DestroyTime)
-                {
-                    if (dt == (long)DestroyCondition.COMBAT_EXIT)
+                    if (CombatStarted == 0)
                     {
-                        if (!Svc.Condition[ConditionFlag.InCombat] && prevCombatState)
-                        {
-                            dynamicElements.RemoveAt(i);
-                            continue;
-                        }
-                    }
-                    else if (dt > 0)
-                    {
-                        if (DateTimeOffset.Now.ToUnixTimeMilliseconds() > dt)
-                        {
-                            dynamicElements.RemoveAt(i);
-                            continue;
-                        }
+                        CombatStarted = Environment.TickCount64;
                     }
                 }
-                foreach(var l in de.Layouts)
+                else
                 {
-                    if (!IsLayoutVisible(l)) continue;
-                    foreach (var e in l.Elements.Values.ToArray())
+                    if (CombatStarted != 0)
+                    {
+                        CombatStarted = 0;
+                    }
+                }
+
+                //if (CamAngleY > Config.maxcamY) return;
+
+                if(Profiler.Enabled)
+                {
+                    Profiler.MainTickPrepare.StopTick();
+                    Profiler.MainTickFind.StartTick();
+                }
+
+                if (SFind != null)
+                {
+                    var col = Environment.TickCount64 % 1000 < 500 ? Colors.Red : Colors.Yellow;
+                    var findEl = new Element(1)
+                    {
+                        thicc = 3f,
+                        radius = 0f,
+                        refActorName = SFind,
+                        overlayText = "Search: " + SFind,
+                        overlayVOffset = 1.7f,
+                        overlayTextColor = col,
+                        color = col,
+                        includeHitbox = true,
+                        onlyTargetable = true,
+                        tether = Config.TetherOnFind,
+                    };
+                    ProcessElement(findEl);
+                }
+
+                if (Profiler.Enabled)
+                {
+                    Profiler.MainTickFind.StopTick();
+                    Profiler.MainTickCalcPresets.StartTick();
+                }
+
+                foreach (var i in Config.Layouts.Values)
+                {
+                    if (!IsLayoutVisible(i)) continue;
+                    foreach (var e in i.Elements.Values.ToArray())
                     {
                         ProcessElement(e);
                     }
                 }
-                foreach(var e in de.Elements)
+
+                if (Profiler.Enabled)
                 {
-                    ProcessElement(e);
+                    Profiler.MainTickCalcPresets.StopTick();
+                    Profiler.MainTickCalcDynamic.StartTick();
                 }
+
+                for (var i = dynamicElements.Count - 1; i >= 0; i--)
+                {
+                    var de = dynamicElements[i];
+
+                    foreach (var dt in de.DestroyTime)
+                    {
+                        if (dt == (long)DestroyCondition.COMBAT_EXIT)
+                        {
+                            if (!Svc.Condition[ConditionFlag.InCombat] && prevCombatState)
+                            {
+                                dynamicElements.RemoveAt(i);
+                                continue;
+                            }
+                        }
+                        else if (dt > 0)
+                        {
+                            if (Environment.TickCount64 > dt)
+                            {
+                                dynamicElements.RemoveAt(i);
+                                continue;
+                            }
+                        }
+                    }
+                    foreach (var l in de.Layouts)
+                    {
+                        if (!IsLayoutVisible(l)) continue;
+                        foreach (var e in l.Elements.Values.ToArray())
+                        {
+                            ProcessElement(e);
+                        }
+                    }
+                    foreach (var e in de.Elements)
+                    {
+                        ProcessElement(e);
+                    }
+                }
+
+                if (Profiler.Enabled) Profiler.MainTickCalcDynamic.StopTick();
+            }
+            else
+            {
+                Profiler.MainTickPrepare.StopTick();
             }
             prevCombatState = Svc.Condition[ConditionFlag.InCombat];
         }
@@ -260,6 +295,7 @@ unsafe class Splatoon : IDalamudPlugin
             Log("Caught exception: "+e.Message);
             Log(e.StackTrace);
         }
+        if (Profiler.Enabled) Profiler.MainTick.StopTick();
     }
 
     internal void ProcessElement(Element e)
@@ -296,7 +332,7 @@ unsafe class Splatoon : IDalamudPlugin
             }
             prevMouseState = lmbdown;
         }
-        if (e.screen2world != 0 && DateTimeOffset.Now.ToUnixTimeMilliseconds() % 500 < 250)
+        if (e.screen2world != 0 && Environment.TickCount64 % 500 < 250)
         {
             var x = e.screen2world == 3 ? e.offX : e.refX;
             var y = e.screen2world == 3 ? e.offY : e.refY;
@@ -404,7 +440,7 @@ unsafe class Splatoon : IDalamudPlugin
         if (i.Visibility == 1)
         {
             if (!Svc.Condition[ConditionFlag.InCombat]) return false;
-            var tic = DateTimeOffset.Now.ToUnixTimeSeconds() - CombatStarted;
+            var tic = Environment.TickCount64 - CombatStarted;
             if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) return false;
         }
         return true;

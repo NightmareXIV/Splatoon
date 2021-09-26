@@ -128,6 +128,11 @@ namespace Splatoon
                     DisplayDynamicElements();
                     ImGui.EndTabItem();
                 }
+                if (ImGui.BeginTabItem("Profiling"))
+                {
+                    DisplayProfiling();
+                    ImGui.EndTabItem();
+                }
             }
             ImGui.PopStyleVar();
             if (titleColored)

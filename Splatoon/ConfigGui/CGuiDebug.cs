@@ -9,7 +9,7 @@
         void DisplayDebug()
         {
             ImGui.BeginChild("##splatoonmaindbg");
-            var t = DateTimeOffset.Now.ToUnixTimeSeconds() - p.CombatStarted;
+            var t = Environment.TickCount64 - p.CombatStarted;
             ImGui.Text("CombatStarted = " + t);
             ImGui.Separator();
             if (Svc.ClientState.LocalPlayer != null)
