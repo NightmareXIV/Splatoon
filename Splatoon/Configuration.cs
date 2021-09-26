@@ -18,6 +18,7 @@ namespace Splatoon
         [NonSerialized] SemaphoreSlim ZipSemaphore;
 
         public int Version { get; set; } = 1;
+
         public Dictionary<string, Layout> Layouts = new Dictionary<string, Layout>();
         public bool dumplog = false;
         public bool verboselog = false;
@@ -28,6 +29,7 @@ namespace Splatoon
         public int lineSegments = 10;
         public bool UseHttpServer = false;
         public int port = 47774;
+        public bool TetherOnFind = true;
 
         public void Initialize(Splatoon plugin)
         {

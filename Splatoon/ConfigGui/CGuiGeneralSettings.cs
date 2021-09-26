@@ -28,7 +28,18 @@ namespace Splatoon
                     ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
                     if (ImGui.IsMouseReleased(ImGuiMouseButton.Left) && ImGui.GetMouseDragDelta(ImGuiMouseButton.Left) == Vector2.Zero)
                     {
-                        Process.Start("http://127.0.0.1:" + p.Config.port + "/");
+                        try
+                        {
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                UseShellExecute = true,
+                                FileName = "http://127.0.0.1:" + p.Config.port + "/"
+                            });
+                        }
+                        catch(Exception e)
+                        {
+                            Svc.Chat.Print("Error: " + e.Message + "\n" + e.StackTrace);
+                        }
                     }
                 }
             }
@@ -101,6 +112,7 @@ namespace Splatoon
             {
                 p.Config.maxcamY = 0.05f;
             }*/
+            ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
             ImGui.Text("Contact developer:");
             ImGui.SameLine();
             if (ImGui.Button("Github"))

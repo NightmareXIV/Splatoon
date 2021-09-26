@@ -203,7 +203,7 @@ unsafe class Splatoon : IDalamudPlugin
                     color = col,
                     includeHitbox = true,
                     onlyTargetable = true,
-                    tether = true
+                    tether = Config.TetherOnFind,
                 };
                 ProcessElement(findEl);
             }
