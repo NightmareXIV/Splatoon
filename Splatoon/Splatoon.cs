@@ -32,6 +32,8 @@ unsafe class Splatoon : IDalamudPlugin
     internal bool isPvpZone = false;
     static internal Vector3? PlayerPosCache = null;
     internal Profiling Profiler;
+    internal Dictionary<(IntPtr Addr, uint Id), string> NamesCache;
+    internal Dictionary<(IntPtr Addr, uint Id, int StrHash), bool> LookupResultCache;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -55,6 +57,8 @@ unsafe class Splatoon : IDalamudPlugin
         //Svc.Chat.Print("Loaded");
         Profiler = new Profiling(this);
         CommandManager = new Commands(this);
+        NamesCache = new Dictionary<(IntPtr Addr, uint Id), string>();
+        LookupResultCache = new Dictionary<(IntPtr Addr, uint Id, int StrHash), bool>();
         Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
         Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
         Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
@@ -107,6 +111,8 @@ unsafe class Splatoon : IDalamudPlugin
     private void TerritoryChangedEvent(object sender, ushort e)
     {
         UpdatePvpZone(e);
+        NamesCache.Clear();
+        LookupResultCache.Clear();
         if (SFind != null)
         {
             SFind = null;
@@ -298,6 +304,25 @@ unsafe class Splatoon : IDalamudPlugin
         if (Profiler.Enabled) Profiler.MainTick.StopTick();
     }
 
+    internal bool IsNameContainsValue(GameObject a, string value)
+    {
+        var hash = value.GetHashCode();
+        if (!LookupResultCache.ContainsKey((a.Address, a.ObjectId, hash)))
+        {
+            LookupResultCache.Add((a.Address, a.ObjectId, hash), a.Name.ToString().ContainsIgnoreCase(value));
+        }
+        return LookupResultCache[(a.Address, a.ObjectId, hash)];
+    }
+
+    internal string GetObjectName(GameObject a)
+    {
+        if(!NamesCache.ContainsKey((a.Address, a.ObjectId)))
+        {
+            NamesCache.Add((a.Address, a.ObjectId), a.Name.ToString());
+        }
+        return NamesCache[(a.Address, a.ObjectId)];
+    }
+
     internal void ProcessElement(Element e)
     {
         if (!e.Enabled) return;
@@ -379,9 +404,10 @@ unsafe class Splatoon : IDalamudPlugin
             }
             else if (e.refActorType == 0 && e.refActorName.Length > 0)
             {
+                if (Profiler.Enabled) Profiler.MainTickActorTableScan.StartTick();
                 foreach (var a in Svc.Objects)
                 {
-                    if ((e.refActorName == "*" || a.Name.ToString().ContainsIgnoreCase(e.refActorName))
+                    if ((e.refActorName == "*" || IsNameContainsValue(a, e.refActorName))
                             && (!e.onlyTargetable || GetIsTargetable(a)))
                     {
                         var aradius = radius;
@@ -397,6 +423,7 @@ unsafe class Splatoon : IDalamudPlugin
                         }
                     }
                 }
+                if (Profiler.Enabled) Profiler.MainTickActorTableScan.StopTick();
             }
 
         }

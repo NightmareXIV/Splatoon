@@ -16,6 +16,7 @@ namespace Splatoon
         public StopwatchWrapper MainTickFind = new StopwatchWrapper();
         public StopwatchWrapper MainTickCalcPresets = new StopwatchWrapper();
         public StopwatchWrapper MainTickCalcDynamic = new StopwatchWrapper();
+        public StopwatchWrapper MainTickActorTableScan = new StopwatchWrapper();
         public StopwatchWrapper MainTick = new StopwatchWrapper();
         public StopwatchWrapper Gui = new StopwatchWrapper();
         public StopwatchWrapper GuiLines = new StopwatchWrapper();
@@ -30,6 +31,7 @@ namespace Splatoon
             public Stopwatch stopwatch;
             long time;
             long ticks;
+            ulong curTick;
 
             public StopwatchWrapper()
             {
@@ -40,11 +42,16 @@ namespace Splatoon
             {
                 time = 0;
                 ticks = 0;
+                curTick = 0;
             }
 
             public void StartTick()
             {
-                ticks++;
+                if (curTick != Svc.PluginInterface.UiBuilder.FrameCount)
+                {
+                    ticks++;
+                    curTick = Svc.PluginInterface.UiBuilder.FrameCount;
+                }
                 stopwatch.Restart();
             }
 
