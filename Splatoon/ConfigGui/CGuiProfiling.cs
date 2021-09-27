@@ -13,6 +13,19 @@ namespace Splatoon
         {
             ImGui.BeginChild("Profiling");
             ImGui.Checkbox("Enable profiler", ref p.Profiler.Enabled);
+            ImGui.SameLine();
+            if (ImGui.Button("Reset all"))
+            {
+                p.Profiler.MainTick.Reset();
+                p.Profiler.MainTickActorTableScan.Reset();
+                p.Profiler.MainTickCalcDynamic.Reset();
+                p.Profiler.MainTickCalcPresets.Reset();
+                p.Profiler.MainTickDequeue.Reset();
+                p.Profiler.MainTickFind.Reset();
+                p.Profiler.MainTickPrepare.Reset();
+                p.Profiler.Gui.Reset();
+                p.Profiler.GuiLines.Reset();
+            }
             ImGui.Columns(4);
             ImGui.SetColumnWidth(0, ImGui.GetWindowContentRegionWidth() / 4);
             ImGui.SetColumnWidth(1, ImGui.GetWindowContentRegionWidth() / 4);

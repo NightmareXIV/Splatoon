@@ -5,6 +5,7 @@
         bool autoscrollLog = true;
         float s2wx, s2wy, s2wz, s2wrx, s2wry;
         bool s2wb = false;
+        bool displayCache = false;
 
         void DisplayDebug()
         {
@@ -50,12 +51,27 @@
             ImGui.Text("Camera angle X:" + p.CamAngleX);
             ImGui.Text("Camera angle Y:" + p.CamAngleY);
             ImGui.Separator();
+            ImGui.Checkbox("Lookup cache size: " + p.LookupResultCache.Count, ref displayCache);
+            if (displayCache)
+            {
+                foreach(var e in p.LookupResultCache)
+                {
+                    ImGui.TextUnformatted($"{e.Key.Addr:X16}/{e.Key.Id:X16}/{e.Key.StrHash:X8}: {e.Value}");
+                }
+            }
+            ImGui.Separator();
             ImGui.Text("Game objects:");
             foreach (var a in Svc.Objects)
             {
                 try
                 {
                     ImGui.Text(a.Name.ToString());
+                    ImGui.SameLine();
+                    ImGui.SetCursorPosX(200f);
+                    ImGui.Text($"{a.ObjectId:X8}");
+                    ImGui.SameLine();
+                    ImGui.SetCursorPosX(300f);
+                    ImGui.Text($"{a.DataId:X8}");
                 }
                 catch (Exception e)
                 {

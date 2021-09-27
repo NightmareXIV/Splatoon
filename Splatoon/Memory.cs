@@ -21,6 +21,10 @@ namespace Splatoon
         internal delegate byte GameObject_GetIsTargetable(IntPtr characterPtr);
         internal GameObject_GetIsTargetable GetIsTargetable_GameObject;
 
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        internal delegate long GameObject_GetObjectID_delegate(IntPtr objectPtr);
+        internal GameObject_GetObjectID_delegate GameObject_GetObjectID;
+
         public Memory(Splatoon p)
         {
             GetIsTargetable_Character = Marshal.GetDelegateForFunctionPointer<Character_GetIsTargetable>(
@@ -31,6 +35,15 @@ namespace Splatoon
             CameraAddressX = (float*)(cameraAddress + 0x130);
             CameraAddressY = (float*)(cameraAddress + 0x134);
             CameraZoom = (float*)(cameraAddress + 0x114);
+            GameObject_GetObjectID = Marshal.GetDelegateForFunctionPointer<GameObject_GetObjectID_delegate>(
+                Svc.SigScanner.ScanText("40 53 48 83 EC 20 8B 41 74"));
         }
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = 0x8)]
+    public struct GameObjectID
+    {
+        [FieldOffset(0x0)] public uint ObjectID;
+        [FieldOffset(0x4)] public byte Type;
     }
 }

@@ -33,7 +33,7 @@ unsafe class Splatoon : IDalamudPlugin
     static internal Vector3? PlayerPosCache = null;
     internal Profiling Profiler;
     internal Dictionary<(IntPtr Addr, uint Id), string> NamesCache;
-    internal Dictionary<(IntPtr Addr, uint Id, int StrHash), bool> LookupResultCache;
+    internal Dictionary<(IntPtr Addr, long Id, int StrHash), bool> LookupResultCache;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -58,7 +58,7 @@ unsafe class Splatoon : IDalamudPlugin
         Profiler = new Profiling(this);
         CommandManager = new Commands(this);
         NamesCache = new Dictionary<(IntPtr Addr, uint Id), string>();
-        LookupResultCache = new Dictionary<(IntPtr Addr, uint Id, int StrHash), bool>();
+        LookupResultCache = new Dictionary<(IntPtr Addr, long Id, int StrHash), bool>();
         Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
         Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
         Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
@@ -307,11 +307,12 @@ unsafe class Splatoon : IDalamudPlugin
     internal bool IsNameContainsValue(GameObject a, string value)
     {
         var hash = value.GetHashCode();
-        if (!LookupResultCache.ContainsKey((a.Address, a.ObjectId, hash)))
+        var objectID = MemoryManager.GameObject_GetObjectID(a.Address);
+        if (!LookupResultCache.ContainsKey((a.Address, objectID, hash)))
         {
-            LookupResultCache.Add((a.Address, a.ObjectId, hash), a.Name.ToString().ContainsIgnoreCase(value));
+            LookupResultCache.Add((a.Address, objectID, hash), a.Name.ToString().ContainsIgnoreCase(value));
         }
-        return LookupResultCache[(a.Address, a.ObjectId, hash)];
+        return LookupResultCache[(a.Address, objectID, hash)];
     }
 
     internal string GetObjectName(GameObject a)
