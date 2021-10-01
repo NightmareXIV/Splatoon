@@ -15,6 +15,7 @@ global using System.Collections.Generic;
 global using System.Linq;
 global using System.Text;
 global using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Splatoon
 {
@@ -114,6 +115,22 @@ namespace Splatoon
         public static Vector4 ToVector4(this uint col)
         {
             return ImGui.ColorConvertU32ToFloat4(col);
+        }
+
+        public static void ProcessStart(string s)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo()
+                {
+                    UseShellExecute = true,
+                    FileName = s
+                });
+            }
+            catch (Exception e)
+            {
+                Svc.Chat.Print("Error: " + e.Message + "\n" + e.StackTrace);
+            }
         }
     }
 }

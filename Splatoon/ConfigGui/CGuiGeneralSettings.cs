@@ -28,18 +28,7 @@ namespace Splatoon
                     ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
                     if (ImGui.IsMouseReleased(ImGuiMouseButton.Left) && ImGui.GetMouseDragDelta(ImGuiMouseButton.Left) == Vector2.Zero)
                     {
-                        try
-                        {
-                            Process.Start(new ProcessStartInfo()
-                            {
-                                UseShellExecute = true,
-                                FileName = "http://127.0.0.1:" + p.Config.port + "/"
-                            });
-                        }
-                        catch(Exception e)
-                        {
-                            Svc.Chat.Print("Error: " + e.Message + "\n" + e.StackTrace);
-                        }
+                        ProcessStart("http://127.0.0.1:" + p.Config.port + "/");
                     }
                 }
             }
@@ -65,7 +54,7 @@ namespace Splatoon
             ImGui.SetNextItemWidth(250f);
             if (ImGui.Button("Open web API guide"))
             {
-                Process.Start("https://github.com/Eternita-S/Splatoon#web-api-beta");
+                ProcessStart("https://github.com/Eternita-S/Splatoon#web-api-beta");
             }
 
             ImGuiEx.SizedText("Circle smoothness:", WidthLayout);
@@ -115,11 +104,16 @@ namespace Splatoon
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
             ImGui.Checkbox("Process all chat messages for triggers (debug option, may cause performance issues)", ref p.Config.TriggerAnyMessages);
             ImGui.Checkbox("Always compare names directly (debug option, ~4x performance loss)", ref p.Config.DirectNameComparison);
+            if(ImGui.Button("Open backup directory"))
+            {
+                ProcessStart(Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Backups"));
+            }
+            ImGui.Separator();
             ImGui.Text("Contact developer:");
             ImGui.SameLine();
             if (ImGui.Button("Github"))
             {
-                Process.Start("https://github.com/Eternita-S/Splatoon/issues");
+                ProcessStart("https://github.com/Eternita-S/Splatoon/issues");
             }
             ImGui.SameLine();
             if (ImGui.Button("Discord"))
