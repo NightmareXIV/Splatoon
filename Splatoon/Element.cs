@@ -14,6 +14,11 @@ namespace Splatoon
         "Line between two fixed coordinates"};
         [NonSerialized] public static string[] ActorTypes = { "Game object with specific name", "Self", "Targeted enemy" };
         [NonSerialized] public int screen2world = 0;
+        /// <summary>
+        /// 0: Object at fixed coordinates |
+        /// 1: Object relative to actor position | 
+        /// 2: Line between two fixed coordinates
+        /// </summary>
         public int type;
         public Element(int t)
         {
@@ -34,6 +39,11 @@ namespace Splatoon
         [DefaultValue(2f)] public float thicc = 2f;
         [DefaultValue("")] public string overlayText = "";
         [DefaultValue("")] public string refActorName = "";
+        /// <summary>
+        /// 0: Game object with specific name |
+        /// 1: Self |
+        /// 2: Targeted enemy
+        /// </summary>
         [DefaultValue(0)] public int refActorType = 0;
         [DefaultValue(false)] public bool includeHitbox = false;
         [DefaultValue(false)] public bool includeOwnHitbox = false;
