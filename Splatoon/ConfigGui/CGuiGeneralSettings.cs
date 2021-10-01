@@ -113,6 +113,7 @@ namespace Splatoon
                 p.Config.maxcamY = 0.05f;
             }*/
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
+            ImGui.Checkbox("Process all chat messages for triggers (may cause performance issues, use for testing only)", ref p.Config.TriggerAnyMessages);
             ImGui.Text("Contact developer:");
             ImGui.SameLine();
             if (ImGui.Button("Github"))

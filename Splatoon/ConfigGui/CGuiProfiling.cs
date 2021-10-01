@@ -23,6 +23,7 @@ namespace Splatoon
                 p.Profiler.MainTickDequeue.Reset();
                 p.Profiler.MainTickFind.Reset();
                 p.Profiler.MainTickPrepare.Reset();
+                p.Profiler.MainTickChat.Reset();
                 p.Profiler.Gui.Reset();
                 p.Profiler.GuiLines.Reset();
             }
@@ -46,7 +47,7 @@ namespace Splatoon
             ImGui.NextColumn();
             DisplayProfiler("Main tick\nScan actor table", p.Profiler.MainTickActorTableScan);
             ImGui.NextColumn();
-            //DisplayProfiler("Main tick\nScan actor table", p.Profiler.MainTickActorTableScan);
+            DisplayProfiler("Main tick\nProcess chat message", p.Profiler.MainTickChat);
             ImGui.NextColumn();
             ImGui.Separator();
             ImGui.Columns(2);

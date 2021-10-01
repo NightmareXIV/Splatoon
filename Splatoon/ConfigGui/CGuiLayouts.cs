@@ -353,7 +353,6 @@ namespace Splatoon
                                 var deleteTrigger = -1;
                                 for(var n = 0; n < p.Config.Layouts[i].Triggers.Count; n++)
                                 {
-                                    if (p.Config.Layouts[i].Triggers[n].HasFired) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Gray);
                                     if(ImGui.Button("[X]##"+n+i) && ImGui.GetIO().KeyCtrl)
                                     {
                                         deleteTrigger = n;
@@ -371,6 +370,8 @@ namespace Splatoon
                                     ImGui.Checkbox("Combat exit##" + i + n, ref p.Config.Layouts[i].Triggers[n].ResetOnCombatExit);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("Territory change##" + i + n, ref p.Config.Layouts[i].Triggers[n].ResetOnTChange);
+                                    ImGui.SameLine();
+                                    ImGui.Text("State: " + p.Config.Layouts[i].Triggers[n].FiredState);
                                     if (p.Config.Layouts[i].Triggers[n].Type == 0 || p.Config.Layouts[i].Triggers[n].Type == 1)
                                     {
                                         ImGui.Text("Time: ");
@@ -392,7 +393,6 @@ namespace Splatoon
                                     ImGui.DragInt("##triggertime2" + i + n, ref p.Config.Layouts[i].Triggers[n].Duration, 0.2f, 0, 3599);
                                     ImGui.SameLine();
                                     ImGui.Text(p.Config.Layouts[i].Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].Duration).ToString("mm:ss"));
-                                    if (p.Config.Layouts[i].Triggers[n].HasFired) ImGui.PopStyleColor();
                                     ImGui.Separator();
                                 }
                                 if(deleteTrigger != -1)

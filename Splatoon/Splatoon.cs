@@ -36,6 +36,8 @@ unsafe class Splatoon : IDalamudPlugin
     internal Profiling Profiler;
     internal Dictionary<(IntPtr Addr, uint Id), string> NamesCache;
     internal Dictionary<(IntPtr Addr, long Id, int StrHash), bool> LookupResultCache;
+    internal Queue<string> ChatMessageQueue;
+    internal string CurrentChatMessage = null;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -58,6 +60,7 @@ unsafe class Splatoon : IDalamudPlugin
     {
         pluginInterface.Create<Svc>();
         //Svc.Chat.Print("Loaded");
+        ChatMessageQueue = new Queue<string>();
         Profiler = new Profiling(this);
         CommandManager = new Commands(this);
         NamesCache = new Dictionary<(IntPtr Addr, uint Id), string>();
@@ -85,7 +88,13 @@ unsafe class Splatoon : IDalamudPlugin
 
     private void OnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {
-        
+        if (Profiler.Enabled) Profiler.MainTickChat.StartTick();
+        var inttype = (int)type;
+        if(inttype == 68 || inttype == 2105 || type == XivChatType.SystemMessage || Config.TriggerAnyMessages)
+        {
+            ChatMessageQueue.Enqueue(message.ToString());
+        }
+        if (Profiler.Enabled) Profiler.MainTickChat.StopTick();
     }
 
     internal void SetupShutdownHttp(bool enable)
@@ -130,11 +139,31 @@ unsafe class Splatoon : IDalamudPlugin
         for (var i = dynamicElements.Count - 1; i >= 0; i--)
         {
             var de = dynamicElements[i];
+            foreach(var l in de.Layouts)
+            {
+                if (l.UseTriggers)
+                {
+                    foreach (var t in l.Triggers)
+                    {
+                        if (t.ResetOnTChange) t.FiredState = 0;
+                    }
+                }
+            }
             foreach (var dt in de.DestroyTime)
             {
                 if (dt == (long)DestroyCondition.TERRITORY_CHANGE)
                 {
                     dynamicElements.RemoveAt(i);
+                }
+            }
+        }
+        foreach(var l in Config.Layouts.Values)
+        {
+            if (l.UseTriggers)
+            {
+                foreach(var t in l.Triggers)
+                {
+                    if (t.ResetOnTChange) t.FiredState = 0;
                 }
             }
         }
@@ -182,6 +211,8 @@ unsafe class Splatoon : IDalamudPlugin
             displayObjects.Clear();
             if (Svc.ClientState?.LocalPlayer != null)
             {
+                ChatMessageQueue.TryDequeue(out CurrentChatMessage);
+                if (Config.verboselog && CurrentChatMessage != null) Log("Dequeued message: " + CurrentChatMessage);
                 var pl = Svc.ClientState.LocalPlayer;
                 if (Svc.ClientState.LocalPlayer.Address == IntPtr.Zero)
                 {
@@ -209,6 +240,38 @@ unsafe class Splatoon : IDalamudPlugin
                     if (CombatStarted != 0)
                     {
                         CombatStarted = 0;
+                        Log("Combat ended event");
+                        foreach (var l in Config.Layouts.Values)
+                        {
+                            if (l.UseTriggers)
+                            {
+                                foreach (var t in l.Triggers)
+                                {
+                                    if (t.ResetOnCombatExit)
+                                    {
+                                        t.FiredState = 0;
+                                        l.TriggerCondition = 0;
+                                    }
+                                }
+                            }
+                        }
+                        foreach (var de in dynamicElements)
+                        {
+                            foreach (var l in de.Layouts)
+                            {
+                                if (l.UseTriggers)
+                                {
+                                    foreach (var t in l.Triggers)
+                                    {
+                                        if (t.ResetOnCombatExit)
+                                        {
+                                            t.FiredState = 0;
+                                            l.TriggerCondition = 0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -247,15 +310,7 @@ unsafe class Splatoon : IDalamudPlugin
 
                 foreach (var i in Config.Layouts.Values)
                 {
-                    if (!IsLayoutVisible(i)) continue;
-                    if (i.UseTriggers)
-                    {
-                        if (i.TriggerCondition == -1 || (i.TriggerCondition == 0 && i.DCond == 5)) return;
-                    }
-                    foreach (var e in i.Elements.Values.ToArray())
-                    {
-                        ProcessElement(e);
-                    }
+                    ProcessLayout(i);
                 }
 
                 if (Profiler.Enabled)
@@ -289,11 +344,7 @@ unsafe class Splatoon : IDalamudPlugin
                     }
                     foreach (var l in de.Layouts)
                     {
-                        if (!IsLayoutVisible(l)) continue;
-                        foreach (var e in l.Elements.Values.ToArray())
-                        {
-                            ProcessElement(e);
-                        }
+                        ProcessLayout(l);
                     }
                     foreach (var e in de.Elements)
                     {
@@ -308,6 +359,7 @@ unsafe class Splatoon : IDalamudPlugin
                 Profiler.MainTickPrepare.StopTick();
             }
             prevCombatState = Svc.Condition[ConditionFlag.InCombat];
+            CurrentChatMessage = null;
         }
         catch(Exception e)
         {
@@ -315,6 +367,68 @@ unsafe class Splatoon : IDalamudPlugin
             Log(e.StackTrace);
         }
         if (Profiler.Enabled) Profiler.MainTick.StopTick();
+    }
+
+    private void ProcessLayout(Layout i)
+    {
+        if (!IsLayoutVisible(i)) return;
+        if (i.UseTriggers)
+        {
+            foreach(var t in i.Triggers)
+            {
+                if (t.FiredState == 2) continue;
+                else if (t.FiredState == 0)
+                {
+                    if (t.Type == 0 || t.Type == 1)
+                    {
+                        if (CombatStarted != 0 && Environment.TickCount64 - CombatStarted > t.TimeBegin * 1000)
+                        {
+                            if(t.Duration == 0)
+                            {
+                                t.FiredState = 2;
+                            }
+                            else
+                            {
+                                t.FiredState = 1;
+                                t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
+                            }
+                            i.TriggerCondition = t.Type == 0 ? 1 : -1;
+                        }
+                    }
+                    else if (CurrentChatMessage != null && (t.Type == 2 || t.Type == 3))
+                    {
+                        if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
+                        {
+                            if (t.Duration == 0)
+                            {
+                                t.FiredState = 0;
+                            }
+                            else
+                            {
+                                t.FiredState = 1;
+                                t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
+                            }
+                            i.TriggerCondition = t.Type == 2 ? 1 : -1;
+                        }
+                    }
+                }
+                else if(t.FiredState == 1)
+                {
+                    if(Environment.TickCount64 > t.DisableAt)
+                    {
+                        t.FiredState = (t.Type == 2 || t.Type == 3)?0:2;
+                        t.DisableAt = 0;
+                        i.TriggerCondition = 0;
+                    }
+                }
+                       
+            }
+            if (i.TriggerCondition == -1 || (i.TriggerCondition == 0 && i.DCond == 5)) return;
+        }
+        foreach (var e in i.Elements.Values.ToArray())
+        {
+            ProcessElement(e);
+        }
     }
 
     internal bool IsNameContainsValue(GameObject a, string value)

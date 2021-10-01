@@ -11,6 +11,7 @@ namespace Splatoon
     {
         Splatoon p;
         public bool Enabled = false;
+        public StopwatchWrapper MainTickChat = new StopwatchWrapper();
         public StopwatchWrapper MainTickDequeue = new StopwatchWrapper();
         public StopwatchWrapper MainTickPrepare = new StopwatchWrapper();
         public StopwatchWrapper MainTickFind = new StopwatchWrapper();

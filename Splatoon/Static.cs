@@ -44,7 +44,7 @@ namespace Splatoon
 
         public static bool ContainsIgnoreCase(this string a, string b)
         {
-            return a.ToLower(CultureInfo.InvariantCulture).Contains(b.ToLower(CultureInfo.InvariantCulture));
+            return a.Contains(b, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public static string Compress(this string s)

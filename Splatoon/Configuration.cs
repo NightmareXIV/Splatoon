@@ -30,6 +30,7 @@ namespace Splatoon
         public bool UseHttpServer = false;
         public int port = 47774;
         public bool TetherOnFind = true;
+        public bool TriggerAnyMessages = false;
 
         public void Initialize(Splatoon plugin)
         {
