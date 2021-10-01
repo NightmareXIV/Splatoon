@@ -53,5 +53,11 @@ namespace Splatoon
             ImGui.PopStyleColor(StyleColors);
             StyleColors = 0;
         }
+
+        public static void DisplayColor(uint col)
+        {
+            var a = col.ToVector4();
+            ImGui.ColorEdit4("", ref a, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoPicker);
+        }
     }
 }

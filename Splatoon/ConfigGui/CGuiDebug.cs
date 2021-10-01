@@ -52,6 +52,19 @@
             ImGui.Text("Camera angle Y:" + p.CamAngleY);
             ImGui.Separator();
             ImGui.Checkbox("Lookup cache size: " + p.LookupResultCache.Count, ref displayCache);
+            ImGui.SameLine();
+            if (ImGui.Button("Wipe"))
+            {
+                p.LookupResultCache.Clear();
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("+10000 garbage data"))
+            {
+                for (int i = 0; i < 10000; i++)
+                {
+                    p.LookupResultCache[((IntPtr)(new Random().Next()), new Random().Next(), new Random().Next())] = new Random().NextDouble() > 0.5;
+                }
+            }
             if (displayCache)
             {
                 foreach(var e in p.LookupResultCache)

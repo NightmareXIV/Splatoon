@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Lumina.Excel.GeneratedSheets;
@@ -38,6 +39,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal Dictionary<(IntPtr Addr, long Id, int StrHash), bool> LookupResultCache;
     internal Queue<string> ChatMessageQueue;
     internal string CurrentChatMessage = null;
+    internal Element Clipboard = null;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -433,6 +435,7 @@ unsafe class Splatoon : IDalamudPlugin
 
     internal bool IsNameContainsValue(GameObject a, string value)
     {
+        if (Config.DirectNameComparison) return a.Name.ToString().ContainsIgnoreCase(value);
         var hash = value.GetHashCode();
         var objectID = MemoryManager.GameObject_GetObjectID(a.Address);
         if (!LookupResultCache.ContainsKey((a.Address, objectID, hash)))
@@ -484,15 +487,16 @@ unsafe class Splatoon : IDalamudPlugin
                 S2WActive = false;
             }
             prevMouseState = lmbdown;
+            if (Environment.TickCount64 % 500 < 250)
+            {
+                var x = e.screen2world == 3 ? e.offX : e.refX;
+                var y = e.screen2world == 3 ? e.offY : e.refY;
+                var z = e.screen2world == 3 ? e.offZ : e.refZ;
+                displayObjects.Add(new DisplayObjectLine(x + 2f, y + 2f, z, x - 2f, y - 2f, z, 2f, Colors.Red));
+                displayObjects.Add(new DisplayObjectLine(x - 2f, y + 2f, z, x + 2f, y - 2f, z, 2f, Colors.Red));
+            }
         }
-        if (e.screen2world != 0 && Environment.TickCount64 % 500 < 250)
-        {
-            var x = e.screen2world == 3 ? e.offX : e.refX;
-            var y = e.screen2world == 3 ? e.offY : e.refY;
-            var z = e.screen2world == 3 ? e.offZ : e.refZ;
-            displayObjects.Add(new DisplayObjectLine(x + 2f, y + 2f, z, x - 2f, y - 2f, z, 2f, Colors.Red));
-            displayObjects.Add(new DisplayObjectLine(x - 2f, y + 2f, z, x + 2f, y - 2f, z, 2f, Colors.Red));
-        }
+        
         float radius = e.radius;
         if (e.type == 0)
         {
@@ -586,6 +590,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal bool IsLayoutVisible(Layout i)
     {
         if (!i.Enabled) return false;
+        if (i.DisableInDuty && Svc.Condition[ConditionFlag.BoundByDuty]) return false;
         if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(Svc.ClientState.TerritoryType)) return false;
         if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)Svc.ClientState.LocalPlayer.ClassJob.Id)) return false;
         if ((i.DCond == 1 || i.DCond == 3) && !Svc.Condition[ConditionFlag.InCombat]) return false;

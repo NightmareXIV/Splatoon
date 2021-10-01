@@ -154,7 +154,7 @@ namespace Splatoon
                         ImGui.SameLine();
                         ImGui.Checkbox("Prevent controlling with web api##" + i, ref p.Config.Layouts[i].DisableDisabling);
                         ImGui.SameLine();
-                        ImGui.Checkbox("Disable in duty##" + i, ref p.Config.Layouts[i].DisableDisabling);
+                        ImGui.Checkbox("Disable in duty##" + i, ref p.Config.Layouts[i].DisableInDuty);
                         if (ImGui.Button("Export to clipboard"))
                         {
                             ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
@@ -484,6 +484,73 @@ namespace Splatoon
                                     {
                                         ImGui.SetTooltip("Hold ALT to copy raw JSON (for usage with post body or you'll have to urlencode it yourself)\nHold CTRL and click to copy urlencoded raw");
                                     }
+                                    ImGui.SameLine();
+                                    if (ImGui.Button("Copy style##"+i+k))
+                                    {
+                                        p.Clipboard = JsonConvert.DeserializeObject<Element>(JsonConvert.SerializeObject(el));
+                                    }
+                                    if (p.Clipboard != null)
+                                    {
+                                        ImGui.SameLine();
+                                        if (ImGui.Button("Paste style##" + i + k))
+                                        {
+                                            el.color = p.Clipboard.color;
+                                            el.overlayBGColor = p.Clipboard.overlayBGColor;
+                                            el.overlayTextColor = p.Clipboard.overlayTextColor;
+                                            el.tether = p.Clipboard.tether;
+                                            el.thicc = p.Clipboard.thicc;
+                                            el.overlayVOffset = p.Clipboard.overlayVOffset;
+                                            if (ImGui.GetIO().KeyCtrl)
+                                            {
+                                                el.radius = p.Clipboard.radius;
+                                                el.includeHitbox = p.Clipboard.includeHitbox;
+                                                el.includeOwnHitbox = p.Clipboard.includeOwnHitbox;
+                                                el.includeRotation = p.Clipboard.includeRotation;
+                                                el.onlyTargetable = p.Clipboard.onlyTargetable;
+                                            }
+                                            if (ImGui.GetIO().KeyShift && el.type != 2)
+                                            {
+                                                el.refX = p.Clipboard.refX;
+                                                el.refY = p.Clipboard.refY;
+                                                el.refZ = p.Clipboard.refZ;
+                                            }
+                                        }
+                                        if (ImGui.IsItemHovered())
+                                        {
+                                            ImGui.BeginTooltip();
+                                            ImGui.Text("Copied style:");
+                                            ImGui.Text($"Color: 0x{p.Clipboard.color:X8}");
+                                            ImGui.SameLine();
+                                            ImGuiEx.DisplayColor(p.Clipboard.color);
+                                            ImGui.Text($"Overlay BG color: 0x{p.Clipboard.overlayBGColor:X8}");
+                                            ImGui.SameLine();
+                                            ImGuiEx.DisplayColor(p.Clipboard.overlayBGColor);
+                                            ImGui.Text($"Overlay text color: 0x{p.Clipboard.overlayTextColor:X8}");
+                                            ImGui.SameLine();
+                                            ImGuiEx.DisplayColor(p.Clipboard.overlayTextColor);
+                                            ImGui.Text($"Overlay vertical offset: {p.Clipboard.overlayVOffset}");
+                                            ImGui.Text($"Thickness: {p.Clipboard.thicc}");
+                                            ImGui.Text($"Tether: {p.Clipboard.tether}");
+                                            ImGui.Separator();
+                                            ImGui.TextColored((ImGui.GetIO().KeyCtrl ? Colors.Green : Colors.Gray).ToVector4(),
+                                                "Holding CTRL when clicking will also paste:");
+                                            ImGui.Text($"Radius: {p.Clipboard.radius}");
+                                            ImGui.Text($"Include target hitbox: {p.Clipboard.includeHitbox}");
+                                            ImGui.Text($"Include own hitbox: {p.Clipboard.includeOwnHitbox}");
+                                            ImGui.Text($"Include rotation: {p.Clipboard.includeRotation}");
+                                            ImGui.Text($"Only targetable: {p.Clipboard.onlyTargetable}");
+                                            ImGui.Separator();
+                                            ImGui.TextColored((ImGui.GetIO().KeyShift ? Colors.Green : Colors.Gray).ToVector4(),
+                                                "Holding SHIFT when clicking will also paste:");
+                                            ImGui.Text($"X offset: {p.Clipboard.offX}");
+                                            ImGui.Text($"Y offset: {p.Clipboard.offY}");
+                                            ImGui.Text($"Z offset: {p.Clipboard.offZ}");
+
+                                            ImGui.EndTooltip();
+                                        }
+                                    }
+
+
                                     ImGuiEx.SizedText("Element type:", WidthElement);
                                     ImGui.SameLine();
                                     ImGui.SetNextItemWidth(WidthCombo);

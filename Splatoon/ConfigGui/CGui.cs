@@ -77,13 +77,24 @@ namespace Splatoon
             { 
                 if(WasOpen)
                 {
-                    p.Config.Backup();
                     p.Config.Save();
                     WasOpen = false;
                     UnsetS2W();
-                    p.Log("Configuration saved");
+                    if(p.Config.verboselog) p.Log("Configuration saved");
                 }
                 return;
+            }
+            else
+            {
+                if (!WasOpen)
+                {
+                    p.Config.Backup();
+                }
+                if(!p.S2WActive && Svc.PluginInterface.UiBuilder.FrameCount % 600 == 0)
+                {
+                    p.Config.Save();
+                    p.Log("Configuration autosaved");
+                }
             }
             WasOpen = true;
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));

@@ -1,4 +1,5 @@
 ﻿using Dalamud.Configuration;
+using Dalamud.Game.Gui.Toast;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace Splatoon
         public int port = 47774;
         public bool TetherOnFind = true;
         public bool TriggerAnyMessages = false;
+        public bool DirectNameComparison = false;
 
         public void Initialize(Splatoon plugin)
         {
@@ -68,12 +70,19 @@ namespace Splatoon
                 {
                     ZipFile.CreateFromDirectory(tempDir, bkpFile, CompressionLevel.Optimal, false);
                     File.Delete(tempFile);
-                    plugin.Log("Backup created: " + bkpFile);
+                    plugin.tickScheduler.Enqueue(delegate
+                    {
+                        plugin.Log("Backup created: " + bkpFile);
+                        Svc.PluginInterface.UiBuilder.AddNotification("A backup of your current configuration has been created.", "Splatoon");
+                    });
                 }
                 catch (Exception e)
                 {
-                    plugin.Log("Failed to create backup: " + e.Message, true);
-                    plugin.Log(e.StackTrace, true);
+                    plugin.tickScheduler.Enqueue(delegate
+                    {
+                        plugin.Log("Failed to create backup: " + e.Message, true);
+                        plugin.Log(e.StackTrace, true);
+                    });
                 }
                 ZipSemaphore.Release();
             }));
