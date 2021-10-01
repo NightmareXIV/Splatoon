@@ -153,6 +153,8 @@ namespace Splatoon
                         ImGui.Checkbox("Enabled##" + i, ref p.Config.Layouts[i].Enabled);
                         ImGui.SameLine();
                         ImGui.Checkbox("Prevent controlling with web api##" + i, ref p.Config.Layouts[i].DisableDisabling);
+                        ImGui.SameLine();
+                        ImGui.Checkbox("Disable in duty##" + i, ref p.Config.Layouts[i].DisableDisabling);
                         if (ImGui.Button("Export to clipboard"))
                         {
                             ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
@@ -335,6 +337,87 @@ namespace Splatoon
                         {
                             if (colorJLock) ImGui.PopStyleColor();
                         }
+
+                        
+                        if (p.Config.Layouts[i].UseTriggers)
+                        {
+                            ImGui.Checkbox("##usetrigger" + i, ref p.Config.Layouts[i].UseTriggers);
+                            ImGui.SameLine();
+                            ImGui.PushStyleColor(ImGuiCol.Header, Colors.Transparent);
+                            if(ImGui.CollapsingHeader("Trigger settings##" + i))
+                            {
+                                if(ImGui.Button("Add new trigger##" + i))
+                                {
+                                    p.Config.Layouts[i].Triggers.Add(new Trigger());
+                                }
+                                var deleteTrigger = -1;
+                                for(var n = 0; n < p.Config.Layouts[i].Triggers.Count; n++)
+                                {
+                                    if (p.Config.Layouts[i].Triggers[n].HasFired) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Gray);
+                                    if(ImGui.Button("[X]##"+n+i) && ImGui.GetIO().KeyCtrl)
+                                    {
+                                        deleteTrigger = n;
+                                    }
+                                    if (ImGui.IsItemHovered())
+                                    {
+                                        ImGui.SetTooltip("Hold CTRL + left click to delete");
+                                    }
+                                    ImGui.SameLine();
+                                    ImGui.SetNextItemWidth(WidthCombo);
+                                    ImGui.Combo("##trigger" + i + n, ref p.Config.Layouts[i].Triggers[n].Type, Trigger.Types, Trigger.Types.Length);
+                                    ImGui.SameLine();
+                                    ImGui.Text("Reset on:");
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("Combat exit##" + i + n, ref p.Config.Layouts[i].Triggers[n].ResetOnCombatExit);
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("Territory change##" + i + n, ref p.Config.Layouts[i].Triggers[n].ResetOnTChange);
+                                    if (p.Config.Layouts[i].Triggers[n].Type == 0 || p.Config.Layouts[i].Triggers[n].Type == 1)
+                                    {
+                                        ImGui.Text("Time: ");
+                                        ImGui.SameLine();
+                                        ImGui.SetNextItemWidth(50f);
+                                        ImGui.DragInt("##triggertime1" + i + n, ref p.Config.Layouts[i].Triggers[n].TimeBegin, 0.2f, 0, 3599);
+                                        ImGui.SameLine();
+                                        ImGui.Text(DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].TimeBegin).ToString("mm:ss"));
+                                    }
+                                    else
+                                    {
+                                        ImGui.SetNextItemWidth(400f);
+                                        ImGui.InputTextWithHint("##textinput1"+n+i, "Case-insensitive message", ref p.Config.Layouts[i].Triggers[n].Match, 1000);
+                                    }
+                                    ImGui.SameLine();
+                                    ImGui.Text("Duration: ");
+                                    ImGui.SameLine();
+                                    ImGui.SetNextItemWidth(50f);
+                                    ImGui.DragInt("##triggertime2" + i + n, ref p.Config.Layouts[i].Triggers[n].Duration, 0.2f, 0, 3599);
+                                    ImGui.SameLine();
+                                    ImGui.Text(p.Config.Layouts[i].Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].Duration).ToString("mm:ss"));
+                                    if (p.Config.Layouts[i].Triggers[n].HasFired) ImGui.PopStyleColor();
+                                    ImGui.Separator();
+                                }
+                                if(deleteTrigger != -1)
+                                {
+                                    try
+                                    {
+                                        p.Config.Layouts[i].Triggers.RemoveAt(deleteTrigger);
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        p.Log(e.Message + "\n" + e.StackTrace);
+                                    }
+                                }
+                                ImGui.PopStyleColor(1);
+                            }
+                            else
+                            {
+                                ImGui.PopStyleColor(1);
+                            }
+                        }
+                        else
+                        {
+                            ImGui.Checkbox("Use trigger system##usetrigger" + i, ref p.Config.Layouts[i].UseTriggers);
+                        }
+
                         ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(Colors.Green), "Add elements to the layout to create markers:");
                         ImGui.SameLine();
                         ImGui.PushItemWidth(WidthCombo);

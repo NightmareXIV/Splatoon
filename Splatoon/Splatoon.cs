@@ -1,5 +1,7 @@
 ﻿using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.Text;
+using Dalamud.Game.Text.SeStringHandling;
 using Lumina.Excel.GeneratedSheets;
 
 namespace Splatoon;
@@ -48,6 +50,7 @@ unsafe class Splatoon : IDalamudPlugin
         Svc.Framework.Update -= Tick;
         Svc.ClientState.Login -= OnLogin;
         SetupShutdownHttp(false);
+        Svc.Chat.ChatMessage -= OnChatMessage;
         //Svc.Chat.Print("Disposing");
     }
 
@@ -77,6 +80,12 @@ unsafe class Splatoon : IDalamudPlugin
         SetupShutdownHttp(Config.UseHttpServer);
         UpdatePvpZone(Svc.ClientState?.TerritoryType);
         Svc.ClientState.Login += OnLogin;
+        Svc.Chat.ChatMessage += OnChatMessage;
+    }
+
+    private void OnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
+    {
+        
     }
 
     internal void SetupShutdownHttp(bool enable)
@@ -239,6 +248,10 @@ unsafe class Splatoon : IDalamudPlugin
                 foreach (var i in Config.Layouts.Values)
                 {
                     if (!IsLayoutVisible(i)) continue;
+                    if (i.UseTriggers)
+                    {
+                        if (i.TriggerCondition == -1 || (i.TriggerCondition == 0 && i.DCond == 5)) return;
+                    }
                     foreach (var e in i.Elements.Values.ToArray())
                     {
                         ProcessElement(e);
@@ -465,12 +478,6 @@ unsafe class Splatoon : IDalamudPlugin
         if ((i.DCond == 2 || i.DCond == 3) && !Svc.Condition[ConditionFlag.BoundByDuty]) return false;
         if (i.DCond == 4 && !(Svc.Condition[ConditionFlag.InCombat]
             || Svc.Condition[ConditionFlag.BoundByDuty])) return false;
-        if (i.Visibility == 1)
-        {
-            if (!Svc.Condition[ConditionFlag.InCombat]) return false;
-            var tic = Environment.TickCount64 - CombatStarted;
-            if (tic < i.BattleTimeBegin || tic > i.BattleTimeEnd) return false;
-        }
         return true;
     }
 
