@@ -1,4 +1,6 @@
-﻿namespace Splatoon
+﻿using Dalamud.Game.ClientState.Conditions;
+
+namespace Splatoon
 {
     unsafe class Gui : IDisposable
     {
@@ -21,7 +23,8 @@
             if (p.Profiler.Enabled) p.Profiler.Gui.StartTick();
             try
             {
-                if (!p.isPvpZone)
+                if (!Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent]
+                    && !Svc.Condition[ConditionFlag.WatchingCutscene78])
                 {
                     uid = 0;
                     if (p.Config.segments > 1000 || p.Config.segments < 4)

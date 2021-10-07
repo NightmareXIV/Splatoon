@@ -19,13 +19,6 @@ namespace Splatoon
                         ImGuiEx.TextCentered("Either lift your camera up or adjust camera settings in general settings below.");
                         ImGui.PopStyleColor();
                     }*/
-            if (p.isPvpZone)
-            {
-                ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
-                ImGuiEx.TextCentered("Splatoon will not work in PvP zones.");
-                ImGuiEx.TextCentered("You can only view and edit settings.");
-                ImGui.PopStyleColor();
-            }
 
             ImGui.Checkbox("Allow layout deletion", ref enableDeletion);
             ImGui.SameLine();
@@ -588,7 +581,7 @@ namespace Splatoon
                                         ImGui.SameLine();
                                         if (ImGui.Button("Screen2World##s2w1" + i + k))
                                         {
-                                            if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled && !p.isPvpZone/* && p.CamAngleY <= p.Config.maxcamY*/)
+                                            if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
                                             {
                                                 UnsetS2W();
                                                 SetCursorTo(el.refX, el.refZ, el.refY);
@@ -678,7 +671,7 @@ namespace Splatoon
                                         ImGui.SameLine();
                                         if (ImGui.Button("Screen2World##s2w2" + i + k))
                                         {
-                                            if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled && !p.isPvpZone/* && p.CamAngleY <= p.Config.maxcamY*/)
+                                            if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
                                             {
                                                 UnsetS2W();
                                                 SetCursorTo(el.offX, el.offZ, el.offY);

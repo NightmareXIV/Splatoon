@@ -32,7 +32,6 @@ unsafe class Splatoon : IDalamudPlugin
     internal List<DynamicElement> dynamicElements;
     internal HTTPServer HttpServer;
     internal bool prevCombatState = false;
-    internal bool isPvpZone = false;
     static internal Vector3? PlayerPosCache = null;
     internal Profiling Profiler;
     internal Dictionary<(IntPtr Addr, uint Id), string> NamesCache;
@@ -52,7 +51,6 @@ unsafe class Splatoon : IDalamudPlugin
         CommandManager.Dispose();
         Svc.ClientState.TerritoryChanged -= TerritoryChangedEvent;
         Svc.Framework.Update -= Tick;
-        Svc.ClientState.Login -= OnLogin;
         SetupShutdownHttp(false);
         Svc.Chat.ChatMessage -= OnChatMessage;
         //Svc.Chat.Print("Disposing");
@@ -83,8 +81,6 @@ unsafe class Splatoon : IDalamudPlugin
         tickScheduler = new ConcurrentQueue<System.Action>();
         dynamicElements = new List<DynamicElement>();
         SetupShutdownHttp(Config.UseHttpServer);
-        UpdatePvpZone(Svc.ClientState?.TerritoryType);
-        Svc.ClientState.Login += OnLogin;
         Svc.Chat.ChatMessage += OnChatMessage;
     }
 
@@ -130,7 +126,6 @@ unsafe class Splatoon : IDalamudPlugin
 
     private void TerritoryChangedEvent(object sender, ushort e)
     {
-        UpdatePvpZone(e);
         NamesCache.Clear();
         LookupResultCache.Clear();
         if (SFind != null)
@@ -168,28 +163,6 @@ unsafe class Splatoon : IDalamudPlugin
                     if (t.ResetOnTChange) t.FiredState = 0;
                 }
             }
-        }
-    }
-
-    void OnLogin(object sender, EventArgs e)
-    {
-        UpdatePvpZone(Svc.ClientState?.TerritoryType);
-    }
-
-    void UpdatePvpZone(uint? terr)
-    {
-        if(terr == null)
-        {
-            isPvpZone = false;
-            return;
-        }
-        try
-        {
-            isPvpZone = Svc.Data.GetExcelSheet<TerritoryType>().GetRow(terr.Value).IsPvpZone;
-        }
-        catch (Exception)
-        {
-            isPvpZone = false;
         }
     }
 

@@ -99,12 +99,6 @@ namespace Splatoon
             WasOpen = true;
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             var titleColored = false;
-            if (p.isPvpZone)
-            {
-                ImGui.PushStyleColor(ImGuiCol.TitleBg, Colors.DarkRed);
-                ImGui.PushStyleColor(ImGuiCol.TitleBgActive, Colors.DarkRed);
-                titleColored = true;
-            }
             if (ImGui.Begin("Splatoon", ref Open))
             {
                 ImGui.BeginTabBar("SplatoonSettings");
