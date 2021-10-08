@@ -173,7 +173,7 @@ namespace Splatoon
                     }
                     catch (Exception e)
                     {
-                        //Chat.Print("Error: " + e + "\n" + e.StackTrace);
+                        p.tickScheduler.Enqueue(delegate { p.Log("Error: " + e + "\n" + e.StackTrace); });
                     }
                 }
             }).Start();

@@ -35,7 +35,6 @@ namespace Splatoon
 - Added support for importing waymark presets from Waymark preset plugin library and Paisley Park
 - Added tether function to the elements. It will draw line from you to visible marker.
 - Added profiling functions
-- Added object name cache. Object table lookups by name became about 4 times faster.
 - [alpha] Added simple trigger system. Allows you to specify when exactly your layout will appear in battle.
    It will be kept very simple, for more complicated triggers please use Triggernometry/Cactbot + web api.
 - Added a button to easily copy visual style between elements.

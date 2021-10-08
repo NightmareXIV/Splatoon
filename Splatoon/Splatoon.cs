@@ -408,14 +408,17 @@ unsafe class Splatoon : IDalamudPlugin
 
     internal bool IsNameContainsValue(GameObject a, string value)
     {
-        /*if (Config.DirectNameComparison)*/ return a.Name.ToString().ContainsIgnoreCase(value);
-        var hash = value.GetHashCode();
+        //if (Config.DirectNameComparison)
+        {
+            return a.Name.ToString().ContainsIgnoreCase(value);
+        }
+        /*var hash = value.GetHashCode();
         var objectID = MemoryManager.GameObject_GetObjectID(a.Address);
         if (!LookupResultCache.ContainsKey((a.Address, objectID, hash)))
         {
             LookupResultCache.Add((a.Address, objectID, hash), a.Name.ToString().ContainsIgnoreCase(value));
         }
-        return LookupResultCache[(a.Address, objectID, hash)];
+        return LookupResultCache[(a.Address, objectID, hash)];*/
     }
 
     internal string GetObjectName(GameObject a)

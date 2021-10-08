@@ -198,7 +198,7 @@ namespace Splatoon
                         json = Encoding.UTF8.GetString(Convert.FromBase64String(json));
                         p.Log("Import type: Base64");
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         p.Log("Import type: JSON", true);
                     }
