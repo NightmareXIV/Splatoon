@@ -37,6 +37,7 @@ Create static, fixed markets at specific coordinates.
 - Change targeted object name on the fly via `/splatoon settarget` command
 - Tether feature, which will draw a line between you and an object
 - Custom offset from the middle of the object
+[wip]
 # WARNING!
 This project is in beta test. 
 * Expect bugs! But critical bugs that could potentially break/crash the game should be fixed by now.
