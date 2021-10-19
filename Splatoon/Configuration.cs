@@ -33,6 +33,7 @@ namespace Splatoon
         public bool TetherOnFind = true;
         public bool TriggerAnyMessages = false;
         public bool DirectNameComparison = false;
+        public bool NoMemory = false;
 
         public void Initialize(Splatoon plugin)
         {

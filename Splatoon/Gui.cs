@@ -181,7 +181,7 @@ namespace Splatoon
                     ),
                     out Vector2 pos) 
                     || visible;
-                if (pos.Y > refpos.Y) elements[i] = new Vector2(pos.X, pos.Y);
+                if (pos.Y > refpos.Y || p.MemoryManager.ErrorCode != 0) elements[i] = new Vector2(pos.X, pos.Y);
             }
             if (visible)
             {

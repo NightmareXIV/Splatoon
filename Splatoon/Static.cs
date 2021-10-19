@@ -132,5 +132,10 @@ namespace Splatoon
                 Svc.Chat.Print("Error: " + e.Message + "\n" + e.StackTrace);
             }
         }
+
+        public static string NotNull(this string s)
+        {
+            return s ?? "";
+        }
     }
 }

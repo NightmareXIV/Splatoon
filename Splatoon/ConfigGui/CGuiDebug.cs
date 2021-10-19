@@ -85,9 +85,9 @@
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(300f);
                     ImGui.Text($"{a.DataId:X8}");
-                    ImGui.SameLine();
+                    /*ImGui.SameLine();
                     ImGui.SetCursorPosX(400f);
-                    ImGui.Text($"{p.MemoryManager.GameObject_GetObjectID(a.Address):X16}");
+                    ImGui.Text($"{p.MemoryManager.GameObject_GetObjectID(a.Address):X16}");*/
                 }
                 catch (Exception e)
                 {

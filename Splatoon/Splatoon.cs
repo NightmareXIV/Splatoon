@@ -15,6 +15,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal Memory MemoryManager;
     internal ChlogGui ChangelogGui;
     internal Configuration Config;
+    internal MemerrGui memerrGui;
     internal Dictionary<ushort, TerritoryType> Zones;
     internal string[] LogStorage = new string[100];
     internal long CombatStarted = 0;
@@ -23,7 +24,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
     internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
     internal float CamAngleY;
-    internal float CamZoom;
+    internal float CamZoom = 1.5f;
     internal bool S2WActive = false;
     internal bool prevMouseState = false;
     internal string SFind = null;
@@ -51,8 +52,8 @@ unsafe class Splatoon : IDalamudPlugin
         CommandManager.Dispose();
         Svc.ClientState.TerritoryChanged -= TerritoryChangedEvent;
         Svc.Framework.Update -= Tick;
-        SetupShutdownHttp(false);
         Svc.Chat.ChatMessage -= OnChatMessage;
+        SetupShutdownHttp(false);
         //Svc.Chat.Print("Disposing");
     }
 
@@ -60,6 +61,8 @@ unsafe class Splatoon : IDalamudPlugin
     {
         pluginInterface.Create<Svc>();
         //Svc.Chat.Print("Loaded");
+        Config = Svc.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Config.Initialize(this);
         ChatMessageQueue = new Queue<string>();
         Profiler = new Profiling(this);
         CommandManager = new Commands(this);
@@ -67,21 +70,25 @@ unsafe class Splatoon : IDalamudPlugin
         LookupResultCache = new Dictionary<(IntPtr Addr, long Id, int StrHash), bool>();
         Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
         Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
-        Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
-        MemoryManager = new Memory(this);
-        Config = Svc.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        Config.Initialize(this);
-        Svc.Framework.Update += Tick;
-        DrawingGui = new Gui(this);
-        ConfigGui = new CGui(this);
         if(ChlogGui.ChlogVersion > Config.ChlogReadVer)
         {
             ChangelogGui = new ChlogGui(this);
+            Config.NoMemory = false;
+        }
+        MemoryManager = new Memory(this);
+        if (MemoryManager.ErrorCode != 0)
+        {
+            memerrGui = new MemerrGui(this);
         }
         tickScheduler = new ConcurrentQueue<System.Action>();
         dynamicElements = new List<DynamicElement>();
         SetupShutdownHttp(Config.UseHttpServer);
+
+        DrawingGui = new Gui(this);
+        ConfigGui = new CGui(this);
         Svc.Chat.ChatMessage += OnChatMessage;
+        Svc.Framework.Update += Tick;
+        Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
     }
 
     private void OnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
@@ -194,10 +201,13 @@ unsafe class Splatoon : IDalamudPlugin
                     Log("Pointer to LocalPlayer.Address is zero");
                     return;
                 }
-                CamAngleX = *MemoryManager.CameraAddressX + Math.PI;
-                if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-                CamAngleY = *MemoryManager.CameraAddressY;
-                CamZoom = *MemoryManager.CameraZoom;
+                if (MemoryManager.ErrorCode == 0)
+                {
+                    CamAngleX = *MemoryManager.CameraAddressX + Math.PI;
+                    if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
+                    CamAngleY = *MemoryManager.CameraAddressY;
+                    CamZoom = *MemoryManager.CameraZoom;
+                }
                 /*Range conversion https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
                 slope = (output_end - output_start) / (input_end - input_start)
                 output = output_start + slope * (input - input_start) */
@@ -516,7 +526,7 @@ unsafe class Splatoon : IDalamudPlugin
                 foreach (var a in Svc.Objects)
                 {
                     if ((e.refActorName == "*" || IsNameContainsValue(a, e.refActorName))
-                            && (!e.onlyTargetable || GetIsTargetable(a)))
+                            && (!e.onlyTargetable || MemoryManager.GetIsTargetable(a)))
                     {
                         var aradius = radius;
                         if (e.includeHitbox) aradius += a.HitboxRadius;
@@ -605,18 +615,6 @@ unsafe class Splatoon : IDalamudPlugin
             LogStorage[i - 1] = LogStorage[i];
         }
         LogStorage[LogStorage.Length - 1] = line;
-    }
-
-    internal bool GetIsTargetable(GameObject a)
-    {
-        if(a is Character)
-        {
-            return MemoryManager.GetIsTargetable_Character(a.Address) != 0;
-        }
-        else
-        {
-            return MemoryManager.GetIsTargetable_GameObject(a.Address) != 0;
-        }
     }
 
     public void HandleChat()
