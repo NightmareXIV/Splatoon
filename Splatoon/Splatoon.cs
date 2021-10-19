@@ -412,7 +412,7 @@ unsafe class Splatoon : IDalamudPlugin
         }
         foreach (var e in i.Elements.Values.ToArray())
         {
-            ProcessElement(e);
+            ProcessElement(e, i);
         }
     }
 
@@ -440,7 +440,7 @@ unsafe class Splatoon : IDalamudPlugin
         return NamesCache[(a.Address, a.ObjectId)];
     }
 
-    internal void ProcessElement(Element e)
+    internal void ProcessElement(Element e, Layout i = null)
     {
         if (!e.Enabled) return;
         draw.Clear();
@@ -486,14 +486,17 @@ unsafe class Splatoon : IDalamudPlugin
         float radius = e.radius;
         if (e.type == 0)
         {
-            draw.Add((e.refX, e.refY, e.refZ, radius));
-            if (e.tether)
+            if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, e.refX, e.refY, e.refZ))
             {
-                displayObjects.Add(new DisplayObjectLine(e.refX + e.offX,
-                    e.refY + e.offY,
-                    e.refZ + e.offZ,
-                    GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
-                    e.thicc, e.color));
+                draw.Add((e.refX, e.refY, e.refZ, radius));
+                if (e.tether)
+                {
+                    displayObjects.Add(new DisplayObjectLine(e.refX + e.offX,
+                        e.refY + e.offY,
+                        e.refZ + e.offZ,
+                        GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
+                        e.thicc, e.color));
+                }
             }
         }
         else if (e.type == 1)
@@ -507,17 +510,20 @@ unsafe class Splatoon : IDalamudPlugin
             else if (e.refActorType == 2 && Svc.Targets.Target != null
                 && Svc.Targets.Target is BattleNpc)
             {
-                if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
-                draw.Add((Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
-                    Svc.Targets.Target.GetPositionXZY().Z, radius));
-
-                if (e.tether)
+                if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, Svc.Targets.Target.GetPositionXZY()))
                 {
-                    displayObjects.Add(new DisplayObjectLine(Svc.Targets.Target.GetPositionXZY().X + e.offX,
-                        Svc.Targets.Target.GetPositionXZY().Y + e.offY,
-                        Svc.Targets.Target.GetPositionXZY().Z + e.offZ,
-                        GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
-                        e.thicc, e.color));
+                    if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
+                    draw.Add((Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
+                        Svc.Targets.Target.GetPositionXZY().Z, radius));
+
+                    if (e.tether)
+                    {
+                        displayObjects.Add(new DisplayObjectLine(Svc.Targets.Target.GetPositionXZY().X + e.offX,
+                            Svc.Targets.Target.GetPositionXZY().Y + e.offY,
+                            Svc.Targets.Target.GetPositionXZY().Z + e.offZ,
+                            GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
+                            e.thicc, e.color));
+                    }
                 }
             }
             else if (e.refActorType == 0 && e.refActorName.Length > 0)
@@ -528,16 +534,19 @@ unsafe class Splatoon : IDalamudPlugin
                     if ((e.refActorName == "*" || IsNameContainsValue(a, e.refActorName))
                             && (!e.onlyTargetable || MemoryManager.GetIsTargetable(a)))
                     {
-                        var aradius = radius;
-                        if (e.includeHitbox) aradius += a.HitboxRadius;
-                        draw.Add((a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius));
-                        if (e.tether)
+                        if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
                         {
-                            displayObjects.Add(new DisplayObjectLine(a.GetPositionXZY().X + e.offX,
-                                a.GetPositionXZY().Y + e.offY,
-                                a.GetPositionXZY().Z + e.offZ,
-                                GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
-                                e.thicc, e.color));
+                            var aradius = radius;
+                            if (e.includeHitbox) aradius += a.HitboxRadius;
+                            draw.Add((a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius));
+                            if (e.tether)
+                            {
+                                displayObjects.Add(new DisplayObjectLine(a.GetPositionXZY().X + e.offX,
+                                    a.GetPositionXZY().Y + e.offY,
+                                    a.GetPositionXZY().Z + e.offZ,
+                                    GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
+                                    e.thicc, e.color));
+                            }
                         }
                     }
                 }
@@ -583,6 +592,31 @@ unsafe class Splatoon : IDalamudPlugin
         if ((i.DCond == 2 || i.DCond == 3) && !Svc.Condition[ConditionFlag.BoundByDuty]) return false;
         if (i.DCond == 4 && !(Svc.Condition[ConditionFlag.InCombat]
             || Svc.Condition[ConditionFlag.BoundByDuty])) return false;
+        if(i.UseDistanceLimit && i.DistanceLimitType == 0)
+        {
+            if (Svc.Targets.Target != null)
+            {
+                var dist = Vector3.Distance(Svc.Targets.Target.GetPositionXZY(), GetPlayerPositionXZY()) - (i.DistanceLimitTargetHitbox ? Svc.Targets.Target.HitboxRadius : 0) - (i.DistanceLimitMyHitbox ? Svc.ClientState.LocalPlayer.HitboxRadius : 0);
+                if (!(dist >= i.MinDistance && dist < i.MaxDistance)) return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool CheckDistanceCondition(Layout i, float x, float y, float z)
+    {
+        return CheckDistanceCondition(i, new Vector3(x, y, z));
+    }
+
+    public bool CheckDistanceCondition(Layout i, Vector3 v)
+    {
+        if (i.DistanceLimitType != 1) return true;
+        var dist = Vector3.Distance(v, GetPlayerPositionXZY());
+        if (!(dist >= i.MinDistance && dist < i.MaxDistance)) return false;
         return true;
     }
 

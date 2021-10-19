@@ -57,7 +57,7 @@ namespace Splatoon
                 }
             }
             ImGui.SameLine();
-            ImGui.Text("Import layout from:");
+            ImGui.TextUnformatted("Import layout from:");
             ImGui.SameLine();
             if (ImGui.Button("clipboard"))
             {
@@ -203,12 +203,12 @@ namespace Splatoon
                             ImGui.SetNextItemWidth(50f);
                             ImGui.DragInt("##btbg" + i, ref p.Config.Layouts[i].BattleTimeBegin, 1f, 0, 60 * 20);
                             ImGui.SameLine();
-                            ImGui.Text("-");
+                            ImGui.TextUnformatted("-");
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(50f);
                             ImGui.DragInt("##bte" + i, ref p.Config.Layouts[i].BattleTimeEnd, 1f, p.Config.Layouts[i].BattleTimeBegin, 60 * 20);
                             ImGui.SameLine();
-                            ImGui.Text(DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].BattleTimeBegin).ToString("mm:ss") + " - " +
+                            ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].BattleTimeBegin).ToString("mm:ss") + " - " +
                                 DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].BattleTimeEnd).ToString("mm:ss"));
                         }
                         if (p.Config.Layouts[i].Visibility == 3)
@@ -331,7 +331,38 @@ namespace Splatoon
                             if (colorJLock) ImGui.PopStyleColor();
                         }
 
-                        
+                        ImGuiEx.SizedText("Distance limit:", WidthLayout);
+                        ImGui.SameLine();
+                        ImGui.Checkbox("##dlimit" + i, ref p.Config.Layouts[i].UseDistanceLimit);
+                        if (p.Config.Layouts[i].UseDistanceLimit)
+                        {
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(150f);
+                            ImGui.SameLine();
+                            ImGui.Combo("##dlimittype" + i, ref p.Config.Layouts[i].DistanceLimitType, new string[] { "Distance to current target", "Distance to element" }, 2);
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##dlimit1" + i, ref p.Config.Layouts[i].MinDistance, 0.1f);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Including this value");
+                            ImGui.SameLine();
+                            ImGui.TextUnformatted("-");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##dlimit2" + i, ref p.Config.Layouts[i].MaxDistance, 0.1f);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Excluding this value");
+                            if (p.Config.Layouts[i].DistanceLimitType == 0)
+                            {
+                                ImGui.SameLine();
+                                ImGui.TextUnformatted("Hitbox:");
+                                ImGui.SameLine();
+                                ImGui.Checkbox("+my##" + i, ref p.Config.Layouts[i].DistanceLimitMyHitbox);
+                                if (ImGui.IsItemHovered()) ImGui.SetTooltip("Add my hitbox value to distance calculation");
+                                ImGui.SameLine();
+                                ImGui.Checkbox("+target##" + i, ref p.Config.Layouts[i].DistanceLimitTargetHitbox);
+                                if (ImGui.IsItemHovered()) ImGui.SetTooltip("Add target's hitbox value to distance calculation");
+                            }
+                        }
+
                         if (p.Config.Layouts[i].UseTriggers)
                         {
                             ImGui.Checkbox("##usetrigger" + i, ref p.Config.Layouts[i].UseTriggers);
@@ -358,21 +389,21 @@ namespace Splatoon
                                     ImGui.SetNextItemWidth(WidthCombo);
                                     ImGui.Combo("##trigger" + i + n, ref p.Config.Layouts[i].Triggers[n].Type, Trigger.Types, Trigger.Types.Length);
                                     ImGui.SameLine();
-                                    ImGui.Text("Reset on:");
+                                    ImGui.TextUnformatted("Reset on:");
                                     ImGui.SameLine();
                                     ImGui.Checkbox("Combat exit##" + i + n, ref p.Config.Layouts[i].Triggers[n].ResetOnCombatExit);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("Territory change##" + i + n, ref p.Config.Layouts[i].Triggers[n].ResetOnTChange);
                                     ImGui.SameLine();
-                                    ImGui.Text("State: " + p.Config.Layouts[i].Triggers[n].FiredState);
+                                    ImGui.TextUnformatted("State: " + p.Config.Layouts[i].Triggers[n].FiredState);
                                     if (p.Config.Layouts[i].Triggers[n].Type == 0 || p.Config.Layouts[i].Triggers[n].Type == 1)
                                     {
-                                        ImGui.Text("Time: ");
+                                        ImGui.TextUnformatted("Time: ");
                                         ImGui.SameLine();
                                         ImGui.SetNextItemWidth(50f);
                                         ImGui.DragInt("##triggertime1" + i + n, ref p.Config.Layouts[i].Triggers[n].TimeBegin, 0.2f, 0, 3599);
                                         ImGui.SameLine();
-                                        ImGui.Text(DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].TimeBegin).ToString("mm:ss"));
+                                        ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].TimeBegin).ToString("mm:ss"));
                                     }
                                     else
                                     {
@@ -380,12 +411,12 @@ namespace Splatoon
                                         ImGui.InputTextWithHint("##textinput1"+n+i, "Case-insensitive message", ref p.Config.Layouts[i].Triggers[n].Match, 1000);
                                     }
                                     ImGui.SameLine();
-                                    ImGui.Text("Duration: ");
+                                    ImGui.TextUnformatted("Duration: ");
                                     ImGui.SameLine();
                                     ImGui.SetNextItemWidth(50f);
                                     ImGui.DragInt("##triggertime2" + i + n, ref p.Config.Layouts[i].Triggers[n].Duration, 0.2f, 0, 3599);
                                     ImGui.SameLine();
-                                    ImGui.Text(p.Config.Layouts[i].Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].Duration).ToString("mm:ss"));
+                                    ImGui.TextUnformatted(p.Config.Layouts[i].Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].Duration).ToString("mm:ss"));
                                     ImGui.Separator();
                                 }
                                 if(deleteTrigger != -1)
@@ -511,33 +542,33 @@ namespace Splatoon
                                         if (ImGui.IsItemHovered())
                                         {
                                             ImGui.BeginTooltip();
-                                            ImGui.Text("Copied style:");
-                                            ImGui.Text($"Color: 0x{p.Clipboard.color:X8}");
+                                            ImGui.TextUnformatted("Copied style:");
+                                            ImGui.TextUnformatted($"Color: 0x{p.Clipboard.color:X8}");
                                             ImGui.SameLine();
                                             ImGuiEx.DisplayColor(p.Clipboard.color);
-                                            ImGui.Text($"Overlay BG color: 0x{p.Clipboard.overlayBGColor:X8}");
+                                            ImGui.TextUnformatted($"Overlay BG color: 0x{p.Clipboard.overlayBGColor:X8}");
                                             ImGui.SameLine();
                                             ImGuiEx.DisplayColor(p.Clipboard.overlayBGColor);
-                                            ImGui.Text($"Overlay text color: 0x{p.Clipboard.overlayTextColor:X8}");
+                                            ImGui.TextUnformatted($"Overlay text color: 0x{p.Clipboard.overlayTextColor:X8}");
                                             ImGui.SameLine();
                                             ImGuiEx.DisplayColor(p.Clipboard.overlayTextColor);
-                                            ImGui.Text($"Overlay vertical offset: {p.Clipboard.overlayVOffset}");
-                                            ImGui.Text($"Thickness: {p.Clipboard.thicc}");
-                                            ImGui.Text($"Tether: {p.Clipboard.tether}");
+                                            ImGui.TextUnformatted($"Overlay vertical offset: {p.Clipboard.overlayVOffset}");
+                                            ImGui.TextUnformatted($"Thickness: {p.Clipboard.thicc}");
+                                            ImGui.TextUnformatted($"Tether: {p.Clipboard.tether}");
                                             ImGui.Separator();
                                             ImGui.TextColored((ImGui.GetIO().KeyCtrl ? Colors.Green : Colors.Gray).ToVector4(),
                                                 "Holding CTRL when clicking will also paste:");
-                                            ImGui.Text($"Radius: {p.Clipboard.radius}");
-                                            ImGui.Text($"Include target hitbox: {p.Clipboard.includeHitbox}");
-                                            ImGui.Text($"Include own hitbox: {p.Clipboard.includeOwnHitbox}");
-                                            ImGui.Text($"Include rotation: {p.Clipboard.includeRotation}");
-                                            ImGui.Text($"Only targetable: {p.Clipboard.onlyTargetable}");
+                                            ImGui.TextUnformatted($"Radius: {p.Clipboard.radius}");
+                                            ImGui.TextUnformatted($"Include target hitbox: {p.Clipboard.includeHitbox}");
+                                            ImGui.TextUnformatted($"Include own hitbox: {p.Clipboard.includeOwnHitbox}");
+                                            ImGui.TextUnformatted($"Include rotation: {p.Clipboard.includeRotation}");
+                                            ImGui.TextUnformatted($"Only targetable: {p.Clipboard.onlyTargetable}");
                                             ImGui.Separator();
                                             ImGui.TextColored((ImGui.GetIO().KeyShift ? Colors.Green : Colors.Gray).ToVector4(),
                                                 "Holding SHIFT when clicking will also paste:");
-                                            ImGui.Text($"X offset: {p.Clipboard.offX}");
-                                            ImGui.Text($"Y offset: {p.Clipboard.offY}");
-                                            ImGui.Text($"Z offset: {p.Clipboard.offZ}");
+                                            ImGui.TextUnformatted($"X offset: {p.Clipboard.offX}");
+                                            ImGui.TextUnformatted($"Y offset: {p.Clipboard.offY}");
+                                            ImGui.TextUnformatted($"Z offset: {p.Clipboard.offZ}");
 
                                             ImGui.EndTooltip();
                                         }
@@ -553,15 +584,15 @@ namespace Splatoon
                                         ImGuiEx.SizedText(el.type == 2 ? "Point A" : "Reference position: ", WidthElement);
                                         ImGui.SameLine();
                                         ImGui.PushItemWidth(60f);
-                                        ImGui.Text("X:");
+                                        ImGui.TextUnformatted("X:");
                                         ImGui.SameLine();
                                         ImGui.DragFloat("##refx" + i + k, ref el.refX, 0.02f, float.MinValue, float.MaxValue);
                                         ImGui.SameLine();
-                                        ImGui.Text("Y:");
+                                        ImGui.TextUnformatted("Y:");
                                         ImGui.SameLine();
                                         ImGui.DragFloat("##refy" + i + k, ref el.refY, 0.02f, float.MinValue, float.MaxValue);
                                         ImGui.SameLine();
-                                        ImGui.Text("Z:");
+                                        ImGui.TextUnformatted("Z:");
                                         ImGui.SameLine();
                                         ImGui.DragFloat("##refz" + i + k, ref el.refZ, 0.02f, float.MinValue, float.MaxValue);
                                         ImGui.SameLine();
@@ -636,15 +667,15 @@ namespace Splatoon
                                     ImGuiEx.SizedText(el.type == 2 ? "Point B" : "Offset: ", WidthElement);
                                     ImGui.SameLine();
                                     ImGui.PushItemWidth(60f);
-                                    ImGui.Text("X:");
+                                    ImGui.TextUnformatted("X:");
                                     ImGui.SameLine();
                                     ImGui.DragFloat("##offx" + i + k, ref el.offX, 0.02f, float.MinValue, float.MaxValue);
                                     ImGui.SameLine();
-                                    ImGui.Text("Y:");
+                                    ImGui.TextUnformatted("Y:");
                                     ImGui.SameLine();
                                     ImGui.DragFloat("##offy" + i + k, ref el.offY, 0.02f, float.MinValue, float.MaxValue);
                                     ImGui.SameLine();
-                                    ImGui.Text("Z:");
+                                    ImGui.TextUnformatted("Z:");
                                     ImGui.SameLine();
                                     ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
                                     if (el.type == 2)
@@ -701,7 +732,7 @@ namespace Splatoon
                                     else
                                     {
                                         ImGui.SameLine();
-                                        ImGui.Text("Thickness is set to 0: only text overlay will be drawn.");
+                                        ImGui.TextUnformatted("Thickness is set to 0: only text overlay will be drawn.");
                                     }
                                     if (el.thicc > 0)
                                     {
@@ -721,7 +752,7 @@ namespace Splatoon
                                             ImGui.SameLine();
                                             ImGui.Checkbox("+your hitbox##" + i + k, ref el.includeOwnHitbox);
                                             ImGui.SameLine();
-                                            ImGui.Text("(?)");
+                                            ImGui.TextUnformatted("(?)");
                                             if (ImGui.IsItemHovered())
                                             {
                                                 ImGui.SetTooltip("When the game tells you that ability A has distance D,\n" +
@@ -751,12 +782,12 @@ namespace Splatoon
                                     if (el.overlayText.Length > 0)
                                     {
                                         ImGui.SameLine();
-                                        ImGui.Text("Vertical offset:");
+                                        ImGui.TextUnformatted("Vertical offset:");
                                         ImGui.SameLine();
                                         ImGui.SetNextItemWidth(60f);
                                         ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.02f);
                                         ImGui.SameLine();
-                                        ImGui.Text("BG color:");
+                                        ImGui.TextUnformatted("BG color:");
                                         ImGui.SameLine();
                                         var v4b = ImGui.ColorConvertU32ToFloat4(el.overlayBGColor);
                                         if (ImGui.ColorEdit4("##colorbuttonbg" + i + k, ref v4b, ImGuiColorEditFlags.NoInputs))
@@ -765,7 +796,7 @@ namespace Splatoon
                                         }
                                         ImGui.PopItemWidth();
                                         ImGui.SameLine();
-                                        ImGui.Text("Text color:");
+                                        ImGui.TextUnformatted("Text color:");
                                         ImGui.SameLine();
                                         var v4t = ImGui.ColorConvertU32ToFloat4(el.overlayTextColor);
                                         if (ImGui.ColorEdit4("##colorbuttonfg" + i + k, ref v4t, ImGuiColorEditFlags.NoInputs))

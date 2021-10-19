@@ -39,5 +39,14 @@ namespace Splatoon
         /// 1: Shown
         /// </summary>
         [NonSerialized] public int TriggerCondition = 0;
+        [DefaultValue(0f)] public float MinDistance = 0f;
+        [DefaultValue(0f)] public float MaxDistance = 0f;
+        [DefaultValue(false)] public bool UseDistanceLimit = false;
+        [DefaultValue(false)] public bool DistanceLimitMyHitbox = false;
+        [DefaultValue(false)] public bool DistanceLimitTargetHitbox = false;
+        /// <summary>
+        /// 0: To target | 1: To object
+        /// </summary>
+        [DefaultValue(0)] public int DistanceLimitType = 0;
     }
 }
