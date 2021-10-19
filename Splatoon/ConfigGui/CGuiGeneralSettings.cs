@@ -103,7 +103,7 @@ namespace Splatoon
             }*/
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
             ImGui.Checkbox("Process all chat messages for triggers", ref p.Config.TriggerAnyMessages);
-            ImGui.Checkbox("Disable plugin memory (do NOT enable it)", ref p.Config.NoMemory);
+            ImGui.Checkbox("Force failsafe mode (requires plugin restart)", ref p.Config.NoMemory);
             //ImGui.Checkbox("Always compare names directly (debug option, ~4x performance loss)", ref p.Config.DirectNameComparison);
             if(ImGui.Button("Open backup directory"))
             {

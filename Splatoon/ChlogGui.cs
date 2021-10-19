@@ -10,7 +10,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 15;
+        public const int ChlogVersion = 16;
         readonly Splatoon p;
         bool open = true;
         bool understood = false;
@@ -31,22 +31,22 @@ namespace Splatoon
             if (!Svc.ClientState.IsLoggedIn) return;
             ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.TextUnformatted(
-@"Changes in this version:
-- Added support for importing waymark presets from Waymark preset plugin library and Paisley Park
-- Added tether function to the elements. It will draw line from you to visible marker.
-- Added profiling functions
-- [alpha] Added simple trigger system. Allows you to specify when exactly your layout will appear in battle.
-   It will be kept very simple, for more complicated triggers please use Triggernometry/Cactbot + web api.
-- Added a button to easily copy visual style between elements.
-- A backup of your configuration is now saved any time you open configuration. 
-   In addition, your configuration is autosaved every 5-15 seconds to ensure your changes are always safe.
-----------------------------------
-This is the API 4 version.
-There may be major bugs.
-Please report any suspicious behavior.
-If your existing markers stopped working, DO NOT try fix them yourself.
-Instead, report about it to me and I will fix them instead.
-A backup of your current configuration will be created when you close this window.");
+@"This is mostly a maintenance update directed towards ensuring that the plugin keeps working in 6.0+.
+- Failsafe mode has been designed. Should plugin's native memory module fail to initialize due to game's
+   update, it will boot in a failsafe mode. While this means that some functions will be disabled,
+   it also means that all core functions will remain functional immediately after Dalamud is available for
+   new game's version (assuming Dalamud itself doesn't introduces any breaking changes) without needing
+   to wait for me or someone else to find new signatures and update the plugin.
+   Failsafe mode can be activated from settings manually as well if necessary and will always be automatically
+   disabled upon plugin update.
+- Additionally, an option to limit display distance per layout was implemented. It has 2 modes:
+   - Limit by distance to current target
+   - Limit by distance to displayed elements individually
+   Please note that lines will not be affected by second mode.
+- The plugin is nearing the finish of it's main development. Almost all features that I wanted to have in it are
+   already implemented, which means it's a time to do a good testing and find all the bugs before Endwalker.
+   Please report any bugs and inconsistencies you will find inside the plugin via github or discord.
+- A backup of your current configuration will be created upon closing this window.");
             if(ImGui.Button("Close this window"))
             {
                 open = false;

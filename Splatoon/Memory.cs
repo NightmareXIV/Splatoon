@@ -46,7 +46,7 @@ namespace Splatoon
             }
             catch(Exception e)
             {
-                PluginLog.Error($"Failed to initialize memory manager.\n{e.Message}\n{e.StackTrace.NotNull()}\nSplatoon is using fallback mode.");
+                PluginLog.Error($"Failed to initialize memory manager.\n{e.Message}\n{e.StackTrace.NotNull()}\nSplatoon is using failsafe mode.");
                 ErrorCode = 1;
             }
         }

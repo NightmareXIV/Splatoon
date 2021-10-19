@@ -101,6 +101,14 @@ namespace Splatoon
             var titleColored = false;
             if (ImGui.Begin("Splatoon", ref Open))
             {
+                if(p.MemoryManager.ErrorCode != 0)
+                {
+                    var cursor = ImGui.GetCursorPos();
+                    var text = "Failsafe mode";
+                    ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(text).X);
+                    ImGui.TextColored((Environment.TickCount % 1000 < 500 ? Colors.Red : Colors.Yellow).ToVector4(), text);
+                    ImGui.SetCursorPos(cursor);
+                }
                 ImGui.BeginTabBar("SplatoonSettings");
                 if (ImGui.BeginTabItem("General settings"))
                 {
