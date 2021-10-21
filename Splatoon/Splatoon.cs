@@ -615,19 +615,36 @@ unsafe class Splatoon : IDalamudPlugin
 
     void AddRotatedLine(Vector3 tPos, float angle, Element e)
     {
-        var pointA = RotatePoint(tPos.X, tPos.Y,
-            -angle, new Vector3(
-            tPos.X + -e.refX,
-            tPos.Y + e.refY,
-            tPos.Z + e.refZ));
-        var pointB = RotatePoint(tPos.X, tPos.Y,
-            -angle, new Vector3(
-            tPos.X + -e.offX,
-            tPos.Y + e.offY,
-            tPos.Z + e.offZ));
-        displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
-            pointB.X, pointB.Y, pointB.Z,
-            e.thicc, e.color));
+        if (e.includeRotation)
+        {
+            var pointA = RotatePoint(tPos.X, tPos.Y,
+                -angle, new Vector3(
+                tPos.X + -e.refX,
+                tPos.Y + e.refY,
+                tPos.Z + e.refZ));
+            var pointB = RotatePoint(tPos.X, tPos.Y,
+                -angle, new Vector3(
+                tPos.X + -e.offX,
+                tPos.Y + e.offY,
+                tPos.Z + e.offZ));
+            displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
+                pointB.X, pointB.Y, pointB.Z,
+                e.thicc, e.color));
+        }
+        else
+        {
+            var pointA = new Vector3(
+                tPos.X + e.refX,
+                tPos.Y + e.refY,
+                tPos.Z + e.refZ);
+            var pointB = new Vector3(
+                tPos.X + -e.offX,
+                tPos.Y + e.offY,
+                tPos.Z + e.offZ);
+            displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
+                pointB.X, pointB.Y, pointB.Z,
+                e.thicc, e.color));
+        }
     }
 
     Vector3 RotatePoint(float cx, float cy, float angle, Vector3 p)
