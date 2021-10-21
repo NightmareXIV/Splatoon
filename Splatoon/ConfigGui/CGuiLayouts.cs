@@ -581,6 +581,8 @@ namespace Splatoon
                                     ImGui.Combo("##elemselecttype" + i + k, ref el.type, Element.ElementTypes, Element.ElementTypes.Length);
                                     if (el.type == 1 || el.type == 3)
                                     {
+                                        ImGui.SameLine();
+                                        ImGui.Checkbox("Account for rotation##rota" + i + k, ref el.includeRotation);
                                         ImGuiEx.SizedText("Targeted actor: ", WidthElement);
                                         ImGui.SameLine();
                                         ImGui.SetNextItemWidth(WidthCombo);
@@ -665,11 +667,6 @@ namespace Splatoon
                                                 }
                                             }
                                         }
-                                        else
-                                        {
-                                            ImGui.SameLine();
-                                            ImGui.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.refX, el.refY, el.offX, el.offY)));
-                                        }
                                         ImGui.PopItemWidth();
                                     }
                                     
@@ -704,6 +701,11 @@ namespace Splatoon
                                             el.offY = GetPlayerPositionXZY().Y;
                                             el.offZ = GetPlayerPositionXZY().Z;
                                         }
+                                    }
+                                    if ((el.type == 1 || el.type == 3) && el.includeRotation)
+                                    {
+                                        ImGui.SameLine();
+                                        ImGui.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.type == 1?0:el.refX, el.type == 1 ? 0 : el.refY, el.offX, el.offY)));
                                     }
                                     //ImGui.SameLine();
                                     //ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);

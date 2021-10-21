@@ -22,7 +22,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
     internal double CamAngleX;
     internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
-    internal HashSet<(float x, float y, float z, float r)> draw = new HashSet<(float x, float y, float z, float r)>();
+    internal HashSet<(float x, float y, float z, float r, float angle)> draw = new HashSet<(float x, float y, float z, float r, float angle)>();
     internal float CamAngleY;
     internal float CamZoom = 1.5f;
     internal bool S2WActive = false;
@@ -489,7 +489,7 @@ unsafe class Splatoon : IDalamudPlugin
         {
             if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, e.refX, e.refY, e.refZ))
             {
-                draw.Add((e.refX, e.refY, e.refZ, radius));
+                draw.Add((e.refX, e.refY, e.refZ, radius, 0f));
                 if (e.tether)
                 {
                     displayObjects.Add(new DisplayObjectLine(e.refX + e.offX,
@@ -507,8 +507,8 @@ unsafe class Splatoon : IDalamudPlugin
             {
                 if (e.type == 1)
                 {
-                    draw.Add((GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y,
-                        GetPlayerPositionXZY().Z, radius));
+                    var pointPos = GetPlayerPositionXZY();
+                    draw.Add((pointPos.X, pointPos.Y, pointPos.Z, radius, e.includeRotation ? Svc.ClientState.LocalPlayer.Rotation : 0f));
                 }
                 else if (e.type == 3)
                 {
@@ -525,7 +525,7 @@ unsafe class Splatoon : IDalamudPlugin
                     {
                         if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
                         draw.Add((Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
-                            Svc.Targets.Target.GetPositionXZY().Z, radius));
+                            Svc.Targets.Target.GetPositionXZY().Z, radius, e.includeRotation ? Svc.Targets.Target.Rotation : 0f));
                     }
                     else if(e.type == 3)
                     {
@@ -556,7 +556,7 @@ unsafe class Splatoon : IDalamudPlugin
                             {
                                 var aradius = radius;
                                 if (e.includeHitbox) aradius += a.HitboxRadius;
-                                draw.Add((a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius));
+                                draw.Add((a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius, e.includeRotation ? a.Rotation : 0f));
                             }
                             else if (e.type == 3)
                             {
@@ -584,23 +584,31 @@ unsafe class Splatoon : IDalamudPlugin
                 displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
         }
         if (draw.Count == 0) return;
-        foreach (var (x, y, z, r) in draw)
+        foreach (var (x, y, z, r, angle) in draw)
         {
-            if (!ShouldDraw(x + e.offX, GetPlayerPositionXZY().X, y + e.offY, GetPlayerPositionXZY().Y)) continue;
+            var cx = x + e.offX;
+            var cy = y + e.offY;
+            if (e.includeRotation)
+            {
+                var rotatedPoint = RotatePoint(x, y, -angle, new Vector3(x - e.offX, y + e.offY, z));
+                cx = rotatedPoint.X;
+                cy = rotatedPoint.Y;
+            }
+            if (!ShouldDraw(cx, GetPlayerPositionXZY().X, cy, GetPlayerPositionXZY().Y)) continue;
             if (e.thicc > 0)
             {
                 if (r > 0)
                 {
-                    displayObjects.Add(new DisplayObjectCircle(x + e.offX, y + e.offY, z + e.offZ, r, e.thicc, e.color));
+                    displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color));
                 }
                 else
                 {
-                    displayObjects.Add(new DisplayObjectDot(x + e.offX, y + e.offY, z + e.offZ, e.thicc, e.color));
+                    displayObjects.Add(new DisplayObjectDot(cx, cy, z + e.offZ, e.thicc, e.color));
                 }
             }
             if (e.overlayText.Length > 0)
             {
-                displayObjects.Add(new DisplayObjectText(x + e.offX, y + e.offY, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
+                displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
             }
         }
     }
