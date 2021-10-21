@@ -10,34 +10,8 @@ Dalamud repository:
 Detailed instructions available here: https://github.com/Eternita-S/MyDalamudPlugins
 
 # Feature overview
-## Static markers
-Create static, fixed markets at specific coordinates. 
-### Supported shapes
-- Circle of any radius
-- Simple dot
-- Line between two points
-- Text displayed together with any shape or separately
-### Any shapes support:
-- Colors, transparency
-- Custom thickness
-- Tether feature, which will draw a line between you and a middle point of circle/dot
-### Usage examples:
-- Mark a spot where you supposed to stand on a certain mechanic
-- Split arena in few sectors to simplify navigation
-## Markets around game objects
-### Supported shapes
-- Circle around an object
-- Text relative to object
-### Supported targets
-- Yourself
-- Targeted enemy
-- Any game object filtered by name
-### Additional features
-- Include your and/or target's hitbox radius to account for skills range
-- Change targeted object name on the fly via `/splatoon settarget` command
-- Tether feature, which will draw a line between you and an object
-- Custom offset from the middle of the object
-[wip]
+- Is in progress, I'm really lazy (sorry)
+
 # WARNING!
 This project is in beta test. 
 * Expect bugs! But critical bugs that could potentially break/crash the game should be fixed by now.
