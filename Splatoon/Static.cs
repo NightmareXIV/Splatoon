@@ -137,5 +137,20 @@ namespace Splatoon
         {
             return s ?? "";
         }
+        public static float AngleBetweenVectors(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+        {
+            return (float)Math.Acos(((x2 - x1) * (x4 - x3) + (y2 - y1) * (y4 - y3)) /
+                (Math.Sqrt(Square(x2 - x1) + Square(y2 - y1)) * Math.Sqrt(Square(x4 - x3) + Square(y4 - y3))));
+        }
+
+        public static float Square(float x)
+        {
+            return x * x;
+        }
+    
+        public static float RadToDeg(float radian)
+        {
+            return (radian * (180 / Splatoon.FloatPI));
+        }
     }
 }

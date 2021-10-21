@@ -40,6 +40,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal Queue<string> ChatMessageQueue;
     internal string CurrentChatMessage = null;
     internal Element Clipboard = null;
+    internal static readonly float FloatPI = (float)Math.PI;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -499,22 +500,37 @@ unsafe class Splatoon : IDalamudPlugin
                 }
             }
         }
-        else if (e.type == 1)
+        else if (e.type == 1 || e.type == 3)
         {
             if (e.includeOwnHitbox) radius += Svc.ClientState.LocalPlayer.HitboxRadius;
             if (e.refActorType == 1)
             {
-                draw.Add((GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y,
-                    GetPlayerPositionXZY().Z, radius));
+                if (e.type == 1)
+                {
+                    draw.Add((GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y,
+                        GetPlayerPositionXZY().Z, radius));
+                }
+                else if (e.type == 3)
+                {
+                    AddRotatedLine(GetPlayerPositionXZY(), Svc.ClientState.LocalPlayer.Rotation, e);
+                    //Svc.Chat.Print(Svc.ClientState.LocalPlayer.Rotation.ToString());
+                }
             }
             else if (e.refActorType == 2 && Svc.Targets.Target != null
                 && Svc.Targets.Target is BattleNpc)
             {
                 if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, Svc.Targets.Target.GetPositionXZY()))
                 {
-                    if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
-                    draw.Add((Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
-                        Svc.Targets.Target.GetPositionXZY().Z, radius));
+                    if (e.type == 1)
+                    {
+                        if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
+                        draw.Add((Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
+                            Svc.Targets.Target.GetPositionXZY().Z, radius));
+                    }
+                    else if(e.type == 3)
+                    {
+                        AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), Svc.Targets.Target.Rotation, e);
+                    }
 
                     if (e.tether)
                     {
@@ -536,9 +552,16 @@ unsafe class Splatoon : IDalamudPlugin
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
                         {
-                            var aradius = radius;
-                            if (e.includeHitbox) aradius += a.HitboxRadius;
-                            draw.Add((a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius));
+                            if (e.type == 1)
+                            {
+                                var aradius = radius;
+                                if (e.includeHitbox) aradius += a.HitboxRadius;
+                                draw.Add((a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius));
+                            }
+                            else if (e.type == 3)
+                            {
+                                AddRotatedLine(a.GetPositionXZY(), a.Rotation, e);
+                            }
                             if (e.tether)
                             {
                                 displayObjects.Add(new DisplayObjectLine(a.GetPositionXZY().X + e.offX,
@@ -580,6 +603,43 @@ unsafe class Splatoon : IDalamudPlugin
                 displayObjects.Add(new DisplayObjectText(x + e.offX, y + e.offY, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
             }
         }
+    }
+
+    void AddRotatedLine(Vector3 tPos, float angle, Element e)
+    {
+        var pointA = RotatePoint(tPos.X, tPos.Y,
+            -angle, new Vector3(
+            tPos.X + -e.refX,
+            tPos.Y + e.refY,
+            tPos.Z + e.refZ));
+        var pointB = RotatePoint(tPos.X, tPos.Y,
+            -angle, new Vector3(
+            tPos.X + -e.offX,
+            tPos.Y + e.offY,
+            tPos.Z + e.offZ));
+        displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
+            pointB.X, pointB.Y, pointB.Z,
+            e.thicc, e.color));
+    }
+
+    Vector3 RotatePoint(float cx, float cy, float angle, Vector3 p)
+    {
+        if (angle == 0f) return p;
+        var s = (float)Math.Sin(angle);
+        var c = (float)Math.Cos(angle);
+
+        // translate point back to origin:
+        p.X -= cx;
+        p.Y -= cy;
+
+        // rotate point
+        float xnew = p.X * c - p.Y * s;
+        float ynew = p.X * s + p.Y * c;
+
+        // translate point back:
+        p.X = xnew + cx;
+        p.Y = ynew + cy;
+        return p;
     }
 
     internal bool IsLayoutVisible(Layout i)

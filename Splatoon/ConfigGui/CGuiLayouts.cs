@@ -579,53 +579,7 @@ namespace Splatoon
                                     ImGui.SameLine();
                                     ImGui.SetNextItemWidth(WidthCombo);
                                     ImGui.Combo("##elemselecttype" + i + k, ref el.type, Element.ElementTypes, Element.ElementTypes.Length);
-                                    if (el.type == 0 || el.type == 2)
-                                    {
-                                        ImGuiEx.SizedText(el.type == 2 ? "Point A" : "Reference position: ", WidthElement);
-                                        ImGui.SameLine();
-                                        ImGui.PushItemWidth(60f);
-                                        ImGui.TextUnformatted("X:");
-                                        ImGui.SameLine();
-                                        ImGui.DragFloat("##refx" + i + k, ref el.refX, 0.02f, float.MinValue, float.MaxValue);
-                                        ImGui.SameLine();
-                                        ImGui.TextUnformatted("Y:");
-                                        ImGui.SameLine();
-                                        ImGui.DragFloat("##refy" + i + k, ref el.refY, 0.02f, float.MinValue, float.MaxValue);
-                                        ImGui.SameLine();
-                                        ImGui.TextUnformatted("Z:");
-                                        ImGui.SameLine();
-                                        ImGui.DragFloat("##refz" + i + k, ref el.refZ, 0.02f, float.MinValue, float.MaxValue);
-                                        ImGui.SameLine();
-                                        if (ImGui.Button("My position##ref" + i + k))
-                                        {
-                                            el.refX = GetPlayerPositionXZY().X;
-                                            el.refY = GetPlayerPositionXZY().Y;
-                                            el.refZ = GetPlayerPositionXZY().Z;
-                                        }
-                                        ImGui.SameLine();
-                                        if (ImGui.Button("0 0 0##ref" + i + k))
-                                        {
-                                            el.refX = 0;
-                                            el.refY = 0;
-                                            el.refZ = 0;
-                                        }
-                                        ImGui.SameLine();
-                                        if (ImGui.Button("Screen2World##s2w1" + i + k))
-                                        {
-                                            if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
-                                            {
-                                                UnsetS2W();
-                                                SetCursorTo(el.refX, el.refZ, el.refY);
-                                                el.screen2world = el.type == 0 ? 1 : 2;
-                                            }
-                                            else
-                                            {
-                                                Svc.Toasts.ShowError("Unable to use for hidden element");
-                                            }
-                                        }
-                                        ImGui.PopItemWidth();
-                                    }
-                                    else if (el.type == 1)
+                                    if (el.type == 1 || el.type == 3)
                                     {
                                         ImGuiEx.SizedText("Targeted actor: ", WidthElement);
                                         ImGui.SameLine();
@@ -664,7 +618,63 @@ namespace Splatoon
                                         }
                                     }
 
-                                    ImGuiEx.SizedText(el.type == 2 ? "Point B" : "Offset: ", WidthElement);
+                                    if (el.type == 0 || el.type == 2 || el.type == 3)
+                                    {
+                                        ImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point A" : "Reference position: ", WidthElement);
+                                        ImGui.SameLine();
+                                        ImGui.PushItemWidth(60f);
+                                        ImGui.TextUnformatted("X:");
+                                        ImGui.SameLine();
+                                        ImGui.DragFloat("##refx" + i + k, ref el.refX, 0.02f, float.MinValue, float.MaxValue);
+                                        ImGui.SameLine();
+                                        ImGui.TextUnformatted("Y:");
+                                        ImGui.SameLine();
+                                        ImGui.DragFloat("##refy" + i + k, ref el.refY, 0.02f, float.MinValue, float.MaxValue);
+                                        ImGui.SameLine();
+                                        ImGui.TextUnformatted("Z:");
+                                        ImGui.SameLine();
+                                        ImGui.DragFloat("##refz" + i + k, ref el.refZ, 0.02f, float.MinValue, float.MaxValue);
+                                        ImGui.SameLine();
+                                        if (ImGui.Button("0 0 0##ref" + i + k))
+                                        {
+                                            el.refX = 0;
+                                            el.refY = 0;
+                                            el.refZ = 0;
+                                        }
+                                        if (el.type != 3)
+                                        {
+                                            ImGui.SameLine();
+                                            if (ImGui.Button("My position##ref" + i + k))
+                                            {
+                                                el.refX = GetPlayerPositionXZY().X;
+                                                el.refY = GetPlayerPositionXZY().Y;
+                                                el.refZ = GetPlayerPositionXZY().Z;
+                                            }
+                                            ImGui.SameLine();
+                                            if (ImGui.Button("Screen2World##s2w1" + i + k))
+                                            {
+                                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
+                                                {
+                                                    UnsetS2W();
+                                                    SetCursorTo(el.refX, el.refZ, el.refY);
+                                                    el.screen2world = el.type == 0 ? 1 : 2;
+                                                }
+                                                else
+                                                {
+                                                    Svc.Toasts.ShowError("Unable to use for hidden element");
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            ImGui.SameLine();
+                                            ImGui.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.refX, el.refY, el.offX, el.offY)));
+                                        }
+                                        ImGui.PopItemWidth();
+                                    }
+                                    
+
+                                    ImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point B" : "Offset: ", WidthElement);
                                     ImGui.SameLine();
                                     ImGui.PushItemWidth(60f);
                                     ImGui.TextUnformatted("X:");
@@ -678,6 +688,13 @@ namespace Splatoon
                                     ImGui.TextUnformatted("Z:");
                                     ImGui.SameLine();
                                     ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
+                                    ImGui.SameLine();
+                                    if (ImGui.Button("0 0 0##off" + i + k))
+                                    {
+                                        el.offX = 0;
+                                        el.offY = 0;
+                                        el.offZ = 0;
+                                    }
                                     if (el.type == 2)
                                     {
                                         ImGui.SameLine();
@@ -687,13 +704,6 @@ namespace Splatoon
                                             el.offY = GetPlayerPositionXZY().Y;
                                             el.offZ = GetPlayerPositionXZY().Z;
                                         }
-                                    }
-                                    ImGui.SameLine();
-                                    if (ImGui.Button("0 0 0##off" + i + k))
-                                    {
-                                        el.offX = 0;
-                                        el.offY = 0;
-                                        el.offZ = 0;
                                     }
                                     //ImGui.SameLine();
                                     //ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);

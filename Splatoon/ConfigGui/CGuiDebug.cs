@@ -17,10 +17,12 @@
             {
                 var mypos = GetPlayerPositionXZY();
                 ImGui.Text("My pos XYZ: \n" + mypos.X + "\n" + mypos.Y + "\n" + mypos.Z);
+                ImGui.Text("Rotation: " + Svc.ClientState.LocalPlayer.Rotation);
                 var tar = Svc.Targets.Target;
                 if (tar != null)
                 {
                     ImGui.Text("Target pos XYZ: \n" + tar.GetPositionXZY().X + "\n" + tar.GetPositionXZY().Y + "\n" + tar.GetPositionXZY().Z);
+                    ImGui.Text("Rotation: " + tar.Rotation.ToString());
                 }
             }
             ImGui.Separator();
