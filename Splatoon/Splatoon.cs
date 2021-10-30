@@ -12,7 +12,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal Gui DrawingGui;
     internal CGui ConfigGui;
     internal Commands CommandManager;
-    internal Memory MemoryManager;
+    internal IMemoryManager MemoryManager;
     internal ChlogGui ChangelogGui;
     internal Configuration Config;
     internal MemerrGui memerrGui;
@@ -76,7 +76,7 @@ unsafe class Splatoon : IDalamudPlugin
             ChangelogGui = new ChlogGui(this);
             Config.NoMemory = false;
         }
-        MemoryManager = new Memory(this);
+        MemoryManager = new GlobalMemory(this);
         if (MemoryManager.ErrorCode != 0)
         {
             memerrGui = new MemerrGui(this);

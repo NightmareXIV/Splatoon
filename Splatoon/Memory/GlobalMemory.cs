@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Splatoon
 {
-    unsafe class Memory
+    unsafe class GlobalMemory : IMemoryManager
     {
-        internal int ErrorCode = -1;
-        internal float* CameraAddressX;
-        internal float* CameraAddressY;
-        internal float* CameraZoom;
+        public int ErrorCode { get; set; } = -1;
+        public float* CameraAddressX { get; set; }
+        public float* CameraAddressY { get; set; }
+        public float* CameraZoom { get; set; }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate byte Character_GetIsTargetable(IntPtr characterPtr);
@@ -22,11 +22,7 @@ namespace Splatoon
         private delegate byte GameObject_GetIsTargetable(IntPtr characterPtr);
         private GameObject_GetIsTargetable GetIsTargetable_GameObject;
 
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private delegate long GameObject_GetObjectID_delegate(IntPtr objectPtr);
-        private GameObject_GetObjectID_delegate GameObject_GetObjectID;
-
-        public Memory(Splatoon p)
+        public GlobalMemory(Splatoon p)
         {
             try
             {
@@ -39,8 +35,6 @@ namespace Splatoon
                 CameraAddressX = (float*)(cameraAddress + 0x130);
                 CameraAddressY = (float*)(cameraAddress + 0x134);
                 CameraZoom = (float*)(cameraAddress + 0x114);
-                GameObject_GetObjectID = Marshal.GetDelegateForFunctionPointer<GameObject_GetObjectID_delegate>(
-                    Svc.SigScanner.ScanText("40 53 48 83 EC 20 8B 41 74"));
                 ErrorCode = 0;
                 PluginLog.Information("Memory manager initialized successfully");
             }
@@ -51,7 +45,7 @@ namespace Splatoon
             }
         }
 
-        internal bool GetIsTargetable(GameObject a)
+        public bool GetIsTargetable(GameObject a)
         {
             if (ErrorCode != 0) return true;
             if (a is Character)
@@ -63,12 +57,5 @@ namespace Splatoon
                 return GetIsTargetable_GameObject(a.Address) != 0;
             }
         }
-    }
-
-    [StructLayout(LayoutKind.Explicit, Size = 0x8)]
-    public struct GameObjectID
-    {
-        [FieldOffset(0x0)] public uint ObjectID;
-        [FieldOffset(0x4)] public byte Type;
     }
 }
