@@ -358,59 +358,6 @@ unsafe class Splatoon : IDalamudPlugin
     private void ProcessLayout(Layout i)
     {
         if (!IsLayoutVisible(i)) return;
-        if (i.UseTriggers)
-        {
-            foreach(var t in i.Triggers)
-            {
-                if (t.FiredState == 2) continue;
-                else if (t.FiredState == 0)
-                {
-                    if (t.Type == 0 || t.Type == 1)
-                    {
-                        if (CombatStarted != 0 && Environment.TickCount64 - CombatStarted > t.TimeBegin * 1000)
-                        {
-                            if(t.Duration == 0)
-                            {
-                                t.FiredState = 2;
-                            }
-                            else
-                            {
-                                t.FiredState = 1;
-                                t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
-                            }
-                            i.TriggerCondition = t.Type == 0 ? 1 : -1;
-                        }
-                    }
-                    else if (CurrentChatMessage != null && (t.Type == 2 || t.Type == 3))
-                    {
-                        if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
-                        {
-                            if (t.Duration == 0)
-                            {
-                                t.FiredState = 0;
-                            }
-                            else
-                            {
-                                t.FiredState = 1;
-                                t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
-                            }
-                            i.TriggerCondition = t.Type == 2 ? 1 : -1;
-                        }
-                    }
-                }
-                else if(t.FiredState == 1)
-                {
-                    if(Environment.TickCount64 > t.DisableAt)
-                    {
-                        t.FiredState = (t.Type == 2 || t.Type == 3)?0:2;
-                        t.DisableAt = 0;
-                        i.TriggerCondition = 0;
-                    }
-                }
-                       
-            }
-            if (i.TriggerCondition == -1 || (i.TriggerCondition == 0 && i.DCond == 5)) return;
-        }
         foreach (var e in i.Elements.Values.ToArray())
         {
             ProcessElement(e, i);
@@ -688,6 +635,59 @@ unsafe class Splatoon : IDalamudPlugin
             {
                 return false;
             }
+        }
+        if (i.UseTriggers)
+        {
+            foreach (var t in i.Triggers)
+            {
+                if (t.FiredState == 2) continue;
+                else if (t.FiredState == 0)
+                {
+                    if (t.Type == 0 || t.Type == 1)
+                    {
+                        if (CombatStarted != 0 && Environment.TickCount64 - CombatStarted > t.TimeBegin * 1000)
+                        {
+                            if (t.Duration == 0)
+                            {
+                                t.FiredState = 2;
+                            }
+                            else
+                            {
+                                t.FiredState = 1;
+                                t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
+                            }
+                            i.TriggerCondition = t.Type == 0 ? 1 : -1;
+                        }
+                    }
+                    else if (CurrentChatMessage != null && (t.Type == 2 || t.Type == 3))
+                    {
+                        if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
+                        {
+                            if (t.Duration == 0)
+                            {
+                                t.FiredState = 0;
+                            }
+                            else
+                            {
+                                t.FiredState = 1;
+                                t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
+                            }
+                            i.TriggerCondition = t.Type == 2 ? 1 : -1;
+                        }
+                    }
+                }
+                else if (t.FiredState == 1)
+                {
+                    if (Environment.TickCount64 > t.DisableAt)
+                    {
+                        t.FiredState = (t.Type == 2 || t.Type == 3) ? 0 : 2;
+                        t.DisableAt = 0;
+                        i.TriggerCondition = 0;
+                    }
+                }
+
+            }
+            if (i.TriggerCondition == -1 || (i.TriggerCondition == 0 && i.DCond == 5)) return false;
         }
         return true;
     }
