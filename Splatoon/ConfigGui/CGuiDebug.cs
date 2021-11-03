@@ -44,9 +44,12 @@
             ImGui.SameLine();
             if (ImGui.Button("Query"))
             {
-                s2wb = Svc.GameGui.WorldToScreen(new Vector3(s2wx, s2wz, s2wy), out Vector2 pos);
-                s2wrx = pos.X;
-                s2wry = pos.Y;
+                Safe(delegate
+                {
+                    s2wb = Svc.GameGui.WorldToScreen(new Vector3(s2wx, s2wz, s2wy), out Vector2 pos);
+                    s2wrx = pos.X;
+                    s2wry = pos.Y;
+                });
             }
             ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(s2wb ? Colors.Green : Colors.Red), "X:" + s2wrx + "\nY:" + s2wry);
             ImGui.Separator();
@@ -78,7 +81,7 @@
             ImGui.Text("Game objects:");
             foreach (var a in Svc.Objects)
             {
-                try
+                Safe(delegate
                 {
                     ImGui.Text(a.Name.ToString());
                     ImGui.SameLine();
@@ -87,14 +90,7 @@
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(300f);
                     ImGui.Text($"{a.DataId:X8}");
-                    /*ImGui.SameLine();
-                    ImGui.SetCursorPosX(400f);
-                    ImGui.Text($"{p.MemoryManager.GameObject_GetObjectID(a.Address):X16}");*/
-                }
-                catch (Exception e)
-                {
-                    ImGui.Text(e.Message);
-                }
+                });
             }
             ImGui.EndChild();
         }

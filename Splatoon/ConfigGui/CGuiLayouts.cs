@@ -61,14 +61,7 @@ namespace Splatoon
             ImGui.SameLine();
             if (ImGui.Button("clipboard"))
             {
-                try
-                {
-                    ImportFromText(ImGui.GetClipboardText());
-                }
-                catch (Exception e)
-                {
-                    p.Log(e.Message + "\n" + e.StackTrace);
-                }
+                Safe(delegate { ImportFromText(ImGui.GetClipboardText()); });
             }
             /*ImGui.SameLine();
             if (ImGui.Button("file"))

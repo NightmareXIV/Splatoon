@@ -152,5 +152,17 @@ namespace Splatoon
         {
             return (radian * (180 / Splatoon.FloatPI));
         }
+
+        public static void Safe(Action a)
+        {
+            try
+            {
+                a();
+            }
+            catch(Exception e)
+            {
+                PluginLog.Error($"{e.Message}\n{e.StackTrace ?? ""}");
+            }
+        }
     }
 }
