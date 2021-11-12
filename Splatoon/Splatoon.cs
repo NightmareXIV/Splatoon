@@ -22,7 +22,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
     internal double CamAngleX;
     internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
-    internal HashSet<(float x, float y, float z, float r, float angle)> draw = new HashSet<(float x, float y, float z, float r, float angle)>();
+    //internal HashSet<(float x, float y, float z, float r, float angle)> draw = new HashSet<(float x, float y, float z, float r, float angle)>();
     internal float CamAngleY;
     internal float CamZoom = 1.5f;
     internal bool S2WActive = false;
@@ -35,8 +35,6 @@ unsafe class Splatoon : IDalamudPlugin
     internal bool prevCombatState = false;
     static internal Vector3? PlayerPosCache = null;
     internal Profiling Profiler;
-    internal Dictionary<(IntPtr Addr, uint Id), string> NamesCache;
-    internal Dictionary<(IntPtr Addr, long Id, int StrHash), bool> LookupResultCache;
     internal Queue<string> ChatMessageQueue;
     internal string CurrentChatMessage = null;
     internal Element Clipboard = null;
@@ -67,8 +65,6 @@ unsafe class Splatoon : IDalamudPlugin
         ChatMessageQueue = new Queue<string>();
         Profiler = new Profiling(this);
         CommandManager = new Commands(this);
-        NamesCache = new Dictionary<(IntPtr Addr, uint Id), string>();
-        LookupResultCache = new Dictionary<(IntPtr Addr, long Id, int StrHash), bool>();
         Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
         Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
         if(ChlogGui.ChlogVersion > Config.ChlogReadVer)
@@ -134,8 +130,6 @@ unsafe class Splatoon : IDalamudPlugin
 
     private void TerritoryChangedEvent(object sender, ushort e)
     {
-        NamesCache.Clear();
-        LookupResultCache.Clear();
         if (SFind != null)
         {
             SFind = null;
@@ -379,19 +373,9 @@ unsafe class Splatoon : IDalamudPlugin
         return LookupResultCache[(a.Address, objectID, hash)];*/
     }
 
-    internal string GetObjectName(GameObject a)
-    {
-        if(!NamesCache.ContainsKey((a.Address, a.ObjectId)))
-        {
-            NamesCache.Add((a.Address, a.ObjectId), a.Name.ToString());
-        }
-        return NamesCache[(a.Address, a.ObjectId)];
-    }
-
     internal void ProcessElement(Element e, Layout i = null)
     {
         if (!e.Enabled) return;
-        draw.Clear();
         if (e.screen2world != 0)
         {
             var lmbdown = Bitmask.IsBitSet(Native.GetKeyState(0x01), 15);
@@ -436,7 +420,7 @@ unsafe class Splatoon : IDalamudPlugin
         {
             if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, e.refX, e.refY, e.refZ))
             {
-                draw.Add((e.refX, e.refY, e.refZ, radius, 0f));
+                draw(e, e.refX, e.refY, e.refZ, radius, 0f);
                 if (e.tether)
                 {
                     displayObjects.Add(new DisplayObjectLine(e.refX + e.offX,
@@ -455,7 +439,7 @@ unsafe class Splatoon : IDalamudPlugin
                 if (e.type == 1)
                 {
                     var pointPos = GetPlayerPositionXZY();
-                    draw.Add((pointPos.X, pointPos.Y, pointPos.Z, radius, e.includeRotation ? Svc.ClientState.LocalPlayer.Rotation : 0f));
+                    draw(e, pointPos.X, pointPos.Y, pointPos.Z, radius, e.includeRotation ? Svc.ClientState.LocalPlayer.Rotation : 0f);
                 }
                 else if (e.type == 3)
                 {
@@ -471,8 +455,8 @@ unsafe class Splatoon : IDalamudPlugin
                     if (e.type == 1)
                     {
                         if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
-                        draw.Add((Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
-                            Svc.Targets.Target.GetPositionXZY().Z, radius, e.includeRotation ? Svc.Targets.Target.Rotation : 0f));
+                        draw(e, Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
+                            Svc.Targets.Target.GetPositionXZY().Z, radius, e.includeRotation ? Svc.Targets.Target.Rotation : 0f);
                     }
                     else if(e.type == 3)
                     {
@@ -503,7 +487,7 @@ unsafe class Splatoon : IDalamudPlugin
                             {
                                 var aradius = radius;
                                 if (e.includeHitbox) aradius += a.HitboxRadius;
-                                draw.Add((a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius, e.includeRotation ? a.Rotation : 0f));
+                                draw(e, a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius, e.includeRotation ? a.Rotation : 0f);
                             }
                             else if (e.type == 3)
                             {
@@ -530,33 +514,33 @@ unsafe class Splatoon : IDalamudPlugin
                 || ShouldDraw(e.refX, GetPlayerPositionXZY().X, e.refY, GetPlayerPositionXZY().Y))
                 displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
         }
-        if (draw.Count == 0) return;
-        foreach (var (x, y, z, r, angle) in draw)
+    }
+
+    void draw(Element e, float x, float y, float z, float r, float angle)
+    {
+        var cx = x + e.offX;
+        var cy = y + e.offY;
+        if (e.includeRotation)
         {
-            var cx = x + e.offX;
-            var cy = y + e.offY;
-            if (e.includeRotation)
+            var rotatedPoint = RotatePoint(x, y, -angle, new Vector3(x - e.offX, y + e.offY, z));
+            cx = rotatedPoint.X;
+            cy = rotatedPoint.Y;
+        }
+        if (!ShouldDraw(cx, GetPlayerPositionXZY().X, cy, GetPlayerPositionXZY().Y)) return;
+        if (e.thicc > 0)
+        {
+            if (r > 0)
             {
-                var rotatedPoint = RotatePoint(x, y, -angle, new Vector3(x - e.offX, y + e.offY, z));
-                cx = rotatedPoint.X;
-                cy = rotatedPoint.Y;
+                displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color));
             }
-            if (!ShouldDraw(cx, GetPlayerPositionXZY().X, cy, GetPlayerPositionXZY().Y)) continue;
-            if (e.thicc > 0)
+            else
             {
-                if (r > 0)
-                {
-                    displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color));
-                }
-                else
-                {
-                    displayObjects.Add(new DisplayObjectDot(cx, cy, z + e.offZ, e.thicc, e.color));
-                }
+                displayObjects.Add(new DisplayObjectDot(cx, cy, z + e.offZ, e.thicc, e.color));
             }
-            if (e.overlayText.Length > 0)
-            {
-                displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
-            }
+        }
+        if (e.overlayText.Length > 0)
+        {
+            displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
         }
     }
 
@@ -592,26 +576,6 @@ unsafe class Splatoon : IDalamudPlugin
                 pointB.X, pointB.Y, pointB.Z,
                 e.thicc, e.color));
         }
-    }
-
-    Vector3 RotatePoint(float cx, float cy, float angle, Vector3 p)
-    {
-        if (angle == 0f) return p;
-        var s = (float)Math.Sin(angle);
-        var c = (float)Math.Cos(angle);
-
-        // translate point back to origin:
-        p.X -= cx;
-        p.Y -= cy;
-
-        // rotate point
-        float xnew = p.X * c - p.Y * s;
-        float ynew = p.X * s + p.Y * c;
-
-        // translate point back:
-        p.X = xnew + cx;
-        p.Y = ynew + cy;
-        return p;
     }
 
     internal bool IsLayoutVisible(Layout i)
@@ -734,10 +698,5 @@ unsafe class Splatoon : IDalamudPlugin
             LogStorage[i - 1] = LogStorage[i];
         }
         LogStorage[LogStorage.Length - 1] = line;
-    }
-
-    public void HandleChat()
-    {
-
     }
 }

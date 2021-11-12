@@ -164,5 +164,24 @@ namespace Splatoon
                 PluginLog.Error($"{e.Message}\n{e.StackTrace ?? ""}");
             }
         }
+        public static Vector3 RotatePoint(float cx, float cy, float angle, Vector3 p)
+        {
+            if (angle == 0f) return p;
+            var s = (float)Math.Sin(angle);
+            var c = (float)Math.Cos(angle);
+
+            // translate point back to origin:
+            p.X -= cx;
+            p.Y -= cy;
+
+            // rotate point
+            float xnew = p.X * c - p.Y * s;
+            float ynew = p.X * s + p.Y * c;
+
+            // translate point back:
+            p.X = xnew + cx;
+            p.Y = ynew + cy;
+            return p;
+        }
     }
 }
