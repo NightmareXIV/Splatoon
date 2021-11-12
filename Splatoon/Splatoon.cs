@@ -569,7 +569,7 @@ unsafe class Splatoon : IDalamudPlugin
                 tPos.Y + e.refY,
                 tPos.Z + e.refZ);
             var pointB = new Vector3(
-                tPos.X + -e.offX,
+                tPos.X + e.offX,
                 tPos.Y + e.offY,
                 tPos.Z + e.offZ);
             displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
