@@ -31,7 +31,7 @@ Any set of elements supports limiting drawing distance by either measuring dista
 #### Splatoon Find
 Quickly find that annoying to find NPC or quest target without needing to create an element for it by utilising `/sf <partial name>` command. Auto-resets on zone change.
 #### Triggers
-Any set of elements supports simple triggers. You can show/hide sets based on certain combat time or based on any boss phrase.
+Any set of elements supports simple triggers. You can show/hide sets based on certain combat time or based on any boss phrase to avoid screen clutter. Display your waymarks when you actually need them.
 #### Web API
 Splatoon can be extrenally controlled by utilizing web API. You can find detailed description below. Integrade it with Cactbot or Triggernometry and create interactive visual fight guide right in game!
 #### Command control
