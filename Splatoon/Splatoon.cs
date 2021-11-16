@@ -3,6 +3,7 @@ using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Interface.Internal.Notifications;
 using Lumina.Excel.GeneratedSheets;
 
 namespace Splatoon;
@@ -133,7 +134,7 @@ unsafe class Splatoon : IDalamudPlugin
         if (SFind != null)
         {
             SFind = null;
-            Svc.Toasts.ShowQuest("[Splatoon] Search stopped");
+            Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Search stopped", "Splatoon", NotificationType.Info);
         }
         for (var i = dynamicElements.Count - 1; i >= 0; i--)
         {

@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using Dalamud.Interface.Internal.Notifications;
+using ImGuiNET;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -656,7 +657,7 @@ namespace Splatoon
                                                 }
                                                 else
                                                 {
-                                                    Svc.Toasts.ShowError("Unable to use for hidden element");
+                                                    Svc.PluginInterface.UiBuilder.AddNotification("Unable to use for hidden element", "Splatoon", NotificationType.Error);
                                                 }
                                             }
                                         }
@@ -715,7 +716,7 @@ namespace Splatoon
                                             }
                                             else
                                             {
-                                                Svc.Toasts.ShowError("Unable to use for hidden element");
+                                                Svc.PluginInterface.UiBuilder.AddNotification("Unable to use for hidden element", "Splatoon", NotificationType.Error);
                                             }
                                         }
                                     }

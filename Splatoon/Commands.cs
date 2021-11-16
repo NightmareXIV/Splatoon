@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game.Command;
 using Dalamud.Game.Gui.Toast;
+using Dalamud.Interface.Internal.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,13 +51,13 @@ namespace Splatoon
                     {
                         if (Svc.Targets.Target == null)
                         {
-                            Svc.Toasts.ShowError("Target not selected");
+                            Svc.PluginInterface.UiBuilder.AddNotification("Target not selected", "Splatoon", NotificationType.Error);
                         }
                         else 
                         {
                             var name = arguments.Substring(arguments.IndexOf("settarget ") + 10).Split('~');
                             p.Config.Layouts[name[0]].Elements[name[1]].refActorName = Svc.Targets.Target.Name.ToString();
-                            Svc.Toasts.ShowQuest("Successfully set target");
+                            Svc.PluginInterface.UiBuilder.AddNotification("Successfully set target", "Splatoon", NotificationType.Success);
                         }
                     }
                     catch (Exception e)
@@ -77,25 +78,18 @@ namespace Splatoon
                 {
                     if (p.SFind != null)
                     {
-                        Svc.Toasts.ShowNormal("[Splatoon] Search stopped", new ToastOptions()
-                        {
-                            Position = ToastPosition.Top
-                        });
+                        Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Search stopped", "Splatoon", NotificationType.Info);
                         p.SFind = null;
                     }
                     else
                     {
-                        Svc.Toasts.ShowError("[Splatoon] Please specify target name");
+                        Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Please specify target name", "Splatoon", NotificationType.Error);
                     }
                 }
                 else
                 {
                     p.SFind = arguments.Trim();
-                    Svc.Toasts.ShowQuest("[Splatoon] Searching for: " + p.SFind, new QuestToastOptions()
-                    {
-                        DisplayCheckmark = true,
-                        PlaySound = true
-                    });
+                    Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Searching for: " + p.SFind, "Splatoon", NotificationType.Success);
                 }
             })
             {
