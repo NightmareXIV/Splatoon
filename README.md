@@ -10,7 +10,39 @@ Dalamud repository:
 Detailed instructions available here: https://github.com/Eternita-S/MyDalamudPlugins
 
 # Feature overview
-- Is in progress, I'm really lazy (sorry)
+#### Circles at fixed coordinates
+Create circles, dots or simple labels at fixed coordinates anywhere in the world. Add some text to them, configure their color, thickness and other options as you wish.
+#### Circles relative to object position
+Same stuff as above, but relative to any targeted enemy, yourself or any object selected by it's name. Display range of your ability, enemy's hitbox, easily track and locate aether currents, highlight NPCs that are difficult to find, mark your friend to easily find them in crowded RP places or highlight your partner in a raid mechanic. 
+#### Lines between fixed coordinates
+Visually split an arena into sectors to make navigation easier
+#### Lines relative to object position
+With rotation support! Display line mechanics such as Fatebreaker's Burnt strike, display area of your machinist's or bard's AoE, draw an arrow above your character to never lose it in crowded places.
+#### Designed to be robust and withstand updates
+Failsafe mode ensures that Splatoon will be ready to use as soon as Dalamud is updated to be used in current game's patch. Some features might be disabled if game updated functions that Splatoon uses, but core stuff will be always available for use. Additionally, Splatoon will always be developed with intent to never break old version's configs.
+#### Exporting and importing element sets
+Easily share your layouts with friends or communities. All settings will be preserved!
+#### Zone, job lock, various display conditions
+Any set of elements may be set to be displayed only in specified zones, only when using specified jobs, only in combat, duty, etc. 
+#### Tether to an object
+You can enable tether feature for any element you create, which will draw a line between object and your position, allowing for even easier location of an object
+#### Distance limit
+Any set of elements supports limiting drawing distance by either measuring distance to element itself or distance to current target
+#### Splatoon Find
+Quickly find that annoying to find NPC or quest target without needing to create an element for it by utilising `/sf <partial name>` command. Auto-resets on zone change.
+#### Triggers
+Any set of elements supports simple triggers. You can show/hide sets based on certain combat time or based on any boss phrase to avoid screen clutter. Display your waymarks when you actually need them.
+#### Web API
+Splatoon can be extrenally controlled by utilizing web API. You can find detailed description below. Integrade it with Cactbot or Triggernometry and create interactive visual fight guide right in game!
+#### Command control
+Splatoon supports controlling elements via commands.
+* `/splatoon enable <layout>` - enables layout
+* `/splatoon disable <layout>` - disables layout
+* `/splatoon enable <layout>~<element>` - enables element inside layout
+* `/splatoon disable <layout>~<element>` - disables element inside layout
+* `/splatoon settarget <layout>~<element>` - if element is Circle/line relative to object position, and selected object is an Object with specified name, sets the name of the object to currently targeted object
+#### Backup system
+Automatic backup system will ensure that you always can rollback if your config became corrupted or you have accidentally deleted something important.
 
 # WARNING!
 This project is in beta test. 
