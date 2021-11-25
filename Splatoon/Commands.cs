@@ -65,6 +65,17 @@ namespace Splatoon
                         p.Log(e.Message);
                     }
                 }
+                else if(arguments.StartsWith("floodchat "))
+                {
+                    int a = 2;
+                    Safe(delegate
+                    {
+                        for(var i = 0;i<uint.Parse(arguments.Replace("floodchat ", "")); i++)
+                        {
+                            Svc.Chat.Print(new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 30).Select(s => s[new Random().Next(30)]).ToArray()));
+                        }
+                    });
+                }
             })
             {
                 HelpMessage = "open Splatoon configuration menu \n" +

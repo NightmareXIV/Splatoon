@@ -37,9 +37,10 @@ unsafe class Splatoon : IDalamudPlugin
     static internal Vector3? PlayerPosCache = null;
     internal Profiling Profiler;
     internal Queue<string> ChatMessageQueue;
-    internal string CurrentChatMessage = null;
+    internal HashSet<string> CurrentChatMessages = new();
     internal Element Clipboard = null;
     internal static readonly float FloatPI = (float)Math.PI;
+    internal int dequeueConcurrency = 1;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -189,12 +190,24 @@ unsafe class Splatoon : IDalamudPlugin
             displayObjects.Clear();
             if (Svc.ClientState?.LocalPlayer != null)
             {
-                if(ChatMessageQueue.Count > 5)
+                if(ChatMessageQueue.Count > 5 * dequeueConcurrency)
                 {
-                    PluginLog.Warning($"Chat message queue count is high ({ChatMessageQueue.Count})");
+                    dequeueConcurrency++;
+                    PluginLog.Information($"Too many queued messages ({ChatMessageQueue.Count}); concurrency increased to {dequeueConcurrency}");
                 }
-                ChatMessageQueue.TryDequeue(out CurrentChatMessage);
-                if (Config.verboselog && CurrentChatMessage != null) Log("Dequeued message: " + CurrentChatMessage);
+                for(var i = 0; i < dequeueConcurrency; i++)
+                {
+                    if(ChatMessageQueue.TryDequeue(out var ccm))
+                    {
+                        PluginLog.Debug("Dequeued message: " + ccm);
+                        CurrentChatMessages.Add(ccm);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if (CurrentChatMessages.Count > 0) PluginLog.Debug($"Messages dequeued: {CurrentChatMessages.Count}");
                 var pl = Svc.ClientState.LocalPlayer;
                 if (Svc.ClientState.LocalPlayer.Address == IntPtr.Zero)
                 {
@@ -344,7 +357,7 @@ unsafe class Splatoon : IDalamudPlugin
                 Profiler.MainTickPrepare.StopTick();
             }
             prevCombatState = Svc.Condition[ConditionFlag.InCombat];
-            CurrentChatMessage = null;
+            CurrentChatMessages.Clear();
         }
         catch(Exception e)
         {
@@ -629,20 +642,23 @@ unsafe class Splatoon : IDalamudPlugin
                             i.TriggerCondition = t.Type == 0 ? 1 : -1;
                         }
                     }
-                    else if (CurrentChatMessage != null && (t.Type == 2 || t.Type == 3))
+                    else if (t.Type == 2 || t.Type == 3)
                     {
-                        if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
+                        foreach (var CurrentChatMessage in CurrentChatMessages)
                         {
-                            if (t.Duration == 0)
+                            if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
                             {
-                                t.FiredState = 0;
+                                if (t.Duration == 0)
+                                {
+                                    t.FiredState = 0;
+                                }
+                                else
+                                {
+                                    t.FiredState = 1;
+                                    t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
+                                }
+                                i.TriggerCondition = t.Type == 2 ? 1 : -1;
                             }
-                            else
-                            {
-                                t.FiredState = 1;
-                                t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
-                            }
-                            i.TriggerCondition = t.Type == 2 ? 1 : -1;
                         }
                     }
                 }

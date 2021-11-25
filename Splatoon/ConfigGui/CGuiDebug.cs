@@ -11,6 +11,7 @@
             ImGui.BeginChild("##splatoonmaindbg");
             var t = Environment.TickCount64 - p.CombatStarted;
             ImGui.Text("CombatStarted = " + t);
+            ImGui.Text($"Message concurrency: {p.dequeueConcurrency}");
             ImGui.Separator();
             if (Svc.ClientState.LocalPlayer != null)
             {
