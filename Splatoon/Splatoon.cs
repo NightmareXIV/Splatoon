@@ -189,6 +189,10 @@ unsafe class Splatoon : IDalamudPlugin
             displayObjects.Clear();
             if (Svc.ClientState?.LocalPlayer != null)
             {
+                if(ChatMessageQueue.Count > 5)
+                {
+                    PluginLog.Warning($"Chat message queue count is high ({ChatMessageQueue.Count})");
+                }
                 ChatMessageQueue.TryDequeue(out CurrentChatMessage);
                 if (Config.verboselog && CurrentChatMessage != null) Log("Dequeued message: " + CurrentChatMessage);
                 var pl = Svc.ClientState.LocalPlayer;
@@ -480,7 +484,8 @@ unsafe class Splatoon : IDalamudPlugin
                 foreach (var a in Svc.Objects)
                 {
                     if ((e.refActorName == "*" || IsNameContainsValue(a, e.refActorName))
-                            && (!e.onlyTargetable || MemoryManager.GetIsTargetable(a)))
+                            && (!e.onlyTargetable || MemoryManager.GetIsTargetable(a))
+                            && (!e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr))))
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
                         {

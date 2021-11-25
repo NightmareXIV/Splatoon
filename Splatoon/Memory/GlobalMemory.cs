@@ -57,5 +57,13 @@ namespace Splatoon
                 return GetIsTargetable_GameObject(a.Address) != 0;
             }
         }
+
+        public bool GetIsVisible(Character chr)
+        {
+            if (ErrorCode != 0) return true;
+            var v = (IntPtr)(((FFXIVClientStructs.FFXIV.Client.Game.Character.Character*)chr.Address)->GameObject.DrawObject);
+            if (v == IntPtr.Zero) return false;
+            return Bitmask.IsBitSet(*(byte*)(v + 136), 0);
+        }
     }
 }

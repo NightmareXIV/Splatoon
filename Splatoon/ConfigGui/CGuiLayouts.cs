@@ -604,8 +604,11 @@ namespace Splatoon
                                                     "relatively resource expensive operation. \n" +
                                                     "Try to keep amount of these down to reasonable number.");
                                             }
+                                            ImGuiEx.SizedText("", WidthElement);
                                             ImGui.SameLine();
                                             ImGui.Checkbox("Targetable only##" + i + k, ref el.onlyTargetable);
+                                            ImGui.SameLine();
+                                            ImGui.Checkbox("Visible characters only##" + i + k, ref el.onlyVisible);
                                             if (Svc.Targets.Target != null)
                                             {
                                                 ImGui.SameLine();

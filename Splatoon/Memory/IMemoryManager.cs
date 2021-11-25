@@ -16,5 +16,6 @@ namespace Splatoon
         public float* CameraAddressY { get; set; }
         public float* CameraZoom { get; set; }
         public bool GetIsTargetable(GameObject a);
+        public bool GetIsVisible(Character chr);
     }
 }
