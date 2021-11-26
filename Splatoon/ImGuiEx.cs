@@ -59,5 +59,19 @@ namespace Splatoon
             var a = col.ToVector4();
             ImGui.ColorEdit4("", ref a, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoPicker);
         }
+
+        public static void GSameLine(Action a, out float cursorPosX, bool end = false)
+        {
+            var upperTextCursor = ImGui.GetCursorPos();
+            a();
+            if (!end)
+            {
+                ImGui.SameLine();
+                upperTextCursor.X = ImGui.GetCursorPosX();
+                ImGui.Text("");
+                ImGui.SetCursorPos(upperTextCursor);
+            }
+            cursorPosX = upperTextCursor.X;
+        }
     }
 }
