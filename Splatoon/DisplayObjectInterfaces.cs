@@ -71,6 +71,12 @@ namespace Splatoon
         }
     }
 
+    internal class DisplayObjectRect : DisplayObject
+    {
+        public DisplayObjectLine l1;
+        public DisplayObjectLine l2;
+    }
+
     internal interface DisplayObject { }
 
 }

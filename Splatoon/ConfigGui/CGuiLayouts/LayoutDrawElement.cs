@@ -120,7 +120,13 @@ namespace Splatoon
                     ImGuiEx.SizedText("Element type:", WidthElement);
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(WidthCombo);
-                    ImGui.Combo("##elemselecttype" + i + k, ref el.type, Element.ElementTypes, Element.ElementTypes.Length);
+                    if(ImGui.Combo("##elemselecttype" + i + k, ref el.type, Element.ElementTypes, Element.ElementTypes.Length))
+                    {
+                        if((el.type == 2 || el.type == 3) && el.radius == 0.35f)
+                        {
+                            el.radius = 0;
+                        }
+                    }
                     if (el.type == 1 || el.type == 3)
                     {
                         ImGui.SameLine();
@@ -157,6 +163,10 @@ namespace Splatoon
                             ImGui.Checkbox("Targetable only##" + i + k, ref el.onlyTargetable);
                             ImGui.SameLine();
                             ImGui.Checkbox("Visible characters only##" + i + k, ref el.onlyVisible);
+                            if (ImGui.IsItemHovered())
+                            {
+                                ImGui.SetTooltip("Setting this checkbox will also restrict search to characters ONLY. \n(character - is a player, companion or friendly/hostile NPC that can fight and have HP)");
+                            }
                             if (Svc.Targets.Target != null)
                             {
                                 ImGui.SameLine();

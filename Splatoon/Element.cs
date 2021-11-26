@@ -31,7 +31,7 @@ namespace Splatoon
         [DefaultValue(0f)] public float offX = 0f;
         [DefaultValue(0f)] public float offY = 0f;
         [DefaultValue(0f)] public float offZ = 0f;
-        [DefaultValue(0.35f)] public float radius = 0.35f; // if it's 0, draw it as point, otherwise as circle
+        public float radius = 0.35f; // if it's 0, draw it as point, otherwise as circle
         [DefaultValue(0xc80000ff)] public uint color = 0xc80000ff;
         [DefaultValue(0x70000000)] public uint overlayBGColor = 0x70000000;
         [DefaultValue(0xC8FFFFFF)] public uint overlayTextColor = 0xC8FFFFFF;

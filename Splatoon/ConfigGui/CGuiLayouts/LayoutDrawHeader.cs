@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Dalamud.Interface.Internal.Notifications;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,33 +12,41 @@ namespace Splatoon
     {
         void LayoutDrawHeader(string i)
         {
+            var topCursorPos = ImGui.GetCursorPos();
             ImGui.Checkbox("Enabled##" + i, ref p.Config.Layouts[i].Enabled);
             ImGui.SameLine();
             ImGui.Checkbox("Prevent controlling with web api##" + i, ref p.Config.Layouts[i].DisableDisabling);
             ImGui.SameLine();
             ImGui.Checkbox("Disable in duty##" + i, ref p.Config.Layouts[i].DisableInDuty);
-            if (ImGui.Button("Export to clipboard"))
+            ImGui.SetCursorPos(new Vector2(ImGui.GetColumnWidth() - 100 - ImGui.GetStyle().ItemInnerSpacing.X, topCursorPos.Y));
+            ImGui.SetNextItemWidth(100f);
+            if (ImGui.BeginCombo("##copy" + i, "Copy..."))
             {
-                ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
-            }
-            ImGui.SameLine();
-            if (ImGui.Button("Copy enable command"))
-            {
-                ImGui.SetClipboardText("/splatoon enable " + i);
-            }
-            ImGui.SameLine();
-            if (ImGui.Button("Copy disable command"))
-            {
-                ImGui.SetClipboardText("/splatoon disable " + i);
-            }
-            ImGui.SameLine();
-            if (ImGui.Button("Copy as HTTP param##" + i))
-            {
-                HTTPExportToClipboard(p.Config.Layouts[i]);
-            }
-            if (ImGui.IsItemHovered())
-            {
-                ImGui.SetTooltip("Hold ALT to copy raw JSON (for usage with post body or you'll have to urlencode it yourself)\nHold CTRL and click to copy urlencoded raw");
+                if (ImGui.Selectable("Export to clipboard"))
+                {
+                    ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+                    Svc.PluginInterface.UiBuilder.AddNotification("Copied to clipboard", "Splatoon", NotificationType.Success);
+                }
+                if (ImGui.Selectable("Copy enable command"))
+                {
+                    ImGui.SetClipboardText("/splatoon enable " + i);
+                    Svc.PluginInterface.UiBuilder.AddNotification("Copied to clipboard", "Splatoon", NotificationType.Success);
+                }
+                if (ImGui.Selectable("Copy disable command"))
+                {
+                    ImGui.SetClipboardText("/splatoon disable " + i);
+                    Svc.PluginInterface.UiBuilder.AddNotification("Copied to clipboard", "Splatoon", NotificationType.Success);
+                }
+                if (ImGui.Selectable("Copy as HTTP param##" + i))
+                {
+                    HTTPExportToClipboard(p.Config.Layouts[i]);
+                    Svc.PluginInterface.UiBuilder.AddNotification("Copied to clipboard", "Splatoon", NotificationType.Success);
+                }
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.SetTooltip("Hold ALT to copy raw JSON (for usage with post body or you'll have to urlencode it yourself)\nHold CTRL and click to copy urlencoded raw");
+                }
+                ImGui.EndCombo();
             }
             ImGuiEx.GSameLine(delegate
             {

@@ -56,7 +56,20 @@
             ImGui.Text("Camera angle X:" + p.CamAngleX);
             ImGui.Text("Camera angle Y:" + p.CamAngleY);
             ImGui.Separator();
-            ImGui.Text("Game objects:");
+            ImGui.Text("Object table:");
+            ImGui.Text("Name");
+            ImGui.SameLine();
+            ImGui.SetCursorPosX(200f);
+            ImGui.Text("Object ID");
+            ImGui.SameLine();
+            ImGui.SetCursorPosX(300f);
+            ImGui.Text($"Data ID");
+            ImGui.SameLine();
+            ImGui.SetCursorPosX(400f);
+            ImGui.Text($"Targetable");
+            ImGui.SameLine();
+            ImGui.SetCursorPosX(500f);
+            ImGui.Text($"Visible");
             foreach (var a in Svc.Objects)
             {
                 Safe(delegate
@@ -68,6 +81,12 @@
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(300f);
                     ImGui.Text($"{a.DataId:X8}");
+                    ImGui.SameLine();
+                    ImGui.SetCursorPosX(400f);
+                    ImGui.Text($"{p.MemoryManager.GetIsTargetable((a is Character ch) ? ch : a)}");
+                    ImGui.SameLine();
+                    ImGui.SetCursorPosX(500f);
+                    ImGui.Text($"{((a is Character chr)?p.MemoryManager.GetIsVisible(chr):"Not a char")}");
                 });
             }
             ImGui.EndChild();

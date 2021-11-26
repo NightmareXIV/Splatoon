@@ -567,19 +567,54 @@ unsafe class Splatoon : IDalamudPlugin
     {
         if (e.includeRotation)
         {
-            var pointA = RotatePoint(tPos.X, tPos.Y,
-                -angle, new Vector3(
-                tPos.X + -e.refX,
-                tPos.Y + e.refY,
-                tPos.Z + e.refZ));
-            var pointB = RotatePoint(tPos.X, tPos.Y,
-                -angle, new Vector3(
-                tPos.X + -e.offX,
-                tPos.Y + e.offY,
-                tPos.Z + e.offZ));
-            displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
-                pointB.X, pointB.Y, pointB.Z,
-                e.thicc, e.color));
+            if (e.radius == 0f)
+            {
+                var pointA = RotatePoint(tPos.X, tPos.Y,
+                    -angle, new Vector3(
+                    tPos.X + -e.refX,
+                    tPos.Y + e.refY,
+                    tPos.Z + e.refZ));
+                var pointB = RotatePoint(tPos.X, tPos.Y,
+                    -angle, new Vector3(
+                    tPos.X + -e.offX,
+                    tPos.Y + e.offY,
+                    tPos.Z + e.offZ));
+                displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
+                    pointB.X, pointB.Y, pointB.Z,
+                    e.thicc, e.color));
+            }
+            else
+            {
+                var pointA = RotatePoint(tPos.X, tPos.Y,
+                    -angle, new Vector3(
+                    tPos.X + -e.refX - e.radius,
+                    tPos.Y + e.refY,
+                    tPos.Z + e.refZ));
+                var pointB = RotatePoint(tPos.X, tPos.Y,
+                    -angle, new Vector3(
+                    tPos.X + -e.offX - e.radius,
+                    tPos.Y + e.offY,
+                    tPos.Z + e.offZ));
+                var pointA2 = RotatePoint(tPos.X, tPos.Y,
+                    -angle, new Vector3(
+                    tPos.X + -e.refX + e.radius,
+                    tPos.Y + e.refY,
+                    tPos.Z + e.refZ));
+                var pointB2 = RotatePoint(tPos.X, tPos.Y,
+                    -angle, new Vector3(
+                    tPos.X + -e.offX + e.radius,
+                    tPos.Y + e.offY,
+                    tPos.Z + e.offZ));
+                displayObjects.Add(new DisplayObjectRect()
+                {
+                    l1 = new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
+                    pointB.X, pointB.Y, pointB.Z,
+                    e.thicc, e.color),
+                    l2 = new DisplayObjectLine(pointA2.X, pointA2.Y, pointA2.Z,
+                    pointB2.X, pointB2.Y, pointB2.Z,
+                    e.thicc, e.color)
+                });
+            }
         }
         else
         {

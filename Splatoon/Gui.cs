@@ -63,6 +63,10 @@ namespace Splatoon
                             {
                                 DrawLineWorld(elementLine);
                             }
+                            else if (element is DisplayObjectRect elementRect)
+                            {
+                                DrawRectWorld(elementRect);
+                            }
                         }
                         ImGui.End();
                         ImGui.PopStyleVar();
@@ -86,9 +90,17 @@ namespace Splatoon
         void DrawLineWorld(DisplayObjectLine e)
         {
             if (p.Profiler.Enabled) p.Profiler.GuiLines.StartTick();
-            var pointA = new Vector3(e.ax, e.ay, e.az);
-            var pointB = new Vector3(e.bx, e.by, e.bz);
-            var resultA = Svc.GameGui.WorldToScreen(new Vector3(e.ax, e.az, e.ay), out Vector2 posA);
+            var result = GetAdjustedLine(new Vector3(e.ax, e.ay, e.az), new Vector3(e.bx, e.by, e.bz));
+            if (result.posA == null) return;
+            ImGui.GetWindowDrawList().PathLineTo(new Vector2(result.posA.Value.X, result.posA.Value.Y));
+            ImGui.GetWindowDrawList().PathLineTo(new Vector2(result.posB.Value.X, result.posB.Value.Y));
+            ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.None, e.thickness);
+            if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
+        }
+
+        (Vector2? posA, Vector2? posB) GetAdjustedLine(Vector3 pointA, Vector3 pointB)
+        {
+            var resultA = Svc.GameGui.WorldToScreen(new Vector3(pointA.X, pointA.Z, pointA.Y), out Vector2 posA);
             if (!resultA)
             {
                 var posA2 = GetLineClosestToVisiblePoint(pointA,
@@ -96,14 +108,14 @@ namespace Splatoon
                 if (posA2 == null)
                 {
                     if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
-                    return;
+                    return (null, null);
                 }
                 else
                 {
                     posA = posA2.Value;
                 }
             }
-            var resultB = Svc.GameGui.WorldToScreen(new Vector3(e.bx, e.bz, e.by), out Vector2 posB);
+            var resultB = Svc.GameGui.WorldToScreen(new Vector3(pointB.X, pointB.Z, pointB.Y), out Vector2 posB);
             if (!resultB)
             {
                 var posB2 = GetLineClosestToVisiblePoint(pointB,
@@ -111,17 +123,29 @@ namespace Splatoon
                 if (posB2 == null)
                 {
                     if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
-                    return;
+                    return (null, null);
                 }
                 else
                 {
                     posB = posB2.Value;
                 }
             }
+            return (posA, posB);
+        }
 
-            ImGui.GetWindowDrawList().PathLineTo(new Vector2(posA.X, posA.Y));
-            ImGui.GetWindowDrawList().PathLineTo(new Vector2(posB.X, posB.Y));
-            ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.None, e.thickness);
+        void DrawRectWorld(DisplayObjectRect e)
+        {
+            if (p.Profiler.Enabled) p.Profiler.GuiLines.StartTick();
+            var result1 = GetAdjustedLine(new Vector3(e.l1.ax, e.l1.ay, e.l1.az), new Vector3(e.l1.bx, e.l1.by, e.l1.bz));
+            if (result1.posA == null) return;
+            var result2 = GetAdjustedLine(new Vector3(e.l2.ax, e.l2.ay, e.l2.az), new Vector3(e.l2.bx, e.l2.by, e.l2.bz));
+            if (result2.posA == null) return;
+            ImGui.GetWindowDrawList().AddQuadFilled(
+                new Vector2(result1.posA.Value.X, result1.posA.Value.Y),
+                new Vector2(result1.posB.Value.X, result1.posB.Value.Y),
+                new Vector2(result2.posB.Value.X, result2.posB.Value.Y),
+                new Vector2(result2.posA.Value.X, result2.posA.Value.Y), e.l1.color
+                );
             if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
         }
 
