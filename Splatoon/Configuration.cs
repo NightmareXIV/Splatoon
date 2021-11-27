@@ -1,5 +1,6 @@
 ﻿using Dalamud.Configuration;
 using Dalamud.Game.Gui.Toast;
+using Dalamud.Interface.Internal.Notifications;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace Splatoon
         public bool TriggerAnyMessages = false;
         public bool DirectNameComparison = false;
         public bool NoMemory = false;
+        public bool ShowOnUiHide = false;
 
         public void Initialize(Splatoon plugin)
         {
@@ -74,7 +76,7 @@ namespace Splatoon
                     plugin.tickScheduler.Enqueue(delegate
                     {
                         plugin.Log("Backup created: " + bkpFile);
-                        Svc.PluginInterface.UiBuilder.AddNotification("A backup of your current configuration has been created.", "Splatoon");
+                        Svc.PluginInterface.UiBuilder.AddNotification("A backup of your current configuration has been created.", "Splatoon", NotificationType.Info);
                     });
                 }
                 catch (Exception e)

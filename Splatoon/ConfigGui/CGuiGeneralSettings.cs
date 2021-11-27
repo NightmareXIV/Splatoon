@@ -103,6 +103,8 @@ namespace Splatoon
             }*/
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
             ImGui.Checkbox("Process all chat messages for triggers", ref p.Config.TriggerAnyMessages);
+            ImGui.Checkbox("Force show Splatoon's UI when game UI is hidden", ref p.Config.ShowOnUiHide);
+            Svc.PluginInterface.UiBuilder.DisableUserUiHide = p.Config.ShowOnUiHide;
             ImGui.Checkbox("Force failsafe mode (requires plugin restart)", ref p.Config.NoMemory);
             //ImGui.Checkbox("Always compare names directly (debug option, ~4x performance loss)", ref p.Config.DirectNameComparison);
             if(ImGui.Button("Open backup directory"))

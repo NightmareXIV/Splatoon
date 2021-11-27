@@ -301,41 +301,44 @@ namespace Splatoon
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Thickness is set to 0: only text overlay will be drawn.");
                     }
-                    if (el.thicc > 0)
+                    if (el.thicc > 0 || (el.type == 3 && el.includeRotation))
                     {
-                        ImGuiEx.SizedText("Radius:", WidthElement);
-                        ImGui.SameLine();
-                        ImGui.SetNextItemWidth(60f);
-                        ImGui.DragFloat("##radius" + i + k, ref el.radius, 0.01f, 0, float.MaxValue);
-                        if (ImGui.IsItemHovered())
-                            ImGui.SetTooltip("Leave at 0 to draw single dot");
-                        if (el.type == 1)
+                        if (el.type != 2 && !(el.type == 3 && !el.includeRotation))
                         {
-                            if (el.refActorType != 1)
-                            {
-                                ImGui.SameLine();
-                                ImGui.Checkbox("+target hitbox##" + i + k, ref el.includeHitbox);
-                            }
+                            ImGuiEx.SizedText("Radius:", WidthElement);
                             ImGui.SameLine();
-                            ImGui.Checkbox("+your hitbox##" + i + k, ref el.includeOwnHitbox);
-                            ImGui.SameLine();
-                            ImGui.TextUnformatted("(?)");
+                            ImGui.SetNextItemWidth(60f);
+                            ImGui.DragFloat("##radius" + i + k, ref el.radius, 0.01f, 0, float.MaxValue);
                             if (ImGui.IsItemHovered())
+                                ImGui.SetTooltip("Leave at 0 to draw single dot");
+                            if (el.type == 1 || (el.type == 3 && el.includeRotation))
                             {
-                                ImGui.SetTooltip("When the game tells you that ability A has distance D,\n" +
-                                    "in fact it means that you are allowed to execute\n" +
-                                    "ability A if distance between edge of your hitbox\n" +
-                                    "and enemy's hitbox is less or equal than distance D,\n" +
-                                    "that is for targeted abilities.\n" +
-                                    "If an ability is AoE, such check is performed between\n" +
-                                    "middle point of your character and edge of enemy's hitbox.\n\n" +
-                                    "Summary: if you are trying to make targeted ability indicator -\n" +
-                                    "enable both \"+your hitbox\" and \"+target hitbox\".\n" +
-                                    "If you are trying to make AoE ability indicator - \n" +
-                                    "enable only \"+target hitbox\" to make indicators valid.");
+                                if (el.refActorType != 1)
+                                {
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("+target hitbox##" + i + k, ref el.includeHitbox);
+                                }
+                                ImGui.SameLine();
+                                ImGui.Checkbox("+your hitbox##" + i + k, ref el.includeOwnHitbox);
+                                ImGui.SameLine();
+                                ImGui.TextUnformatted("(?)");
+                                if (ImGui.IsItemHovered())
+                                {
+                                    ImGui.SetTooltip("When the game tells you that ability A has distance D,\n" +
+                                        "in fact it means that you are allowed to execute\n" +
+                                        "ability A if distance between edge of your hitbox\n" +
+                                        "and enemy's hitbox is less or equal than distance D,\n" +
+                                        "that is for targeted abilities.\n" +
+                                        "If an ability is AoE, such check is performed between\n" +
+                                        "middle point of your character and edge of enemy's hitbox.\n\n" +
+                                        "Summary: if you are trying to make targeted ability indicator -\n" +
+                                        "enable both \"+your hitbox\" and \"+target hitbox\".\n" +
+                                        "If you are trying to make AoE ability indicator - \n" +
+                                        "enable only \"+target hitbox\" to make indicators valid.");
+                                }
                             }
                         }
-                        if (el.type != 2)
+                        if (el.type != 2 && el.type != 3)
                         {
                             ImGuiEx.SizedText("Tether:", WidthElement);
                             ImGui.SameLine();

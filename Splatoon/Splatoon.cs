@@ -48,13 +48,13 @@ unsafe class Splatoon : IDalamudPlugin
     public void Dispose()
     {
         Config.Save();
+        SetupShutdownHttp(false);
         DrawingGui.Dispose();
         ConfigGui.Dispose();
         CommandManager.Dispose();
         Svc.ClientState.TerritoryChanged -= TerritoryChangedEvent;
         Svc.Framework.Update -= Tick;
         Svc.Chat.ChatMessage -= OnChatMessage;
-        SetupShutdownHttp(false);
         //Svc.Chat.Print("Disposing");
     }
 
@@ -88,6 +88,7 @@ unsafe class Splatoon : IDalamudPlugin
         Svc.Chat.ChatMessage += OnChatMessage;
         Svc.Framework.Update += Tick;
         Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
+        Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
     }
 
     private void OnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
@@ -461,7 +462,7 @@ unsafe class Splatoon : IDalamudPlugin
                 }
                 else if (e.type == 3)
                 {
-                    AddRotatedLine(GetPlayerPositionXZY(), Svc.ClientState.LocalPlayer.Rotation, e);
+                    AddRotatedLine(GetPlayerPositionXZY(), Svc.ClientState.LocalPlayer.Rotation, e, radius);
                     //Svc.Chat.Print(Svc.ClientState.LocalPlayer.Rotation.ToString());
                 }
             }
@@ -470,15 +471,15 @@ unsafe class Splatoon : IDalamudPlugin
             {
                 if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, Svc.Targets.Target.GetPositionXZY()))
                 {
+                    if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
                     if (e.type == 1)
                     {
-                        if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
                         draw(e, Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
                             Svc.Targets.Target.GetPositionXZY().Z, radius, e.includeRotation ? Svc.Targets.Target.Rotation : 0f);
                     }
                     else if(e.type == 3)
                     {
-                        AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), Svc.Targets.Target.Rotation, e);
+                        AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), Svc.Targets.Target.Rotation, e, radius);
                     }
 
                     if (e.tether)
@@ -502,15 +503,15 @@ unsafe class Splatoon : IDalamudPlugin
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
                         {
+                            var aradius = radius;
+                            if (e.includeHitbox) aradius += a.HitboxRadius;
                             if (e.type == 1)
                             {
-                                var aradius = radius;
-                                if (e.includeHitbox) aradius += a.HitboxRadius;
                                 draw(e, a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius, e.includeRotation ? a.Rotation : 0f);
                             }
                             else if (e.type == 3)
                             {
-                                AddRotatedLine(a.GetPositionXZY(), a.Rotation, e);
+                                AddRotatedLine(a.GetPositionXZY(), a.Rotation, e, aradius);
                             }
                             if (e.tether)
                             {
@@ -563,11 +564,11 @@ unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    void AddRotatedLine(Vector3 tPos, float angle, Element e)
+    void AddRotatedLine(Vector3 tPos, float angle, Element e, float aradius)
     {
         if (e.includeRotation)
         {
-            if (e.radius == 0f)
+            if (aradius == 0f)
             {
                 var pointA = RotatePoint(tPos.X, tPos.Y,
                     -angle, new Vector3(
@@ -587,22 +588,22 @@ unsafe class Splatoon : IDalamudPlugin
             {
                 var pointA = RotatePoint(tPos.X, tPos.Y,
                     -angle, new Vector3(
-                    tPos.X + -e.refX - e.radius,
+                    tPos.X + -e.refX - aradius,
                     tPos.Y + e.refY,
                     tPos.Z + e.refZ));
                 var pointB = RotatePoint(tPos.X, tPos.Y,
                     -angle, new Vector3(
-                    tPos.X + -e.offX - e.radius,
+                    tPos.X + -e.offX - aradius,
                     tPos.Y + e.offY,
                     tPos.Z + e.offZ));
                 var pointA2 = RotatePoint(tPos.X, tPos.Y,
                     -angle, new Vector3(
-                    tPos.X + -e.refX + e.radius,
+                    tPos.X + -e.refX + aradius,
                     tPos.Y + e.refY,
                     tPos.Z + e.refZ));
                 var pointB2 = RotatePoint(tPos.X, tPos.Y,
                     -angle, new Vector3(
-                    tPos.X + -e.offX + e.radius,
+                    tPos.X + -e.offX + aradius,
                     tPos.Y + e.offY,
                     tPos.Z + e.offZ));
                 displayObjects.Add(new DisplayObjectRect()
