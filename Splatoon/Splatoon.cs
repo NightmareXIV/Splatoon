@@ -95,7 +95,7 @@ unsafe class Splatoon : IDalamudPlugin
     {
         if (Profiler.Enabled) Profiler.MainTickChat.StartTick();
         var inttype = (int)type;
-        if(inttype == 68 || inttype == 2105 || type == XivChatType.SystemMessage || Config.TriggerAnyMessages)
+        if(!Config.LimitTriggerMessages || inttype == 68 || inttype == 2105 || type == XivChatType.SystemMessage)
         {
             ChatMessageQueue.Enqueue(message.ToString());
         }
@@ -497,8 +497,10 @@ unsafe class Splatoon : IDalamudPlugin
                 if (Profiler.Enabled) Profiler.MainTickActorTableScan.StartTick();
                 foreach (var a in Svc.Objects)
                 {
+                    var targetable = MemoryManager.GetIsTargetable(a);
                     if ((e.refActorName == "*" || IsNameContainsValue(a, e.refActorName))
-                            && (!e.onlyTargetable || MemoryManager.GetIsTargetable(a))
+                            && (!e.onlyTargetable || targetable)
+                            && (!e.onlyUnTargetable || !targetable)
                             && (!e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr))))
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))

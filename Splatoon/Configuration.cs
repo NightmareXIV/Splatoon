@@ -32,7 +32,7 @@ namespace Splatoon
         public bool UseHttpServer = false;
         public int port = 47774;
         public bool TetherOnFind = true;
-        public bool TriggerAnyMessages = false;
+        public bool LimitTriggerMessages = false;
         public bool DirectNameComparison = false;
         public bool NoMemory = false;
         public bool ShowOnUiHide = false;

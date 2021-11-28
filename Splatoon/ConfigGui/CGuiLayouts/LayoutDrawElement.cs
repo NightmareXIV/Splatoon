@@ -158,19 +158,40 @@ namespace Splatoon
                                     "relatively resource expensive operation. \n" +
                                     "Try to keep amount of these down to reasonable number.");
                             }
+                            if (Svc.Targets.Target != null)
+                            {
+                                ImGui.SameLine();
+                                if (ImGui.Button("Target##btarget" + i + k)) el.refActorName = Svc.Targets.Target.Name.ToString();
+                            }
                             ImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
-                            ImGui.Checkbox("Targetable only##" + i + k, ref el.onlyTargetable);
+                            ImGui.Text("Targetability: ");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(100f);
+                            if(ImGui.BeginCombo($"##TargetabilityCombo{i+k}", el.onlyTargetable ? "Targetable" : (el.onlyUnTargetable ? "Untargetable" : "Any")))
+                            {
+                                if (ImGui.Selectable("Any"))
+                                {
+                                    el.onlyTargetable = false;
+                                    el.onlyUnTargetable = false;
+                                }
+                                if (ImGui.Selectable("Targetable only"))
+                                {
+                                    el.onlyTargetable = true;
+                                    el.onlyUnTargetable = false;
+                                }
+                                if (ImGui.Selectable("Untargetable only"))
+                                {
+                                    el.onlyTargetable = false;
+                                    el.onlyUnTargetable = true;
+                                }
+                                ImGui.EndCombo();
+                            }
                             ImGui.SameLine();
                             ImGui.Checkbox("Visible characters only##" + i + k, ref el.onlyVisible);
                             if (ImGui.IsItemHovered())
                             {
                                 ImGui.SetTooltip("Setting this checkbox will also restrict search to characters ONLY. \n(character - is a player, companion or friendly/hostile NPC that can fight and have HP)");
-                            }
-                            if (Svc.Targets.Target != null)
-                            {
-                                ImGui.SameLine();
-                                if (ImGui.Button("Target##btarget" + i + k)) el.refActorName = Svc.Targets.Target.Name.ToString();
                             }
                         }
                     }

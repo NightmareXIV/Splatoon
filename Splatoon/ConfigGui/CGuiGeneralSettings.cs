@@ -102,7 +102,7 @@ namespace Splatoon
                 p.Config.maxcamY = 0.05f;
             }*/
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
-            ImGui.Checkbox("Process all chat messages for triggers", ref p.Config.TriggerAnyMessages);
+            ImGui.Checkbox("Limit trigger message types to boss replies and system messages only", ref p.Config.LimitTriggerMessages);
             ImGui.Checkbox("Force show Splatoon's UI when game UI is hidden", ref p.Config.ShowOnUiHide);
             Svc.PluginInterface.UiBuilder.DisableUserUiHide = p.Config.ShowOnUiHide;
             ImGui.Checkbox("Force failsafe mode (requires plugin restart)", ref p.Config.NoMemory);
