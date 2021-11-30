@@ -532,8 +532,15 @@ unsafe class Splatoon : IDalamudPlugin
         }
         else if (e.type == 2)
         {
-            if (ShouldDraw(e.offX, GetPlayerPositionXZY().X, e.offY, GetPlayerPositionXZY().Y)
-                || ShouldDraw(e.refX, GetPlayerPositionXZY().X, e.refY, GetPlayerPositionXZY().Y))
+            if (
+                (
+                    i == null || !i.UseDistanceLimit || CheckDistanceToLineCondition(i, e)
+                ) &&
+                (
+                ShouldDraw(e.offX, GetPlayerPositionXZY().X, e.offY, GetPlayerPositionXZY().Y)
+                || ShouldDraw(e.refX, GetPlayerPositionXZY().X, e.refY, GetPlayerPositionXZY().Y)
+                )
+                )
                 displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
         }
     }
@@ -725,6 +732,14 @@ unsafe class Splatoon : IDalamudPlugin
     {
         if (i.DistanceLimitType != 1) return true;
         var dist = Vector3.Distance(v, GetPlayerPositionXZY());
+        if (!(dist >= i.MinDistance && dist < i.MaxDistance)) return false;
+        return true;
+    }
+
+    public bool CheckDistanceToLineCondition(Layout i, Element e)
+    {
+        if (i.DistanceLimitType != 1) return true;
+        var dist = Vector3.Distance(FindClosestPointOnLine(GetPlayerPositionXZY(), new Vector3(e.refX, e.refY, e.refZ), new Vector3(e.offX, e.offY, e.offZ)), GetPlayerPositionXZY());
         if (!(dist >= i.MinDistance && dist < i.MaxDistance)) return false;
         return true;
     }

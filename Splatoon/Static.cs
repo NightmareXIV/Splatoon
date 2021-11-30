@@ -183,5 +183,14 @@ namespace Splatoon
             p.Y = ynew + cy;
             return p;
         }
+
+        // Calculate the distance between
+        // point pt and the segment p1 --> p2.
+        public static Vector3 FindClosestPointOnLine(Vector3 P, Vector3 A, Vector3 B)
+        {
+            var D = Vector3.Normalize(B - A);
+            var d = Vector3.Dot(P - A, D);
+            return A + Vector3.Multiply(D, d);
+        }
     }
 }
