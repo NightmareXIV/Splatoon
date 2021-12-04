@@ -31,7 +31,7 @@ namespace Splatoon
                     Svc.SigScanner.ScanText("F3 0F 10 89 ?? ?? ?? ?? 0F 57 C0 0F 2E C8 7A 05 75 03 32 C0 C3 80 B9"));
                 GetIsTargetable_GameObject = Marshal.GetDelegateForFunctionPointer<GameObject_GetIsTargetable>(
                     Svc.SigScanner.ScanText("0F B6 91 ?? ?? ?? ?? F6 C2 02"));
-                var cameraAddress = *(IntPtr*)Svc.SigScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 34 C6 F3");
+                var cameraAddress = *(IntPtr*)Svc.SigScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 09");
                 CameraAddressX = (float*)(cameraAddress + 0x130);
                 CameraAddressY = (float*)(cameraAddress + 0x134);
                 CameraZoom = (float*)(cameraAddress + 0x114);
