@@ -12,7 +12,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 24;
+        public const int ChlogVersion = 25;
         readonly Splatoon p;
         bool open = true;
         bool understood = false;
@@ -36,9 +36,7 @@ namespace Splatoon
 @"This update adds possibility to set extra angle for rotated objects
 and includes some minor code optimizations.
 
-A backup of your current configuration will be made upon closing this window.
-Additionally, configuration conversion will be performed. 
-Should you encounter any problems - you can always restore configuration from automatic backup.");
+A backup of your current configuration will be made upon closing this window.");
             if (ImGui.Button("Close this window"))
             {
                 open = false;
@@ -51,19 +49,6 @@ Should you encounter any problems - you can always restore configuration from au
         {
             p.Config.Backup();
             p.Config.ChlogReadVer = ChlogVersion;
-            var i = 0;
-            foreach(var l in p.Config.Layouts)
-            {
-                foreach(var el in l.Value.Elements.Values)
-                {
-                    if ((el.type == 2 || el.type == 3) && el.radius == 0.35f)
-                    {
-                        el.radius = 0;
-                        i++;
-                    }
-                }
-            }
-            Svc.PluginInterface.UiBuilder.AddNotification($"Configuration converted, {i} elements changed", "Splatoon", NotificationType.Info);
             p.Config.Save();
             this.Dispose();
         }
