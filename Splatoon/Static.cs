@@ -192,5 +192,13 @@ namespace Splatoon
             var d = Vector3.Dot(P - A, D);
             return A + Vector3.Multiply(D, d);
         }
+        public static float DegreesToRadians(this float val)
+        {
+            return (float)((Math.PI / 180) * val);
+        }
+        public static float RadiansToDegrees(this float radians)
+        {
+            return (float)((180 / Math.PI) * radians);
+        }
     }
 }

@@ -551,7 +551,7 @@ unsafe class Splatoon : IDalamudPlugin
         var cy = y + e.offY;
         if (e.includeRotation)
         {
-            var rotatedPoint = RotatePoint(x, y, -angle, new Vector3(x - e.offX, y + e.offY, z));
+            var rotatedPoint = RotatePoint(x, y, -angle + e.AdditionalRotation, new Vector3(x - e.offX, y + e.offY, z));
             cx = rotatedPoint.X;
             cy = rotatedPoint.Y;
         }
@@ -580,12 +580,12 @@ unsafe class Splatoon : IDalamudPlugin
             if (aradius == 0f)
             {
                 var pointA = RotatePoint(tPos.X, tPos.Y,
-                    -angle, new Vector3(
+                    -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.refX,
                     tPos.Y + e.refY,
                     tPos.Z + e.refZ));
                 var pointB = RotatePoint(tPos.X, tPos.Y,
-                    -angle, new Vector3(
+                    -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.offX,
                     tPos.Y + e.offY,
                     tPos.Z + e.offZ));
@@ -596,22 +596,22 @@ unsafe class Splatoon : IDalamudPlugin
             else
             {
                 var pointA = RotatePoint(tPos.X, tPos.Y,
-                    -angle, new Vector3(
+                    -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.refX - aradius,
                     tPos.Y + e.refY,
                     tPos.Z + e.refZ));
                 var pointB = RotatePoint(tPos.X, tPos.Y,
-                    -angle, new Vector3(
+                    -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.offX - aradius,
                     tPos.Y + e.offY,
                     tPos.Z + e.offZ));
                 var pointA2 = RotatePoint(tPos.X, tPos.Y,
-                    -angle, new Vector3(
+                    -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.refX + aradius,
                     tPos.Y + e.refY,
                     tPos.Z + e.refZ));
                 var pointB2 = RotatePoint(tPos.X, tPos.Y,
-                    -angle, new Vector3(
+                    -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.offX + aradius,
                     tPos.Y + e.offY,
                     tPos.Z + e.offZ));

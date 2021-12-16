@@ -131,6 +131,19 @@ namespace Splatoon
                     {
                         ImGui.SameLine();
                         ImGui.Checkbox("Account for rotation##rota" + i + k, ref el.includeRotation);
+                        if (el.includeRotation)
+                        {
+                            ImGui.SameLine();
+                            ImGui.Text("Add angle:");
+                            ImGui.SameLine();
+                            var angleDegrees = el.AdditionalRotation.RadiansToDegrees();
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##ExtraAngle" + i + k, ref angleDegrees, 0.1f, 0f, 360f);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold shift for faster changing;\ndouble-click to enter manually.");
+                            if (angleDegrees < 0f || angleDegrees > 360f) angleDegrees = 0f;
+                            el.AdditionalRotation = angleDegrees.DegreesToRadians();
+                        }
                         ImGuiEx.SizedText("Targeted actor: ", WidthElement);
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);

@@ -52,5 +52,6 @@ namespace Splatoon
         [DefaultValue(false)] public bool onlyUnTargetable = false;
         [DefaultValue(false)] public bool onlyVisible = false;
         [DefaultValue(false)] public bool tether = false;
+        [DefaultValue(0f)] public float AdditionalRotation = 0f;
     }
 }
