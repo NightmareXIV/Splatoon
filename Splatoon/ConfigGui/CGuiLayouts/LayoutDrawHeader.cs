@@ -256,6 +256,7 @@ namespace Splatoon
                         {
                             ImGui.SetNextItemWidth(400f);
                             ImGui.InputTextWithHint("##textinput1" + n + i, "Case-insensitive message", ref p.Config.Layouts[i].Triggers[n].Match, 1000);
+                            p.Config.Layouts[i].Triggers[n].Match = p.Config.Layouts[i].Triggers[n].Match.RemoveSymbols(Splatoon.InvalidSymbols);
                         }
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Duration: ");

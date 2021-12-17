@@ -200,5 +200,11 @@ namespace Splatoon
         {
             return (float)((180 / Math.PI) * radians);
         }
+
+        public static string RemoveSymbols(this string s, IEnumerable<string> deletions)
+        {
+            foreach (var r in deletions) s = s.Replace(r, "");
+            return s;
+        }
     }
 }

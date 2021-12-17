@@ -12,7 +12,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 25;
+        public const int ChlogVersion = 28;
         readonly Splatoon p;
         bool open = true;
         bool understood = false;
@@ -33,8 +33,8 @@ namespace Splatoon
             if (!Svc.ClientState.IsLoggedIn) return;
             ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.TextUnformatted(
-@"This update adds possibility to set extra angle for rotated objects
-and includes some minor code optimizations.
+@"This update removes unreadable symbols from messages before using them as a trigger source.
+All your triggers will be updated and unreadable symbols will be removed from them upon closing this window.
 
 A backup of your current configuration will be made upon closing this window.");
             if (ImGui.Button("Close this window"))
@@ -48,6 +48,16 @@ A backup of your current configuration will be made upon closing this window.");
         void Close()
         {
             p.Config.Backup();
+            var i = 0;
+            foreach (var l in p.Config.Layouts)
+            {
+                foreach (var t in l.Value.Triggers)
+                {
+                    t.Match = t.Match.RemoveSymbols(Splatoon.InvalidSymbols);
+                    i++;
+                }
+            }
+            Svc.PluginInterface.UiBuilder.AddNotification($"Processed {i} triggers", "Splatoon", NotificationType.Success);
             p.Config.ChlogReadVer = ChlogVersion;
             p.Config.Save();
             this.Dispose();

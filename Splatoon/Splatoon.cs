@@ -91,13 +91,16 @@ unsafe class Splatoon : IDalamudPlugin
         Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
     }
 
+    internal static readonly string[] InvalidSymbols = { "", "", "", "“", "”", "" };
     private void OnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {
         if (Profiler.Enabled) Profiler.MainTickChat.StartTick();
         var inttype = (int)type;
         if(!Config.LimitTriggerMessages || inttype == 68 || inttype == 2105 || type == XivChatType.SystemMessage)
         {
-            ChatMessageQueue.Enqueue(message.ToString());
+            ChatMessageQueue.Enqueue(message.Payloads.Where(p => p is ITextProvider)
+                    .Cast<ITextProvider>()
+                    .Aggregate(new StringBuilder(), (sb, tp) => sb.Append(tp.Text.RemoveSymbols(InvalidSymbols)), sb => sb.ToString()));
         }
         if (Profiler.Enabled) Profiler.MainTickChat.StopTick();
     }
