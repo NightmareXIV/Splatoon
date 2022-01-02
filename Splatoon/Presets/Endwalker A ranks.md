@@ -16,7 +16,7 @@ A ranks: Mare Lamentorum~{"ZoneLockH":[959],"Elements":{"Mousse Princess":{"type
 ```
 
 ```
-A ranks: Elpis~{"ZoneLockH":[961],"Elements":{"Petalodus":{"type":1,"refX":-71.620834,"refY":0.72869414,"refZ":18.600334,"color":3355484415,"overlayTextColor":3355506943,"thicc":3.0,"overlayText":"A rank","refActorName":"Petalodus","includeHitbox":true,"onlyTargetable":true,"tether":true},"Gurangatch":{"type":3,"refX":-71.620834,"refY":0.72869414,"refZ":18.600334,"color":3355484415,"overlayTextColor":3355506943,"thicc":3.0,"overlayText":"A rank","refActorName":"Gurangatch","includeHitbox":true,"onlyTargetable":true,"tether":true}},"Triggers":[]}
+A ranks: Elpis~{"ZoneLockH":[961],"Elements":{"Petalodus":{"type":1,"refX":-71.620834,"refY":0.72869414,"refZ":18.600334,"radius":0.0,"color":3355484415,"overlayTextColor":3355506943,"thicc":3.0,"overlayText":"A rank","refActorName":"Petalodus","includeHitbox":true,"onlyTargetable":true,"tether":true},"Gurangatch":{"type":1,"refX":-71.620834,"refY":0.72869414,"refZ":18.600334,"radius":0.0,"color":3355484415,"overlayTextColor":3355506943,"thicc":3.0,"overlayText":"A rank","refActorName":"Gurangatch","includeHitbox":true,"onlyTargetable":true,"tether":true}},"Triggers":[]}
 ```
 
 ```
