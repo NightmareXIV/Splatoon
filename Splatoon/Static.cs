@@ -206,5 +206,11 @@ namespace Splatoon
             foreach (var r in deletions) s = s.Replace(r, "");
             return s;
         }
+
+        public static string ToStringNullSup(this bool? b)
+        {
+            if (b == null) return "null";
+            return b.Value.ToString();
+        }
     }
 }

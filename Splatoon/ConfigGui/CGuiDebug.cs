@@ -1,4 +1,6 @@
-﻿namespace Splatoon
+﻿using Dalamud.Interface.Internal.Notifications;
+
+namespace Splatoon
 {
     partial class CGui
     {
