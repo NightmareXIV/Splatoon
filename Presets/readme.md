@@ -1,6 +1,6 @@
 A collection of user-submitted presets. 
 ### Adding your preset
-To add your preset, please use "Copy... - Export to clipboard" function. If you came on this page from clicking "Share layout" button, your preset is already copied!
+To add your preset, please use "Copy... - Export to clipboard" function. If you came on this page from clicking "Share layout" button, your preset is already copied to your clipboard!
 
 You can use following ways to add your preset:
 - Directly submit a pull request if you are familiar with the process.
