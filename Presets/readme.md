@@ -7,4 +7,6 @@ You can use following ways to add your preset:
 - Create an issue and paste preset code into it.
 - Send it via email on eternitast@gmail.com. Please note: there will be no reply.
 
+Please include a short description of what preset will display.
+
 Thank you for your contribution!
