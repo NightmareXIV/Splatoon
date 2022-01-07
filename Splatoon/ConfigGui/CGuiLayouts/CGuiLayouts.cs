@@ -11,6 +11,7 @@ namespace Splatoon
 {
     partial class CGui
     {
+        float GetPresetWidth = 0;
         void DislayLayouts()
         {
             /*if(p.CamAngleY > p.Config.maxcamY)
@@ -27,7 +28,7 @@ namespace Splatoon
 
             ImGui.Separator();
 
-            ImGui.SetNextItemWidth(350f);
+            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - 3f * ImGui.GetStyle().ItemSpacing.X - GetPresetWidth);
             ImGui.InputTextWithHint("##lname", "Unique layout name", ref lname, 100);
             lname.Trim();
             ImGui.SameLine();
@@ -57,14 +58,19 @@ namespace Splatoon
                     lname = "";
                 }
             }
+            GetPresetWidth = ImGui.GetItemRectSize().X;
             ImGui.SameLine();
-            ImGui.TextUnformatted("Import layout from:");
-            ImGui.SameLine();
-            if (ImGui.Button("clipboard"))
+            if (ImGui.Button("Import from clipboard"))
             {
                 Safe(delegate { ImportFromText(ImGui.GetClipboardText()); });
             }
-            
+            GetPresetWidth += ImGui.GetItemRectSize().X;
+            ImGui.SameLine();
+            if (ImGui.Button("Get presets from github"))
+            {
+                ProcessStart("https://github.com/Eternita-S/Splatoon/tree/master/Presets");
+            }
+            GetPresetWidth += ImGui.GetItemRectSize().X;
 
             ImGui.BeginChild("##layoutlist");
             var open = false;

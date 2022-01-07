@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface.Internal.Notifications;
+﻿using Dalamud.Interface.Colors;
+using Dalamud.Interface.Internal.Notifications;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,14 @@ namespace Splatoon
 {
     partial class CGui
     {
+        float ShareWidth = 0;
+
+        void CopyToCb(string i)
+        {
+            ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+            Notify("Copied to clipboard", NotificationType.Success);
+        }
+
         void LayoutDrawHeader(string i)
         {
             var topCursorPos = ImGui.GetCursorPos();
@@ -18,14 +27,23 @@ namespace Splatoon
             ImGui.Checkbox("Prevent controlling with web api##" + i, ref p.Config.Layouts[i].DisableDisabling);
             ImGui.SameLine();
             ImGui.Checkbox("Disable in duty##" + i, ref p.Config.Layouts[i].DisableInDuty);
-            ImGui.SetCursorPos(new Vector2(ImGui.GetColumnWidth() - 100 - ImGui.GetStyle().ItemInnerSpacing.X, topCursorPos.Y));
+            ImGui.SetCursorPos(new Vector2(ImGui.GetColumnWidth() - ShareWidth - ImGui.GetStyle().ItemSpacing.X, topCursorPos.Y));
+            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
+            if(ImGui.Button("Share layout"))
+            {
+                CopyToCb(i);
+                ProcessStart("https://github.com/Eternita-S/Splatoon/tree/master/Presets#adding-your-preset");
+            }
+            ImGui.PopStyleColor();
+            ShareWidth = ImGui.GetItemRectSize().X;
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Send your preset to other users of Splatoon to use!");
+            ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             if (ImGui.BeginCombo("##copy" + i, "Copy..."))
             {
                 if (ImGui.Selectable("Export to clipboard"))
                 {
-                    ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
-                    Notify("Copied to clipboard", NotificationType.Success);
+                    CopyToCb(i); 
                 }
                 if (ImGui.Selectable("Copy enable command"))
                 {
@@ -48,12 +66,17 @@ namespace Splatoon
                 }
                 ImGui.EndCombo();
             }
+            ShareWidth += ImGui.GetItemRectSize().X;
+
             ImGuiEx.GSameLine(delegate
             {
                 ImGui.Text("Display conditions:");
                 ImGui.SetNextItemWidth(WidthCombo);
                 ImGui.Combo("##dcn" + i, ref p.Config.Layouts[i].DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
             }, out var upperTextCursor);
+            var delta = (ImGui.GetWindowContentRegionWidth() - WidthCombo * 3f - ImGui.GetStyle().ItemSpacing.X * 2f) / 2;
+            upperTextCursor += delta;
+
             var colorZLock = Svc.ClientState?.TerritoryType != null
                 && p.Config.Layouts[i].ZoneLockH.Count != 0
                 && !p.Config.Layouts[i].ZoneLockH.Contains(Svc.ClientState.TerritoryType)
@@ -61,6 +84,7 @@ namespace Splatoon
             if (colorZLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
             ImGuiEx.GSameLine(delegate
             {
+                ImGui.SetCursorPosX(ImGui.GetCursorPosX() + delta);
                 ImGui.Text("Zone lock: ");
                 ImGui.SetNextItemWidth(WidthCombo);
                 ImGui.SetCursorPosX(upperTextCursor);
@@ -111,6 +135,7 @@ namespace Splatoon
                     if (colorZLock) ImGui.PopStyleColor();
                 }
             }, out upperTextCursor);
+            upperTextCursor += (ImGui.GetWindowContentRegionWidth() - WidthCombo * 3f - ImGui.GetStyle().ItemSpacing.X * 2f) / 2;
 
             var jprev = new List<string>();
             if (p.Config.Layouts[i].JobLock == 0)
@@ -134,6 +159,7 @@ namespace Splatoon
             if (colorJLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
             ImGuiEx.GSameLine(delegate
             {
+                ImGui.SetCursorPosX(ImGui.GetCursorPosX() + delta);
                 ImGui.Text("Job lock");
                 ImGui.SetCursorPosX(upperTextCursor);
                 ImGui.SetNextItemWidth(WidthCombo);
