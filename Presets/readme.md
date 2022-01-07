@@ -1,1 +1,10 @@
-A collection of presets. Want to add some? Just do a pull request or create an issue here: https://github.com/Eternita-S/Splatoon/issues
+A collection of user-submitted presets. 
+### Adding your preset
+To add your preset, please use "Copy... - Export to clipboard" function. If you came on this page from clicking "Share layout" button, your preset is already copied!
+
+You can use following ways to add your preset:
+- Directly submit a pull request if you are familiar with the process.
+- Create an issue and paste preset code into it.
+- Send it via email on eternitast@gmail.com. Please note: there will be no reply.
+
+Thank you for your contribution!
