@@ -25,22 +25,22 @@ namespace Splatoon
                 if (ImGui.Selectable("Export to clipboard"))
                 {
                     ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
-                    Svc.PluginInterface.UiBuilder.AddNotification("Copied to clipboard", "Splatoon", NotificationType.Success);
+                    Notify("Copied to clipboard", NotificationType.Success);
                 }
                 if (ImGui.Selectable("Copy enable command"))
                 {
                     ImGui.SetClipboardText("/splatoon enable " + i);
-                    Svc.PluginInterface.UiBuilder.AddNotification("Copied to clipboard", "Splatoon", NotificationType.Success);
+                    Notify("Copied to clipboard", NotificationType.Success);
                 }
                 if (ImGui.Selectable("Copy disable command"))
                 {
                     ImGui.SetClipboardText("/splatoon disable " + i);
-                    Svc.PluginInterface.UiBuilder.AddNotification("Copied to clipboard", "Splatoon", NotificationType.Success);
+                    Notify("Copied to clipboard", NotificationType.Success);
                 }
                 if (ImGui.Selectable("Copy as HTTP param##" + i))
                 {
                     HTTPExportToClipboard(p.Config.Layouts[i]);
-                    Svc.PluginInterface.UiBuilder.AddNotification("Copied to clipboard", "Splatoon", NotificationType.Success);
+                    Notify("Copied to clipboard", NotificationType.Success);
                 }
                 if (ImGui.IsItemHovered())
                 {

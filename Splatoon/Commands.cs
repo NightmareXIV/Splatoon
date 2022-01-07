@@ -51,13 +51,13 @@ namespace Splatoon
                     {
                         if (Svc.Targets.Target == null)
                         {
-                            Svc.PluginInterface.UiBuilder.AddNotification("Target not selected", "Splatoon", NotificationType.Error);
+                            Notify("Target not selected", NotificationType.Error);
                         }
                         else 
                         {
                             var name = arguments.Substring(arguments.IndexOf("settarget ") + 10).Split('~');
                             p.Config.Layouts[name[0]].Elements[name[1]].refActorName = Svc.Targets.Target.Name.ToString();
-                            Svc.PluginInterface.UiBuilder.AddNotification("Successfully set target", "Splatoon", NotificationType.Success);
+                            Notify("Successfully set target", NotificationType.Success);
                         }
                     }
                     catch (Exception e)
@@ -89,18 +89,18 @@ namespace Splatoon
                 {
                     if (p.SFind != null)
                     {
-                        Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Search stopped", "Splatoon", NotificationType.Info);
+                        Notify("Search stopped", NotificationType.Info);
                         p.SFind = null;
                     }
                     else
                     {
-                        Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Please specify target name", "Splatoon", NotificationType.Error);
+                        Notify("Please specify target name", NotificationType.Error);
                     }
                 }
                 else
                 {
                     p.SFind = arguments.Trim();
-                    Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Searching for: " + p.SFind, "Splatoon", NotificationType.Success);
+                    Notify("Searching for: " + p.SFind, NotificationType.Success);
                 }
             })
             {

@@ -92,7 +92,7 @@ namespace Splatoon
                     plugin.tickScheduler.Enqueue(delegate
                     {
                         plugin.Log("Backup created: " + bkpFile);
-                        Svc.PluginInterface.UiBuilder.AddNotification("A backup of your current configuration has been created.", "Splatoon", NotificationType.Info);
+                        Notify("A backup of your current configuration has been created.", NotificationType.Info);
                     });
                 }
                 catch (Exception e)

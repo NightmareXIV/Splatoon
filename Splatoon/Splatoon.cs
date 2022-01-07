@@ -145,7 +145,7 @@ unsafe class Splatoon : IDalamudPlugin
         if (SFind != null)
         {
             SFind = null;
-            Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Search stopped", "Splatoon", NotificationType.Info);
+            Notify("Search stopped", NotificationType.Info);
         }
         for (var i = dynamicElements.Count - 1; i >= 0; i--)
         {

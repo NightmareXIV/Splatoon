@@ -252,7 +252,7 @@ namespace Splatoon
                                 }
                                 else
                                 {
-                                    Svc.PluginInterface.UiBuilder.AddNotification("Unable to use for hidden element", "Splatoon", NotificationType.Error);
+                                    Notify("Unable to use for hidden element", NotificationType.Error);
                                 }
                             }
                         }
@@ -311,7 +311,7 @@ namespace Splatoon
                             }
                             else
                             {
-                                Svc.PluginInterface.UiBuilder.AddNotification("Unable to use for hidden element", "Splatoon", NotificationType.Error);
+                                Notify("Unable to use for hidden element", NotificationType.Error);
                             }
                         }
                     }

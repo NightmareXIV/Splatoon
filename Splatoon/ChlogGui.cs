@@ -57,7 +57,7 @@ A backup of your current configuration will be made upon closing this window.");
                     i++;
                 }
             }
-            Svc.PluginInterface.UiBuilder.AddNotification($"Processed {i} triggers", "Splatoon", NotificationType.Success);
+            Notify($"Processed {i} triggers", NotificationType.Success);
             p.Config.ChlogReadVer = ChlogVersion;
             p.Config.Save();
             this.Dispose();
