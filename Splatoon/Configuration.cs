@@ -56,18 +56,34 @@ namespace Splatoon
         {
             if (!ZipSemaphore.Wait(0))
             {
-                plugin.Log("Failed to create backup: previous backup did not completed yet. ", true);
+                LogErrorAndNotify("Failed to create backup: previous backup did not completed yet. ");
                 return false;
             }
-            var cFile = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "..", "Splatoon.json");
-            var configStr = File.ReadAllText(cFile);
-            var bkpFPath = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Backups");
-            Directory.CreateDirectory(bkpFPath);
-            var tempDir = Path.Combine(bkpFPath, "temp");
-            Directory.CreateDirectory(tempDir);
-            var tempFile = Path.Combine(tempDir, "Splatoon.json");
-            var bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-MM-dd HH-mm-ss-fffffff") + ".zip");
-            File.Copy(cFile, tempFile, true);
+            string tempDir = null;
+            string bkpFile = null;
+            string tempFile = null;
+            try
+            {
+                var cFile = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "..", "Splatoon.json");
+                var configStr = File.ReadAllText(cFile);
+                var bkpFPath = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Backups");
+                Directory.CreateDirectory(bkpFPath);
+                tempDir = Path.Combine(bkpFPath, "temp");
+                Directory.CreateDirectory(tempDir);
+                tempFile = Path.Combine(tempDir, "Splatoon.json");
+                bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-MM-dd HH-mm-ss-fffffff") + ".zip");
+                File.Copy(cFile, tempFile, true);
+            }
+            catch(FileNotFoundException e)
+            {
+                ZipSemaphore.Release();
+                LogErrorAndNotify(e, "Could not find configuration to backup.");
+            }
+            catch(Exception e)
+            {
+                ZipSemaphore.Release();
+                LogErrorAndNotify(e, "Failed to create a backup:\n" + e.Message);
+            }
             Task.Run(new Action(delegate { 
                 try
                 {

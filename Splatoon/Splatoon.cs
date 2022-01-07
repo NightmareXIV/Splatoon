@@ -62,8 +62,14 @@ unsafe class Splatoon : IDalamudPlugin
     {
         pluginInterface.Create<Svc>();
         //Svc.Chat.Print("Loaded");
-        Config = Svc.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        var configRaw = Svc.PluginInterface.GetPluginConfig();
+        Config = configRaw as Configuration ?? new Configuration();
         Config.Initialize(this);
+        if(configRaw == null)
+        {
+            Notify("New configuration file has been created");
+            Config.Save();
+        }
         ChatMessageQueue = new Queue<string>();
         Profiler = new Profiling(this);
         CommandManager = new Commands(this);

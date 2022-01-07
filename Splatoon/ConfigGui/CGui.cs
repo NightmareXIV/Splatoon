@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface;
+using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Newtonsoft.Json;
 using System;
@@ -80,6 +81,7 @@ namespace Splatoon
                     p.Config.Save();
                     WasOpen = false;
                     UnsetS2W();
+                    Notify("Configuration saved", NotificationType.Success);
                     if(p.Config.verboselog) p.Log("Configuration saved");
                 }
                 return;
