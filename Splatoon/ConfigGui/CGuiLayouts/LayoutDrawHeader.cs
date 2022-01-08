@@ -330,7 +330,7 @@ namespace Splatoon
                 }
                 else if (ename.Length == 0)
                 {
-                    p.Log("Error: you must name layout", true);
+                    p.Log("Error: you must name element", true);
                 }
                 else
                 {
@@ -340,6 +340,31 @@ namespace Splatoon
                     el.refZ = GetPlayerPositionXZY().Z;
                     p.Config.Layouts[i].Elements.Add(ename, el);
                     ename = "";
+                }
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("Paste from clipboard##addelement" + i))
+            {
+                if (p.Config.Layouts[i].Elements.ContainsKey(ename))
+                {
+                    p.Log("Error: this name already exists", true);
+                }
+                else if (ename.Length == 0)
+                {
+                    p.Log("Error: you must name element", true);
+                }
+                else
+                {
+                    try
+                    {
+                        var el = JsonConvert.DeserializeObject<Element>(ImGui.GetClipboardText());
+                        p.Config.Layouts[i].Elements.Add(ename, el);
+                        ename = "";
+                    }
+                    catch(Exception e)
+                    {
+                        LogErrorAndNotify(e);
+                    }
                 }
             }
         }

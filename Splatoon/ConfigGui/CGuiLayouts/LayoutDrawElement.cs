@@ -45,6 +45,12 @@ namespace Splatoon
                     {
                         HTTPExportToClipboard(el);
                     }
+                    ImGui.SameLine();
+                    if (ImGui.Button("Copy to clipboard##" + i + k))
+                    {
+                        ImGui.SetClipboardText(JsonConvert.SerializeObject(el));
+                        Notify("Copied to clipboard", NotificationType.Success);
+                    }
 
                     if (ImGui.IsItemHovered())
                     {
