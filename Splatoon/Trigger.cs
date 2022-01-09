@@ -10,7 +10,7 @@ namespace Splatoon
     [Serializable]
     public class Trigger
     {
-        [NonSerialized] public static string[] Types = { "Show at time in combat", "Hide at time in combat", "Show at boss message", "Hide at boss message" };
+        [NonSerialized] public static string[] Types = { "Show at time in combat", "Hide at time in combat", "Show at log message", "Hide at log message" };
         /// <summary>
         /// 0: Show at time |
         /// 1: Hide at time |
