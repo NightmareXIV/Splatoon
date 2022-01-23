@@ -105,8 +105,10 @@ namespace Splatoon
                     {
                         ImGuiEx.ColorButton(Colors.Red);
                     }
+                    string zcfc = p.Zones[Svc.ClientState.TerritoryType].ContentFinderCondition?.Value.Name?.ToString();
                     if (ImGui.SmallButton("Current zone: " + Svc.ClientState.TerritoryType + " / "
-                        + p.Zones[Svc.ClientState.TerritoryType].PlaceName.Value.Name))
+                        + p.Zones[Svc.ClientState.TerritoryType].PlaceName.Value.Name +
+                        (string.IsNullOrEmpty(zcfc) ? "" : $" ({zcfc})")))
                     {
                         p.Config.Layouts[i].ZoneLockH.Toggle(Svc.ClientState.TerritoryType);
                     }
@@ -114,8 +116,9 @@ namespace Splatoon
                     ImGui.PopStyleColor();
                     foreach (var z in p.Zones)
                     {
+                        string azcfc = z.Value.ContentFinderCondition?.Value.Name?.ToString();
                         if (z.Value.PlaceName.Value.Name.ToString().Length == 0) continue;
-                        var s = z.Key + " / " + z.Value.PlaceName.Value.Name;
+                        var s = z.Key + " / " + z.Value.PlaceName.Value.Name + (string.IsNullOrEmpty(azcfc) ? "" : $" ({azcfc})");
                         if (!s.ToLower().Contains(zlockf)) continue;
                         if (zlockcur && !p.Config.Layouts[i].ZoneLockH.Contains(z.Key)) continue;
                         if (p.Config.Layouts[i].ZoneLockH.Contains(z.Key))
