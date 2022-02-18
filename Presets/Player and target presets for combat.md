@@ -15,6 +15,6 @@ Machinist/Bard AoE cones~{"ZoneLockH":[],"Elements":{"Machinist/Bard AOE cone(2)
 
 3yalm ring around target for GCD range and a 2yalm ring around the target for auto attack range (auto attacks are a large portion of your damage, don't lose them)
 ```
-Melee Range~{"ZoneLockH":[],"Elements":{"Auto Attack":{"type":1,"refX":-584.84045,"refY":-842.6976,"refZ":30.110699,"radius":2.0,"refActorType":2,"includeHitbox":true,"includeOwnHitbox":true},"GCD Range":{"type":1,"refX":-584.7163,"refY":-842.6814,"refZ":30.110699,"radius":3.0,"refActorType":2,"includeHitbox":true,"includeOwnHitbox":true},"pixel perfect":{"type":1,"Enabled":false,"refX":-594.2895,"refY":-836.6198,"refZ":30.07,"radius":0.0,"refActorType":1}},"Triggers":[]}
+Melee Range~{"ZoneLockH":[],"Elements":{"Auto Attack":{"type":1,"refX":-584.84045,"refY":-842.6976,"refZ":30.110699,"radius":2.1,"refActorType":2,"includeHitbox":true,"includeOwnHitbox":true},"GCD Range":{"type":1,"refX":-584.7163,"refY":-842.6814,"refZ":30.110699,"radius":3.0,"refActorType":2,"includeHitbox":true,"includeOwnHitbox":true},"pixel perfect":{"type":1,"Enabled":false,"refX":-594.2895,"refY":-836.6198,"refZ":30.07,"radius":0.0,"refActorType":1}},"Triggers":[]}
 ```
 
