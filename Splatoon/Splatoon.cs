@@ -592,7 +592,7 @@ unsafe class Splatoon : IDalamudPlugin
                     -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.refX,
                     tPos.Y + e.refY,
-                    tPos.Z + e.refZ));
+                    tPos.Z + e.refZ) + new Vector3(e.LineAddHitboxLengthXA ? hitboxRadius : 0f, e.LineAddHitboxLengthYA ? hitboxRadius : 0f, e.LineAddHitboxLengthZA ? hitboxRadius : 0f));
                 var pointB = RotatePoint(tPos.X, tPos.Y,
                     -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.offX,
@@ -640,7 +640,7 @@ unsafe class Splatoon : IDalamudPlugin
             var pointA = new Vector3(
                 tPos.X + e.refX,
                 tPos.Y + e.refY,
-                tPos.Z + e.refZ);
+                tPos.Z + e.refZ) + new Vector3(e.LineAddHitboxLengthXA ? hitboxRadius : 0f, e.LineAddHitboxLengthYA ? hitboxRadius : 0f, e.LineAddHitboxLengthZA ? hitboxRadius : 0f);
             var pointB = new Vector3(
                 tPos.X + e.offX,
                 tPos.Y + e.offY,

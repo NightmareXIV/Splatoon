@@ -56,6 +56,9 @@ namespace Splatoon
         [DefaultValue(false)] public bool LineAddHitboxLengthX = false;
         [DefaultValue(false)] public bool LineAddHitboxLengthY = false;
         [DefaultValue(false)] public bool LineAddHitboxLengthZ = false;
+        [DefaultValue(false)] public bool LineAddHitboxLengthXA = false;
+        [DefaultValue(false)] public bool LineAddHitboxLengthYA = false;
+        [DefaultValue(false)] public bool LineAddHitboxLengthZA = false;
         [DefaultValue(false)] public bool Filled = false;
     }
 }

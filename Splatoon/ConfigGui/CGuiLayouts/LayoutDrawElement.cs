@@ -263,10 +263,22 @@ namespace Splatoon
                             }
                         }
 
-                        if ((el.type == 1 || el.type == 3) && el.includeRotation)
+                        /*if ((el.type == 1 || el.type == 3) && el.includeRotation)
                         {
                             ImGui.SameLine();
                             ImGui.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.type == 1 ? 0 : el.refX, el.type == 1 ? 0 : el.refY, el.offX, el.offY)));
+                        }*/
+
+                        if ((el.type == 1 || el.type == 3) && el.refActorType != 1)
+                        {
+                            ImGui.SameLine();
+                            ImGui.Text("+target hitbox (XYZ):");
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxXa{i + k}", ref el.LineAddHitboxLengthXA);
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxYa{i + k}", ref el.LineAddHitboxLengthYA);
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxZa{i + k}", ref el.LineAddHitboxLengthZA);
                         }
                         ImGui.PopItemWidth();
                     }
