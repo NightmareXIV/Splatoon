@@ -59,6 +59,12 @@ namespace Splatoon
         [DefaultValue(false)] public bool LineAddHitboxLengthXA = false;
         [DefaultValue(false)] public bool LineAddHitboxLengthYA = false;
         [DefaultValue(false)] public bool LineAddHitboxLengthZA = false;
+        [DefaultValue(false)] public bool LineAddPlayerHitboxLengthX = false;
+        [DefaultValue(false)] public bool LineAddPlayerHitboxLengthY = false;
+        [DefaultValue(false)] public bool LineAddPlayerHitboxLengthZ = false;
+        [DefaultValue(false)] public bool LineAddPlayerHitboxLengthXA = false;
+        [DefaultValue(false)] public bool LineAddPlayerHitboxLengthYA = false;
+        [DefaultValue(false)] public bool LineAddPlayerHitboxLengthZA = false;
         [DefaultValue(false)] public bool Filled = false;
     }
 }

@@ -25,6 +25,7 @@ namespace Splatoon
                 {
                     ImGui.Text("Target pos XYZ: \n" + tar.GetPositionXZY().X + "\n" + tar.GetPositionXZY().Y + "\n" + tar.GetPositionXZY().Z);
                     ImGui.Text("Rotation: " + tar.Rotation.ToString());
+                    ImGui.Text("Hitbox: " + tar.HitboxRadius.ToString());
                 }
             }
             ImGui.Separator();
