@@ -12,7 +12,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 31;
+        public const int ChlogVersion = 33;
         readonly Splatoon p;
         bool open = true;
         bool understood = false;
@@ -33,8 +33,9 @@ namespace Splatoon
             if (!Svc.ClientState.IsLoggedIn) return;
             ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.TextUnformatted(
-@"Added layout filter. I don't know why did I not added it the beginning.
-Also added duty name into zone selector to zones that correspond to specific duty.");
+@"- Added possibility to include target's hitbox value for point B of any lines that are relative to target.
+   Most of the times you will want to add only Y value, however, X and Z can be added as well.
+- Added possibility for circles to be filled. ");
             if (ImGui.Button("Close this window"))
             {
                 open = false;

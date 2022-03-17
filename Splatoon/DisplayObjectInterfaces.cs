@@ -25,7 +25,8 @@ namespace Splatoon
     {
         public float x, y, z, radius, thickness;
         public uint color;
-        public DisplayObjectCircle(float x, float y, float z, float radius, float thickness, uint color)
+        public bool filled;
+        public DisplayObjectCircle(float x, float y, float z, float radius, float thickness, uint color, bool filled)
         {
             this.x = x;
             this.y = y;
@@ -33,6 +34,7 @@ namespace Splatoon
             this.radius = radius;
             this.thickness = thickness;
             this.color = color;
+            this.filled = filled;
         }
     }
 

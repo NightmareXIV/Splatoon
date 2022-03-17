@@ -262,6 +262,12 @@ namespace Splatoon
                                 }
                             }
                         }
+
+                        if ((el.type == 1 || el.type == 3) && el.includeRotation)
+                        {
+                            ImGui.SameLine();
+                            ImGui.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.type == 1 ? 0 : el.refX, el.type == 1 ? 0 : el.refY, el.offX, el.offY)));
+                        }
                         ImGui.PopItemWidth();
                     }
 
@@ -297,10 +303,16 @@ namespace Splatoon
                             el.offZ = GetPlayerPositionXZY().Z;
                         }
                     }
-                    if ((el.type == 1 || el.type == 3) && el.includeRotation)
+                    if ((el.type == 1 || el.type == 3) && el.refActorType != 1)
                     {
                         ImGui.SameLine();
-                        ImGui.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.type == 1 ? 0 : el.refX, el.type == 1 ? 0 : el.refY, el.offX, el.offY)));
+                        ImGui.Text("+target hitbox (XYZ):");
+                        ImGui.SameLine();
+                        ImGui.Checkbox($"##lineTHitboxX{i + k}", ref el.LineAddHitboxLengthX);
+                        ImGui.SameLine();
+                        ImGui.Checkbox($"##lineTHitboxY{i + k}", ref el.LineAddHitboxLengthY);
+                        ImGui.SameLine();
+                        ImGui.Checkbox($"##lineTHitboxZ{i + k}", ref el.LineAddHitboxLengthZ);
                     }
                     //ImGui.SameLine();
                     //ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);
@@ -326,6 +338,11 @@ namespace Splatoon
                     ImGui.SameLine();
                     ImGui.DragFloat("##thicc" + i + k, ref el.thicc, 0.1f, 0f, float.MaxValue);
                     ImGui.PopItemWidth();
+                    if (el.type == 0 || el.type == 1)
+                    {
+                        if (el.Filled && ImGui.IsItemHovered()) ImGui.SetTooltip("This value is only for tether if circle is set to be filled");
+                         if(el.Filled && el.thicc == 0) el.thicc = float.Epsilon;
+                    }
                     if (el.thicc > 0)
                     {
                         ImGui.SameLine();
@@ -335,6 +352,11 @@ namespace Splatoon
                             el.color = ImGui.ColorConvertFloat4ToU32(v4);
                         }
                         ImGui.PopItemWidth();
+                        if (el.type == 0 || el.type == 1)
+                        {
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"Filled", ref el.Filled);
+                        }
                     }
                     else
                     {

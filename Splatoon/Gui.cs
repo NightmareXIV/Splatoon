@@ -214,7 +214,15 @@ namespace Splatoon
                     if (pos == null) continue;
                     ImGui.GetWindowDrawList().PathLineTo(pos.Value);
                 }
-                ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.Closed, e.thickness);
+                
+                if (e.filled)
+                {
+                    ImGui.GetWindowDrawList().PathFillConvex(e.color);
+                }
+                else
+                {
+                    ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.Closed, e.thickness);
+                }
             }
         }
 

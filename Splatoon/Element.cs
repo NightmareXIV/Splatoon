@@ -53,5 +53,9 @@ namespace Splatoon
         [DefaultValue(false)] public bool onlyVisible = false;
         [DefaultValue(false)] public bool tether = false;
         [DefaultValue(0f)] public float AdditionalRotation = 0f;
+        [DefaultValue(false)] public bool LineAddHitboxLengthX = false;
+        [DefaultValue(false)] public bool LineAddHitboxLengthY = false;
+        [DefaultValue(false)] public bool LineAddHitboxLengthZ = false;
+        [DefaultValue(false)] public bool Filled = false;
     }
 }

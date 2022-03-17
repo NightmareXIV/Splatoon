@@ -209,7 +209,7 @@ unsafe class Splatoon : IDalamudPlugin
                 {
                     if(ChatMessageQueue.TryDequeue(out var ccm))
                     {
-                        PluginLog.Debug("Dequeued message: " + ccm);
+                        PluginLog.Verbose("Dequeued message: " + ccm);
                         CurrentChatMessages.Add(ccm);
                     }
                     else
@@ -217,7 +217,7 @@ unsafe class Splatoon : IDalamudPlugin
                         break;
                     }
                 }
-                if (CurrentChatMessages.Count > 0) PluginLog.Debug($"Messages dequeued: {CurrentChatMessages.Count}");
+                if (CurrentChatMessages.Count > 0) PluginLog.Verbose($"Messages dequeued: {CurrentChatMessages.Count}");
                 var pl = Svc.ClientState.LocalPlayer;
                 if (Svc.ClientState.LocalPlayer.Address == IntPtr.Zero)
                 {
@@ -471,7 +471,7 @@ unsafe class Splatoon : IDalamudPlugin
                 }
                 else if (e.type == 3)
                 {
-                    AddRotatedLine(GetPlayerPositionXZY(), Svc.ClientState.LocalPlayer.Rotation, e, radius);
+                    AddRotatedLine(GetPlayerPositionXZY(), Svc.ClientState.LocalPlayer.Rotation, e, radius, 0f);
                     //Svc.Chat.Print(Svc.ClientState.LocalPlayer.Rotation.ToString());
                 }
             }
@@ -488,7 +488,7 @@ unsafe class Splatoon : IDalamudPlugin
                     }
                     else if(e.type == 3)
                     {
-                        AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), Svc.Targets.Target.Rotation, e, radius);
+                        AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), Svc.Targets.Target.Rotation, e, radius, Svc.Targets.Target.HitboxRadius);
                     }
 
                     if (e.tether)
@@ -522,7 +522,7 @@ unsafe class Splatoon : IDalamudPlugin
                             }
                             else if (e.type == 3)
                             {
-                                AddRotatedLine(a.GetPositionXZY(), a.Rotation, e, aradius);
+                                AddRotatedLine(a.GetPositionXZY(), a.Rotation, e, aradius, a.HitboxRadius);
                             }
                             if (e.tether)
                             {
@@ -569,7 +569,7 @@ unsafe class Splatoon : IDalamudPlugin
         {
             if (r > 0)
             {
-                displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color));
+                displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color, e.Filled));
             }
             else
             {
@@ -582,7 +582,7 @@ unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    void AddRotatedLine(Vector3 tPos, float angle, Element e, float aradius)
+    void AddRotatedLine(Vector3 tPos, float angle, Element e, float aradius, float hitboxRadius)
     {
         if (e.includeRotation)
         {
@@ -597,7 +597,7 @@ unsafe class Splatoon : IDalamudPlugin
                     -angle + e.AdditionalRotation, new Vector3(
                     tPos.X + -e.offX,
                     tPos.Y + e.offY,
-                    tPos.Z + e.offZ));
+                    tPos.Z + e.offZ) + new Vector3(e.LineAddHitboxLengthX ? hitboxRadius : 0f, e.LineAddHitboxLengthY ? hitboxRadius : 0f, e.LineAddHitboxLengthZ ? hitboxRadius : 0f));
                 displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
                     pointB.X, pointB.Y, pointB.Z,
                     e.thicc, e.color));
@@ -644,7 +644,7 @@ unsafe class Splatoon : IDalamudPlugin
             var pointB = new Vector3(
                 tPos.X + e.offX,
                 tPos.Y + e.offY,
-                tPos.Z + e.offZ);
+                tPos.Z + e.offZ) + new Vector3(e.LineAddHitboxLengthX ? hitboxRadius : 0f, e.LineAddHitboxLengthY ? hitboxRadius : 0f, e.LineAddHitboxLengthZ ? hitboxRadius : 0f);
             displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
                 pointB.X, pointB.Y, pointB.Z,
                 e.thicc, e.color));
