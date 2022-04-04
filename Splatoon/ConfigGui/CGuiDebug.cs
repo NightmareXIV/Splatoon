@@ -73,6 +73,9 @@ namespace Splatoon
             ImGui.SameLine();
             ImGui.SetCursorPosX(500f);
             ImGui.Text($"Visible");
+            ImGui.SameLine();
+            ImGui.SetCursorPosX(600f);
+            ImGui.Text($"Model ID");
             foreach (var a in Svc.Objects)
             {
                 Safe(delegate
@@ -89,7 +92,10 @@ namespace Splatoon
                     ImGui.Text($"{p.MemoryManager.GetIsTargetable((a is Character ch) ? ch : a)}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(500f);
-                    ImGui.Text($"{((a is Character chr)?p.MemoryManager.GetIsVisible(chr):"Not a char")}");
+                    ImGui.Text($"{((a is Character chr) ? p.MemoryManager.GetIsVisible(chr) : "Not a char")}");
+                    ImGui.SameLine();
+                    ImGui.SetCursorPosX(600f);
+                    ImGui.Text(a is Character chr2 ? $"{p.MemoryManager.GetModelId(chr2):X8}" : "Not a char");
                 });
             }
             ImGui.EndChild();

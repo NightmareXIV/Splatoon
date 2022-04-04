@@ -1,6 +1,7 @@
 ﻿using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Keys;
+using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal.Notifications;
@@ -41,6 +42,8 @@ unsafe class Splatoon : IDalamudPlugin
     internal Element Clipboard = null;
     internal static readonly float FloatPI = (float)Math.PI;
     internal int dequeueConcurrency = 1;
+    internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, ObjectKind type), ObjectInfo> loggedObjectList = new();
+    internal bool LogObjects = false;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -186,6 +189,25 @@ unsafe class Splatoon : IDalamudPlugin
         if (Profiler.Enabled) Profiler.MainTick.StartTick();
         try
         {
+            if (LogObjects)
+            {
+                foreach(var t in Svc.Objects)
+                {
+                    var ischar = t is Character;
+                    var obj = (t.Name.ToString(), t.ObjectId, t.DataId, ischar ? MemoryManager.GetModelId((Character)t) : 0, t.ObjectKind);
+                    loggedObjectList.TryAdd(obj, new ObjectInfo());
+                    loggedObjectList[obj].ExistenceTicks++;
+                    if (ischar)
+                    {
+                        if (MemoryManager.GetIsTargetable((Character)t)) loggedObjectList[obj].TargetableTicks++;
+                        if (MemoryManager.GetIsVisible((Character)t)) loggedObjectList[obj].VisibleTicks++;
+                    }
+                    else
+                    {
+                        if (MemoryManager.GetIsTargetable(t)) loggedObjectList[obj].TargetableTicks++;
+                    }
+                }
+            }
             if (Profiler.Enabled) Profiler.MainTickDequeue.StartTick();
             if (tickScheduler.TryDequeue(out var action))
             {

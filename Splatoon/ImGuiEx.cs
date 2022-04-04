@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using Dalamud.Interface.Internal.Notifications;
+using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,20 @@ namespace Splatoon
 {
     class ImGuiEx //came here to laugh on how scuffed it is? let's do so together.
     {
+
+        public static void TextCopy(string text)
+        {
+            ImGui.TextUnformatted(text);
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+            }
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+            {
+                ImGui.SetClipboardText(text);
+                Svc.PluginInterface.UiBuilder.AddNotification("Text copied to clipboard", "Splatoon", NotificationType.Success);
+            }
+        }
         public static void SizedText(string text, float width)
         {
             ImGui.PushStyleColor(ImGuiCol.Button, Colors.Transparent);

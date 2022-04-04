@@ -128,6 +128,12 @@ namespace Splatoon
                 {
                     ImGui.PopStyleColor();
                 }
+
+                if (ImGui.BeginTabItem("Object logger"))
+                {
+                    DisplayLogger();
+                    ImGui.EndTabItem();
+                }
                 if (ImGui.BeginTabItem("Debug"))
                 {
                     DisplayDebug();

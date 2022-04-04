@@ -73,5 +73,11 @@ namespace Splatoon
             if (v == IntPtr.Zero) return null;
             return Bitmask.IsBitSet(*(byte*)(v + 136), 0);
         }
+
+        public int GetModelId(Character a)
+        {
+            if (ErrorCode != 0) return -1;
+            return *(int*)(a.Address + 0x01B4);
+        }
     }
 }
