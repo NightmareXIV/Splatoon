@@ -197,14 +197,18 @@ unsafe class Splatoon : IDalamudPlugin
                     var obj = (t.Name.ToString(), t.ObjectId, t.DataId, ischar ? MemoryManager.GetModelId((Character)t) : 0, t.ObjectKind);
                     loggedObjectList.TryAdd(obj, new ObjectInfo());
                     loggedObjectList[obj].ExistenceTicks++;
+                    loggedObjectList[obj].IsChar = ischar;
                     if (ischar)
                     {
-                        if (MemoryManager.GetIsTargetable((Character)t)) loggedObjectList[obj].TargetableTicks++;
-                        if (MemoryManager.GetIsVisible((Character)t)) loggedObjectList[obj].VisibleTicks++;
+                        loggedObjectList[obj].Targetable = MemoryManager.GetIsTargetable((Character)t);
+                        loggedObjectList[obj].Visible = MemoryManager.GetIsVisible((Character)t);
+                        if (loggedObjectList[obj].Targetable) loggedObjectList[obj].TargetableTicks++;
+                        if (loggedObjectList[obj].Visible) loggedObjectList[obj].VisibleTicks++;
                     }
                     else
                     {
-                        if (MemoryManager.GetIsTargetable(t)) loggedObjectList[obj].TargetableTicks++;
+                        loggedObjectList[obj].Targetable = MemoryManager.GetIsTargetable(t);
+                        if (loggedObjectList[obj].Targetable) loggedObjectList[obj].TargetableTicks++;
                     }
                 }
             }

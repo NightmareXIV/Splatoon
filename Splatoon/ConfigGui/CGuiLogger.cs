@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dalamud.Interface.Colors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,13 +34,16 @@ namespace Splatoon
             ImGui.TableHeadersRow();
             foreach (var x in p.loggedObjectList)
             {
-                if(LoggerSearch != "")
+                var mid = !x.Value.IsChar ? "--" : $"{x.Key.ModelID:X4}";
+                var oid = x.Key.ObjectID == 0xE0000000 ? "--" : $"{x.Key.ObjectID:X8}";
+                var did = x.Key.DataID == 0 ? "--" : $"{x.Key.DataID:X8}";
+                if (LoggerSearch != "")
                 {
                     if (!x.Key.Name.ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
                         && !x.Key.type.ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
-                        && !$"{x.Key.ObjectID:X8}".ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
-                        && !$"{x.Key.DataID:X8}".ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
-                        && !$"{x.Key.ModelID:X4}".ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)) continue;
+                        && !oid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
+                        && !did.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
+                        && !mid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)) continue;
                 }
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
@@ -47,15 +51,19 @@ namespace Splatoon
                 ImGui.TableNextColumn();
                 ImGui.Text($"{x.Key.type}");
                 ImGui.TableNextColumn();
-                ImGuiEx.TextCopy($"{x.Key.ObjectID:X8}");
+                ImGuiEx.TextCopy(oid);
                 ImGui.TableNextColumn();
-                ImGuiEx.TextCopy($"{x.Key.DataID:X8}");
+                ImGuiEx.TextCopy(did);
                 ImGui.TableNextColumn();
-                ImGuiEx.TextCopy($"{x.Key.ModelID:X4}");
+                ImGuiEx.TextCopy(mid);
                 ImGui.TableNextColumn();
+                if (x.Value.Targetable) ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
                 ImGui.TextUnformatted($"{(int)(((double)x.Value.TargetableTicks / (double)x.Value.ExistenceTicks) * 100)}%");
+                if (x.Value.Targetable) ImGui.PopStyleColor();
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted($"{(int)(((double)x.Value.VisibleTicks / (double)x.Value.ExistenceTicks) * 100)}%");
+                if (x.Value.Visible) ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
+                ImGui.TextUnformatted(!x.Value.IsChar ? "--":$"{(int)(((double)x.Value.VisibleTicks / (double)x.Value.ExistenceTicks) * 100)}%");
+                if (x.Value.Visible) ImGui.PopStyleColor();
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{x.Value.ExistenceTicks}");
             }
