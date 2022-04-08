@@ -252,9 +252,8 @@ namespace Splatoon
                             {
                                 if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
                                 {
-                                    UnsetS2W();
                                     SetCursorTo(el.refX, el.refZ, el.refY);
-                                    el.screen2world = el.type == 0 ? 1 : 2;
+                                    p.BeginS2W(el, "refX", "refY", "refZ");
                                 }
                                 else
                                 {
@@ -353,9 +352,8 @@ namespace Splatoon
                         {
                             if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
                             {
-                                UnsetS2W();
                                 SetCursorTo(el.offX, el.offZ, el.offY);
-                                el.screen2world = 3;
+                                p.BeginS2W(el, "offX", "offY", "offZ");
                             }
                             else
                             {

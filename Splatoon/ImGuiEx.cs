@@ -9,8 +9,19 @@ using System.Threading.Tasks;
 
 namespace Splatoon
 {
-    class ImGuiEx //came here to laugh on how scuffed it is? let's do so together.
+    static class ImGuiEx //came here to laugh on how scuffed it is? let's do so together.
     {
+        public static void ImGuiInputHex(string name, ref uint hexInt)
+        {
+            var text = $"{hexInt:X}";
+            if(ImGui.InputText(name, ref text, 8))
+            {
+                if(uint.TryParse(text, NumberStyles.HexNumber, null, out var num))
+                {
+                    hexInt = num;
+                }
+            }
+        }
 
         public static void TextCopy(string text)
         {

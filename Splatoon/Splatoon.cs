@@ -27,7 +27,6 @@ unsafe class Splatoon : IDalamudPlugin
     //internal HashSet<(float x, float y, float z, float r, float angle)> draw = new HashSet<(float x, float y, float z, float r, float angle)>();
     internal float CamAngleY;
     internal float CamZoom = 1.5f;
-    internal bool S2WActive = false;
     internal bool prevMouseState = false;
     internal string SFind = null;
     internal int CurrentLineSegments;
@@ -336,6 +335,8 @@ unsafe class Splatoon : IDalamudPlugin
                     ProcessElement(findEl);
                 }
 
+                ProcessS2W();
+
                 if (Profiler.Enabled)
                 {
                     Profiler.MainTickFind.StopTick();
@@ -427,48 +428,47 @@ unsafe class Splatoon : IDalamudPlugin
         return LookupResultCache[(a.Address, objectID, hash)];*/
     }
 
-    internal void ProcessElement(Element e, Layout i = null)
+
+    internal S2WInfo s2wInfo;
+
+    internal void BeginS2W(object cls, string x, string y, string z)
     {
-        if (!e.Enabled) return;
-        if (e.screen2world != 0)
+        s2wInfo = new(cls, x, y, z);
+    }
+
+    internal void ProcessS2W()
+    {
+        if (s2wInfo != null)
         {
             var lmbdown = Bitmask.IsBitSet(Native.GetKeyState(0x01), 15);
-            S2WActive = true;
             //1: editing absolute point 
             //2: editing main point
             //3: editing secondary point
             var mousePos = ImGui.GetIO().MousePos;
             if (Svc.GameGui.ScreenToWorld(new Vector2(mousePos.X, mousePos.Y), out var worldPos, Config.maxdistance * 5))
             {
-                if (e.screen2world == 1 || e.screen2world == 2)
-                {
-                    e.refX = worldPos.X;
-                    e.refY = worldPos.Z;
-                    e.refZ = worldPos.Y;
-                }
-                else if (e.screen2world == 3)
-                {
-                    e.offX = worldPos.X;
-                    e.offY = worldPos.Z;
-                    e.offZ = worldPos.Y;
-                }
+                s2wInfo.Apply(worldPos.X, worldPos.Z, worldPos.Y);
             }
             if (!lmbdown && prevMouseState)
             {
-                e.screen2world = 0;
-                S2WActive = false;
+                s2wInfo = null;
             }
             prevMouseState = lmbdown;
-            if (Environment.TickCount64 % 500 < 250)
+            if (Environment.TickCount64 % 500 < 250 && s2wInfo != null)
             {
-                var x = e.screen2world == 3 ? e.offX : e.refX;
-                var y = e.screen2world == 3 ? e.offY : e.refY;
-                var z = e.screen2world == 3 ? e.offZ : e.refZ;
+                var coords = s2wInfo.GetValues();
+                var x = coords.x;
+                var y = coords.y;
+                var z = coords.z;
                 displayObjects.Add(new DisplayObjectLine(x + 2f, y + 2f, z, x - 2f, y - 2f, z, 2f, Colors.Red));
                 displayObjects.Add(new DisplayObjectLine(x - 2f, y + 2f, z, x + 2f, y - 2f, z, 2f, Colors.Red));
             }
         }
-        
+    }
+
+    internal void ProcessElement(Element e, Layout i = null)
+    {
+        if (!e.Enabled) return;
         float radius = e.radius;
         if (e.type == 0)
         {

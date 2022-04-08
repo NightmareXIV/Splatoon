@@ -44,43 +44,16 @@ namespace Splatoon
             Svc.PluginInterface.UiBuilder.Draw -= Draw;
         }
 
-        void UnsetS2W()
-        {
-            foreach (var l in p.Config.Layouts.Values)
-            {
-                foreach (var e in l.Elements.Values)
-                {
-                    e.screen2world = 0;
-                }
-            }
-            p.S2WActive = false;
-        }
-
         [HandleProcessCorruptedStateExceptions]
         void Draw()
         {
-            if (p.S2WActive)
-            {
-                foreach (var l in p.Config.Layouts.Values)
-                {
-                    foreach (var e in l.Elements.Values)
-                    {
-                        if(e.screen2world != 0 && (!e.Enabled || !p.IsLayoutVisible(l)))
-                        {
-                            UnsetS2W();
-                            break;
-                        }
-                    }
-                }
-            }
-            if (p.S2WActive) return;
+            if (p.s2wInfo != null) return;
             if (!Open) 
             { 
                 if(WasOpen)
                 {
                     p.Config.Save();
                     WasOpen = false;
-                    UnsetS2W();
                     Notify("Configuration saved", NotificationType.Success);
                     if(p.Config.verboselog) p.Log("Configuration saved");
                 }
@@ -92,7 +65,7 @@ namespace Splatoon
                 {
                     p.Config.Backup();
                 }
-                if(!p.S2WActive && Svc.PluginInterface.UiBuilder.FrameCount % 600 == 0)
+                if(p.s2wInfo == null && Svc.PluginInterface.UiBuilder.FrameCount % 600 == 0)
                 {
                     p.Config.Save();
                     p.Log("Configuration autosaved");
