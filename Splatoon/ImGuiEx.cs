@@ -11,7 +11,7 @@ namespace Splatoon
 {
     static class ImGuiEx //came here to laugh on how scuffed it is? let's do so together.
     {
-        public static void ImGuiInputHex(string name, ref uint hexInt)
+        public static void InputHex(string name, ref uint hexInt)
         {
             var text = $"{hexInt:X}";
             if(ImGui.InputText(name, ref text, 8))
@@ -98,6 +98,14 @@ namespace Splatoon
                 ImGui.SetCursorPos(upperTextCursor);
             }
             cursorPosX = upperTextCursor.X;
+        }
+
+        static public void EnumCombo<T>(string name, ref T refConfigField, string[] overrideNames = null) where T : IConvertible
+        {
+            var values = overrideNames ?? Enum.GetValues(typeof(T)).Cast<T>().Select(x => x.ToString().Replace("_", " ")).ToArray();
+            var num = Convert.ToInt32(refConfigField);
+            ImGui.Combo(name, ref num, values, values.Length);
+            refConfigField = Enum.GetValues(typeof(T)).Cast<T>().ToArray()[num];
         }
     }
 }

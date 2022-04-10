@@ -74,7 +74,7 @@ namespace Splatoon
 
         public int GetModelId(Character a)
         {
-            if (ErrorCode != 0) return -1;
+            if (ErrorCode != 0) return 0;
             return *(int*)(a.Address + 0x01B4);
         }
     }

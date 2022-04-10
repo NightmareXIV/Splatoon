@@ -527,13 +527,13 @@ unsafe class Splatoon : IDalamudPlugin
                     }
                 }
             }
-            else if (e.refActorType == 0 && e.refActorName.Length > 0)
+            else if (e.refActorType == 0)
             {
                 if (Profiler.Enabled) Profiler.MainTickActorTableScan.StartTick();
                 foreach (var a in Svc.Objects)
                 {
                     var targetable = MemoryManager.GetIsTargetable(a);
-                    if ((e.refActorName == "*" || IsNameContainsValue(a, e.refActorName))
+                    if (IsAttributeMatches(e, a)
                             && (!e.onlyTargetable || targetable)
                             && (!e.onlyUnTargetable || !targetable)
                             && (!e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr))))
@@ -578,6 +578,15 @@ unsafe class Splatoon : IDalamudPlugin
                 )
                 displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
         }
+    }
+
+    bool IsAttributeMatches(Element e, GameObject o)
+    {
+        if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorName) && (e.refActorName == "*" || IsNameContainsValue(o, e.refActorName))) return true;
+        if (e.refActorComparisonType == 1 && o is Character c && MemoryManager.GetModelId(c) == e.refActorModelID) return true;
+        if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
+        if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
+        return false;
     }
 
     void draw(Element e, float x, float y, float z, float r, float angle)

@@ -150,7 +150,7 @@ namespace Splatoon
                             if (angleDegrees < 0f || angleDegrees > 360f) angleDegrees = 0f;
                             el.AdditionalRotation = angleDegrees.DegreesToRadians();
                         }
-                        ImGuiEx.SizedText("Targeted actor: ", WidthElement);
+                        ImGuiEx.SizedText("Targeted object: ", WidthElement);
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);
                         ImGui.Combo("##actortype" + i + k, ref el.refActorType, Element.ActorTypes, Element.ActorTypes.Length);
@@ -164,16 +164,34 @@ namespace Splatoon
                             if (ImGui.IsItemHovered())
                             {
                                 ImGui.SetTooltip("This command allows you to quickly change\n" +
-                                    "search name to your active target's name.\n" +
+                                    "search attributes to your active target's name.\n" +
                                     "You can use it with macro.");
                             }
-                            ImGuiEx.SizedText("", WidthElement);
+                            ImGuiEx.SizedText("Compare attribute: ", WidthElement);
                             ImGui.SameLine();
-                            ImGui.SetNextItemWidth(WidthCombo);
-                            ImGui.InputTextWithHint("##actorname" + i + k, "Case-insensitive (partial) name", ref el.refActorName, 100);
+                            ImGui.SetNextItemWidth(100f);
+                            ImGuiEx.EnumCombo($"##attrSelect{i + k}", ref el.refActorComparisonType);
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+                            if (el.refActorComparisonType == 0)
+                            {
+                                ImGui.InputText("##actorname" + i + k, ref el.refActorName, 100);
+                            }
+                            else if (el.refActorComparisonType == 1)
+                            {
+                                ImGuiEx.InputHex("##actormid" + i + k, ref el.refActorModelID);
+                            }
+                            else if (el.refActorComparisonType == 2)
+                            {
+                                ImGuiEx.InputHex("##actoroid" + i + k, ref el.refActorObjectID);
+                            }
+                            else if (el.refActorComparisonType == 3)
+                            {
+                                ImGuiEx.InputHex("##actordid" + i + k, ref el.refActorDataID);
+                            }
                             if (ImGui.IsItemHovered())
                             {
-                                ImGui.SetTooltip("Keep in mind that searching actor by name is\n" +
+                                ImGui.SetTooltip("Keep in mind that searching object is\n" +
                                     "relatively resource expensive operation. \n" +
                                     "Try to keep amount of these down to reasonable number.");
                             }

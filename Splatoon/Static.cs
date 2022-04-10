@@ -36,17 +36,17 @@ namespace Splatoon
 
         public static bool EqualsIgnoreCase(this string a, string b)
         {
-            return a.Equals(b, StringComparison.InvariantCultureIgnoreCase);
+            return a.Equals(b, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool StartsWithIgnoreCase(this string a, string b)
         {
-            return a.StartsWith(b, StringComparison.InvariantCultureIgnoreCase);
+            return a.StartsWith(b, StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool ContainsIgnoreCase(this string a, string b)
         {
-            return a.Contains(b, StringComparison.InvariantCultureIgnoreCase);
+            return a.Contains(b, StringComparison.OrdinalIgnoreCase);
         }
 
         public static string Compress(this string s)

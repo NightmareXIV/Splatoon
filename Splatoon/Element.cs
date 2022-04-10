@@ -13,6 +13,7 @@ namespace Splatoon
         [NonSerialized] public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
         "Line between two fixed coordinates", "Line relative to object position"};
         [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
+        [NonSerialized] public static string[] ComparisonTypes = { "Name", "Model ID", "Object ID", "Data ID" };
         //[NonSerialized] public int screen2world = 0;
         /// <summary>
         /// 0: Object at fixed coordinates |
@@ -42,7 +43,13 @@ namespace Splatoon
         [DefaultValue(0)] public uint refActorModelID = 0;
         [DefaultValue(0)] public uint refActorObjectID = 0;
         [DefaultValue(0)] public uint refActorDataID = 0;
-        [DefaultValue(ObjectDataType.Name)] public ObjectDataType refActorComparisonType = ObjectDataType.Name;
+        /// <summary>
+        /// 0: Name |
+        /// 1: Model ID |
+        /// 2: Object ID |
+        /// 3: Data ID
+        /// </summary>
+        [DefaultValue(0)] public int refActorComparisonType = 0;
         /// <summary>
         /// 0: Game object with specific name |
         /// 1: Self |
