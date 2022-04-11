@@ -128,10 +128,18 @@ namespace Splatoon
                         }
                         if (p.Config.Layouts.ContainsKey(i))
                         {
-                            LayoutDrawHeader(i);
-                            foreach (var k in p.Config.Layouts[i].Elements.Keys.ToArray())
+                            try
                             {
-                                LayoutDrawElement(i, k);
+                                LayoutDrawHeader(i);
+                                foreach (var k in p.Config.Layouts[i].Elements.Keys.ToArray())
+                                {
+                                    LayoutDrawElement(i, k);
+                                }
+                            }
+                            catch(Exception e)
+                            {
+                                ImGui.Text("Error");
+                                PluginLog.Error($"Error: {e.Message}\n{e.StackTrace}");
                             }
                         }
                     }

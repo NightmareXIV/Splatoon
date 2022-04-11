@@ -441,9 +441,6 @@ unsafe class Splatoon : IDalamudPlugin
         if (s2wInfo != null)
         {
             var lmbdown = Bitmask.IsBitSet(Native.GetKeyState(0x01), 15);
-            //1: editing absolute point 
-            //2: editing main point
-            //3: editing secondary point
             var mousePos = ImGui.GetIO().MousePos;
             if (Svc.GameGui.ScreenToWorld(new Vector2(mousePos.X, mousePos.Y), out var worldPos, Config.maxdistance * 5))
             {
@@ -577,6 +574,24 @@ unsafe class Splatoon : IDalamudPlugin
                 )
                 )
                 displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
+        }
+        else if(e.type == 4)
+        {
+            if (!e.Filled)
+            {
+                displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.refX, e.offY, e.refZ, e.thicc, e.color));
+                displayObjects.Add(new DisplayObjectLine(e.refX, e.offY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
+                displayObjects.Add(new DisplayObjectLine(e.offX, e.offY, e.offZ, e.offX, e.refY, e.offZ, e.thicc, e.color));
+                displayObjects.Add(new DisplayObjectLine(e.offX, e.refY, e.offZ, e.refX, e.refY, e.refZ, e.thicc, e.color));
+            }
+            else
+            {
+                displayObjects.Add(new DisplayObjectRect()
+                {
+                    l1 = new DisplayObjectLine(e.refX, e.refY, e.refZ, e.refX, e.offY, e.refZ, e.thicc, e.color),
+                    l2 = new DisplayObjectLine(e.offX, e.refY, e.offZ, e.offX, e.offY, e.offZ, e.thicc, e.color)
+                });
+            }
         }
     }
 

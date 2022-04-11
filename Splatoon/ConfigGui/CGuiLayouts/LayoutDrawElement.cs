@@ -45,17 +45,17 @@ namespace Splatoon
                     {
                         HTTPExportToClipboard(el);
                     }
-                    ImGui.SameLine();
-                    if (ImGui.Button("Copy to clipboard##" + i + k))
-                    {
-                        ImGui.SetClipboardText(JsonConvert.SerializeObject(el));
-                        Notify("Copied to clipboard", NotificationType.Success);
-                    }
-
                     if (ImGui.IsItemHovered())
                     {
                         ImGui.SetTooltip("Hold ALT to copy raw JSON (for usage with post body or you'll have to urlencode it yourself)\nHold CTRL and click to copy urlencoded raw");
                     }
+                    ImGui.SameLine();
+                    if (ImGui.Button("Copy to clipboard##" + i + k))
+                    {
+                        ImGui.SetClipboardText(JsonConvert.SerializeObject(el, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+                        Notify("Copied to clipboard", NotificationType.Success);
+                    }
+
                     ImGui.SameLine();
                     if (ImGui.Button("Copy style##" + i + k))
                     {
@@ -170,7 +170,7 @@ namespace Splatoon
                             ImGuiEx.SizedText("Compare attribute: ", WidthElement);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(100f);
-                            ImGuiEx.EnumCombo($"##attrSelect{i + k}", ref el.refActorComparisonType);
+                            ImGui.Combo($"##attrSelect{i + k}", ref el.refActorComparisonType, Element.ComparisonTypes, Element.ComparisonTypes.Length);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                             if (el.refActorComparisonType == 0)
@@ -205,7 +205,7 @@ namespace Splatoon
                             ImGui.Text("Targetability: ");
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(100f);
-                            if(ImGui.BeginCombo($"##TargetabilityCombo{i+k}", el.onlyTargetable ? "Targetable" : (el.onlyUnTargetable ? "Untargetable" : "Any")))
+                            if (ImGui.BeginCombo($"##TargetabilityCombo{i + k}", el.onlyTargetable ? "Targetable" : (el.onlyUnTargetable ? "Untargetable" : "Any")))
                             {
                                 if (ImGui.Selectable("Any"))
                                 {
@@ -233,9 +233,9 @@ namespace Splatoon
                         }
                     }
 
-                    if (el.type == 0 || el.type == 2 || el.type == 3)
+                    if (el.type == 0 || el.type == 2 || el.type == 3 || el.type == 4)
                     {
-                        ImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point A" : "Reference position: ", WidthElement);
+                        ImGuiEx.SizedText((el.type == 2 || el.type == 3 || el.type == 4) ? "Point A" : "Reference position: ", WidthElement);
                         ImGui.SameLine();
                         ImGui.PushItemWidth(60f);
                         ImGui.TextUnformatted("X:");
@@ -268,7 +268,7 @@ namespace Splatoon
                             ImGui.SameLine();
                             if (ImGui.Button("Screen2World##s2w1" + i + k))
                             {
-                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
+                                if (p.IsLayoutVisible(p.Config.Layouts[i]) && el.Enabled)
                                 {
                                     SetCursorTo(el.refX, el.refZ, el.refY);
                                     p.BeginS2W(el, "refX", "refY", "refZ");
@@ -286,7 +286,7 @@ namespace Splatoon
                             ImGui.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.type == 1 ? 0 : el.refX, el.type == 1 ? 0 : el.refY, el.offX, el.offY)));
                         }
 
-                        if ((el.type == 1 || el.type == 3) && el.refActorType != 1)
+                        if ((el.type == 3) && el.refActorType != 1)
                         {
                             ImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
@@ -309,8 +309,7 @@ namespace Splatoon
                         ImGui.PopItemWidth();
                     }
 
-
-                    ImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point B" : "Offset: ", WidthElement);
+                    ImGuiEx.SizedText((el.type == 2 || el.type == 3 || el.type == 4) ? "Point B" : "Offset: ", WidthElement);
                     ImGui.SameLine();
                     ImGui.PushItemWidth(60f);
                     ImGui.TextUnformatted("X:");
@@ -331,7 +330,7 @@ namespace Splatoon
                         el.offY = 0;
                         el.offZ = 0;
                     }
-                    if (el.type == 2)
+                    if (el.type == 2 || el.type == 4)
                     {
                         ImGui.SameLine();
                         if (ImGui.Button("My position##off" + i + k))
@@ -341,7 +340,7 @@ namespace Splatoon
                             el.offZ = GetPlayerPositionXZY().Z;
                         }
                     }
-                    if ((el.type == 1 || el.type == 3) && el.refActorType != 1)
+                    if ((el.type == 3) && el.refActorType != 1)
                     {
                         ImGuiEx.SizedText("", WidthElement);
                         ImGui.SameLine();
@@ -363,7 +362,7 @@ namespace Splatoon
                     }
                     //ImGui.SameLine();
                     //ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);
-                    if (el.type == 2)
+                    if (el.type == 2 || el.type == 4)
                     {
                         ImGui.SameLine();
                         if (ImGui.Button("Screen2World##s2w2" + i + k))
@@ -384,10 +383,10 @@ namespace Splatoon
                     ImGui.SameLine();
                     ImGui.DragFloat("##thicc" + i + k, ref el.thicc, 0.1f, 0f, float.MaxValue);
                     ImGui.PopItemWidth();
-                    if (el.type == 0 || el.type == 1)
+                    if (el.type == 0 || el.type == 1 || el.type == 4)
                     {
-                        if (el.Filled && ImGui.IsItemHovered()) ImGui.SetTooltip("This value is only for tether if circle is set to be filled");
-                         if(el.Filled && el.thicc == 0) el.thicc = float.Epsilon;
+                        if (el.Filled && ImGui.IsItemHovered()) ImGui.SetTooltip("This value is only for tether if object is set to be filled");
+                        if (el.Filled && el.thicc == 0) el.thicc = float.Epsilon;
                     }
                     if (el.thicc > 0)
                     {
@@ -398,7 +397,7 @@ namespace Splatoon
                             el.color = ImGui.ColorConvertFloat4ToU32(v4);
                         }
                         ImGui.PopItemWidth();
-                        if (el.type == 0 || el.type == 1)
+                        if (el.type == 0 || el.type == 1 || el.type == 4)
                         {
                             ImGui.SameLine();
                             ImGui.Checkbox($"Filled", ref el.Filled);

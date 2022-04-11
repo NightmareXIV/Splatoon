@@ -79,6 +79,18 @@ namespace Splatoon
         public DisplayObjectLine l2;
     }
 
+    internal class DisplayObjectQuad : DisplayObject
+    {
+        public Point3[] rect;
+        public uint bgcolor;
+
+        public DisplayObjectQuad(Point3[] rect, uint bgcolor)
+        {
+            this.rect = rect;
+            this.bgcolor = bgcolor;
+        }
+    }
+
     internal interface DisplayObject { }
 
 }
