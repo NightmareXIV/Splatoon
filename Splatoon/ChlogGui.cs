@@ -12,7 +12,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 33;
+        public const int ChlogVersion = 34;
         readonly Splatoon p;
         bool open = true;
         bool understood = false;
@@ -33,9 +33,16 @@ namespace Splatoon
             if (!Svc.ClientState.IsLoggedIn) return;
             ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.TextUnformatted(
-@"- Added possibility to include target's hitbox value for point B of any lines that are relative to target.
-   Most of the times you will want to add only Y value, however, X and Z can be added as well.
-- Added possibility for circles to be filled. ");
+@"- Support for new display object: rectangle (beta-testing).
+   Please note that filled rectangles can behave weirdly or completely disappear
+   when being partially outside of the screen.
+   Same is for lines with radius.
+   This is a bug and it can not be resolved at this time.
+
+- Added support for new object search types: model id, object id and data id, in addition to name. 
+- Added object logger which will log all objects that your client have seen to
+   help you to figure out model/object/data IDs.
+- Reduced dependency on direct memory signatures, allowing plugin to break with less chance on updates.");
             if (ImGui.Button("Close this window"))
             {
                 open = false;
