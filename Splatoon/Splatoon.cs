@@ -577,7 +577,10 @@ unsafe class Splatoon : IDalamudPlugin
         }
         else if(e.type == 4)
         {
-            
+            if (e.Polygon.Count > 2)
+            {
+                displayObjects.Add(new DisplayObjectPolygon(e));
+            }
         }
     }
 

@@ -67,6 +67,10 @@ namespace Splatoon
                             {
                                 DrawRectWorld(elementRect);
                             }
+                            else if(element is DisplayObjectPolygon elementPolygon)
+                            {
+                                DrawPolygon(elementPolygon);
+                            }
                         }
                         ImGui.End();
                         ImGui.PopStyleVar();
@@ -234,6 +238,27 @@ namespace Splatoon
                 e.thickness,
                 ImGui.GetColorU32(e.color),
                 100);
+        }
+
+        void DrawPolygon(DisplayObjectPolygon p)
+        {
+            foreach (var c in Static.GetPolygon(p.e.Polygon.Select((x) =>
+            {
+                Svc.GameGui.WorldToScreen(new Vector3(x.X, x.Z, x.Y), out Vector2 pos);
+                return pos;
+            }).ToList()))
+            {
+                ImGui.GetWindowDrawList().PathLineTo(c);
+            }
+
+            if (p.e.Filled)
+            {
+                ImGui.GetWindowDrawList().PathFillConvex(p.e.color);
+            }
+            else
+            {
+                ImGui.GetWindowDrawList().PathStroke(p.e.color, ImDrawFlags.Closed, p.e.thicc);
+            }
         }
     }
 }

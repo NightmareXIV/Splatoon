@@ -91,6 +91,15 @@ namespace Splatoon
         }
     }
 
+    internal class DisplayObjectPolygon : DisplayObject
+    {
+        public Element e;
+        public DisplayObjectPolygon(Element e)
+        {
+            this.e = e;
+        }
+    }
+
     internal interface DisplayObject { }
 
 }

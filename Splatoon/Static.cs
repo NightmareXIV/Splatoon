@@ -140,8 +140,26 @@ namespace Splatoon
         }
         public static float AngleBetweenVectors(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
-            return (float)Math.Acos(((x2 - x1) * (x4 - x3) + (y2 - y1) * (y4 - y3)) /
-                (Math.Sqrt(Square(x2 - x1) + Square(y2 - y1)) * Math.Sqrt(Square(x4 - x3) + Square(y4 - y3))));
+            return MathF.Acos(((x2 - x1) * (x4 - x3) + (y2 - y1) * (y4 - y3)) /
+                (MathF.Sqrt(Square(x2 - x1) + Square(y2 - y1)) * MathF.Sqrt(Square(x4 - x3) + Square(y4 - y3))));
+        }
+
+        public static IEnumerable<Vector2> GetPolygon(List<Vector2> coords)
+        {
+            var medium = new Vector2(coords.Average(x => x.X), coords.Average(x => x.Y));
+            var array = coords.GetRange(1, coords.Count-1).ToArray();
+            BubbleSort(array, delegate (Vector2 a, Vector2 b)
+            {
+                var angleA = AngleBetweenVectors(medium.X, medium.Y, coords[0].X, coords[0].Y, medium.X, medium.Y, a.X, a.Y);
+                var angleB = AngleBetweenVectors(medium.X, medium.Y, coords[0].X, coords[0].Y, medium.X, medium.Y, b.X, b.Y);
+                if(float.IsNaN(angleA) || float.IsNaN(angleB) || angleA == angleB)
+                {
+                    return Vector2.Distance(medium, a) > Vector2.Distance(medium, b);
+                }
+                return angleA > angleB;
+            });
+            yield return coords[0];
+            foreach (var x in array) yield return x;
         }
 
         public static float Square(float x)
@@ -212,6 +230,27 @@ namespace Splatoon
         {
             if (b == null) return "null";
             return b.Value.ToString();
+        }
+
+        public static void BubbleSort(Vector2[] v2array, Func<Vector2, Vector2, bool> Comparer)
+        {
+            Vector2 temp;
+            int count = v2array.Length;
+            for (int outer = 1; outer <= count; outer++)
+            {
+                for (int inner = 0; inner < outer - 1; inner++)
+                {
+                    Vector2 first = v2array[inner];
+                    Vector2 second = v2array[inner + 1];
+
+                    if (Comparer(first, second))
+                    {
+                        temp = v2array[inner];
+                        v2array[inner] = v2array[inner + 1];
+                        v2array[inner + 1] = temp;
+                    }
+                }
+            }
         }
     }
 }
