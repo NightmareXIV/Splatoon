@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface.Internal.Notifications;
+﻿using Dalamud.Interface.Colors;
+using Dalamud.Interface.Internal.Notifications;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -133,22 +134,41 @@ namespace Splatoon
                             el.radius = 0;
                         }
                     }
+                    if(el.type == 4)
+                    {
+                        ImGui.SameLine();
+                        if(ImGui.Button("Add point"))
+                        {
+                            el.Polygon.Add(Static.GetPlayerPositionXZY().ToPoint3());
+                        }
+                        if(el.Polygon.Count < 3)
+                        {
+                            ImGui.TextColored(ImGuiColors.DalamudRed, "At least 3 points must be present");
+                        }
+                        var toRem = -1;
+                        for(var x = 0;x<el.Polygon.Count;x++)
+                        {
+                            var d = el.Polygon[x];
+                            DrawVector3Selector($"polygon{i + k + x}", d, p.Config.Layouts[i], el, false);
+                            ImGui.SameLine();
+                            if (ImGui.Button($"X##{i + k + x}") && ImGui.GetIO().KeyCtrl)
+                            {
+                                toRem = x;
+                            }
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold CTRL + click to delete");
+                        }
+                        if(toRem != -1)
+                        {
+                            el.Polygon.RemoveAt(toRem);
+                        }
+                    }
                     if (el.type == 1 || el.type == 3)
                     {
                         ImGui.SameLine();
                         ImGui.Checkbox("Account for rotation##rota" + i + k, ref el.includeRotation);
                         if (el.includeRotation)
                         {
-                            ImGui.SameLine();
-                            ImGui.Text("Add angle:");
-                            ImGui.SameLine();
-                            var angleDegrees = el.AdditionalRotation.RadiansToDegrees();
-                            ImGui.SameLine();
-                            ImGui.SetNextItemWidth(50f);
-                            ImGui.DragFloat("##ExtraAngle" + i + k, ref angleDegrees, 0.1f, 0f, 360f);
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold shift for faster changing;\ndouble-click to enter manually.");
-                            if (angleDegrees < 0f || angleDegrees > 360f) angleDegrees = 0f;
-                            el.AdditionalRotation = angleDegrees.DegreesToRadians();
+                            DrawRotationSelector(el, i, k);
                         }
                         ImGuiEx.SizedText("Targeted object: ", WidthElement);
                         ImGui.SameLine();
@@ -233,21 +253,23 @@ namespace Splatoon
                         }
                     }
 
-                    if (el.type == 0 || el.type == 2 || el.type == 3 || el.type == 4)
+                    if (el.type == 0 || el.type == 2 || el.type == 3)
                     {
-                        ImGuiEx.SizedText((el.type == 2 || el.type == 3 || el.type == 4) ? "Point A" : "Reference position: ", WidthElement);
+                        ImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point A" : "Reference position: ", WidthElement);
                         ImGui.SameLine();
-                        ImGui.PushItemWidth(60f);
                         ImGui.TextUnformatted("X:");
                         ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##refx" + i + k, ref el.refX, 0.02f, float.MinValue, float.MaxValue);
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Y:");
                         ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##refy" + i + k, ref el.refY, 0.02f, float.MinValue, float.MaxValue);
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Z:");
                         ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##refz" + i + k, ref el.refZ, 0.02f, float.MinValue, float.MaxValue);
                         ImGui.SameLine();
                         if (ImGui.Button("0 0 0##ref" + i + k))
@@ -306,63 +328,68 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGui.Checkbox($"##lineTHitboxZa{i + k}", ref el.LineAddHitboxLengthZA);
                         }
-                        ImGui.PopItemWidth();
                     }
 
-                    ImGuiEx.SizedText((el.type == 2 || el.type == 3 || el.type == 4) ? "Point B" : "Offset: ", WidthElement);
-                    ImGui.SameLine();
-                    ImGui.PushItemWidth(60f);
-                    ImGui.TextUnformatted("X:");
-                    ImGui.SameLine();
-                    ImGui.DragFloat("##offx" + i + k, ref el.offX, 0.02f, float.MinValue, float.MaxValue);
-                    ImGui.SameLine();
-                    ImGui.TextUnformatted("Y:");
-                    ImGui.SameLine();
-                    ImGui.DragFloat("##offy" + i + k, ref el.offY, 0.02f, float.MinValue, float.MaxValue);
-                    ImGui.SameLine();
-                    ImGui.TextUnformatted("Z:");
-                    ImGui.SameLine();
-                    ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
-                    ImGui.SameLine();
-                    if (ImGui.Button("0 0 0##off" + i + k))
+                    if (el.type != 4)
                     {
-                        el.offX = 0;
-                        el.offY = 0;
-                        el.offZ = 0;
-                    }
-                    if (el.type == 2 || el.type == 4)
-                    {
+
+                        ImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point B" : "Offset: ", WidthElement);
                         ImGui.SameLine();
-                        if (ImGui.Button("My position##off" + i + k))
+                        ImGui.TextUnformatted("X:");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##offx" + i + k, ref el.offX, 0.02f, float.MinValue, float.MaxValue);
+                        ImGui.SameLine();
+                        ImGui.TextUnformatted("Y:");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##offy" + i + k, ref el.offY, 0.02f, float.MinValue, float.MaxValue);
+                        ImGui.SameLine();
+                        ImGui.TextUnformatted("Z:");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
+                        ImGui.SameLine();
+                        if (ImGui.Button("0 0 0##off" + i + k))
                         {
-                            el.offX = GetPlayerPositionXZY().X;
-                            el.offY = GetPlayerPositionXZY().Y;
-                            el.offZ = GetPlayerPositionXZY().Z;
+                            el.offX = 0;
+                            el.offY = 0;
+                            el.offZ = 0;
                         }
-                    }
-                    if ((el.type == 3) && el.refActorType != 1)
-                    {
-                        ImGuiEx.SizedText("", WidthElement);
-                        ImGui.SameLine();
-                        ImGui.Text("+my hitbox (XYZ):");
-                        ImGui.SameLine();
-                        ImGui.Checkbox($"##lineTHitboxXm{i + k}", ref el.LineAddPlayerHitboxLengthX);
-                        ImGui.SameLine();
-                        ImGui.Checkbox($"##lineTHitboxYm{i + k}", ref el.LineAddPlayerHitboxLengthY);
-                        ImGui.SameLine();
-                        ImGui.Checkbox($"##lineTHitboxZm{i + k}", ref el.LineAddPlayerHitboxLengthZ);
-                        ImGui.SameLine();
-                        ImGui.Text("+target hitbox (XYZ):");
-                        ImGui.SameLine();
-                        ImGui.Checkbox($"##lineTHitboxX{i + k}", ref el.LineAddHitboxLengthX);
-                        ImGui.SameLine();
-                        ImGui.Checkbox($"##lineTHitboxY{i + k}", ref el.LineAddHitboxLengthY);
-                        ImGui.SameLine();
-                        ImGui.Checkbox($"##lineTHitboxZ{i + k}", ref el.LineAddHitboxLengthZ);
+                        if (el.type == 2)
+                        {
+                            ImGui.SameLine();
+                            if (ImGui.Button("My position##off" + i + k))
+                            {
+                                el.offX = GetPlayerPositionXZY().X;
+                                el.offY = GetPlayerPositionXZY().Y;
+                                el.offZ = GetPlayerPositionXZY().Z;
+                            }
+                        }
+                        if ((el.type == 3) && el.refActorType != 1)
+                        {
+                            ImGuiEx.SizedText("", WidthElement);
+                            ImGui.SameLine();
+                            ImGui.Text("+my hitbox (XYZ):");
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxXm{i + k}", ref el.LineAddPlayerHitboxLengthX);
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxYm{i + k}", ref el.LineAddPlayerHitboxLengthY);
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxZm{i + k}", ref el.LineAddPlayerHitboxLengthZ);
+                            ImGui.SameLine();
+                            ImGui.Text("+target hitbox (XYZ):");
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxX{i + k}", ref el.LineAddHitboxLengthX);
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxY{i + k}", ref el.LineAddHitboxLengthY);
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"##lineTHitboxZ{i + k}", ref el.LineAddHitboxLengthZ);
+                        }
                     }
                     //ImGui.SameLine();
                     //ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);
-                    if (el.type == 2 || el.type == 4)
+                    if (el.type == 2)
                     {
                         ImGui.SameLine();
                         if (ImGui.Button("Screen2World##s2w2" + i + k))
@@ -381,8 +408,8 @@ namespace Splatoon
 
                     ImGuiEx.SizedText("Line thickness:", WidthElement);
                     ImGui.SameLine();
+                    ImGui.SetNextItemWidth(60f);
                     ImGui.DragFloat("##thicc" + i + k, ref el.thicc, 0.1f, 0f, float.MaxValue);
-                    ImGui.PopItemWidth();
                     if (el.type == 0 || el.type == 1 || el.type == 4)
                     {
                         if (el.Filled && ImGui.IsItemHovered()) ImGui.SetTooltip("This value is only for tether if object is set to be filled");
@@ -396,7 +423,6 @@ namespace Splatoon
                         {
                             el.color = ImGui.ColorConvertFloat4ToU32(v4);
                         }
-                        ImGui.PopItemWidth();
                         if (el.type == 0 || el.type == 1 || el.type == 4)
                         {
                             ImGui.SameLine();
@@ -471,7 +497,6 @@ namespace Splatoon
                         {
                             el.overlayBGColor = ImGui.ColorConvertFloat4ToU32(v4b);
                         }
-                        ImGui.PopItemWidth();
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Text color:");
                         ImGui.SameLine();
@@ -480,7 +505,6 @@ namespace Splatoon
                         {
                             el.overlayTextColor = ImGui.ColorConvertFloat4ToU32(v4t);
                         }
-                        ImGui.PopItemWidth();
                     }
                 }
             }

@@ -11,7 +11,7 @@ namespace Splatoon
     public class Element
     {
         [NonSerialized] public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
-        "Line between two fixed coordinates", "Line relative to object position", "Rectangle at fixed coordinates (beta)"};
+        "Line between two fixed coordinates", "Line relative to object position", "Polygon at fixed coordinates (beta)"};
         [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
         [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID" };
         //[NonSerialized] public int screen2world = 0;
@@ -79,8 +79,9 @@ namespace Splatoon
         [DefaultValue(false)] public bool LineAddPlayerHitboxLengthYA = false;
         [DefaultValue(false)] public bool LineAddPlayerHitboxLengthZA = false;
         [DefaultValue(false)] public bool Filled = false;
+        public List<Point3> Polygon = new();
 
-        public bool ShouldSerializeRectangle()
+        public bool ShouldSerializePolygon()
         {
             return this.type == 4;
         }

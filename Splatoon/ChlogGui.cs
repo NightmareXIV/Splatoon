@@ -38,6 +38,7 @@ namespace Splatoon
    when being partially outside of the screen.
    Same is for lines with radius.
    This is a bug and it can not be resolved at this time.
+   Also this type is in beta testing and may be inconvenient to use and may change in future.
 
 - Added support for new object search types: model id, object id and data id, in addition to name. 
 - Added object logger which will log all objects that your client have seen to

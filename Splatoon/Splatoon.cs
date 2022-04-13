@@ -577,21 +577,7 @@ unsafe class Splatoon : IDalamudPlugin
         }
         else if(e.type == 4)
         {
-            if (!e.Filled)
-            {
-                displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.refX, e.offY, e.refZ, e.thicc, e.color));
-                displayObjects.Add(new DisplayObjectLine(e.refX, e.offY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
-                displayObjects.Add(new DisplayObjectLine(e.offX, e.offY, e.offZ, e.offX, e.refY, e.offZ, e.thicc, e.color));
-                displayObjects.Add(new DisplayObjectLine(e.offX, e.refY, e.offZ, e.refX, e.refY, e.refZ, e.thicc, e.color));
-            }
-            else
-            {
-                displayObjects.Add(new DisplayObjectRect()
-                {
-                    l1 = new DisplayObjectLine(e.refX, e.refY, e.refZ, e.refX, e.offY, e.refZ, e.thicc, e.color),
-                    l2 = new DisplayObjectLine(e.offX, e.refY, e.offZ, e.offX, e.offY, e.offZ, e.thicc, e.color)
-                });
-            }
+            
         }
     }
 

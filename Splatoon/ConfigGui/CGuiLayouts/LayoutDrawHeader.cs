@@ -106,7 +106,7 @@ namespace Splatoon
                         ImGuiEx.ColorButton(Colors.Red);
                     }
                     string zcfc = p.Zones[Svc.ClientState.TerritoryType].ContentFinderCondition?.Value.Name?.ToString();
-                    if (ImGui.SmallButton("Current zone: " + Svc.ClientState.TerritoryType + " / "
+                    if (p.Zones.ContainsKey(Svc.ClientState.TerritoryType) && ImGui.SmallButton("Current zone: " + Svc.ClientState.TerritoryType + " / "
                         + p.Zones[Svc.ClientState.TerritoryType].PlaceName.Value.Name +
                         (string.IsNullOrEmpty(zcfc) ? "" : $" ({zcfc})")))
                     {
