@@ -43,6 +43,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal int dequeueConcurrency = 1;
     internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, ObjectKind type), ObjectInfo> loggedObjectList = new();
     internal bool LogObjects = false;
+    internal bool DisableLineFix = false;
 
     public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
     private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;

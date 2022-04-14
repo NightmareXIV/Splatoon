@@ -11,9 +11,11 @@ namespace Splatoon
         void DisplayDebug()
         {
             ImGui.BeginChild("##splatoonmaindbg");
+            ImGui.Checkbox("Disable line fix", ref p.DisableLineFix);
             var t = Environment.TickCount64 - p.CombatStarted;
             ImGui.Text("CombatStarted = " + t);
-            ImGui.Text($"Message concurrency: {p.dequeueConcurrency}");
+            ImGui.SetNextItemWidth(60f);
+            ImGui.DragInt($"Message concurrency", ref p.dequeueConcurrency, float.Epsilon);
             ImGui.Separator();
             if (Svc.ClientState.LocalPlayer != null)
             {

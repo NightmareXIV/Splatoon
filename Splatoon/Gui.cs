@@ -105,7 +105,7 @@ namespace Splatoon
         (Vector2? posA, Vector2? posB) GetAdjustedLine(Vector3 pointA, Vector3 pointB)
         {
             var resultA = Svc.GameGui.WorldToScreen(new Vector3(pointA.X, pointA.Z, pointA.Y), out Vector2 posA);
-            if (!resultA)
+            if (!resultA && !p.DisableLineFix)
             {
                 var posA2 = GetLineClosestToVisiblePoint(pointA,
                 (pointB - pointA) / p.CurrentLineSegments, 0, p.CurrentLineSegments);
@@ -120,7 +120,7 @@ namespace Splatoon
                 }
             }
             var resultB = Svc.GameGui.WorldToScreen(new Vector3(pointB.X, pointB.Z, pointB.Y), out Vector2 posB);
-            if (!resultB)
+            if (!resultB && !p.DisableLineFix)
             {
                 var posB2 = GetLineClosestToVisiblePoint(pointB,
                 (pointA - pointB) / p.CurrentLineSegments, 0, p.CurrentLineSegments);
@@ -174,20 +174,25 @@ namespace Splatoon
                             new Vector3(e.x, e.z, e.y),
                             out Vector2 pos))
             {
-                var size = ImGui.CalcTextSize(e.text);
-                size = new Vector2(size.X + 10f, size.Y + 10f);
-                ImGui.SetNextWindowPos(new Vector2(pos.X - size.X / 2, pos.Y - size.Y / 2));
-                ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
-                ImGui.PushStyleVar(ImGuiStyleVar.ChildRounding, 10f);
-                ImGui.PushStyleColor(ImGuiCol.ChildBg, ImGui.ColorConvertU32ToFloat4(e.bgcolor));
-                ImGui.BeginChild("##child" + e.text + ++uid, size, false,
-                    ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav
-                    | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.AlwaysUseWindowPadding);
-                ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(e.fgcolor), e.text);
-                ImGui.EndChild();
-                ImGui.PopStyleColor();
-                ImGui.PopStyleVar(2);
+                DrawText(e, pos);
             }
+        }
+
+        public void DrawText(DisplayObjectText e, Vector2 pos)
+        {
+            var size = ImGui.CalcTextSize(e.text);
+            size = new Vector2(size.X + 10f, size.Y + 10f);
+            ImGui.SetNextWindowPos(new Vector2(pos.X - size.X / 2, pos.Y - size.Y / 2));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
+            ImGui.PushStyleVar(ImGuiStyleVar.ChildRounding, 10f);
+            ImGui.PushStyleColor(ImGuiCol.ChildBg, ImGui.ColorConvertU32ToFloat4(e.bgcolor));
+            ImGui.BeginChild("##child" + e.text + ++uid, size, false,
+                ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav
+                | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.AlwaysUseWindowPadding);
+            ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(e.fgcolor), e.text);
+            ImGui.EndChild();
+            ImGui.PopStyleColor();
+            ImGui.PopStyleVar(2);
         }
 
         public void DrawRingWorld(DisplayObjectCircle e)
@@ -242,14 +247,23 @@ namespace Splatoon
 
         void DrawPolygon(DisplayObjectPolygon p)
         {
-            foreach (var c in Static.GetPolygon(p.e.Polygon.Select((x) =>
+            var i = 0;
+            var objects = new List<Action>();
+            var coords = GetPolygon(p.e.Polygon.Select((x) =>
             {
                 Svc.GameGui.WorldToScreen(new Vector3(x.X, x.Z, x.Y), out Vector2 pos);
                 return pos;
-            }).ToList()))
+            }).ToList());
+            var medium = new Vector2(coords.Average(x => x.v2.X), coords.Average(x => x.v2.Y));
+            DrawText(new DisplayObjectText(0, 0, 0, $"{medium.X}, {medium.Y}", 0xff000000, 0xff0000ff), medium);
+            foreach (var c in coords)
             {
-                ImGui.GetWindowDrawList().PathLineTo(c);
+                ImGui.GetWindowDrawList().PathLineTo(c.v2);
+                var txt = i.ToString();
+                objects.Add(() => DrawText(new DisplayObjectText(0,0,0, $"{txt}: {c.v2.X}, {c.v2.Y}, {c.angle}", 0xff000000, 0xffffffff), c.v2));
+                i++;
             }
+            //ImGui.GetWindowDrawList().PathLineTo(coords.First().v2);
 
             if (p.e.Filled)
             {
@@ -259,6 +273,7 @@ namespace Splatoon
             {
                 ImGui.GetWindowDrawList().PathStroke(p.e.color, ImDrawFlags.Closed, p.e.thicc);
             }
+            foreach (var o in objects) o();
         }
     }
 }

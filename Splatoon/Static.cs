@@ -144,22 +144,23 @@ namespace Splatoon
                 (MathF.Sqrt(Square(x2 - x1) + Square(y2 - y1)) * MathF.Sqrt(Square(x4 - x3) + Square(y4 - y3))));
         }
 
-        public static IEnumerable<Vector2> GetPolygon(List<Vector2> coords)
+        public static IEnumerable<(Vector2 v2, float angle)> GetPolygon(List<Vector2> coords)
         {
             var medium = new Vector2(coords.Average(x => x.X), coords.Average(x => x.Y));
-            var array = coords.GetRange(1, coords.Count-1).ToArray();
-            BubbleSort(array, delegate (Vector2 a, Vector2 b)
+            var array = coords.Select(x => x - medium).ToArray();
+            Array.Sort(array, delegate (Vector2 a, Vector2 b)
             {
-                var angleA = AngleBetweenVectors(medium.X, medium.Y, coords[0].X, coords[0].Y, medium.X, medium.Y, a.X, a.Y);
-                var angleB = AngleBetweenVectors(medium.X, medium.Y, coords[0].X, coords[0].Y, medium.X, medium.Y, b.X, b.Y);
-                if(float.IsNaN(angleA) || float.IsNaN(angleB) || angleA == angleB)
+                var angleA = MathF.Atan2(a.Y, a.X);
+                var angleB = MathF.Atan2(b.Y, b.X);
+                if (angleA == angleB)
                 {
-                    return Vector2.Distance(medium, a) > Vector2.Distance(medium, b);
+                    var radiusA = MathF.Sqrt((a.X * a.X) + (a.Y * a.Y));
+                    var radiusB = MathF.Sqrt((b.X * b.X) + (b.Y * b.Y));
+                    return radiusA > radiusB ? 1 : -1;
                 }
-                return angleA > angleB;
+                return angleA > angleB ? 1 : -1;
             });
-            yield return coords[0];
-            foreach (var x in array) yield return x;
+            foreach (var x in array) yield return (x + medium, MathF.Atan2(x.Y, x.X));
         }
 
         public static float Square(float x)
@@ -232,7 +233,7 @@ namespace Splatoon
             return b.Value.ToString();
         }
 
-        public static void BubbleSort(Vector2[] v2array, Func<Vector2, Vector2, bool> Comparer)
+        public static void BubbleSort(ref Vector2[] v2array, Func<Vector2, Vector2, bool> Comparer)
         {
             Vector2 temp;
             int count = v2array.Length;
