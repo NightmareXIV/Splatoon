@@ -12,7 +12,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 34;
+        public const int ChlogVersion = 35;
         readonly Splatoon p;
         bool open = true;
         bool understood = false;
