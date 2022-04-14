@@ -33,16 +33,19 @@ namespace Splatoon
             if (!Svc.ClientState.IsLoggedIn) return;
             ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.TextUnformatted(
-@"- Support for new display object: rectangle (beta-testing).
-   Please note that filled rectangles can behave weirdly or completely disappear
-   when being partially outside of the screen.
-   Same is for lines with radius.
-   This is a bug and it can not be resolved at this time.
-   Also this type is in beta testing and may be inconvenient to use and may change in future.
+@"- Support for radius for lines between 2 fixed position.
+   This essentially allows you to draw a rectangle.
+
+- An attempt to increase stability and reliability of lines with radius
+   Please keep in mind, however, that it will still be subject to distortion when crossing screen corners.
+   A bug exists that makes creating filled objects very difficult and until it is resolved or bypassed further developments
+   related to filled objects are almost impossible.
 
 - Added support for new object search types: model id, object id and data id, in addition to name. 
+
 - Added object logger which will log all objects that your client have seen to
    help you to figure out model/object/data IDs.
+
 - Reduced dependency on direct memory signatures, allowing plugin to break with less chance on updates.");
             if (ImGui.Button("Close this window"))
             {

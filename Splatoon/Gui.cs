@@ -137,19 +137,27 @@ namespace Splatoon
             return (posA, posB);
         }
 
-        void DrawRectWorld(DisplayObjectRect e)
+        void DrawRectWorld(DisplayObjectRect e) //oof
         {
             if (p.Profiler.Enabled) p.Profiler.GuiLines.StartTick();
             var result1 = GetAdjustedLine(new Vector3(e.l1.ax, e.l1.ay, e.l1.az), new Vector3(e.l1.bx, e.l1.by, e.l1.bz));
-            if (result1.posA == null) return;
+            if (result1.posA == null) goto Alternative;
             var result2 = GetAdjustedLine(new Vector3(e.l2.ax, e.l2.ay, e.l2.az), new Vector3(e.l2.bx, e.l2.by, e.l2.bz));
-            if (result2.posA == null) return;
+            if (result2.posA == null) goto Alternative;
+            goto Build;
+            Alternative:
+            result1 = GetAdjustedLine(new Vector3(e.l1.ax, e.l1.ay, e.l1.az), new Vector3(e.l2.ax, e.l2.ay, e.l2.az));
+            if (result1.posA == null) goto Quit;
+            result2 = GetAdjustedLine(new Vector3(e.l1.bx, e.l1.by, e.l1.bz), new Vector3(e.l2.bx, e.l2.by, e.l2.bz));
+            if (result2.posA == null) goto Quit;
+            Build:
             ImGui.GetWindowDrawList().AddQuadFilled(
                 new Vector2(result1.posA.Value.X, result1.posA.Value.Y),
                 new Vector2(result1.posB.Value.X, result1.posB.Value.Y),
                 new Vector2(result2.posB.Value.X, result2.posB.Value.Y),
                 new Vector2(result2.posA.Value.X, result2.posA.Value.Y), e.l1.color
                 );
+            Quit:
             if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
         }
 

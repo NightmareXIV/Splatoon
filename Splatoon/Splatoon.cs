@@ -28,7 +28,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal float CamAngleY;
     internal float CamZoom = 1.5f;
     internal bool prevMouseState = false;
-    internal string SFind = null;
+    internal SearchInfo SFind = null;
     internal int CurrentLineSegments;
     internal ConcurrentQueue<System.Action> tickScheduler;
     internal List<DynamicElement> dynamicElements;
@@ -324,13 +324,13 @@ unsafe class Splatoon : IDalamudPlugin
                     {
                         thicc = 3f,
                         radius = 0f,
-                        refActorName = SFind,
-                        overlayText = "Search: " + SFind,
+                        refActorName = SFind.name,
+                        overlayText = "Search: " + SFind.name,
                         overlayVOffset = 1.7f,
                         overlayTextColor = col,
                         color = col,
                         includeHitbox = true,
-                        onlyTargetable = true,
+                        onlyTargetable = !SFind.includeUntargetable,
                         tether = Config.TetherOnFind,
                     };
                     ProcessElement(findEl);
@@ -565,16 +565,35 @@ unsafe class Splatoon : IDalamudPlugin
         }
         else if (e.type == 2)
         {
-            if (
-                (
-                    i == null || !i.UseDistanceLimit || CheckDistanceToLineCondition(i, e)
-                ) &&
-                (
-                ShouldDraw(e.offX, GetPlayerPositionXZY().X, e.offY, GetPlayerPositionXZY().Y)
-                || ShouldDraw(e.refX, GetPlayerPositionXZY().X, e.refY, GetPlayerPositionXZY().Y)
-                )
-                )
-                displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
+            if (e.radius > 0)
+            {
+                PerpOffset(new Vector2(e.refX, e.refY), new Vector2(e.offX, e.offY), 0f, e.radius, out _, out var p1);
+                PerpOffset(new Vector2(e.refX, e.refY), new Vector2(e.offX, e.offY), 0f, -e.radius, out _, out var p2);
+                PerpOffset(new Vector2(e.refX, e.refY), new Vector2(e.offX, e.offY), 1f, e.radius, out _, out var p3);
+                PerpOffset(new Vector2(e.refX, e.refY), new Vector2(e.offX, e.offY), 1f, -e.radius, out _, out var p4);
+                displayObjects.Add(new DisplayObjectRect()
+                {
+                    l1 = new DisplayObjectLine(p1.X, p1.Y, e.refZ,
+                    p2.X, p2.Y, e.refZ,
+                    e.thicc, e.color),
+                    l2 = new DisplayObjectLine(p3.X, p3.Y, e.offZ,
+                    p4.X, p4.Y, e.offZ,
+                    e.thicc, e.color)
+                });
+            }
+            else
+            {
+                if (
+                    (
+                        i == null || !i.UseDistanceLimit || CheckDistanceToLineCondition(i, e)
+                    ) &&
+                    (
+                    ShouldDraw(e.offX, GetPlayerPositionXZY().X, e.offY, GetPlayerPositionXZY().Y)
+                    || ShouldDraw(e.refX, GetPlayerPositionXZY().X, e.refY, GetPlayerPositionXZY().Y)
+                    )
+                    )
+                    displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
+            }
         }
         else if(e.type == 4)
         {

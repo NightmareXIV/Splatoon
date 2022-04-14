@@ -162,7 +162,7 @@ namespace Splatoon
                             el.Polygon.RemoveAt(toRem);
                         }
                     }
-                    if (el.type == 1 || el.type == 3)
+                    if(el.type == 1 || el.type == 3)
                     {
                         ImGui.SameLine();
                         ImGui.Checkbox("Account for rotation##rota" + i + k, ref el.includeRotation);
@@ -170,6 +170,10 @@ namespace Splatoon
                         {
                             DrawRotationSelector(el, i, k);
                         }
+                    }
+                    if (el.type == 1 || el.type == 3)
+                    {
+                        
                         ImGuiEx.SizedText("Targeted object: ", WidthElement);
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);
@@ -192,7 +196,7 @@ namespace Splatoon
                             ImGui.SetNextItemWidth(100f);
                             ImGui.Combo($"##attrSelect{i + k}", ref el.refActorComparisonType, Element.ComparisonTypes, Element.ComparisonTypes.Length);
                             ImGui.SameLine();
-                            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+                            ImGui.SetNextItemWidth(200f);
                             if (el.refActorComparisonType == 0)
                             {
                                 ImGui.InputText("##actorname" + i + k, ref el.refActorName, 100);
@@ -218,7 +222,13 @@ namespace Splatoon
                             if (Svc.Targets.Target != null)
                             {
                                 ImGui.SameLine();
-                                if (ImGui.Button("Target##btarget" + i + k)) el.refActorName = Svc.Targets.Target.Name.ToString();
+                                if (ImGui.Button("Target##btarget" + i + k))
+                                {
+                                    el.refActorName = Svc.Targets.Target.Name.ToString();
+                                    el.refActorDataID = Svc.Targets.Target.DataId;
+                                    el.refActorObjectID = Svc.Targets.Target.ObjectId;
+                                    if(Svc.Targets.Target is Character c) el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
+                                }
                             }
                             ImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
@@ -434,9 +444,9 @@ namespace Splatoon
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Thickness is set to 0: only text overlay will be drawn.");
                     }
-                    if (el.thicc > 0 || (el.type == 3 && el.includeRotation))
+                    if (el.thicc > 0 || ((el.type == 2 || el.type == 3) && el.includeRotation))
                     {
-                        if (el.type != 2 && !(el.type == 3 && !el.includeRotation))
+                        if (!(el.type == 3 && !el.includeRotation))
                         {
                             ImGuiEx.SizedText("Radius:", WidthElement);
                             ImGui.SameLine();

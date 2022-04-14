@@ -56,7 +56,11 @@ namespace Splatoon
                         else 
                         {
                             var name = arguments.Substring(arguments.IndexOf("settarget ") + 10).Split('~');
-                            p.Config.Layouts[name[0]].Elements[name[1]].refActorName = Svc.Targets.Target.Name.ToString();
+                            var el = p.Config.Layouts[name[0]].Elements[name[1]];
+                            el.refActorName = Svc.Targets.Target.Name.ToString();
+                            el.refActorDataID = Svc.Targets.Target.DataId;
+                            el.refActorObjectID = Svc.Targets.Target.ObjectId;
+                            if (Svc.Targets.Target is Character c) el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
                             Notify("Successfully set target", NotificationType.Success);
                         }
                     }
@@ -99,8 +103,16 @@ namespace Splatoon
                 }
                 else
                 {
-                    p.SFind = arguments.Trim();
-                    Notify("Searching for: " + p.SFind, NotificationType.Success);
+                    p.SFind = new()
+                    {
+                        name = arguments.Trim(),
+                        includeUntargetable = arguments.StartsWith("!!")
+                    };
+                    if (p.SFind.includeUntargetable)
+                    {
+                        p.SFind.name = arguments[2..];
+                    }
+                    Notify("Searching for: " + p.SFind.name + (p.SFind.includeUntargetable?" (+untargetable)":""), NotificationType.Success);
                 }
             })
             {
