@@ -22,7 +22,7 @@ namespace Splatoon
             ImGui.SameLine();
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
             ImGui.InputText("##filterLog", ref LoggerSearch, 100);
-            ImGui.BeginTable("##logObjects", 8, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
+            ImGui.BeginTable("##logObjects", 10, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
             ImGui.TableSetupColumn("Object name", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableSetupColumn("Type");
             ImGui.TableSetupColumn("Object ID");
@@ -30,10 +30,14 @@ namespace Splatoon
             ImGui.TableSetupColumn("Model ID");
             ImGui.TableSetupColumn("Tar. %");
             ImGui.TableSetupColumn("Vis. %");
-            ImGui.TableSetupColumn("Exist ticks");
+            ImGui.TableSetupColumn("Exist");
+            ImGui.TableSetupColumn("Dist.");
+            ImGui.TableSetupColumn("Hibox");
             ImGui.TableHeadersRow();
+            var i = 0;
             foreach (var x in p.loggedObjectList)
             {
+                i++;
                 var mid = !x.Value.IsChar ? "--" : $"{x.Key.ModelID:X4}";
                 var oid = x.Key.ObjectID == 0xE0000000 ? "--" : $"{x.Key.ObjectID:X8}";
                 var did = x.Key.DataID == 0 ? "--" : $"{x.Key.DataID:X8}";
@@ -52,6 +56,16 @@ namespace Splatoon
                 ImGui.Text($"{x.Key.type}");
                 ImGui.TableNextColumn();
                 ImGuiEx.TextCopy(oid);
+                ImGui.SameLine();
+                if (ImGui.SmallButton("Find##"+i))
+                {
+                    p.SFind = new()
+                    {
+                        includeUntargetable = true,
+                        oid = x.Key.ObjectID,
+                        SearchAttribute = 2
+                    };
+                }
                 ImGui.TableNextColumn();
                 ImGuiEx.TextCopy(did);
                 ImGui.TableNextColumn();
@@ -66,6 +80,10 @@ namespace Splatoon
                 if (x.Value.Visible) ImGui.PopStyleColor();
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{x.Value.ExistenceTicks}");
+                ImGui.TableNextColumn();
+                ImGui.Text($"{x.Value.Distance:F1}");
+                ImGui.TableNextColumn();
+                ImGui.Text($"{x.Value.HitboxRadius:F1}");
             }
             ImGui.EndTable();
         }

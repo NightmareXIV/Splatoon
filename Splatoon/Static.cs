@@ -170,7 +170,7 @@ namespace Splatoon
     
         public static float RadToDeg(float radian)
         {
-            return (radian * (180 / Splatoon.FloatPI));
+            return (radian * (180 / MathF.PI));
         }
 
         public static void Safe(Action a)

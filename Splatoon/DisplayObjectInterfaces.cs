@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Splatoon
 {
-    internal class DisplayObjectDot : DisplayObject
+    public class DisplayObjectDot : DisplayObject
     {
         public float x, y, z, thickness;
         public uint color;
@@ -21,7 +21,7 @@ namespace Splatoon
         }
     }
 
-    internal class DisplayObjectCircle : DisplayObject
+    public class DisplayObjectCircle : DisplayObject
     {
         public float x, y, z, radius, thickness;
         public uint color;
@@ -38,7 +38,7 @@ namespace Splatoon
         }
     }
 
-    internal class DisplayObjectLine : DisplayObject
+    public class DisplayObjectLine : DisplayObject
     {
         public float ax, ay, az, bx, by, bz, thickness;
         public uint color;
@@ -56,7 +56,7 @@ namespace Splatoon
         }
     }
 
-    internal class DisplayObjectText : DisplayObject
+    public class DisplayObjectText : DisplayObject
     {
         public float x, y, z;
         public string text;
@@ -73,13 +73,13 @@ namespace Splatoon
         }
     }
 
-    internal class DisplayObjectRect : DisplayObject
+    public class DisplayObjectRect : DisplayObject
     {
         public DisplayObjectLine l1;
         public DisplayObjectLine l2;
     }
 
-    internal class DisplayObjectQuad : DisplayObject
+    public class DisplayObjectQuad : DisplayObject
     {
         public Point3[] rect;
         public uint bgcolor;
@@ -91,7 +91,7 @@ namespace Splatoon
         }
     }
 
-    internal class DisplayObjectPolygon : DisplayObject
+    public class DisplayObjectPolygon : DisplayObject
     {
         public Element e;
         public DisplayObjectPolygon(Element e)
@@ -100,6 +100,6 @@ namespace Splatoon
         }
     }
 
-    internal interface DisplayObject { }
+    public interface DisplayObject { }
 
 }

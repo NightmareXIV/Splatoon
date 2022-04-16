@@ -14,5 +14,7 @@ namespace Splatoon
         internal bool Visible = false;
         internal bool Targetable = false;
         internal bool IsChar = false;
+        internal float HitboxRadius = 0;
+        internal float Distance = 0;
     }
 }

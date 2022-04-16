@@ -21,9 +21,9 @@ unsafe class Splatoon : IDalamudPlugin
     internal Dictionary<ushort, TerritoryType> Zones;
     internal string[] LogStorage = new string[100];
     internal long CombatStarted = 0;
-    internal HashSet<DisplayObject> displayObjects = new HashSet<DisplayObject>();
+    public HashSet<DisplayObject> displayObjects = new();
     internal double CamAngleX;
-    internal Dictionary<int, string> Jobs = new Dictionary<int, string>();
+    internal Dictionary<int, string> Jobs = new();
     //internal HashSet<(float x, float y, float z, float r, float angle)> draw = new HashSet<(float x, float y, float z, float r, float angle)>();
     internal float CamAngleY;
     internal float CamZoom = 1.5f;
@@ -39,14 +39,10 @@ unsafe class Splatoon : IDalamudPlugin
     internal Queue<string> ChatMessageQueue;
     internal HashSet<string> CurrentChatMessages = new();
     internal Element Clipboard = null;
-    internal static readonly float FloatPI = (float)Math.PI;
     internal int dequeueConcurrency = 1;
     internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, ObjectKind type), ObjectInfo> loggedObjectList = new();
     internal bool LogObjects = false;
     internal bool DisableLineFix = false;
-
-    public string AssemblyLocation { get => assemblyLocation; set => assemblyLocation = value; }
-    private string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
     public void Dispose()
     {
@@ -189,7 +185,7 @@ unsafe class Splatoon : IDalamudPlugin
         if (Profiler.Enabled) Profiler.MainTick.StartTick();
         try
         {
-            if (LogObjects)
+            if (LogObjects && Svc.ClientState.LocalPlayer != null)
             {
                 foreach(var t in Svc.Objects)
                 {
@@ -210,6 +206,8 @@ unsafe class Splatoon : IDalamudPlugin
                         loggedObjectList[obj].Targetable = MemoryManager.GetIsTargetable(t);
                         if (loggedObjectList[obj].Targetable) loggedObjectList[obj].TargetableTicks++;
                     }
+                    loggedObjectList[obj].Distance = Vector3.Distance(Svc.ClientState.LocalPlayer.Position, t.Position);
+                    loggedObjectList[obj].HitboxRadius = t.HitboxRadius;
                 }
             }
             if (Profiler.Enabled) Profiler.MainTickDequeue.StartTick();
@@ -325,7 +323,9 @@ unsafe class Splatoon : IDalamudPlugin
                         thicc = 3f,
                         radius = 0f,
                         refActorName = SFind.name,
-                        overlayText = "Search: " + SFind.name,
+                        refActorObjectID = SFind.oid,
+                        refActorComparisonType = SFind.SearchAttribute,
+                        overlayText = "Search: " + (SFind.SearchAttribute == 0 ? SFind.name : $"Object ID: 0x{SFind.oid:X8}"),
                         overlayVOffset = 1.7f,
                         overlayTextColor = col,
                         color = col,

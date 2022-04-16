@@ -16,7 +16,7 @@ namespace Splatoon
             //0               1                 2                   3                              4
             { "Always shown", "Only in combat", "Only in instance", "Only in combat AND instance", "Only in combat OR instance", "On trigger only" }; 
         [DefaultValue(true)] public bool Enabled = true;
-        public HashSet<ushort> ZoneLockH = new HashSet<ushort>();
+        public HashSet<ushort> ZoneLockH = new();
 
         /// <summary>
         /// 0: Always shown |
@@ -27,12 +27,12 @@ namespace Splatoon
         /// 5: Never
         /// </summary>
         [DefaultValue(0)] public int DCond = 0;
-        public Dictionary<string, Element> Elements = new Dictionary<string, Element>();
+        public Dictionary<string, Element> Elements = new();
         [DefaultValue(false)] public bool DisableDisabling = false;
         [DefaultValue(0)] public ulong JobLock = 0;
         [DefaultValue(false)] public bool DisableInDuty = false;
         [DefaultValue(false)] public bool UseTriggers = false;
-        public List<Trigger> Triggers = new List<Trigger>();
+        public List<Trigger> Triggers = new();
         /// <summary>
         /// 0: Unchanged |
         /// -1: Hidden |
@@ -48,5 +48,15 @@ namespace Splatoon
         /// 0: To target | 1: To object
         /// </summary>
         [DefaultValue(0)] public int DistanceLimitType = 0;
+
+        public bool ShouldSerializeZoneLockH()
+        {
+            return ZoneLockH.Count > 0;
+        }
+
+        public bool ShouldSerializeTriggers()
+        {
+            return Triggers.Count > 0;
+        }
     }
 }

@@ -85,5 +85,12 @@ namespace Splatoon
         {
             return this.type == 4;
         }
+
+        public bool ShouldSerializerefX()
+        {
+            return this.type != 1 && this.type != 3;
+        }
+        public bool ShouldSerializerefY() { return ShouldSerializerefX(); }
+        public bool ShouldSerializerefZ() { return ShouldSerializerefX(); }
     }
 }

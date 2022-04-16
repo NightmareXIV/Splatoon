@@ -61,14 +61,9 @@ namespace Splatoon
 
         public bool GetIsVisible(Character chr)
         {
-            return GetIsTargetable(chr);
-        }
-
-        public bool? GetIsVisible(GameObject chr)
-        {
             if (ErrorCode != 0) return true;
             var v = (IntPtr)(((FFXIVClientStructs.FFXIV.Client.Game.Character.Character*)chr.Address)->GameObject.DrawObject);
-            if (v == IntPtr.Zero) return null;
+            if (v == IntPtr.Zero) return false;
             return Bitmask.IsBitSet(*(byte*)(v + 136), 0);
         }
 
