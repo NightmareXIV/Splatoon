@@ -134,7 +134,7 @@ namespace Splatoon
                             el.radius = 0;
                         }
                     }
-                    if(el.type == 4)
+                    /*if(el.type == 4)
                     {
                         ImGui.SameLine();
                         if(ImGui.Button("Add point"))
@@ -161,7 +161,7 @@ namespace Splatoon
                         {
                             el.Polygon.RemoveAt(toRem);
                         }
-                    }
+                    }*/
                     if(el.type == 1 || el.type == 3)
                     {
                         ImGui.SameLine();

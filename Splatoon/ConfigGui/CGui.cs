@@ -76,56 +76,67 @@ namespace Splatoon
             var titleColored = false;
             if (ImGui.Begin("Splatoon", ref Open))
             {
-                if(p.MemoryManager.ErrorCode != 0)
+                if (ChlogGui.ChlogVersion > p.Config.ChlogReadVer)
                 {
-                    var cursor = ImGui.GetCursorPos();
-                    var text = "Failsafe mode";
-                    ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(text).X);
-                    ImGui.TextColored((Environment.TickCount % 1000 < 500 ? Colors.Red : Colors.Yellow).ToVector4(), text);
-                    ImGui.SetCursorPos(cursor);
-                }
-                ImGui.BeginTabBar("SplatoonSettings");
-                if (ImGui.BeginTabItem("General settings"))
-                {
-                    DisplayGeneralSettings();
-                    ImGui.EndTabItem();
-                }
-                ImGui.PushStyleColor(ImGuiCol.Text, Colors.Green);
-                if (ImGui.BeginTabItem("Layouts"))
-                {
-                    ImGui.PopStyleColor();
-                    DislayLayouts();
-                    ImGui.EndTabItem();
+                    ImGui.Text("You may not change configuration until you have read changelog and closed window.");
+                    if (ImGui.Button("Open changelog now"))
+                    {
+                        p.ChangelogGui.openLoggedOut = true;
+                    }
                 }
                 else
                 {
-                    ImGui.PopStyleColor();
-                }
+                    if (p.MemoryManager.ErrorCode != 0)
+                    {
+                        var cursor = ImGui.GetCursorPos();
+                        var text = "Failsafe mode";
+                        ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(text).X);
+                        ImGui.TextColored((Environment.TickCount % 1000 < 500 ? Colors.Red : Colors.Yellow).ToVector4(), text);
+                        ImGui.SetCursorPos(cursor);
+                    }
+                    ImGui.BeginTabBar("SplatoonSettings");
+                    if (ImGui.BeginTabItem("General settings"))
+                    {
+                        DisplayGeneralSettings();
+                        ImGui.EndTabItem();
+                    }
+                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.Green);
+                    if (ImGui.BeginTabItem("Layouts"))
+                    {
+                        ImGui.PopStyleColor();
+                        DislayLayouts();
+                        ImGui.EndTabItem();
+                    }
+                    else
+                    {
+                        ImGui.PopStyleColor();
+                    }
 
-                if (ImGui.BeginTabItem("Object logger"))
-                {
-                    DisplayLogger();
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("Debug"))
-                {
-                    DisplayDebug();
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("Log"))
-                {
-                    DisplayLog();
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("Dynamic elements"))
-                {
-                    DisplayDynamicElements();
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("Profiling"))
-                {
-                    DisplayProfiling();
-                    ImGui.EndTabItem();
+                    if (ImGui.BeginTabItem("Object logger"))
+                    {
+                        DisplayLogger();
+                        ImGui.EndTabItem();
+                    }
+                    if (ImGui.BeginTabItem("Debug"))
+                    {
+                        DisplayDebug();
+                        ImGui.EndTabItem();
+                    }
+                    if (ImGui.BeginTabItem("Log"))
+                    {
+                        DisplayLog();
+                        ImGui.EndTabItem();
+                    }
+                    if (ImGui.BeginTabItem("Dynamic elements"))
+                    {
+                        DisplayDynamicElements();
+                        ImGui.EndTabItem();
+                    }
+                    if (ImGui.BeginTabItem("Profiling"))
+                    {
+                        DisplayProfiling();
+                        ImGui.EndTabItem();
+                    }
                 }
             }
             ImGui.PopStyleVar();

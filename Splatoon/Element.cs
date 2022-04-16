@@ -79,16 +79,16 @@ namespace Splatoon
         [DefaultValue(false)] public bool LineAddPlayerHitboxLengthYA = false;
         [DefaultValue(false)] public bool LineAddPlayerHitboxLengthZA = false;
         [DefaultValue(false)] public bool Filled = false;
-        public List<Point3> Polygon = new();
+        //public List<Point3> Polygon = new();
 
-        public bool ShouldSerializePolygon()
+        /*public bool ShouldSerializePolygon()
         {
             return this.type == 4;
-        }
+        }*/
 
         public bool ShouldSerializerefX()
         {
-            return this.type != 1 && this.type != 3;
+            return this.type != 1;
         }
         public bool ShouldSerializerefY() { return ShouldSerializerefX(); }
         public bool ShouldSerializerefZ() { return ShouldSerializerefX(); }

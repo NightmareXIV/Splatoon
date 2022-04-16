@@ -15,7 +15,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal CGui ConfigGui;
     internal Commands CommandManager;
     internal IMemoryManager MemoryManager;
-    internal ChlogGui ChangelogGui;
+    internal ChlogGui ChangelogGui = null;
     internal Configuration Config;
     internal MemerrGui memerrGui;
     internal Dictionary<ushort, TerritoryType> Zones;
@@ -74,7 +74,7 @@ unsafe class Splatoon : IDalamudPlugin
         CommandManager = new Commands(this);
         Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
         Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
-        if(ChlogGui.ChlogVersion > Config.ChlogReadVer)
+        if(ChlogGui.ChlogVersion > Config.ChlogReadVer && ChangelogGui == null)
         {
             ChangelogGui = new ChlogGui(this);
             Config.NoMemory = false;
@@ -595,13 +595,13 @@ unsafe class Splatoon : IDalamudPlugin
                     displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
             }
         }
-        else if(e.type == 4)
+        /*else if(e.type == 4)
         {
             if (e.Polygon.Count > 2)
             {
                 displayObjects.Add(new DisplayObjectPolygon(e));
             }
-        }
+        }*/
     }
 
     bool IsAttributeMatches(Element e, GameObject o)

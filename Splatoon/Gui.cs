@@ -67,10 +67,10 @@ namespace Splatoon
                             {
                                 DrawRectWorld(elementRect);
                             }
-                            else if(element is DisplayObjectPolygon elementPolygon)
+                            /*else if(element is DisplayObjectPolygon elementPolygon)
                             {
                                 DrawPolygon(elementPolygon);
-                            }
+                            }*/
                         }
                         ImGui.End();
                         ImGui.PopStyleVar();
@@ -253,7 +253,7 @@ namespace Splatoon
                 100);
         }
 
-        void DrawPolygon(DisplayObjectPolygon p)
+        /*void DrawPolygon(DisplayObjectPolygon p)
         {
             var i = 0;
             var objects = new List<Action>();
@@ -282,6 +282,6 @@ namespace Splatoon
                 ImGui.GetWindowDrawList().PathStroke(p.e.color, ImDrawFlags.Closed, p.e.thicc);
             }
             foreach (var o in objects) o();
-        }
+        }*/
     }
 }

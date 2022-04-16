@@ -49,10 +49,18 @@ namespace Splatoon
 
         public void Save()
         {
-            Svc.PluginInterface.SavePluginConfig(this);
+            if (ChlogGui.ChlogVersion > ChlogReadVer)
+            {
+                Svc.Chat.PrintError("[Splatoon] Configuration can not be saved until you have read changelog and closed window");
+                Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Configuration can not be saved until you have read changelog and closed window", plugin.Name, NotificationType.Error);
+            }
+            else
+            {
+                Svc.PluginInterface.SavePluginConfig(this);
+            }
         }
 
-        public bool Backup()
+        public bool Backup(bool update = false)
         {
             if (!ZipSemaphore.Wait(0))
             {
@@ -71,7 +79,7 @@ namespace Splatoon
                 tempDir = Path.Combine(bkpFPath, "temp");
                 Directory.CreateDirectory(tempDir);
                 tempFile = Path.Combine(tempDir, "Splatoon.json");
-                bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-MM-dd HH-mm-ss-fffffff") + ".zip");
+                bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-MM-dd HH-mm-ss-fffffff") + (update ? $"-update-{ChlogGui.ChlogVersion}" : "") + ".zip");
                 File.Copy(cFile, tempFile, true);
             }
             catch(FileNotFoundException e)
