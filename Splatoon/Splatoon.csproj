@@ -17,6 +17,12 @@
 		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<PostBuildEvent>
+			powershell Compress-Archive .\* ..\latest.zip -Force
+		</PostBuildEvent>
+	</PropertyGroup>
+
 	<PropertyGroup Label="Documentation">
 		<DocumentationFile></DocumentationFile>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -35,8 +41,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DalamudLinter" Version="1.0.3" />
-		<PackageReference Include="DalamudPackager" Version="2.1.6" />
 		<Reference Include="Newtonsoft.Json">
 			<HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
 			<Private>False</Private>
@@ -61,5 +65,11 @@
 			<HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Splatoon.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>
