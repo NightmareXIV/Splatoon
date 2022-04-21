@@ -6,6 +6,7 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal.Notifications;
 using Lumina.Excel.GeneratedSheets;
+using Newtonsoft.Json;
 
 namespace Splatoon;
 unsafe class Splatoon : IDalamudPlugin
@@ -21,7 +22,8 @@ unsafe class Splatoon : IDalamudPlugin
     internal Dictionary<ushort, TerritoryType> Zones;
     internal string[] LogStorage = new string[100];
     internal long CombatStarted = 0;
-    public HashSet<DisplayObject> displayObjects = new();
+    internal HashSet<DisplayObject> displayObjects = new();
+    internal HashSet<Element> injectedElements = new();
     internal double CamAngleX;
     internal Dictionary<int, string> Jobs = new();
     //internal HashSet<(float x, float y, float z, float r, float angle)> draw = new HashSet<(float x, float y, float z, float r, float angle)>();
@@ -43,9 +45,11 @@ unsafe class Splatoon : IDalamudPlugin
     internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, ObjectKind type), ObjectInfo> loggedObjectList = new();
     internal bool LogObjects = false;
     internal bool DisableLineFix = false;
+    public static bool Init = false;
 
     public void Dispose()
     {
+        Init = false;
         Config.Save();
         SetupShutdownHttp(false);
         DrawingGui.Dispose();
@@ -94,6 +98,7 @@ unsafe class Splatoon : IDalamudPlugin
         Svc.Framework.Update += Tick;
         Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
         Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
+        Init = true;
     }
 
     internal static readonly string[] InvalidSymbols = { "", "", "", "“", "”", "" };
@@ -349,6 +354,13 @@ unsafe class Splatoon : IDalamudPlugin
                     ProcessLayout(i);
                 }
 
+                foreach (var e in injectedElements)
+                {
+                    ProcessElement(e);
+                    //PluginLog.Information("Processing type " + e.type + JsonConvert.SerializeObject(e, Formatting.Indented));
+                }
+                injectedElements.Clear();
+
                 if (Profiler.Enabled)
                 {
                     Profiler.MainTickCalcPresets.StopTick();
@@ -462,6 +474,11 @@ unsafe class Splatoon : IDalamudPlugin
                 displayObjects.Add(new DisplayObjectLine(x - 2f, y + 2f, z, x + 2f, y - 2f, z, 2f, Colors.Red));
             }
         }
+    }
+
+    public void InjectElement(Element e)
+    {
+        injectedElements.Add(e);
     }
 
     internal void ProcessElement(Element e, Layout i = null)
