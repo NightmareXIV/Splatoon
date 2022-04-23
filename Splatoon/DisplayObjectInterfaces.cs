@@ -58,11 +58,11 @@ namespace Splatoon
 
     public class DisplayObjectText : DisplayObject
     {
-        public float x, y, z;
+        public float x, y, z, fscale;
         public string text;
         public uint bgcolor, fgcolor;
 
-        public DisplayObjectText(float x, float y, float z, string text, uint bgcolor, uint fgcolor)
+        public DisplayObjectText(float x, float y, float z, string text, uint bgcolor, uint fgcolor, float fscale)
         {
             this.x = x;
             this.y = y;
@@ -70,6 +70,7 @@ namespace Splatoon
             this.text = text;
             this.bgcolor = bgcolor;
             this.fgcolor = fgcolor;
+            this.fscale = fscale;
         }
     }
 

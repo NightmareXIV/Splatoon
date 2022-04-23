@@ -490,10 +490,11 @@ namespace Splatoon
                     }
                     ImGuiEx.SizedText("Overlay text:", WidthElement);
                     ImGui.SameLine();
-                    ImGui.SetNextItemWidth(150f);
+                    ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                     ImGui.InputTextWithHint("##overlaytext" + i + k, "Text to display as overlay", ref el.overlayText, 30);
                     if (el.overlayText.Length > 0)
                     {
+                        ImGuiEx.SizedText("", WidthElement);
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Vertical offset:");
                         ImGui.SameLine();
@@ -515,6 +516,13 @@ namespace Splatoon
                         {
                             el.overlayTextColor = ImGui.ColorConvertFloat4ToU32(v4t);
                         }
+                        ImGui.SameLine();
+                        ImGui.TextUnformatted("Font scale:");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##vtextsize" + i + k, ref el.overlayFScale, 0.02f, 0.1f, 50f);
+                        if (el.overlayFScale < 0.1f) el.overlayFScale = 0.1f;
+                        if (el.overlayFScale > 50f) el.overlayFScale = 50f;
                     }
                 }
             }

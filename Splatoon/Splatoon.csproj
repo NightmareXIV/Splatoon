@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Authors>Eternita</Authors>
-		<Version>1.0.5.3</Version>
+		<Version>1.0.5.4</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -24,7 +24,7 @@
 			powershell "(Get-Content .\$(MSBuildProjectName).json) -Replace '0.0.0.0', '$(Version)' | Set-Content .\$(MSBuildProjectName).json"
 			powershell Compress-Archive .\* ..\$(MSBuildProjectName)-$(Version).zip
 			mkdir .\Release
-			move ..\$(MSBuildProjectName)-$(Version).zip .\release\$(MSBuildProjectName)-$(Version).zip
+			move ..\$(MSBuildProjectName)-$(Version).zip .\release\latest.zip
 		</PostBuildEvent>
 	</PropertyGroup>
 
@@ -32,14 +32,6 @@
 		<DocumentationFile></DocumentationFile>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Remove="res\icon.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="res\icon.png" Link="images\icon.png" CopyToOutputDirectory="PreserveNewest" Visible="false" />
-	</ItemGroup>
 
 	<PropertyGroup>
 		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>

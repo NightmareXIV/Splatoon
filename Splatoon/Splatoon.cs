@@ -654,7 +654,7 @@ unsafe class Splatoon : IDalamudPlugin
         }
         if (e.overlayText.Length > 0)
         {
-            displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor));
+            displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
         }
     }
 

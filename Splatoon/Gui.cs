@@ -188,7 +188,8 @@ namespace Splatoon
 
         public void DrawText(DisplayObjectText e, Vector2 pos)
         {
-            var size = ImGui.CalcTextSize(e.text);
+            var scaled = e.fscale != 1f;
+            var size = scaled? ImGui.CalcTextSize(e.text)*e.fscale: ImGui.CalcTextSize(e.text);
             size = new Vector2(size.X + 10f, size.Y + 10f);
             ImGui.SetNextWindowPos(new Vector2(pos.X - size.X / 2, pos.Y - size.Y / 2));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
@@ -197,7 +198,11 @@ namespace Splatoon
             ImGui.BeginChild("##child" + e.text + ++uid, size, false,
                 ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav
                 | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.AlwaysUseWindowPadding);
-            ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(e.fgcolor), e.text);
+            ImGui.PushStyleColor(ImGuiCol.Text, e.fgcolor);
+            if (scaled) ImGui.SetWindowFontScale(e.fscale);
+            ImGui.TextUnformatted(e.text);
+            if (scaled) ImGui.SetWindowFontScale(1f);
+            ImGui.PopStyleColor();
             ImGui.EndChild();
             ImGui.PopStyleColor();
             ImGui.PopStyleVar(2);
