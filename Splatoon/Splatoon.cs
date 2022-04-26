@@ -255,10 +255,10 @@ unsafe class Splatoon : IDalamudPlugin
                 }
                 if (MemoryManager.ErrorCode == 0)
                 {
-                    CamAngleX = *MemoryManager.CameraAddressX + Math.PI;
+                    CamAngleX = MemoryManager.GetCamAngleX() + Math.PI;
                     if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-                    CamAngleY = *MemoryManager.CameraAddressY;
-                    CamZoom = *MemoryManager.CameraZoom;
+                    CamAngleY = MemoryManager.GetCamAngleY();
+                    CamZoom = MemoryManager.GetCamZoom();
                 }
                 /*Range conversion https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
                 slope = (output_end - output_start) / (input_end - input_start)

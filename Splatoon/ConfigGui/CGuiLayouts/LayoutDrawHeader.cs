@@ -100,20 +100,23 @@ namespace Splatoon
                     ImGui.InputTextWithHint("##zfltr" + i, "Filter", ref zlockf, 100);
                     ImGui.SameLine();
                     ImGui.Checkbox("Only selected", ref zlockcur);
-                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.Yellow);
-                    if (p.Config.Layouts[i].ZoneLockH.Contains(Svc.ClientState.TerritoryType))
+                    if (p.Zones.ContainsKey(Svc.ClientState.TerritoryType))
                     {
-                        ImGuiEx.ColorButton(Colors.Red);
+                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.Yellow);
+                        if (p.Config.Layouts[i].ZoneLockH.Contains(Svc.ClientState.TerritoryType))
+                        {
+                            ImGuiEx.ColorButton(Colors.Red);
+                        }
+                        string zcfc = p.Zones[Svc.ClientState.TerritoryType].ContentFinderCondition?.Value.Name?.ToString();
+                        if (p.Zones.ContainsKey(Svc.ClientState.TerritoryType) && ImGui.SmallButton("Current zone: " + Svc.ClientState.TerritoryType + " / "
+                            + p.Zones[Svc.ClientState.TerritoryType].PlaceName.Value.Name +
+                            (string.IsNullOrEmpty(zcfc) ? "" : $" ({zcfc})")))
+                        {
+                            p.Config.Layouts[i].ZoneLockH.Toggle(Svc.ClientState.TerritoryType);
+                        }
+                        ImGuiEx.UncolorButton();
+                        ImGui.PopStyleColor();
                     }
-                    string zcfc = p.Zones[Svc.ClientState.TerritoryType].ContentFinderCondition?.Value.Name?.ToString();
-                    if (p.Zones.ContainsKey(Svc.ClientState.TerritoryType) && ImGui.SmallButton("Current zone: " + Svc.ClientState.TerritoryType + " / "
-                        + p.Zones[Svc.ClientState.TerritoryType].PlaceName.Value.Name +
-                        (string.IsNullOrEmpty(zcfc) ? "" : $" ({zcfc})")))
-                    {
-                        p.Config.Layouts[i].ZoneLockH.Toggle(Svc.ClientState.TerritoryType);
-                    }
-                    ImGuiEx.UncolorButton();
-                    ImGui.PopStyleColor();
                     foreach (var z in p.Zones)
                     {
                         string azcfc = z.Value.ContentFinderCondition?.Value.Name?.ToString();

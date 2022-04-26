@@ -38,7 +38,7 @@ Instead of completely failing, Splatoon has disabled some functionality to keep 
 The following functions will work differently:
 - When camera angle is down to the floor, you may see duplicate waymarks;
 - Very large circles may have line duplication issue;
-- All objects are considered targetable since plugin can not check if they actually are;
+- All characters are considered visible since plugin can not check if they actually are;
 - Lines require a lot more processing time than normally.");
             ImGui.TextColored(Colors.Red.ToVector4(), "This message will appear every time you are starting the game until plugin will be updated.");
             //ImGui.Checkbox("I have read and undrestood this message", ref understood);

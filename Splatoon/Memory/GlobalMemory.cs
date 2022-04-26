@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,10 +11,10 @@ namespace Splatoon
     unsafe class GlobalMemory : IMemoryManager
     {
         public int ErrorCode { get; set; } = -1;
-        public float* CameraAddressX { get; set; }
-        public float* CameraAddressY { get; set; }
-        public float* CameraZoom { get; set; }
-
+        IntPtr cameraAddressPtr;
+        float* Xptr;
+        float* Yptr;
+        float* ZoomPtr;
         /*[UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate byte Character_GetIsTargetable(IntPtr characterPtr);
         private Character_GetIsTargetable GetIsTargetable_Character;
@@ -26,17 +27,25 @@ namespace Splatoon
         {
             try
             {
+                //throw new Exception("Failsafe mode.");
                 if (p.Config.NoMemory) throw new Exception("No memory mode was requested by an user.");
+                //p.Config.NoMemory = true;
+                //p.Config.Save();
                 /*GetIsTargetable_Character = Marshal.GetDelegateForFunctionPointer<Character_GetIsTargetable>(
                     Svc.SigScanner.ScanText("F3 0F 10 89 ?? ?? ?? ?? 0F 57 C0 0F 2E C8 7A 05 75 03 32 C0 C3 80 B9"));
                 GetIsTargetable_GameObject = Marshal.GetDelegateForFunctionPointer<GameObject_GetIsTargetable>(
                     Svc.SigScanner.ScanText("0F B6 91 ?? ?? ?? ?? F6 C2 02"));*/
-                var cameraAddress = *(IntPtr*)Svc.SigScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 09");
-                CameraAddressX = (float*)(cameraAddress + 0x130);
-                CameraAddressY = (float*)(cameraAddress + 0x134);
-                CameraZoom = (float*)(cameraAddress + 0x114);
+                //var ptr = Svc.SigScanner.GetStaticAddressFromSig("48 8D 35 ?? ?? ?? ?? 48 8B 09");
+                cameraAddressPtr = *(IntPtr*)Svc.SigScanner.GetStaticAddressFromSig("48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B 8B ?? ?? ?? ?? 48 85 C9 74 11 48 8B 01");
+                if (cameraAddressPtr == IntPtr.Zero) throw new Exception("Camera address was zero");
+                PluginLog.Information($"Camera address ptr: {cameraAddressPtr:X16}");
+                Xptr = (float*)(cameraAddressPtr + 0x130);
+                Yptr = (float*)(cameraAddressPtr + 0x134);
+                ZoomPtr = (float*)(cameraAddressPtr + 0x114);
                 ErrorCode = 0;
                 PluginLog.Information("Memory manager initialized successfully");
+                //p.Config.NoMemory = false;
+                //p.Config.Save();
             }
             catch(Exception e)
             {
@@ -71,6 +80,42 @@ namespace Splatoon
         {
             if (ErrorCode != 0) return 0;
             return *(int*)(a.Address + 0x01B4);
+        }
+
+        public float GetCamAngleX()
+        {
+            if(ErrorCode != 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return *Xptr;
+            }
+        }
+
+        public float GetCamAngleY()
+        {
+            if (ErrorCode != 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return *Yptr;
+            }
+        }
+
+        public float GetCamZoom()
+        {
+            if (ErrorCode != 0)
+            {
+                return 10;
+            }
+            else
+            {
+                return *ZoomPtr;
+            }
         }
     }
 }

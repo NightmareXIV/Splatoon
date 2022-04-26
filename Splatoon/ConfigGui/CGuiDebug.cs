@@ -60,6 +60,7 @@ namespace Splatoon
             ImGui.Separator();
             ImGui.Text("Camera angle X:" + p.CamAngleX);
             ImGui.Text("Camera angle Y:" + p.CamAngleY);
+            ImGui.Text("Camera zoom:" + p.CamZoom);
             ImGui.Separator();
             ImGui.Text("Object table:");
             ImGui.Text("Name");
