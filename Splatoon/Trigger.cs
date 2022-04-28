@@ -21,6 +21,7 @@ namespace Splatoon
         [DefaultValue(0)] public int TimeBegin = 0;
         [DefaultValue(0)] public int Duration = 0;
         [DefaultValue("")] public string Match = "";
+        [DefaultValue(0)] public int MatchDelay = 0;
         [DefaultValue(true)] public bool ResetOnCombatExit = true;
         [DefaultValue(true)] public bool ResetOnTChange = true;
         /// <summary>
@@ -29,6 +30,7 @@ namespace Splatoon
         /// 2: fired and ended
         /// </summary>
         [NonSerialized] public int FiredState = 0;
+        [NonSerialized] public long EnableAt = 0;
         [NonSerialized] public long DisableAt = 0;
     }
 }

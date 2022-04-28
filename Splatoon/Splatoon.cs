@@ -774,6 +774,10 @@ unsafe class Splatoon : IDalamudPlugin
                     }
                     else if (t.Type == 2 || t.Type == 3)
                     {
+                        if (t.EnableAt != 0 && Environment.TickCount64 > t.EnableAt)
+                        {
+                            i.TriggerCondition = t.Type == 2 ? 1 : -1;
+                        }
                         foreach (var CurrentChatMessage in CurrentChatMessages)
                         {
                             if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
@@ -787,7 +791,14 @@ unsafe class Splatoon : IDalamudPlugin
                                     t.FiredState = 1;
                                     t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
                                 }
-                                i.TriggerCondition = t.Type == 2 ? 1 : -1;
+                                if (t.MatchDelay != 0)
+                                {
+                                    t.EnableAt = Environment.TickCount64 + t.MatchDelay * 1000;
+                                }
+                                else
+                                {
+                                    i.TriggerCondition = t.Type == 2 ? 1 : -1;
+                                }
                             }
                         }
                     }
