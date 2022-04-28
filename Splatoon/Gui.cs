@@ -104,7 +104,7 @@ namespace Splatoon
 
         (Vector2? posA, Vector2? posB) GetAdjustedLine(Vector3 pointA, Vector3 pointB)
         {
-            var resultA = Svc.GameGui.WorldToScreen(new Vector3(pointA.X, pointA.Z, pointA.Y), out Vector2 posA);
+            var resultA = p.MemoryManager.WorldToScreen(new Vector3(pointA.X, pointA.Z, pointA.Y), out Vector2 posA);
             if (!resultA && !p.DisableLineFix)
             {
                 var posA2 = GetLineClosestToVisiblePoint(pointA,
@@ -119,7 +119,7 @@ namespace Splatoon
                     posA = posA2.Value;
                 }
             }
-            var resultB = Svc.GameGui.WorldToScreen(new Vector3(pointB.X, pointB.Z, pointB.Y), out Vector2 posB);
+            var resultB = p.MemoryManager.WorldToScreen(new Vector3(pointB.X, pointB.Z, pointB.Y), out Vector2 posB);
             if (!resultB && !p.DisableLineFix)
             {
                 var posB2 = GetLineClosestToVisiblePoint(pointB,
@@ -165,7 +165,7 @@ namespace Splatoon
         {
             if (curSegment > numSegments) return null;
             var nextPos = currentPos + delta;
-            if(Svc.GameGui.WorldToScreen(new Vector3(nextPos.X, nextPos.Z, nextPos.Y), out Vector2 pos))
+            if(p.MemoryManager.WorldToScreen(new Vector3(nextPos.X, nextPos.Z, nextPos.Y), out Vector2 pos))
             {
                 var preciseVector = GetLineClosestToVisiblePoint(currentPos, (nextPos - currentPos) / p.Config.lineSegments, 0, p.Config.lineSegments);
                 return preciseVector.HasValue?preciseVector.Value:pos;
@@ -178,7 +178,7 @@ namespace Splatoon
 
         public void DrawTextWorld(DisplayObjectText e)
         {
-            if (Svc.GameGui.WorldToScreen(
+            if (p.MemoryManager.WorldToScreen(
                             new Vector3(e.x, e.z, e.y),
                             out Vector2 pos))
             {
@@ -211,7 +211,7 @@ namespace Splatoon
         public void DrawRingWorld(DisplayObjectCircle e)
         {
             int seg = p.Config.segments / 2;
-            Svc.GameGui.WorldToScreen(new Vector3(
+            p.MemoryManager.WorldToScreen(new Vector3(
                 e.x + (e.radius * (float)Math.Sin(p.CamAngleX)),
                 e.z, 
                 e.y + (e.radius * (float)Math.Cos(p.CamAngleX))
@@ -220,7 +220,7 @@ namespace Splatoon
             Vector2?[] elements = new Vector2?[p.Config.segments];
             for (int i = 0; i < p.Config.segments; i++)
             {
-                visible = Svc.GameGui.WorldToScreen(
+                visible = p.MemoryManager.WorldToScreen(
                     new Vector3(e.x + (e.radius * (float)Math.Sin((Math.PI / seg) * i)),
                     e.z,
                     e.y + (e.radius * (float)Math.Cos((Math.PI / seg) * i))
@@ -250,7 +250,7 @@ namespace Splatoon
 
         public void DrawPoint(DisplayObjectDot e)
         {
-            if(Svc.GameGui.WorldToScreen(new Vector3(e.x, e.z, e.y), out Vector2 pos)) 
+            if(p.MemoryManager.WorldToScreen(new Vector3(e.x, e.z, e.y), out Vector2 pos)) 
                 ImGui.GetWindowDrawList().AddCircleFilled(
                 new Vector2(pos.X, pos.Y),
                 e.thickness,
@@ -264,7 +264,7 @@ namespace Splatoon
             var objects = new List<Action>();
             var coords = GetPolygon(p.e.Polygon.Select((x) =>
             {
-                Svc.GameGui.WorldToScreen(new Vector3(x.X, x.Z, x.Y), out Vector2 pos);
+                p.MemoryManager.WorldToScreen(new Vector3(x.X, x.Z, x.Y), out Vector2 pos);
                 return pos;
             }).ToList());
             var medium = new Vector2(coords.Average(x => x.v2.X), coords.Average(x => x.v2.Y));

@@ -51,7 +51,7 @@ namespace Splatoon
             {
                 Safe(delegate
                 {
-                    s2wb = Svc.GameGui.WorldToScreen(new Vector3(s2wx, s2wz, s2wy), out Vector2 pos);
+                    s2wb = p.MemoryManager.WorldToScreen(new Vector3(s2wx, s2wz, s2wy), out Vector2 pos);
                     s2wrx = pos.X;
                     s2wry = pos.Y;
                 });

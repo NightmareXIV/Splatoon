@@ -173,7 +173,7 @@ namespace Splatoon
 
         private void SetCursorTo(float refX, float refZ, float refY)
         {
-            if (Svc.GameGui.WorldToScreen(new Vector3(refX, refZ, refY), out var screenPos))
+            if (p.MemoryManager.WorldToScreen(new Vector3(refX, refZ, refY), out var screenPos))
             {
                 var point = new Native.POINT() { X = (int)screenPos.X, Y = (int)screenPos.Y };
                 //Chat.Print(point.X + "/" + point.Y);

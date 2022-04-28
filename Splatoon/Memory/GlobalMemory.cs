@@ -11,10 +11,15 @@ namespace Splatoon
     unsafe class GlobalMemory : IMemoryManager
     {
         public int ErrorCode { get; set; } = -1;
+        public IMemoryManager.W2SDelegate<Vector3, Vector2> WorldToScreen { get; set; } = Svc.GameGui.WorldToScreen;
+
         IntPtr cameraAddressPtr;
         float* Xptr;
         float* Yptr;
         float* ZoomPtr;
+
+        
+
         /*[UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate byte Character_GetIsTargetable(IntPtr characterPtr);
         private Character_GetIsTargetable GetIsTargetable_Character;
