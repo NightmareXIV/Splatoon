@@ -112,6 +112,7 @@ unsafe class Splatoon : IDalamudPlugin
         if(inttype == 2105 && message.ToString() == "The limit gauge resets!")
         {
             Phase++;
+            CombatStarted = Environment.TickCount64;
             Svc.PluginInterface.UiBuilder.AddNotification($"Phase transition to Phase {Phase}", this.Name, NotificationType.Info, 10000);
         }
         if(!Config.LimitTriggerMessages || inttype == 68 || inttype == 2105 || type == XivChatType.SystemMessage)
@@ -781,7 +782,7 @@ unsafe class Splatoon : IDalamudPlugin
                             else
                             {
                                 t.FiredState = 1;
-                                t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
+                                t.DisableAt = Environment.TickCount64 + (int)(t.Duration * 1000);
                             }
                             i.TriggerCondition = t.Type == 0 ? 1 : -1;
                         }
@@ -799,11 +800,11 @@ unsafe class Splatoon : IDalamudPlugin
                                 else
                                 {
                                     t.FiredState = 1;
-                                    t.DisableAt = Environment.TickCount64 + t.Duration * 1000 + t.MatchDelay * 1000;
+                                    t.DisableAt = Environment.TickCount64 + (int)(t.Duration * 1000) + (int)(t.MatchDelay * 1000);
                                 }
                                 if (t.MatchDelay != 0)
                                 {
-                                    t.EnableAt = Environment.TickCount64 + t.MatchDelay * 1000;
+                                    t.EnableAt = Environment.TickCount64 + (int)(t.MatchDelay * 1000);
                                 }
                                 else
                                 {

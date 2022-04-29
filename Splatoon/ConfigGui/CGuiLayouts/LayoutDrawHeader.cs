@@ -292,9 +292,9 @@ namespace Splatoon
                             ImGui.TextUnformatted("Time: ");
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(50f);
-                            ImGui.DragInt("##triggertime1" + i + n, ref layout.Triggers[n].TimeBegin, 0.2f, 0, 3599);
+                            ImGui.DragFloat("##triggertime1" + i + n, ref layout.Triggers[n].TimeBegin, 0.1f, 0, 3599, "%.1f");
                             ImGui.SameLine();
-                            ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeSeconds(layout.Triggers[n].TimeBegin).ToString("mm:ss"));
+                            ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].TimeBegin * 1000)).ToString("mm:ss.f"));
                         }
                         else
                         {
@@ -305,18 +305,18 @@ namespace Splatoon
                             ImGui.TextUnformatted("Delay: ");
                             ImGui.SameLine(); 
                             ImGui.SetNextItemWidth(50f);
-                            ImGui.DragInt("##triggertime1" + i + n, ref layout.Triggers[n].MatchDelay, 0.2f, 0, 3599);
+                            ImGui.DragFloat("##triggertime1" + i + n, ref layout.Triggers[n].MatchDelay, 0.1f, 0, 3599, "%.1f");
                             ImGui.SameLine();
-                            ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeSeconds(layout.Triggers[n].MatchDelay).ToString("mm:ss"));
+                            ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].MatchDelay*1000)).ToString("mm:ss.f"));
                             layout.Triggers[n].Match = layout.Triggers[n].Match.RemoveSymbols(Splatoon.InvalidSymbols);
                         }
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Duration: ");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(50f);
-                        ImGui.DragInt("##triggertime2" + i + n, ref layout.Triggers[n].Duration, 0.2f, 0, 3599);
+                        ImGui.DragFloat("##triggertime2" + i + n, ref layout.Triggers[n].Duration, 0.1f, 0, 3599, "%.1f");
                         ImGui.SameLine();
-                        ImGui.TextUnformatted(layout.Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeSeconds(layout.Triggers[n].Duration).ToString("mm:ss"));
+                        ImGui.TextUnformatted(layout.Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].Duration * 1000)).ToString("mm:ss.f"));
                         ImGui.Separator();
                     }
                     if (deleteTrigger != -1)

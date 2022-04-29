@@ -18,10 +18,10 @@ namespace Splatoon
         /// 3: Hide at text
         /// </summary>
         [DefaultValue(0)] public int Type = 0;
-        [DefaultValue(0)] public int TimeBegin = 0;
-        [DefaultValue(0)] public int Duration = 0;
+        [DefaultValue(0f)] public float TimeBegin = 0;
+        [DefaultValue(0f)] public float Duration = 0;
         [DefaultValue("")] public string Match = "";
-        [DefaultValue(0)] public int MatchDelay = 0;
+        [DefaultValue(0f)] public float MatchDelay = 0;
         [DefaultValue(true)] public bool ResetOnCombatExit = true;
         [DefaultValue(true)] public bool ResetOnTChange = true;
         /// <summary>
