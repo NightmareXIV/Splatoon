@@ -22,11 +22,23 @@ namespace Splatoon
         void LayoutDrawHeader(string i)
         {
             var topCursorPos = ImGui.GetCursorPos();
-            ImGui.Checkbox("Enabled##" + i, ref p.Config.Layouts[i].Enabled);
+            var layout = p.Config.Layouts[i];
+            ImGui.Checkbox("Enabled##" + i, ref layout.Enabled);
             ImGui.SameLine();
-            ImGui.Checkbox("Prevent controlling with web api##" + i, ref p.Config.Layouts[i].DisableDisabling);
+            ImGui.Checkbox("Disable in duty##" + i, ref layout.DisableInDuty);
             ImGui.SameLine();
-            ImGui.Checkbox("Disable in duty##" + i, ref p.Config.Layouts[i].DisableInDuty);
+            ImGui.SetNextItemWidth(100f);
+            if(ImGui.BeginCombo("##phaseSelectorL", $"{(layout.Phase == 0?"Any phase":$"Phase {layout.Phase}")}"))
+            {
+                if (ImGui.Selectable("Any phase")) layout.Phase = 0;
+                if (ImGui.Selectable("Phase 1 (doorboss)")) layout.Phase = 1;
+                if (ImGui.Selectable("Phase 2 (post-doorboss)")) layout.Phase = 2;
+                ImGui.Text("Manual phase selection:");
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(30f);
+                ImGui.DragInt("##mPSel", ref layout.Phase, 0.1f, 0, 9);
+                ImGui.EndCombo();
+            }
             ImGui.SetCursorPos(new Vector2(ImGui.GetColumnWidth() - ShareWidth - ImGui.GetStyle().ItemSpacing.X, topCursorPos.Y));
             ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
             if(ImGui.Button("Share layout"))
@@ -72,14 +84,14 @@ namespace Splatoon
             {
                 ImGui.Text("Display conditions:");
                 ImGui.SetNextItemWidth(WidthCombo);
-                ImGui.Combo("##dcn" + i, ref p.Config.Layouts[i].DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
+                ImGui.Combo("##dcn" + i, ref layout.DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
             }, out var upperTextCursor);
             var delta = (ImGui.GetWindowContentRegionWidth() - WidthCombo * 3f - ImGui.GetStyle().ItemSpacing.X * 2f) / 2;
             upperTextCursor += delta;
 
             var colorZLock = Svc.ClientState?.TerritoryType != null
-                && p.Config.Layouts[i].ZoneLockH.Count != 0
-                && !p.Config.Layouts[i].ZoneLockH.Contains(Svc.ClientState.TerritoryType)
+                && layout.ZoneLockH.Count != 0
+                && !layout.ZoneLockH.Contains(Svc.ClientState.TerritoryType)
                 && Environment.TickCount64 % 1000 < 500;
             if (colorZLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
             ImGuiEx.GSameLine(delegate
@@ -88,11 +100,11 @@ namespace Splatoon
                 ImGui.Text("Zone lock: ");
                 ImGui.SetNextItemWidth(WidthCombo);
                 ImGui.SetCursorPosX(upperTextCursor);
-                p.Config.Layouts[i].ZoneLockH.RemoveWhere(el => !p.Zones.ContainsKey(el));
-                if (ImGui.BeginCombo("##zlk" + i, p.Config.Layouts[i].ZoneLockH.Count == 0 ? "All zones" :
-                    p.Config.Layouts[i].ZoneLockH.Count == 1 ? p.Config.Layouts[i].ZoneLockH.First() + " / "
-                    + p.Zones[p.Config.Layouts[i].ZoneLockH.First()].PlaceName.Value.Name :
-                    p.Config.Layouts[i].ZoneLockH.Count + " zones"
+                layout.ZoneLockH.RemoveWhere(el => !p.Zones.ContainsKey(el));
+                if (ImGui.BeginCombo("##zlk" + i, layout.ZoneLockH.Count == 0 ? "All zones" :
+                    layout.ZoneLockH.Count == 1 ? layout.ZoneLockH.First() + " / "
+                    + p.Zones[layout.ZoneLockH.First()].PlaceName.Value.Name :
+                    layout.ZoneLockH.Count + " zones"
                     ))
                 {
                     if (colorZLock) ImGui.PopStyleColor();
@@ -103,7 +115,7 @@ namespace Splatoon
                     if (p.Zones.ContainsKey(Svc.ClientState.TerritoryType))
                     {
                         ImGui.PushStyleColor(ImGuiCol.Text, Colors.Yellow);
-                        if (p.Config.Layouts[i].ZoneLockH.Contains(Svc.ClientState.TerritoryType))
+                        if (layout.ZoneLockH.Contains(Svc.ClientState.TerritoryType))
                         {
                             ImGuiEx.ColorButton(Colors.Red);
                         }
@@ -112,7 +124,7 @@ namespace Splatoon
                             + p.Zones[Svc.ClientState.TerritoryType].PlaceName.Value.Name +
                             (string.IsNullOrEmpty(zcfc) ? "" : $" ({zcfc})")))
                         {
-                            p.Config.Layouts[i].ZoneLockH.Toggle(Svc.ClientState.TerritoryType);
+                            layout.ZoneLockH.Toggle(Svc.ClientState.TerritoryType);
                         }
                         ImGuiEx.UncolorButton();
                         ImGui.PopStyleColor();
@@ -123,14 +135,14 @@ namespace Splatoon
                         if (z.Value.PlaceName.Value.Name.ToString().Length == 0) continue;
                         var s = z.Key + " / " + z.Value.PlaceName.Value.Name + (string.IsNullOrEmpty(azcfc) ? "" : $" ({azcfc})");
                         if (!s.ToLower().Contains(zlockf)) continue;
-                        if (zlockcur && !p.Config.Layouts[i].ZoneLockH.Contains(z.Key)) continue;
-                        if (p.Config.Layouts[i].ZoneLockH.Contains(z.Key))
+                        if (zlockcur && !layout.ZoneLockH.Contains(z.Key)) continue;
+                        if (layout.ZoneLockH.Contains(z.Key))
                         {
                             ImGuiEx.ColorButton(Colors.Red);
                         }
                         if (ImGui.SmallButton(s))
                         {
-                            p.Config.Layouts[i].ZoneLockH.Toggle(z.Key);
+                            layout.ZoneLockH.Toggle(z.Key);
                         }
                         ImGuiEx.UncolorButton();
                     }
@@ -144,7 +156,7 @@ namespace Splatoon
             upperTextCursor += (ImGui.GetWindowContentRegionWidth() - WidthCombo * 3f - ImGui.GetStyle().ItemSpacing.X * 2f) / 2;
 
             var jprev = new List<string>();
-            if (p.Config.Layouts[i].JobLock == 0)
+            if (layout.JobLock == 0)
             {
                 jprev.Add("All jobs");
             }
@@ -152,15 +164,15 @@ namespace Splatoon
             {
                 foreach (var k in p.Jobs)
                 {
-                    if (Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, k.Key))
+                    if (Bitmask.IsBitSet(layout.JobLock, k.Key))
                     {
                         jprev.Add(k.Value);
                     }
                 }
             }
             var colorJLock = Svc.ClientState?.LocalPlayer?.ClassJob != null
-                && p.Config.Layouts[i].JobLock != 0
-                && !Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, (int)Svc.ClientState.LocalPlayer.ClassJob.Id)
+                && layout.JobLock != 0
+                && !Bitmask.IsBitSet(layout.JobLock, (int)Svc.ClientState.LocalPlayer.ClassJob.Id)
                 && Environment.TickCount64 % 1000 < 500;
             if (colorJLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
             ImGuiEx.GSameLine(delegate
@@ -178,7 +190,7 @@ namespace Splatoon
                         if (!k.Key.ToString().Contains(jobFilter) && !k.Value.Contains(jobFilter)) continue;
                         if (k.Key == 0) continue;
                         var col = false;
-                        if (Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, k.Key))
+                        if (Bitmask.IsBitSet(layout.JobLock, k.Key))
                         {
                             ImGui.PushStyleColor(ImGuiCol.Button, Colors.Red);
                             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Colors.Red);
@@ -186,13 +198,13 @@ namespace Splatoon
                         }
                         if (ImGui.SmallButton(k.Key + " / " + k.Value + "##selectjob" + i))
                         {
-                            if (Bitmask.IsBitSet(p.Config.Layouts[i].JobLock, k.Key))
+                            if (Bitmask.IsBitSet(layout.JobLock, k.Key))
                             {
-                                Bitmask.ResetBit(ref p.Config.Layouts[i].JobLock, k.Key);
+                                Bitmask.ResetBit(ref layout.JobLock, k.Key);
                             }
                             else
                             {
-                                Bitmask.SetBit(ref p.Config.Layouts[i].JobLock, k.Key);
+                                Bitmask.SetBit(ref layout.JobLock, k.Key);
                             }
                         }
                         if (col) ImGui.PopStyleColor(2);
@@ -205,56 +217,56 @@ namespace Splatoon
                 }
             }, out upperTextCursor, true);
 
-            ImGui.Checkbox("Distance limit##dlimit" + i, ref p.Config.Layouts[i].UseDistanceLimit);
-            if (p.Config.Layouts[i].UseDistanceLimit)
+            ImGui.Checkbox("Distance limit##dlimit" + i, ref layout.UseDistanceLimit);
+            if (layout.UseDistanceLimit)
             {
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(150f);
                 ImGui.SameLine();
-                ImGui.Combo("##dlimittype" + i, ref p.Config.Layouts[i].DistanceLimitType, new string[] { "Distance to current target", "Distance to element" }, 2);
+                ImGui.Combo("##dlimittype" + i, ref layout.DistanceLimitType, new string[] { "Distance to current target", "Distance to element" }, 2);
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(50f);
-                ImGui.DragFloat("##dlimit1" + i, ref p.Config.Layouts[i].MinDistance, 0.1f);
+                ImGui.DragFloat("##dlimit1" + i, ref layout.MinDistance, 0.1f);
                 if (ImGui.IsItemHovered()) ImGui.SetTooltip("Including this value");
                 ImGui.SameLine();
                 ImGui.TextUnformatted("-");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(50f);
-                ImGui.DragFloat("##dlimit2" + i, ref p.Config.Layouts[i].MaxDistance, 0.1f);
+                ImGui.DragFloat("##dlimit2" + i, ref layout.MaxDistance, 0.1f);
                 if (ImGui.IsItemHovered()) ImGui.SetTooltip("Excluding this value");
-                if (p.Config.Layouts[i].DistanceLimitType == 0)
+                if (layout.DistanceLimitType == 0)
                 {
                     ImGui.SameLine();
                     ImGui.TextUnformatted("Hitbox:");
                     ImGui.SameLine();
-                    ImGui.Checkbox("+my##" + i, ref p.Config.Layouts[i].DistanceLimitMyHitbox);
+                    ImGui.Checkbox("+my##" + i, ref layout.DistanceLimitMyHitbox);
                     if (ImGui.IsItemHovered()) ImGui.SetTooltip("Add my hitbox value to distance calculation");
                     ImGui.SameLine();
-                    ImGui.Checkbox("+target##" + i, ref p.Config.Layouts[i].DistanceLimitTargetHitbox);
+                    ImGui.Checkbox("+target##" + i, ref layout.DistanceLimitTargetHitbox);
                     if (ImGui.IsItemHovered()) ImGui.SetTooltip("Add target's hitbox value to distance calculation");
                 }
             }
             else
             {
-                if (!p.Config.Layouts[i].UseTriggers)
+                if (!layout.UseTriggers)
                 {
                     ImGui.SameLine();
                 }
             }
 
-            if (p.Config.Layouts[i].UseTriggers)
+            if (layout.UseTriggers)
             {
-                ImGui.Checkbox("##usetrigger" + i, ref p.Config.Layouts[i].UseTriggers);
+                ImGui.Checkbox("##usetrigger" + i, ref layout.UseTriggers);
                 ImGui.SameLine();
                 ImGui.PushStyleColor(ImGuiCol.Header, Colors.Transparent);
                 if (ImGui.CollapsingHeader("Trigger settings##" + i))
                 {
                     if (ImGui.Button("Add new trigger##" + i))
                     {
-                        p.Config.Layouts[i].Triggers.Add(new Trigger());
+                        layout.Triggers.Add(new Trigger());
                     }
                     var deleteTrigger = -1;
-                    for (var n = 0; n < p.Config.Layouts[i].Triggers.Count; n++)
+                    for (var n = 0; n < layout.Triggers.Count; n++)
                     {
                         if (ImGui.Button("[X]##" + n + i) && ImGui.GetIO().KeyCtrl)
                         {
@@ -266,44 +278,52 @@ namespace Splatoon
                         }
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);
-                        ImGui.Combo("##trigger" + i + n, ref p.Config.Layouts[i].Triggers[n].Type, Trigger.Types, Trigger.Types.Length);
+                        ImGui.Combo("##trigger" + i + n, ref layout.Triggers[n].Type, Trigger.Types, Trigger.Types.Length);
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Reset on:");
                         ImGui.SameLine();
-                        ImGui.Checkbox("Combat exit##" + i + n, ref p.Config.Layouts[i].Triggers[n].ResetOnCombatExit);
+                        ImGui.Checkbox("Combat exit##" + i + n, ref layout.Triggers[n].ResetOnCombatExit);
                         ImGui.SameLine();
-                        ImGui.Checkbox("Territory change##" + i + n, ref p.Config.Layouts[i].Triggers[n].ResetOnTChange);
+                        ImGui.Checkbox("Territory change##" + i + n, ref layout.Triggers[n].ResetOnTChange);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("State: " + p.Config.Layouts[i].Triggers[n].FiredState);
-                        if (p.Config.Layouts[i].Triggers[n].Type == 0 || p.Config.Layouts[i].Triggers[n].Type == 1)
+                        ImGui.TextUnformatted("State: " + layout.Triggers[n].FiredState);
+                        if (layout.Triggers[n].Type == 0 || layout.Triggers[n].Type == 1)
                         {
                             ImGui.TextUnformatted("Time: ");
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(50f);
-                            ImGui.DragInt("##triggertime1" + i + n, ref p.Config.Layouts[i].Triggers[n].TimeBegin, 0.2f, 0, 3599);
+                            ImGui.DragInt("##triggertime1" + i + n, ref layout.Triggers[n].TimeBegin, 0.2f, 0, 3599);
                             ImGui.SameLine();
-                            ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].TimeBegin).ToString("mm:ss"));
+                            ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeSeconds(layout.Triggers[n].TimeBegin).ToString("mm:ss"));
                         }
                         else
                         {
-                            ImGui.SetNextItemWidth(400f);
-                            ImGui.InputTextWithHint("##textinput1" + n + i, "Case-insensitive message", ref p.Config.Layouts[i].Triggers[n].Match, 1000);
-                            p.Config.Layouts[i].Triggers[n].Match = p.Config.Layouts[i].Triggers[n].Match.RemoveSymbols(Splatoon.InvalidSymbols);
+                            ImGui.SetNextItemWidth(300f);
+                            ImGui.InputTextWithHint("##textinput1" + n + i, "Case-insensitive message", ref layout.Triggers[n].Match, 1000);
+
+                            ImGui.SameLine(); 
+                            ImGui.TextUnformatted("Delay: ");
+                            ImGui.SameLine(); 
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragInt("##triggertime1" + i + n, ref layout.Triggers[n].MatchDelay, 0.2f, 0, 3599);
+                            ImGui.SameLine();
+                            ImGui.TextUnformatted(DateTimeOffset.FromUnixTimeSeconds(layout.Triggers[n].MatchDelay).ToString("mm:ss"));
+                            layout.Triggers[n].Match = layout.Triggers[n].Match.RemoveSymbols(Splatoon.InvalidSymbols);
                         }
                         ImGui.SameLine();
                         ImGui.TextUnformatted("Duration: ");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(50f);
-                        ImGui.DragInt("##triggertime2" + i + n, ref p.Config.Layouts[i].Triggers[n].Duration, 0.2f, 0, 3599);
+                        ImGui.DragInt("##triggertime2" + i + n, ref layout.Triggers[n].Duration, 0.2f, 0, 3599);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted(p.Config.Layouts[i].Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeSeconds(p.Config.Layouts[i].Triggers[n].Duration).ToString("mm:ss"));
+                        ImGui.TextUnformatted(layout.Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeSeconds(layout.Triggers[n].Duration).ToString("mm:ss"));
                         ImGui.Separator();
                     }
                     if (deleteTrigger != -1)
                     {
                         try
                         {
-                            p.Config.Layouts[i].Triggers.RemoveAt(deleteTrigger);
+                            layout.Triggers.RemoveAt(deleteTrigger);
                         }
                         catch (Exception e)
                         {
@@ -319,7 +339,7 @@ namespace Splatoon
             }
             else
             {
-                ImGui.Checkbox("Use trigger system##usetrigger" + i, ref p.Config.Layouts[i].UseTriggers);
+                ImGui.Checkbox("Use trigger system##usetrigger" + i, ref layout.UseTriggers);
             }
 
             ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(Colors.Green), "Add elements to the layout to create markers:");
@@ -330,7 +350,7 @@ namespace Splatoon
             ImGui.SameLine();
             if (ImGui.Button("Add element##addelement" + i))
             {
-                if (p.Config.Layouts[i].Elements.ContainsKey(ename))
+                if (layout.Elements.ContainsKey(ename))
                 {
                     p.Log("Error: this name already exists", true);
                 }
@@ -344,14 +364,14 @@ namespace Splatoon
                     el.refX = GetPlayerPositionXZY().X;
                     el.refY = GetPlayerPositionXZY().Y;
                     el.refZ = GetPlayerPositionXZY().Z;
-                    p.Config.Layouts[i].Elements.Add(ename, el);
+                    layout.Elements.Add(ename, el);
                     ename = "";
                 }
             }
             ImGui.SameLine();
             if (ImGui.Button("Paste from clipboard##addelement" + i))
             {
-                if (p.Config.Layouts[i].Elements.ContainsKey(ename))
+                if (layout.Elements.ContainsKey(ename))
                 {
                     p.Log("Error: this name already exists", true);
                 }
@@ -364,7 +384,7 @@ namespace Splatoon
                     try
                     {
                         var el = JsonConvert.DeserializeObject<Element>(ImGui.GetClipboardText());
-                        p.Config.Layouts[i].Elements.Add(ename, el);
+                        layout.Elements.Add(ename, el);
                         ename = "";
                     }
                     catch(Exception e)

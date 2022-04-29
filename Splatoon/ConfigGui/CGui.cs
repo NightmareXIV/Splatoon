@@ -32,6 +32,7 @@ namespace Splatoon
         bool enableDeletionElement = false;
         bool WasOpen = false;
         string jobFilter = "";
+        float RightWidth = 0;
 
         public CGui(Splatoon p)
         {
@@ -44,7 +45,7 @@ namespace Splatoon
             Svc.PluginInterface.UiBuilder.Draw -= Draw;
         }
 
-        [HandleProcessCorruptedStateExceptions]
+        
         void Draw()
         {
             if (p.s2wInfo != null) return;
@@ -74,7 +75,9 @@ namespace Splatoon
             WasOpen = true;
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             var titleColored = false;
-            if (ImGui.Begin("Splatoon", ref Open))
+            var ctspan = TimeSpan.FromMilliseconds(Environment.TickCount64 - p.CombatStarted);
+            var title = $"Splatoon | {(p.Zones.TryGetValue(Svc.ClientState.TerritoryType, out var t) ? p.Zones[Svc.ClientState.TerritoryType].PlaceName.Value.Name : "Terr: " + Svc.ClientState.TerritoryType)} | {(p.CombatStarted == 0?"Not in combat":$"Combat: {ctspan.Minutes:D2}{(ctspan.Milliseconds < 500?":":" ")}{ctspan.Seconds:D2} ({(int)ctspan.TotalSeconds}.{(ctspan.Milliseconds / 100):D1}s)")} | Phase: {p.Phase} | Layouts: {p.LayoutAmount} | Elements: {p.ElementAmount}###Splatoon";
+            if (ImGui.Begin(title, ref Open))
             {
                 if (ChlogGui.ChlogVersion > p.Config.ChlogReadVer)
                 {
@@ -86,14 +89,29 @@ namespace Splatoon
                 }
                 else
                 {
-                    if (p.MemoryManager.ErrorCode != 0)
+                    var curCursor = ImGui.GetCursorPos();
+                    ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - RightWidth);
+                    RightWidth = ImGuiEx.Measure(delegate
                     {
-                        var cursor = ImGui.GetCursorPos();
-                        var text = "Failsafe mode";
-                        ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(text).X);
-                        ImGui.TextColored((Environment.TickCount % 1000 < 500 ? Colors.Red : Colors.Yellow).ToVector4(), text);
-                        ImGui.SetCursorPos(cursor);
-                    }
+                        if (p.MemoryManager.ErrorCode != 0)
+                        {
+                            ImGui.TextColored((Environment.TickCount % 1000 < 500 ? Colors.Red : Colors.Yellow).ToVector4(), "Failsafe mode");
+                            ImGui.SameLine();
+                        }
+                        ImGui.SetNextItemWidth(100f);
+                        if (ImGui.BeginCombo("##phaseSelector", $"Phase {p.Phase}"))
+                        {
+                            if (ImGui.Selectable("Phase 1 (doorboss)")) p.Phase = 1;
+                            if (ImGui.Selectable("Phase 2 (post-doorboss)")) p.Phase = 2;
+                            ImGui.Text("Manual phase selection:");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(30f);
+                            ImGui.DragInt("##mPSel", ref p.Phase, 0.1f, 1, 9);
+                            ImGui.EndCombo();
+                        }
+                    });
+                    ImGui.SetCursorPos(curCursor);
+                    
                     ImGui.BeginTabBar("SplatoonSettings");
                     if (ImGui.BeginTabItem("General settings"))
                     {
@@ -112,7 +130,7 @@ namespace Splatoon
                         ImGui.PopStyleColor();
                     }
 
-                    if (ImGui.BeginTabItem("Object logger"))
+                    if (ImGui.BeginTabItem("Logger"))
                     {
                         DisplayLogger();
                         ImGui.EndTabItem();
@@ -127,7 +145,7 @@ namespace Splatoon
                         DisplayLog();
                         ImGui.EndTabItem();
                     }
-                    if (ImGui.BeginTabItem("Dynamic elements"))
+                    if (ImGui.BeginTabItem("Dynamic"))
                     {
                         DisplayDynamicElements();
                         ImGui.EndTabItem();

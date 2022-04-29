@@ -48,6 +48,7 @@ namespace Splatoon
         /// 0: To target | 1: To object
         /// </summary>
         [DefaultValue(0)] public int DistanceLimitType = 0;
+        [DefaultValue(0)] public int Phase = 0;
 
         public bool ShouldSerializeZoneLockH()
         {

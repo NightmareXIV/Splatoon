@@ -45,6 +45,9 @@ unsafe class Splatoon : IDalamudPlugin
     internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, ObjectKind type), ObjectInfo> loggedObjectList = new();
     internal bool LogObjects = false;
     internal bool DisableLineFix = false;
+    internal int Phase = 1;
+    internal int LayoutAmount = 0;
+    internal int ElementAmount = 0;
     public static bool Init = false;
 
     public void Dispose()
@@ -106,6 +109,11 @@ unsafe class Splatoon : IDalamudPlugin
     {
         if (Profiler.Enabled) Profiler.MainTickChat.StartTick();
         var inttype = (int)type;
+        if(inttype == 2105 && message.ToString() == "The limit gauge resets!")
+        {
+            Phase++;
+            Svc.PluginInterface.UiBuilder.AddNotification($"Phase transition to Phase {Phase}", this.Name, NotificationType.Info, 10000);
+        }
         if(!Config.LimitTriggerMessages || inttype == 68 || inttype == 2105 || type == XivChatType.SystemMessage)
         {
             ChatMessageQueue.Enqueue(message.Payloads.Where(p => p is ITextProvider)
@@ -146,6 +154,7 @@ unsafe class Splatoon : IDalamudPlugin
 
     private void TerritoryChangedEvent(object sender, ushort e)
     {
+        Phase = 1;
         if (SFind != null)
         {
             SFind = null;
@@ -184,12 +193,14 @@ unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    [HandleProcessCorruptedStateExceptions]
+    
     public void Tick(Framework framework)
     {
         if (Profiler.Enabled) Profiler.MainTick.StartTick();
         try
         {
+            LayoutAmount = 0;
+            ElementAmount = 0;
             if (LogObjects && Svc.ClientState.LocalPlayer != null)
             {
                 foreach(var t in Svc.Objects)
@@ -420,6 +431,7 @@ unsafe class Splatoon : IDalamudPlugin
     private void ProcessLayout(Layout i)
     {
         if (!IsLayoutVisible(i)) return;
+        LayoutAmount++;
         foreach (var e in i.Elements.Values.ToArray())
         {
             ProcessElement(e, i);
@@ -484,6 +496,7 @@ unsafe class Splatoon : IDalamudPlugin
     internal void ProcessElement(Element e, Layout i = null)
     {
         if (!e.Enabled) return;
+        ElementAmount++;
         float radius = e.radius;
         if (e.type == 0)
         {
@@ -732,6 +745,7 @@ unsafe class Splatoon : IDalamudPlugin
         if (!i.Enabled) return false;
         if (i.DisableInDuty && Svc.Condition[ConditionFlag.BoundByDuty]) return false;
         if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(Svc.ClientState.TerritoryType)) return false;
+        if (i.Phase != 0 && i.Phase != this.Phase) return false;
         if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)Svc.ClientState.LocalPlayer.ClassJob.Id)) return false;
         if ((i.DCond == 1 || i.DCond == 3) && !Svc.Condition[ConditionFlag.InCombat]) return false;
         if ((i.DCond == 2 || i.DCond == 3) && !Svc.Condition[ConditionFlag.BoundByDuty]) return false;
@@ -774,10 +788,6 @@ unsafe class Splatoon : IDalamudPlugin
                     }
                     else if (t.Type == 2 || t.Type == 3)
                     {
-                        if (t.EnableAt != 0 && Environment.TickCount64 > t.EnableAt)
-                        {
-                            i.TriggerCondition = t.Type == 2 ? 1 : -1;
-                        }
                         foreach (var CurrentChatMessage in CurrentChatMessages)
                         {
                             if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
@@ -789,7 +799,7 @@ unsafe class Splatoon : IDalamudPlugin
                                 else
                                 {
                                     t.FiredState = 1;
-                                    t.DisableAt = Environment.TickCount64 + t.Duration * 1000;
+                                    t.DisableAt = Environment.TickCount64 + t.Duration * 1000 + t.MatchDelay * 1000;
                                 }
                                 if (t.MatchDelay != 0)
                                 {
@@ -805,6 +815,11 @@ unsafe class Splatoon : IDalamudPlugin
                 }
                 else if (t.FiredState == 1)
                 {
+                    if (t.EnableAt != 0 && Environment.TickCount64 > t.EnableAt)
+                    {
+                        i.TriggerCondition = t.Type == 2 ? 1 : -1;
+                        t.EnableAt = 0;
+                    }
                     if (Environment.TickCount64 > t.DisableAt)
                     {
                         t.FiredState = (t.Type == 2 || t.Type == 3) ? 0 : 2;

@@ -11,6 +11,16 @@ namespace Splatoon
 {
     static class ImGuiEx //came here to laugh on how scuffed it is? let's do so together.
     {
+        internal static float Measure(Action func)
+        {
+            var pos = ImGui.GetCursorPosX();
+            func();
+            ImGui.SameLine(0,0);
+            var diff = ImGui.GetCursorPosX() - pos;
+            ImGui.Dummy(Vector2.Zero);
+            return diff;
+        }
+
         public static void InputHex(string name, ref uint hexInt)
         {
             var text = $"{hexInt:X}";
