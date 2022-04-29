@@ -87,6 +87,26 @@ namespace Splatoon
             return this.type == 4;
         }*/
 
+        public bool ShouldSerializerefActorName()
+        {
+            return refActorComparisonType == 0;
+        }
+
+        public bool ShouldSerializerefActorModelID()
+        {
+            return refActorComparisonType == 1;
+        }
+
+        public bool ShouldSerializerefActorObjectID()
+        {
+            return refActorComparisonType == 2;
+        }
+
+        public bool ShouldSerializerefActorDataID()
+        {
+            return refActorComparisonType == 3;
+        }
+
         public bool ShouldSerializerefX()
         {
             return this.type != 1;
