@@ -12,7 +12,7 @@ namespace Splatoon
 {
     class ChlogGui
     {
-        public const int ChlogVersion = 42;
+        public const int ChlogVersion = 43;
         readonly Splatoon p;
         bool open = true;
         internal bool openLoggedOut = false;
@@ -34,7 +34,13 @@ namespace Splatoon
             if (!Svc.ClientState.IsLoggedIn && !openLoggedOut) return;
             ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
             ImGui.TextUnformatted(
-@"- Added phase detection support. For now it is ENGLISH CLIENT ONLY. 
+@"- Added possibility to use placeholders in overlay text. Like $NAME, $MODELID.
+
+- Reduced amount of unnecessary information saved and explorted.
+
+=== Previous version: ===
+
+- Added phase detection support. For now it is ENGLISH CLIENT ONLY. 
    Unfortunately I can not add support for other languages as I don't have people who would be willing to do any raid with phase transition for testing purposes with me. Sad face.
    People who play other languages can switch phases manually: open up /splatoon and switch phase in top right corner.
    If you have crashed/logged out/reloaded plugin during battle, you will have to select correct phase manually. Splatoon can only detect transition itself.
