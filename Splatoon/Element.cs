@@ -40,6 +40,7 @@ namespace Splatoon
         [DefaultValue(0xC8FFFFFF)] public uint overlayTextColor = 0xC8FFFFFF;
         [DefaultValue(0f)] public float overlayVOffset = 0f;
         [DefaultValue(1f)] public float overlayFScale = 1f;
+        [DefaultValue(false)] public bool overlayPlaceholders = false;
         [DefaultValue(2f)] public float thicc = 2f;
         [DefaultValue("")] public string overlayText = "";
         [DefaultValue("")] public string refActorName = "";

@@ -342,8 +342,9 @@ unsafe class Splatoon : IDalamudPlugin
                         refActorName = SFind.name,
                         refActorObjectID = SFind.oid,
                         refActorComparisonType = SFind.SearchAttribute,
-                        overlayText = "Search: " + (SFind.SearchAttribute == 0 ? SFind.name : $"Object ID: 0x{SFind.oid:X8}"),
+                        overlayText = "$NAME",
                         overlayVOffset = 1.7f,
+                        overlayPlaceholders = true,
                         overlayTextColor = col,
                         color = col,
                         includeHitbox = true,
@@ -522,7 +523,8 @@ unsafe class Splatoon : IDalamudPlugin
                 if (e.type == 1)
                 {
                     var pointPos = GetPlayerPositionXZY();
-                    draw(e, pointPos.X, pointPos.Y, pointPos.Z, radius, e.includeRotation ? Svc.ClientState.LocalPlayer.Rotation : 0f);
+                    draw(e, pointPos.X, pointPos.Y, pointPos.Z, radius, e.includeRotation ? Svc.ClientState.LocalPlayer.Rotation : 0f, 
+                        e.overlayPlaceholders?Svc.ClientState.LocalPlayer:null);
                 }
                 else if (e.type == 3)
                 {
@@ -539,7 +541,8 @@ unsafe class Splatoon : IDalamudPlugin
                     if (e.type == 1)
                     {
                         draw(e, Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
-                            Svc.Targets.Target.GetPositionXZY().Z, radius, e.includeRotation ? Svc.Targets.Target.Rotation : 0f);
+                            Svc.Targets.Target.GetPositionXZY().Z, radius, e.includeRotation ? Svc.Targets.Target.Rotation : 0f,
+                            e.overlayPlaceholders ? Svc.Targets.Target : null);
                     }
                     else if(e.type == 3)
                     {
@@ -573,7 +576,9 @@ unsafe class Splatoon : IDalamudPlugin
                             if (e.includeHitbox) aradius += a.HitboxRadius;
                             if (e.type == 1)
                             {
-                                draw(e, a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius, e.includeRotation ? a.Rotation : 0f);
+                                draw(e, a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius, 
+                                    e.includeRotation ? a.Rotation : 0f,
+                                    e.overlayPlaceholders ? a : null);
                             }
                             else if (e.type == 3)
                             {
@@ -644,7 +649,7 @@ unsafe class Splatoon : IDalamudPlugin
         return false;
     }
 
-    void draw(Element e, float x, float y, float z, float r, float angle)
+    void draw(Element e, float x, float y, float z, float r, float angle, GameObject go = null)
     {
         var cx = x + e.offX;
         var cy = y + e.offY;
@@ -668,7 +673,18 @@ unsafe class Splatoon : IDalamudPlugin
         }
         if (e.overlayText.Length > 0)
         {
-            displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, e.overlayText, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
+            var text = e.overlayText;
+            if (go != null)
+            {
+                text = text
+                    .Replace("$NAME", go.Name.ToString())
+                    .Replace("$OBJECTID", $"{go.ObjectId:X8}")
+                    .Replace("$DATAID", $"{go.DataId:X8}")
+                    .Replace("$MODELID", $"{(go is Character chr ? MemoryManager.GetModelId(chr) : 0):X4}")
+                    .Replace("$HITBOXR", $"{go.HitboxRadius:F1}")
+                    .Replace("\\n", "\n");
+            }
+            displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
         }
     }
 

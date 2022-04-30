@@ -488,41 +488,64 @@ namespace Splatoon
                             ImGui.Checkbox("Enable##TetherEnable" + i + k, ref el.tether);
                         }
                     }
-                    ImGuiEx.SizedText("Overlay text:", WidthElement);
-                    ImGui.SameLine();
-                    ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-                    ImGui.InputTextWithHint("##overlaytext" + i + k, "Text to display as overlay", ref el.overlayText, 30);
-                    if (el.overlayText.Length > 0)
+                    if (el.type == 0 || el.type == 1)
                     {
-                        ImGuiEx.SizedText("", WidthElement);
+                        ImGuiEx.SizedText("Overlay text:", WidthElement);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("Vertical offset:");
-                        ImGui.SameLine();
-                        ImGui.SetNextItemWidth(60f);
-                        ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.02f);
-                        ImGui.SameLine();
-                        ImGui.TextUnformatted("BG color:");
-                        ImGui.SameLine();
-                        var v4b = ImGui.ColorConvertU32ToFloat4(el.overlayBGColor);
-                        if (ImGui.ColorEdit4("##colorbuttonbg" + i + k, ref v4b, ImGuiColorEditFlags.NoInputs))
+                        ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+                        ImGui.InputTextWithHint("##overlaytext" + i + k, "Text to display as overlay", ref el.overlayText, 30);
+                        if (el.overlayPlaceholders && el.type == 1)
                         {
-                            el.overlayBGColor = ImGui.ColorConvertFloat4ToU32(v4b);
+                            ImGuiEx.SizedText("", WidthElement);
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("$NAME");
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("$OBJECTID");
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("$DATAID");
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("$MODELID");
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("$HITBOXR");
                         }
-                        ImGui.SameLine();
-                        ImGui.TextUnformatted("Text color:");
-                        ImGui.SameLine();
-                        var v4t = ImGui.ColorConvertU32ToFloat4(el.overlayTextColor);
-                        if (ImGui.ColorEdit4("##colorbuttonfg" + i + k, ref v4t, ImGuiColorEditFlags.NoInputs))
+                        if (el.overlayText.Length > 0)
                         {
-                            el.overlayTextColor = ImGui.ColorConvertFloat4ToU32(v4t);
+                            ImGuiEx.SizedText("", WidthElement);
+                            ImGui.SameLine();
+                            ImGui.TextUnformatted("Vertical offset:");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(60f);
+                            ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.02f);
+                            ImGui.SameLine();
+                            ImGui.TextUnformatted("BG color:");
+                            ImGui.SameLine();
+                            var v4b = ImGui.ColorConvertU32ToFloat4(el.overlayBGColor);
+                            if (ImGui.ColorEdit4("##colorbuttonbg" + i + k, ref v4b, ImGuiColorEditFlags.NoInputs))
+                            {
+                                el.overlayBGColor = ImGui.ColorConvertFloat4ToU32(v4b);
+                            }
+                            ImGui.SameLine();
+                            ImGui.TextUnformatted("Text color:");
+                            ImGui.SameLine();
+                            var v4t = ImGui.ColorConvertU32ToFloat4(el.overlayTextColor);
+                            if (ImGui.ColorEdit4("##colorbuttonfg" + i + k, ref v4t, ImGuiColorEditFlags.NoInputs))
+                            {
+                                el.overlayTextColor = ImGui.ColorConvertFloat4ToU32(v4t);
+                            }
+                            ImGui.SameLine();
+                            ImGui.TextUnformatted("Font scale:");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(60f);
+                            ImGui.DragFloat("##vtextsize" + i + k, ref el.overlayFScale, 0.02f, 0.1f, 50f);
+                            if (el.overlayFScale < 0.1f) el.overlayFScale = 0.1f;
+                            if (el.overlayFScale > 50f) el.overlayFScale = 50f;
                         }
-                        ImGui.SameLine();
-                        ImGui.TextUnformatted("Font scale:");
-                        ImGui.SameLine();
-                        ImGui.SetNextItemWidth(60f);
-                        ImGui.DragFloat("##vtextsize" + i + k, ref el.overlayFScale, 0.02f, 0.1f, 50f);
-                        if (el.overlayFScale < 0.1f) el.overlayFScale = 0.1f;
-                        if (el.overlayFScale > 50f) el.overlayFScale = 50f;
+                        if (el.type == 1)
+                        {
+                            ImGuiEx.SizedText("", WidthElement);
+                            ImGui.SameLine();
+                            ImGui.Checkbox("Enable placeholders##" + i + k, ref el.overlayPlaceholders);
+                        }
                     }
                 }
             }
