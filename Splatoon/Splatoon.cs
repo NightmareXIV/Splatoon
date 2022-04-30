@@ -682,6 +682,7 @@ unsafe class Splatoon : IDalamudPlugin
                     .Replace("$DATAID", $"{go.DataId:X8}")
                     .Replace("$MODELID", $"{(go is Character chr ? MemoryManager.GetModelId(chr) : 0):X4}")
                     .Replace("$HITBOXR", $"{go.HitboxRadius:F1}")
+                    .Replace("$KIND", $"{go.ObjectKind}")
                     .Replace("\\n", "\n");
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));

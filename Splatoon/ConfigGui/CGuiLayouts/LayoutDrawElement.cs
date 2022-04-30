@@ -507,6 +507,10 @@ namespace Splatoon
                             ImGuiEx.TextCopy("$MODELID");
                             ImGui.SameLine();
                             ImGuiEx.TextCopy("$HITBOXR");
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("$KIND");
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("\\n");
                         }
                         if (el.overlayText.Length > 0)
                         {
