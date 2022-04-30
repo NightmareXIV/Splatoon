@@ -30,7 +30,7 @@ namespace Splatoon
         /// 2: fired and ended
         /// </summary>
         [NonSerialized] public int FiredState = 0;
-        [NonSerialized] public long EnableAt = 0;
-        [NonSerialized] public long DisableAt = 0;
+        [NonSerialized] public List<long> EnableAt = new();
+        [NonSerialized] public List<long> DisableAt = new();
     }
 }

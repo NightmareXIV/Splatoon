@@ -786,63 +786,65 @@ unsafe class Splatoon : IDalamudPlugin
             foreach (var t in i.Triggers)
             {
                 if (t.FiredState == 2) continue;
-                else if (t.FiredState == 0)
+                if (t.Type == 2 || t.Type == 3)
                 {
-                    if (t.Type == 0 || t.Type == 1)
+                    foreach (var CurrentChatMessage in CurrentChatMessages)
                     {
-                        if (CombatStarted != 0 && Environment.TickCount64 - CombatStarted > t.TimeBegin * 1000)
+                        if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
                         {
                             if (t.Duration == 0)
                             {
-                                t.FiredState = 2;
+                                t.FiredState = 0;
                             }
                             else
                             {
                                 t.FiredState = 1;
-                                t.DisableAt = Environment.TickCount64 + (int)(t.Duration * 1000);
+                                t.DisableAt.Add(Environment.TickCount64 + (int)(t.Duration * 1000) + (int)(t.MatchDelay * 1000));
                             }
-                            i.TriggerCondition = t.Type == 0 ? 1 : -1;
-                        }
-                    }
-                    else if (t.Type == 2 || t.Type == 3)
-                    {
-                        foreach (var CurrentChatMessage in CurrentChatMessages)
-                        {
-                            if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
+                            if (t.MatchDelay != 0)
                             {
-                                if (t.Duration == 0)
-                                {
-                                    t.FiredState = 0;
-                                }
-                                else
-                                {
-                                    t.FiredState = 1;
-                                    t.DisableAt = Environment.TickCount64 + (int)(t.Duration * 1000) + (int)(t.MatchDelay * 1000);
-                                }
-                                if (t.MatchDelay != 0)
-                                {
-                                    t.EnableAt = Environment.TickCount64 + (int)(t.MatchDelay * 1000);
-                                }
-                                else
-                                {
-                                    i.TriggerCondition = t.Type == 2 ? 1 : -1;
-                                }
+                                t.EnableAt.Add(Environment.TickCount64 + (int)(t.MatchDelay * 1000));
+                            }
+                            else
+                            {
+                                i.TriggerCondition = t.Type == 2 ? 1 : -1;
                             }
                         }
                     }
                 }
-                else if (t.FiredState == 1)
+                if (t.FiredState == 0 && (t.Type == 0 || t.Type == 1))
                 {
-                    if (t.EnableAt != 0 && Environment.TickCount64 > t.EnableAt)
+                    if (CombatStarted != 0 && Environment.TickCount64 - CombatStarted > t.TimeBegin * 1000)
+                    {
+                        if (t.Duration == 0)
+                        {
+                            t.FiredState = 2;
+                        }
+                        else
+                        {
+                            t.FiredState = 1;
+                            t.DisableAt.Add(Environment.TickCount64 + (int)(t.Duration * 1000));
+                        }
+                        i.TriggerCondition = t.Type == 0 ? 1 : -1;
+                    }
+                }
+                for (var e = 0; e < t.EnableAt.Count; e++)
+                {
+                    if (Environment.TickCount64 > t.EnableAt[e])
                     {
                         i.TriggerCondition = t.Type == 2 ? 1 : -1;
-                        t.EnableAt = 0;
+                        t.EnableAt.RemoveAt(e);
+                        break;
                     }
-                    if (Environment.TickCount64 > t.DisableAt)
+                }
+                for (var e = 0; e < t.DisableAt.Count; e++)
+                {
+                    if (Environment.TickCount64 > t.DisableAt[e])
                     {
                         t.FiredState = (t.Type == 2 || t.Type == 3) ? 0 : 2;
-                        t.DisableAt = 0;
+                        t.DisableAt.RemoveAt(e);
                         i.TriggerCondition = 0;
+                        break;
                     }
                 }
 
