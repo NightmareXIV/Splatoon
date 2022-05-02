@@ -48,6 +48,14 @@ unsafe class Splatoon : IDalamudPlugin
     internal int Phase = 1;
     internal int LayoutAmount = 0;
     internal int ElementAmount = 0;
+    internal static readonly string[] LimitGaugeResets = new string[] 
+    {
+        "The limit gauge resets!",
+        "リミットゲージがリセットされた……",
+        "Der Limitrausch-Balken wurde geleert.",
+        "La jauge de Transcendance a été réinitialisée.",
+        "极限槽被清零了……"
+    };
     public static bool Init = false;
 
     public void Dispose()
@@ -109,7 +117,7 @@ unsafe class Splatoon : IDalamudPlugin
     {
         if (Profiler.Enabled) Profiler.MainTickChat.StartTick();
         var inttype = (int)type;
-        if(inttype == 2105 && message.ToString() == "The limit gauge resets!")
+        if(inttype == 2105 && LimitGaugeResets.Contains(message.ToString()))
         {
             Phase++;
             CombatStarted = Environment.TickCount64;
