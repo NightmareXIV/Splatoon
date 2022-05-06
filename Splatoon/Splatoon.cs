@@ -180,7 +180,13 @@ unsafe class Splatoon : IDalamudPlugin
                 {
                     foreach (var t in l.Triggers)
                     {
-                        if (t.ResetOnTChange) t.FiredState = 0;
+                        if (t.ResetOnTChange)
+                        {
+                            t.FiredState = 0;
+                            l.TriggerCondition = 0;
+                            t.EnableAt.Clear();
+                            t.DisableAt.Clear();
+                        }
                     }
                 }
             }
@@ -198,7 +204,13 @@ unsafe class Splatoon : IDalamudPlugin
             {
                 foreach(var t in l.Triggers)
                 {
-                    if (t.ResetOnTChange) t.FiredState = 0;
+                    if (t.ResetOnTChange)
+                    {
+                        t.FiredState = 0;
+                        l.TriggerCondition = 0;
+                        t.EnableAt.Clear();
+                        t.DisableAt.Clear();
+                    }
                 }
             }
         }
@@ -310,6 +322,8 @@ unsafe class Splatoon : IDalamudPlugin
                                     {
                                         t.FiredState = 0;
                                         l.TriggerCondition = 0;
+                                        t.EnableAt.Clear();
+                                        t.DisableAt.Clear();
                                     }
                                 }
                             }
@@ -326,6 +340,8 @@ unsafe class Splatoon : IDalamudPlugin
                                         {
                                             t.FiredState = 0;
                                             l.TriggerCondition = 0;
+                                            t.EnableAt.Clear();
+                                            t.DisableAt.Clear();
                                         }
                                     }
                                 }
