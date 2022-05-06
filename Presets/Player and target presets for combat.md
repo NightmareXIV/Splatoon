@@ -25,5 +25,5 @@ Melee Range~{"ZoneLockH":[],"Elements":{"Auto Attack":{"type":1,"refX":-584.8404
 
 Cardinals
 ```
-Cardinals~{"ZoneLockH":[339],"Elements":{"N":{"type":1,"offY":-0.5,"overlayTextColor":3355443455,"thicc":0.0,"overlayText":"N","refActorType":1},"S":{"type":1,"offY":0.5,"overlayTextColor":3372206336,"thicc":0.0,"overlayText":"S","refActorType":1},"W":{"type":1,"offX":-0.5,"overlayTextColor":3371697391,"thicc":0.0,"overlayText":"W","refActorType":1},"E":{"type":1,"offX":0.5,"overlayTextColor":3355769060,"thicc":0.0,"overlayText":"E","refActorType":1}}}
+Cardinals~{"Elements":{"N":{"type":1,"offY":-0.5,"overlayTextColor":3355443455,"thicc":0.0,"overlayText":"N","refActorType":1},"S":{"type":1,"offY":0.5,"overlayTextColor":3372206336,"thicc":0.0,"overlayText":"S","refActorType":1},"W":{"type":1,"offX":-0.5,"overlayTextColor":3371697391,"thicc":0.0,"overlayText":"W","refActorType":1},"E":{"type":1,"offX":0.5,"overlayTextColor":3355769060,"thicc":0.0,"overlayText":"E","refActorType":1}}}
 ```
