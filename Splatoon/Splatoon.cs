@@ -672,6 +672,7 @@ unsafe class Splatoon : IDalamudPlugin
         if (e.refActorComparisonType == 1 && o is Character c && MemoryManager.GetModelId(c) == e.refActorModelID) return true;
         if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
         if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
+        if (e.refActorComparisonType == 4 && MemoryManager.GetNpcID(o) == e.refActorNPCID) return true;
         return false;
     }
 
@@ -709,6 +710,7 @@ unsafe class Splatoon : IDalamudPlugin
                     .Replace("$MODELID", $"{(go is Character chr ? MemoryManager.GetModelId(chr) : 0):X4}")
                     .Replace("$HITBOXR", $"{go.HitboxRadius:F1}")
                     .Replace("$KIND", $"{go.ObjectKind}")
+                    .Replace("$NPCID", $"{MemoryManager.GetNpcID(go):X8}")
                     .Replace("\\n", "\n");
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));

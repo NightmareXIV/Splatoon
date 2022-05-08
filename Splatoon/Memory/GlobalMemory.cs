@@ -87,6 +87,11 @@ namespace Splatoon
             return *(int*)(a.Address + 0x01B4);
         }
 
+        public uint GetNpcID(GameObject a)
+        {
+            return ((FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)a.Address)->GetNpcID();
+        }
+
         public float GetCamAngleX()
         {
             if(ErrorCode != 0)

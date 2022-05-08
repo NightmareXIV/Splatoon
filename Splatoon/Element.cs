@@ -13,7 +13,7 @@ namespace Splatoon
         [NonSerialized] public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
         "Line between two fixed coordinates", "Line relative to object position"/*, "Polygon at fixed coordinates (beta)"*/};
         [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
-        [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID" };
+        [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID" };
         //[NonSerialized] public int screen2world = 0;
         /// <summary>
         /// 0: Object at fixed coordinates |
@@ -47,6 +47,7 @@ namespace Splatoon
         [DefaultValue(0)] public uint refActorModelID = 0;
         [DefaultValue(0)] public uint refActorObjectID = 0;
         [DefaultValue(0)] public uint refActorDataID = 0;
+        [DefaultValue(0)] public uint refActorNPCID = 0;
         /// <summary>
         /// 0: Name |
         /// 1: Model ID |
@@ -106,6 +107,11 @@ namespace Splatoon
         public bool ShouldSerializerefActorDataID()
         {
             return refActorComparisonType == 3;
+        }
+
+        public bool ShouldSerializerefActorNPCID()
+        {
+            return refActorComparisonType == 4;
         }
 
         public bool ShouldSerializerefX()

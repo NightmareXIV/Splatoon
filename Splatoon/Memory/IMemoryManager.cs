@@ -19,6 +19,7 @@ namespace Splatoon
         public bool GetIsTargetable(GameObject a);
         public bool GetIsVisible(Character chr);
         public int GetModelId(Character a);
+        public uint GetNpcID(GameObject a);
         public W2SDelegate<Vector3, Vector2> WorldToScreen { get; set; }
     }
 }

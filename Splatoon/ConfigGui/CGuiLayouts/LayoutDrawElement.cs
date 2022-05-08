@@ -213,6 +213,10 @@ namespace Splatoon
                             {
                                 ImGuiEx.InputHex("##actordid" + i + k, ref el.refActorDataID);
                             }
+                            else if (el.refActorComparisonType == 4)
+                            {
+                                ImGuiEx.InputHex("##npcid" + i + k, ref el.refActorNPCID);
+                            }
                             if (ImGui.IsItemHovered())
                             {
                                 ImGui.SetTooltip("Keep in mind that searching object is\n" +
