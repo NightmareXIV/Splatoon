@@ -80,7 +80,7 @@ namespace Splatoon
             }
             ShareWidth += ImGui.GetItemRectSize().X;
 
-            ImGuiEx.GSameLine(delegate
+            SImGuiEx.GSameLine(delegate
             {
                 ImGui.Text("Display conditions:");
                 ImGui.SetNextItemWidth(WidthCombo);
@@ -94,7 +94,7 @@ namespace Splatoon
                 && !layout.ZoneLockH.Contains(Svc.ClientState.TerritoryType)
                 && Environment.TickCount64 % 1000 < 500;
             if (colorZLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
-            ImGuiEx.GSameLine(delegate
+            SImGuiEx.GSameLine(delegate
             {
                 ImGui.SetCursorPosX(ImGui.GetCursorPosX() + delta);
                 ImGui.Text("Zone lock: ");
@@ -117,7 +117,7 @@ namespace Splatoon
                         ImGui.PushStyleColor(ImGuiCol.Text, Colors.Yellow);
                         if (layout.ZoneLockH.Contains(Svc.ClientState.TerritoryType))
                         {
-                            ImGuiEx.ColorButton(Colors.Red);
+                            SImGuiEx.ColorButton(Colors.Red);
                         }
                         string zcfc = p.Zones[Svc.ClientState.TerritoryType].ContentFinderCondition?.Value.Name?.ToString();
                         if (p.Zones.ContainsKey(Svc.ClientState.TerritoryType) && ImGui.SmallButton("Current zone: " + Svc.ClientState.TerritoryType + " / "
@@ -126,7 +126,7 @@ namespace Splatoon
                         {
                             layout.ZoneLockH.Toggle(Svc.ClientState.TerritoryType);
                         }
-                        ImGuiEx.UncolorButton();
+                        SImGuiEx.UncolorButton();
                         ImGui.PopStyleColor();
                     }
                     foreach (var z in p.Zones)
@@ -138,13 +138,13 @@ namespace Splatoon
                         if (zlockcur && !layout.ZoneLockH.Contains(z.Key)) continue;
                         if (layout.ZoneLockH.Contains(z.Key))
                         {
-                            ImGuiEx.ColorButton(Colors.Red);
+                            SImGuiEx.ColorButton(Colors.Red);
                         }
                         if (ImGui.SmallButton(s))
                         {
                             layout.ZoneLockH.Toggle(z.Key);
                         }
-                        ImGuiEx.UncolorButton();
+                        SImGuiEx.UncolorButton();
                     }
                     ImGui.EndCombo();
                 }
@@ -175,7 +175,7 @@ namespace Splatoon
                 && !Bitmask.IsBitSet(layout.JobLock, (int)Svc.ClientState.LocalPlayer.ClassJob.Id)
                 && Environment.TickCount64 % 1000 < 500;
             if (colorJLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
-            ImGuiEx.GSameLine(delegate
+            SImGuiEx.GSameLine(delegate
             {
                 ImGui.SetCursorPosX(ImGui.GetCursorPosX() + delta);
                 ImGui.Text("Job lock");

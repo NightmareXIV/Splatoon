@@ -9,43 +9,8 @@ using System.Threading.Tasks;
 
 namespace Splatoon
 {
-    static class ImGuiEx //came here to laugh on how scuffed it is? let's do so together.
+    static class SImGuiEx //came here to laugh on how scuffed it is? let's do so together.
     {
-        internal static float Measure(Action func)
-        {
-            var pos = ImGui.GetCursorPosX();
-            func();
-            ImGui.SameLine(0,0);
-            var diff = ImGui.GetCursorPosX() - pos;
-            ImGui.Dummy(Vector2.Zero);
-            return diff;
-        }
-
-        public static void InputHex(string name, ref uint hexInt)
-        {
-            var text = $"{hexInt:X}";
-            if(ImGui.InputText(name, ref text, 8))
-            {
-                if(uint.TryParse(text, NumberStyles.HexNumber, null, out var num))
-                {
-                    hexInt = num;
-                }
-            }
-        }
-
-        public static void TextCopy(string text)
-        {
-            ImGui.TextUnformatted(text);
-            if (ImGui.IsItemHovered())
-            {
-                ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-            }
-            if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
-            {
-                ImGui.SetClipboardText(text);
-                Svc.PluginInterface.UiBuilder.AddNotification("Text copied to clipboard", "Splatoon", NotificationType.Success);
-            }
-        }
         public static void SizedText(string text, float width)
         {
             ImGui.PushStyleColor(ImGuiCol.Button, Colors.Transparent);

@@ -13,7 +13,7 @@ namespace Splatoon
     {
         void DisplayGeneralSettings()
         {
-            ImGuiEx.SizedText("Use web API", WidthLayout);
+            SImGuiEx.SizedText("Use web API", WidthLayout);
             ImGui.SameLine();
             if (ImGui.Checkbox("##usewebapi", ref p.Config.UseHttpServer))
             {
@@ -57,7 +57,7 @@ namespace Splatoon
                 ProcessStart("https://github.com/Eternita-S/Splatoon#web-api-beta");
             }
 
-            ImGuiEx.SizedText("Circle smoothness:", WidthLayout);
+            SImGuiEx.SizedText("Circle smoothness:", WidthLayout);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             ImGui.DragInt("##circlesmoothness", ref p.Config.segments, 0.1f, 10, 150);
@@ -66,7 +66,7 @@ namespace Splatoon
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip("Higher - smoother circle, higher cpu usage");
 
-            ImGuiEx.SizedText("Drawing distance:", WidthLayout);
+            SImGuiEx.SizedText("Drawing distance:", WidthLayout);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             ImGui.DragFloat("##maxdistance", ref p.Config.maxdistance, 0.25f, 10f, 200f);
@@ -76,7 +76,7 @@ namespace Splatoon
                 ImGui.SetTooltip("Only try to draw objects that are not \n" +
                     "further away from you than this value");
 
-            ImGuiEx.SizedText("Line segments:", WidthLayout);
+            SImGuiEx.SizedText("Line segments:", WidthLayout);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             ImGui.DragInt("##linesegments", ref p.Config.lineSegments, 0.1f, 10, 50);

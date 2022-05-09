@@ -38,6 +38,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\ECommons\ECommons\ECommons.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Reference Include="Newtonsoft.Json">
 			<HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
 			<Private>False</Private>

@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
 using Dalamud.Interface.Internal.Notifications;
+using ECommons.ImGuiMethods;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -94,13 +95,13 @@ namespace Splatoon
                             ImGui.TextUnformatted("Copied style:");
                             ImGui.TextUnformatted($"Color: 0x{p.Clipboard.color:X8}");
                             ImGui.SameLine();
-                            ImGuiEx.DisplayColor(p.Clipboard.color);
+                            SImGuiEx.DisplayColor(p.Clipboard.color);
                             ImGui.TextUnformatted($"Overlay BG color: 0x{p.Clipboard.overlayBGColor:X8}");
                             ImGui.SameLine();
-                            ImGuiEx.DisplayColor(p.Clipboard.overlayBGColor);
+                            SImGuiEx.DisplayColor(p.Clipboard.overlayBGColor);
                             ImGui.TextUnformatted($"Overlay text color: 0x{p.Clipboard.overlayTextColor:X8}");
                             ImGui.SameLine();
-                            ImGuiEx.DisplayColor(p.Clipboard.overlayTextColor);
+                            SImGuiEx.DisplayColor(p.Clipboard.overlayTextColor);
                             ImGui.TextUnformatted($"Overlay vertical offset: {p.Clipboard.overlayVOffset}");
                             ImGui.TextUnformatted($"Thickness: {p.Clipboard.thicc}");
                             ImGui.TextUnformatted($"Tether: {p.Clipboard.tether}");
@@ -124,7 +125,7 @@ namespace Splatoon
                     }
 
 
-                    ImGuiEx.SizedText("Element type:", WidthElement);
+                    SImGuiEx.SizedText("Element type:", WidthElement);
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(WidthCombo);
                     if(ImGui.Combo("##elemselecttype" + i + k, ref el.type, Element.ElementTypes, Element.ElementTypes.Length))
@@ -174,7 +175,7 @@ namespace Splatoon
                     if (el.type == 1 || el.type == 3)
                     {
                         
-                        ImGuiEx.SizedText("Targeted object: ", WidthElement);
+                        SImGuiEx.SizedText("Targeted object: ", WidthElement);
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);
                         ImGui.Combo("##actortype" + i + k, ref el.refActorType, Element.ActorTypes, Element.ActorTypes.Length);
@@ -191,7 +192,7 @@ namespace Splatoon
                                     "search attributes to your active target's name.\n" +
                                     "You can use it with macro.");
                             }
-                            ImGuiEx.SizedText("Compare attribute: ", WidthElement);
+                            SImGuiEx.SizedText("Compare attribute: ", WidthElement);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(100f);
                             ImGui.Combo($"##attrSelect{i + k}", ref el.refActorComparisonType, Element.ComparisonTypes, Element.ComparisonTypes.Length);
@@ -234,7 +235,7 @@ namespace Splatoon
                                     if(Svc.Targets.Target is Character c) el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
                                 }
                             }
-                            ImGuiEx.SizedText("", WidthElement);
+                            SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
                             ImGui.Text("Targetability: ");
                             ImGui.SameLine();
@@ -269,7 +270,7 @@ namespace Splatoon
 
                     if (el.type == 0 || el.type == 2 || el.type == 3)
                     {
-                        ImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point A" : "Reference position: ", WidthElement);
+                        SImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point A" : "Reference position: ", WidthElement);
                         ImGui.SameLine();
                         ImGui.TextUnformatted("X:");
                         ImGui.SameLine();
@@ -324,7 +325,7 @@ namespace Splatoon
 
                         if ((el.type == 3) && el.refActorType != 1)
                         {
-                            ImGuiEx.SizedText("", WidthElement);
+                            SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
                             ImGui.Text("+my hitbox (XYZ):");
                             ImGui.SameLine();
@@ -347,7 +348,7 @@ namespace Splatoon
                     if (el.type != 4)
                     {
 
-                        ImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point B" : "Offset: ", WidthElement);
+                        SImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point B" : "Offset: ", WidthElement);
                         ImGui.SameLine();
                         ImGui.TextUnformatted("X:");
                         ImGui.SameLine();
@@ -382,7 +383,7 @@ namespace Splatoon
                         }
                         if ((el.type == 3) && el.refActorType != 1)
                         {
-                            ImGuiEx.SizedText("", WidthElement);
+                            SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
                             ImGui.Text("+my hitbox (XYZ):");
                             ImGui.SameLine();
@@ -420,7 +421,7 @@ namespace Splatoon
                         }
                     }
 
-                    ImGuiEx.SizedText("Line thickness:", WidthElement);
+                    SImGuiEx.SizedText("Line thickness:", WidthElement);
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(60f);
                     ImGui.DragFloat("##thicc" + i + k, ref el.thicc, 0.1f, 0f, float.MaxValue);
@@ -452,7 +453,7 @@ namespace Splatoon
                     {
                         if (!(el.type == 3 && !el.includeRotation))
                         {
-                            ImGuiEx.SizedText("Radius:", WidthElement);
+                            SImGuiEx.SizedText("Radius:", WidthElement);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(60f);
                             ImGui.DragFloat("##radius" + i + k, ref el.radius, 0.01f, 0, float.MaxValue);
@@ -487,20 +488,20 @@ namespace Splatoon
                         }
                         if (el.type != 2 && el.type != 3)
                         {
-                            ImGuiEx.SizedText("Tether:", WidthElement);
+                            SImGuiEx.SizedText("Tether:", WidthElement);
                             ImGui.SameLine();
                             ImGui.Checkbox("Enable##TetherEnable" + i + k, ref el.tether);
                         }
                     }
                     if (el.type == 0 || el.type == 1)
                     {
-                        ImGuiEx.SizedText("Overlay text:", WidthElement);
+                        SImGuiEx.SizedText("Overlay text:", WidthElement);
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                         ImGui.InputTextWithHint("##overlaytext" + i + k, "Text to display as overlay", ref el.overlayText, 30);
                         if (el.overlayPlaceholders && el.type == 1)
                         {
-                            ImGuiEx.SizedText("", WidthElement);
+                            SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
                             ImGuiEx.TextCopy("$NAME");
                             ImGui.SameLine();
@@ -518,7 +519,7 @@ namespace Splatoon
                         }
                         if (el.overlayText.Length > 0)
                         {
-                            ImGuiEx.SizedText("", WidthElement);
+                            SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
                             ImGui.TextUnformatted("Vertical offset:");
                             ImGui.SameLine();
@@ -550,7 +551,7 @@ namespace Splatoon
                         }
                         if (el.type == 1)
                         {
-                            ImGuiEx.SizedText("", WidthElement);
+                            SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
                             ImGui.Checkbox("Enable placeholders##" + i + k, ref el.overlayPlaceholders);
                         }

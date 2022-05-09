@@ -75,7 +75,7 @@ unsafe class Splatoon : IDalamudPlugin
 
     public Splatoon(DalamudPluginInterface pluginInterface)
     {
-        pluginInterface.Create<Svc>();
+        ECommons.ECommons.Init(pluginInterface);
         //Svc.Chat.Print("Loaded");
         var configRaw = Svc.PluginInterface.GetPluginConfig();
         Config = configRaw as Configuration ?? new Configuration();

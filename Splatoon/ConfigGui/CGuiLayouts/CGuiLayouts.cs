@@ -103,7 +103,7 @@ namespace Splatoon
                     if (curEdit == i)
                     {
                         ImGui.PushStyleColor(ImGuiCol.Text, Colors.Green);
-                        ImGuiEx.TextCentered("Editing layout: " + curEdit);
+                        SImGuiEx.TextCentered("Editing layout: " + curEdit);
                         ImGui.PopStyleColor();
                     }
                     if ((curEdit == null || curEdit == i) && ImGui.CollapsingHeader(i))

@@ -25,7 +25,7 @@ namespace Splatoon
 
         void DrawVector3Selector(string lbl, Point3 point3, Layout l, Element e, bool text = true)
         {
-                ImGuiEx.SizedText(text?lbl:"", WidthElement);
+                SImGuiEx.SizedText(text?lbl:"", WidthElement);
                 ImGui.SameLine();
             ImGui.SetNextItemWidth(200f);
             var vec = point3.ToVector3();
