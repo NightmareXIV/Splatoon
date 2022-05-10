@@ -121,8 +121,9 @@ namespace Splatoon
             ImGui.SameLine();
             if (ImGui.Button("Discord"))
             {
-                ImGui.SetClipboardText("Eternita#4037");
-                Svc.Chat.Print("[Splatoon] Contact me in discord: Eternita#4037. Discord ID copied into your clipboard.");
+                ImGui.SetClipboardText("https://discord.gg/m8NRt4X8Gf");
+                Svc.Chat.Print("[Splatoon] Server invite link: https://discord.gg/m8NRt4X8Gf");
+                ProcessStart("https://discord.gg/m8NRt4X8Gf");
             }
         }
     }
