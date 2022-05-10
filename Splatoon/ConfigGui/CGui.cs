@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Internal.Notifications;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
@@ -155,6 +156,17 @@ namespace Splatoon
                     {
                         DisplayProfiling();
                         ImGui.EndTabItem();
+                    }
+                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedGold);
+                    if (ImGui.BeginTabItem("Contribute"))
+                    {
+                        ImGui.PopStyleColor();
+                        DisplayContribute();
+                        ImGui.EndTabItem();
+                    }
+                    else
+                    {
+                        ImGui.PopStyleColor();
                     }
                 }
             }

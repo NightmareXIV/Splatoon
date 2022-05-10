@@ -121,9 +121,9 @@ namespace Splatoon
             ImGui.SameLine();
             if (ImGui.Button("Discord"))
             {
-                ImGui.SetClipboardText("https://discord.gg/m8NRt4X8Gf");
-                Svc.Chat.Print("[Splatoon] Server invite link: https://discord.gg/m8NRt4X8Gf");
-                ProcessStart("https://discord.gg/m8NRt4X8Gf");
+                ImGui.SetClipboardText(Splatoon.DiscordURL);
+                Svc.Chat.Print("[Splatoon] Server invite link: "+ Splatoon.DiscordURL);
+                ProcessStart(Splatoon.DiscordURL);
             }
         }
     }

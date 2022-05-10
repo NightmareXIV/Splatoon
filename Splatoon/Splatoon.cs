@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 namespace Splatoon;
 unsafe class Splatoon : IDalamudPlugin
 {
+    public const string DiscordURL = "https://discord.gg/m8NRt4X8Gf";
     public string Name => "Splatoon";
     internal Gui DrawingGui;
     internal CGui ConfigGui;
