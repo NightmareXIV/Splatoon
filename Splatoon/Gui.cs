@@ -41,10 +41,10 @@ namespace Splatoon
                     {
                         ImGuiHelpers.ForceNextWindowMainViewport();
                         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+                        ImGuiHelpers.SetNextWindowPosRelativeMainViewport(Vector2.Zero);
+                        ImGui.SetNextWindowSize(ImGuiHelpers.MainViewport.Size);
                         ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
                             | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.AlwaysUseWindowPadding);
-                        ImGui.SetWindowPos(new Vector2(0, 0));
-                        ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
                         foreach (var element in p.displayObjects)
                         {
                             if (element is DisplayObjectCircle elementCircle)
