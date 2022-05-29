@@ -20,8 +20,30 @@ Strength of the Ward - earthquake radius rings
 DSR Quake markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type":1,"radius":6.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":12.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"3":{"type":1,"radius":18.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"4":{"type":1,"radius":24.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":33.0,"Duration":18.0,"Match":"King Thordan readies Strength of the Ward"}],"Phase":2}
 ```
 
+Strength of the Ward - earthquake radius rings - alternative triggers in case first one doesn't works well for you:
+```
+DSR Quake markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type":1,"radius":6.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":12.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"3":{"type":1,"radius":18.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"4":{"type":1,"radius":24.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":15.0,"Match":"Ser Paulecrain readies Spiral Thrust"}],"Phase":2}
+```
+
 Tether on Thordan's jump for towers + jump on gaze - to make it easier to locate him:
 ```
 DSR King Thordan tether on leap~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"color":3372158464,"overlayBGColor":4294911744,"overlayVOffset":3.0,"thicc":19.9,"refActorName":"King Thordan","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":48.0,"Duration":3.0},{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
 ```
 
+# Phase 5 - Alternative timeline Thordan triggers:
+The second set of quakes seen in P5:
+```
+DSR Quake P5 markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type":1,"radius":6.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":12.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"3":{"type":1,"radius":18.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"4":{"type":1,"radius":24.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":15.0,"Match":"King Thordan readies Death of the Heavens","MatchDelay":13.0}],"Phase":2}
+```
+
+Dive Markers - these are the dives when the four dooms go out, displaying the safe spots accurately, with correct timings too:
+```
+DSR Dive P5 markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Spear of the Fury":{"type":3,"refY":45.0,"radius":5.0,"color":1690288127,"refActorName":"Ser Zephirin","includeRotation":true,"onlyUnTargetable":true},"Cauterize":{"type":3,"refY":30.0,"offY":-15.0,"radius":10.0,"color":1690288127,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true},"Twisting Dive":{"type":3,"refY":45.0,"radius":5.0,"color":1690288127,"refActorName":"Vedrfolnir","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"King Thordan readies Death of the Heavens","MatchDelay":13.0}],"Phase":2}
+```
+
+# Phase 6 - Nidhogg and Hraesvelgr
+P6 Arena Quarter
+Helps with keeping melee uptime when Nidhogg dives one half of the arena in addition to Hraesvelgr cleaving the other half leaving one quarter safe. (exact trigger to be improved):
+```
+DSR P6 Arena Quarter~{"ZoneLockH":[968],"DCond":5,"Elements":{"P6 Quarter":{"type":2,"refX":100.0,"refY":80.0,"offX":100.0,"offY":120.0,"radius":0.0},"P6 Quarter 2":{"type":2,"refX":80.0,"refY":100.0,"offX":120.0,"offY":100.0,"radius":0.0}},"UseTriggers":true,"Triggers":[{"TimeBegin":660.0,"Duration":240.0}],"Phase":2}
+```
