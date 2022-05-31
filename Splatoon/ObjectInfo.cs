@@ -16,5 +16,6 @@ namespace Splatoon
         internal bool IsChar = false;
         internal float HitboxRadius = 0;
         internal float Distance = 0;
+        internal long Life = 0;
     }
 }

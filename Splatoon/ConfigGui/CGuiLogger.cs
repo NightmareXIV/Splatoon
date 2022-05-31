@@ -23,7 +23,7 @@ namespace Splatoon
             ImGui.SameLine();
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
             ImGui.InputText("##filterLog", ref LoggerSearch, 100);
-            ImGui.BeginTable("##logObjects", 10, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
+            ImGui.BeginTable("##logObjects", 11, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
             ImGui.TableSetupColumn("Object name", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableSetupColumn("Type");
             ImGui.TableSetupColumn("Object ID");
@@ -34,6 +34,7 @@ namespace Splatoon
             ImGui.TableSetupColumn("Exist");
             ImGui.TableSetupColumn("Dist.");
             ImGui.TableSetupColumn("Hibox");
+            ImGui.TableSetupColumn("Life");
             ImGui.TableHeadersRow();
             var i = 0;
             foreach (var x in p.loggedObjectList)
@@ -85,6 +86,8 @@ namespace Splatoon
                 ImGui.Text($"{x.Value.Distance:F1}");
                 ImGui.TableNextColumn();
                 ImGui.Text($"{x.Value.HitboxRadius:F1}");
+                ImGui.TableNextColumn();
+                ImGui.Text($"{x.Value.Life}");
             }
             ImGui.EndTable();
         }

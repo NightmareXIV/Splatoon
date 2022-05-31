@@ -1,4 +1,5 @@
-﻿using Dalamud.Game;
+﻿global using ECommons.Schedulers;
+using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects.Enums;
@@ -6,6 +7,8 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal.Notifications;
 using ECommons.GameFunctions;
+using ECommons.MathHelpers;
+using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 
@@ -72,48 +75,52 @@ public unsafe class Splatoon : IDalamudPlugin
         Svc.ClientState.TerritoryChanged -= TerritoryChangedEvent;
         Svc.Framework.Update -= Tick;
         Svc.Chat.ChatMessage -= OnChatMessage;
+        ECommons.ECommons.Dispose();
         //Svc.Chat.Print("Disposing");
     }
 
     public Splatoon(DalamudPluginInterface pluginInterface)
     {
         ECommons.ECommons.Init(pluginInterface);
-        //Svc.Chat.Print("Loaded");
-        var configRaw = Svc.PluginInterface.GetPluginConfig();
-        Config = configRaw as Configuration ?? new Configuration();
-        Config.Initialize(this);
-        if(configRaw == null)
+        new TickScheduler(delegate
         {
-            Notify("New configuration file has been created");
-            Config.Save();
-        }
-        ChatMessageQueue = new Queue<string>();
-        Profiler = new Profiling(this);
-        CommandManager = new Commands(this);
-        Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
-        Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
-        if(ChlogGui.ChlogVersion > Config.ChlogReadVer && ChangelogGui == null)
-        {
-            ChangelogGui = new ChlogGui(this);
-            Config.NoMemory = false;
-        }
-        MemoryManager = new GlobalMemory(this);
-        if (MemoryManager.ErrorCode != 0)
-        {
-            memerrGui = new MemerrGui(this);
-        }
-        tickScheduler = new ConcurrentQueue<System.Action>();
-        dynamicElements = new List<DynamicElement>();
-        SetupShutdownHttp(Config.UseHttpServer);
+            var configRaw = Svc.PluginInterface.GetPluginConfig();
+            Config = configRaw as Configuration ?? new Configuration();
+            Config.Initialize(this);
+            if (configRaw == null)
+            {
+                Notify("New configuration file has been created");
+                Config.Save();
+            }
+            ChatMessageQueue = new Queue<string>();
+            Profiler = new Profiling(this);
+            CommandManager = new Commands(this);
+            Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
+            Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
+            if (ChlogGui.ChlogVersion > Config.ChlogReadVer && ChangelogGui == null)
+            {
+                ChangelogGui = new ChlogGui(this);
+                Config.NoMemory = false;
+            }
+            MemoryManager = new GlobalMemory(this);
+            if (MemoryManager.ErrorCode != 0)
+            {
+                memerrGui = new MemerrGui(this);
+            }
+            tickScheduler = new ConcurrentQueue<System.Action>();
+            dynamicElements = new List<DynamicElement>();
+            SetupShutdownHttp(Config.UseHttpServer);
 
-        DrawingGui = new Gui(this);
-        ConfigGui = new CGui(this);
-        Svc.Chat.ChatMessage += OnChatMessage;
-        Svc.Framework.Update += Tick;
-        Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
-        Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
-        LimitGaugeResets = Svc.Data.GetExcelSheet<LogMessage>().GetRow(2844).Text.ToString();
-        Init = true;
+            DrawingGui = new Gui(this);
+            ConfigGui = new CGui(this);
+            Svc.Chat.ChatMessage += OnChatMessage;
+            Svc.Framework.Update += Tick;
+            Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
+            Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
+            LimitGaugeResets = Svc.Data.GetExcelSheet<LogMessage>().GetRow(2844).Text.ToString();
+            ObjectLife.Init();
+            Init = true;
+        });
     }
 
     internal static readonly string[] InvalidSymbols = { "", "", "", "“", "”", "" };
@@ -249,6 +256,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     }
                     loggedObjectList[obj].Distance = Vector3.Distance(Svc.ClientState.LocalPlayer.Position, t.Position);
                     loggedObjectList[obj].HitboxRadius = t.HitboxRadius;
+                    loggedObjectList[obj].Life = t.GetLifeTime();
                 }
             }
             if (Profiler.Enabled) Profiler.MainTickDequeue.StartTick();
@@ -597,7 +605,8 @@ public unsafe class Splatoon : IDalamudPlugin
                             && (!e.onlyTargetable || targetable)
                             && (!e.onlyUnTargetable || !targetable)
                             && (!e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr)))
-                            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is Character chr2 && chr2.IsCasting(e.refActorCastId))))
+                            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is Character chr2 && chr2.IsCasting(e.refActorCastId)))
+                            && (!e.refActorObjectLife|| a.GetLifeTimeSeconds().InRange(e.refActorLifetimeMin, e.refActorLifetimeMax)))
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
                         {
