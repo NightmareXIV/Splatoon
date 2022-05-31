@@ -5,11 +5,12 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal.Notifications;
+using ECommons.GameFunctions;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 
 namespace Splatoon;
-unsafe class Splatoon : IDalamudPlugin
+public unsafe class Splatoon : IDalamudPlugin
 {
     public const string DiscordURL = "https://discord.gg/m8NRt4X8Gf";
     public string Name => "Splatoon";
@@ -595,7 +596,8 @@ unsafe class Splatoon : IDalamudPlugin
                     if (IsAttributeMatches(e, a)
                             && (!e.onlyTargetable || targetable)
                             && (!e.onlyUnTargetable || !targetable)
-                            && (!e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr))))
+                            && (!e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr)))
+                            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is Character chr2 && chr2.IsCasting(e.refActorCastId))))
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
                         {

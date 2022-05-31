@@ -20,6 +20,7 @@ namespace Splatoon
     // Master class
     partial class CGui:IDisposable
     {
+        Dictionary<uint, string> ActionNames;
         const float WidthLayout = 150f;
         const float WidthElement = 150f;
         const float WidthCombo = 200f;
@@ -40,6 +41,7 @@ namespace Splatoon
         {
             this.p = p;
             Svc.PluginInterface.UiBuilder.Draw += Draw;
+            ActionNames = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>().ToDictionary(x => x.RowId, x => $"{x.RowId} | {x.Name}");
         }
 
         public void Dispose()

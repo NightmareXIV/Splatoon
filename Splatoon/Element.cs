@@ -48,6 +48,11 @@ namespace Splatoon
         [DefaultValue(0)] public uint refActorObjectID = 0;
         [DefaultValue(0)] public uint refActorDataID = 0;
         [DefaultValue(0)] public uint refActorNPCID = 0;
+        [DefaultValue(false)] public bool refActorRequireCast = false;
+        public List<uint> refActorCastId = new();
+        [DefaultValue(false)] public bool refActorObjectLife = false;
+        [DefaultValue(0)] public float refActorLifetimeMin = 0;
+        [DefaultValue(0)] public float refActorLifetimeMax = 0;
         /// <summary>
         /// 0: Name |
         /// 1: Model ID |
@@ -88,6 +93,21 @@ namespace Splatoon
         {
             return this.type == 4;
         }*/
+
+        public bool ShouldSerializerefActorLifetimeMax()
+        {
+            return ShouldSerializerefActorLifetimeMin();
+        }
+
+        public bool ShouldSerializerefActorLifetimeMin()
+        {
+            return refActorObjectLife;
+        }
+
+        public bool ShouldSerializerefActorCastId()
+        {
+            return refActorRequireCast && refActorCastId.Count > 0;
+        }
 
         public bool ShouldSerializerefActorName()
         {

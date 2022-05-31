@@ -12,6 +12,7 @@ namespace Splatoon
 {
     partial class CGui
     {
+        string ActionName = "";
         void LayoutDrawElement(string i, string k)
         {
             var cursor = ImGui.GetCursorPos();
@@ -92,33 +93,33 @@ namespace Splatoon
                         if (ImGui.IsItemHovered())
                         {
                             ImGui.BeginTooltip();
-                            ImGui.TextUnformatted("Copied style:");
-                            ImGui.TextUnformatted($"Color: 0x{p.Clipboard.color:X8}");
+                            ImGuiEx.Text("Copied style:");
+                            ImGuiEx.Text($"Color: 0x{p.Clipboard.color:X8}");
                             ImGui.SameLine();
                             SImGuiEx.DisplayColor(p.Clipboard.color);
-                            ImGui.TextUnformatted($"Overlay BG color: 0x{p.Clipboard.overlayBGColor:X8}");
+                            ImGuiEx.Text($"Overlay BG color: 0x{p.Clipboard.overlayBGColor:X8}");
                             ImGui.SameLine();
                             SImGuiEx.DisplayColor(p.Clipboard.overlayBGColor);
-                            ImGui.TextUnformatted($"Overlay text color: 0x{p.Clipboard.overlayTextColor:X8}");
+                            ImGuiEx.Text($"Overlay text color: 0x{p.Clipboard.overlayTextColor:X8}");
                             ImGui.SameLine();
                             SImGuiEx.DisplayColor(p.Clipboard.overlayTextColor);
-                            ImGui.TextUnformatted($"Overlay vertical offset: {p.Clipboard.overlayVOffset}");
-                            ImGui.TextUnformatted($"Thickness: {p.Clipboard.thicc}");
-                            ImGui.TextUnformatted($"Tether: {p.Clipboard.tether}");
+                            ImGuiEx.Text($"Overlay vertical offset: {p.Clipboard.overlayVOffset}");
+                            ImGuiEx.Text($"Thickness: {p.Clipboard.thicc}");
+                            ImGuiEx.Text($"Tether: {p.Clipboard.tether}");
                             ImGui.Separator();
                             ImGui.TextColored((ImGui.GetIO().KeyCtrl ? Colors.Green : Colors.Gray).ToVector4(),
                                 "Holding CTRL when clicking will also paste:");
-                            ImGui.TextUnformatted($"Radius: {p.Clipboard.radius}");
-                            ImGui.TextUnformatted($"Include target hitbox: {p.Clipboard.includeHitbox}");
-                            ImGui.TextUnformatted($"Include own hitbox: {p.Clipboard.includeOwnHitbox}");
-                            ImGui.TextUnformatted($"Include rotation: {p.Clipboard.includeRotation}");
-                            ImGui.TextUnformatted($"Only targetable: {p.Clipboard.onlyTargetable}");
+                            ImGuiEx.Text($"Radius: {p.Clipboard.radius}");
+                            ImGuiEx.Text($"Include target hitbox: {p.Clipboard.includeHitbox}");
+                            ImGuiEx.Text($"Include own hitbox: {p.Clipboard.includeOwnHitbox}");
+                            ImGuiEx.Text($"Include rotation: {p.Clipboard.includeRotation}");
+                            ImGuiEx.Text($"Only targetable: {p.Clipboard.onlyTargetable}");
                             ImGui.Separator();
                             ImGui.TextColored((ImGui.GetIO().KeyShift ? Colors.Green : Colors.Gray).ToVector4(),
                                 "Holding SHIFT when clicking will also paste:");
-                            ImGui.TextUnformatted($"X offset: {p.Clipboard.offX}");
-                            ImGui.TextUnformatted($"Y offset: {p.Clipboard.offY}");
-                            ImGui.TextUnformatted($"Z offset: {p.Clipboard.offZ}");
+                            ImGuiEx.Text($"X offset: {p.Clipboard.offX}");
+                            ImGuiEx.Text($"Y offset: {p.Clipboard.offY}");
+                            ImGuiEx.Text($"Z offset: {p.Clipboard.offZ}");
 
                             ImGui.EndTooltip();
                         }
@@ -235,9 +236,7 @@ namespace Splatoon
                                     if(Svc.Targets.Target is Character c) el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
                                 }
                             }
-                            SImGuiEx.SizedText("", WidthElement);
-                            ImGui.SameLine();
-                            ImGui.Text("Targetability: ");
+                            SImGuiEx.SizedText("Targetability: ", WidthElement);
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(100f);
                             if (ImGui.BeginCombo($"##TargetabilityCombo{i + k}", el.onlyTargetable ? "Targetable" : (el.onlyUnTargetable ? "Untargetable" : "Any")))
@@ -266,23 +265,67 @@ namespace Splatoon
                                 ImGui.SetTooltip("Setting this checkbox will also restrict search to characters ONLY. \n(character - is a player, companion or friendly/hostile NPC that can fight and have HP)");
                             }
                         }
+                        if (el.refActorType == 0)
+                        {
+                            SImGuiEx.SizedText("While casting: ", WidthElement);
+                            ImGui.SameLine();
+                            ImGui.Checkbox("##casting" + i + k, ref el.refActorRequireCast);
+                            if (el.refActorRequireCast)
+                            {
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(WidthCombo);
+                                ImGuiEx.InputListUint("##casts" + i + k, el.refActorCastId, ActionNames);
+                                ImGui.SameLine();
+                                ImGuiEx.Text("Add all by name:");
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(100f);
+                                ImGui.InputText("##ActionName" + i + k, ref ActionName, 100);
+                                ImGui.SameLine();
+                                if (ImGui.Button("Add##byactionname"))
+                                {
+                                    foreach(var x in Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>().Union(Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>(Dalamud.ClientLanguage.English)))
+                                    {
+                                        if(x.Name.ToString().Equals(ActionName, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            el.refActorCastId.Add(x.RowId);
+                                        }
+                                    }
+                                }
+                            }
+                            SImGuiEx.SizedText("Object life time:", WidthElement);
+                            ImGui.SameLine();
+                            ImGui.Checkbox("##life" + i + k, ref el.refActorObjectLife);
+                            if (el.refActorObjectLife)
+                            {
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(50f);
+                                ImGui.DragFloat("##life1" + i + k, ref el.refActorLifetimeMin, 0.1f, 0f);
+                                ImGui.SameLine();
+                                ImGuiEx.Text("-");
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(50f);
+                                ImGui.DragFloat("##life2" + i + k, ref el.refActorLifetimeMax, 0.1f, 0f);
+                                ImGui.SameLine();
+                                ImGuiEx.Text("(in seconds)");
+                            }
+                        }
                     }
 
                     if (el.type == 0 || el.type == 2 || el.type == 3)
                     {
                         SImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point A" : "Reference position: ", WidthElement);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("X:");
+                        ImGuiEx.Text("X:");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##refx" + i + k, ref el.refX, 0.02f, float.MinValue, float.MaxValue);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("Y:");
+                        ImGuiEx.Text("Y:");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##refy" + i + k, ref el.refY, 0.02f, float.MinValue, float.MaxValue);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("Z:");
+                        ImGuiEx.Text("Z:");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##refz" + i + k, ref el.refZ, 0.02f, float.MinValue, float.MaxValue);
@@ -350,17 +393,17 @@ namespace Splatoon
 
                         SImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point B" : "Offset: ", WidthElement);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("X:");
+                        ImGuiEx.Text("X:");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##offx" + i + k, ref el.offX, 0.02f, float.MinValue, float.MaxValue);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("Y:");
+                        ImGuiEx.Text("Y:");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##offy" + i + k, ref el.offY, 0.02f, float.MinValue, float.MaxValue);
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("Z:");
+                        ImGuiEx.Text("Z:");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
@@ -447,7 +490,7 @@ namespace Splatoon
                     else
                     {
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("Thickness is set to 0: only text overlay will be drawn.");
+                        ImGuiEx.Text("Thickness is set to 0: only text overlay will be drawn.");
                     }
                     if (el.thicc > 0 || ((el.type == 2 || el.type == 3) && el.includeRotation))
                     {
@@ -469,7 +512,7 @@ namespace Splatoon
                                 ImGui.SameLine();
                                 ImGui.Checkbox("+your hitbox##" + i + k, ref el.includeOwnHitbox);
                                 ImGui.SameLine();
-                                ImGui.TextUnformatted("(?)");
+                                ImGuiEx.Text("(?)");
                                 if (ImGui.IsItemHovered())
                                 {
                                     ImGui.SetTooltip("When the game tells you that ability A has distance D,\n" +
@@ -521,12 +564,12 @@ namespace Splatoon
                         {
                             SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
-                            ImGui.TextUnformatted("Vertical offset:");
+                            ImGuiEx.Text("Vertical offset:");
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(60f);
                             ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.02f);
                             ImGui.SameLine();
-                            ImGui.TextUnformatted("BG color:");
+                            ImGuiEx.Text("BG color:");
                             ImGui.SameLine();
                             var v4b = ImGui.ColorConvertU32ToFloat4(el.overlayBGColor);
                             if (ImGui.ColorEdit4("##colorbuttonbg" + i + k, ref v4b, ImGuiColorEditFlags.NoInputs))
@@ -534,7 +577,7 @@ namespace Splatoon
                                 el.overlayBGColor = ImGui.ColorConvertFloat4ToU32(v4b);
                             }
                             ImGui.SameLine();
-                            ImGui.TextUnformatted("Text color:");
+                            ImGuiEx.Text("Text color:");
                             ImGui.SameLine();
                             var v4t = ImGui.ColorConvertU32ToFloat4(el.overlayTextColor);
                             if (ImGui.ColorEdit4("##colorbuttonfg" + i + k, ref v4t, ImGuiColorEditFlags.NoInputs))
@@ -542,7 +585,7 @@ namespace Splatoon
                                 el.overlayTextColor = ImGui.ColorConvertFloat4ToU32(v4t);
                             }
                             ImGui.SameLine();
-                            ImGui.TextUnformatted("Font scale:");
+                            ImGuiEx.Text("Font scale:");
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(60f);
                             ImGui.DragFloat("##vtextsize" + i + k, ref el.overlayFScale, 0.02f, 0.1f, 50f);
@@ -568,7 +611,7 @@ namespace Splatoon
             var textSize = ImGui.CalcTextSize(text);
             ImGui.SetCursorPosX(ImGui.GetColumnWidth() - textSize.X - ImGui.GetStyle().ItemInnerSpacing.X);
             ImGui.SetCursorPosY(cursor.Y + ImGui.GetStyle().ItemInnerSpacing.Y / 2);
-            ImGui.TextUnformatted(text);
+            ImGuiEx.Text(text);
             ImGui.SetCursorPos(currentCursor);
         }
     }

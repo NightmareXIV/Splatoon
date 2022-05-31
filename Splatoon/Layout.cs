@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace Splatoon
 {
     [Serializable]
-    class Layout
+    public class Layout
     {
         [NonSerialized] public static readonly string[] DisplayConditions = 
             //0               1                 2                   3                              4
