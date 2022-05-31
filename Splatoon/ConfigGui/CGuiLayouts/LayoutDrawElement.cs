@@ -558,6 +558,10 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGuiEx.TextCopy("$KIND");
                             ImGui.SameLine();
+                            ImGuiEx.TextCopy("$NPCID");
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("$LIFE");
+                            ImGui.SameLine();
                             ImGuiEx.TextCopy("\\n");
                         }
                         if (el.overlayText.Length > 0)

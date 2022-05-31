@@ -87,7 +87,7 @@ namespace Splatoon
                 ImGui.TableNextColumn();
                 ImGui.Text($"{x.Value.HitboxRadius:F1}");
                 ImGui.TableNextColumn();
-                ImGui.Text($"{x.Value.Life}");
+                ImGui.Text($"{x.Value.Life:F1}");
             }
             ImGui.EndTable();
         }

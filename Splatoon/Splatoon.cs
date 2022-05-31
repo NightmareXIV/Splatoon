@@ -256,7 +256,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     }
                     loggedObjectList[obj].Distance = Vector3.Distance(Svc.ClientState.LocalPlayer.Position, t.Position);
                     loggedObjectList[obj].HitboxRadius = t.HitboxRadius;
-                    loggedObjectList[obj].Life = t.GetLifeTime();
+                    loggedObjectList[obj].Life = t.GetLifeTimeSeconds();
                 }
             }
             if (Profiler.Enabled) Profiler.MainTickDequeue.StartTick();
@@ -541,14 +541,6 @@ public unsafe class Splatoon : IDalamudPlugin
             if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, e.refX, e.refY, e.refZ))
             {
                 draw(e, e.refX, e.refY, e.refZ, radius, 0f);
-                if (e.tether)
-                {
-                    displayObjects.Add(new DisplayObjectLine(e.refX + e.offX,
-                        e.refY + e.offY,
-                        e.refZ + e.offZ,
-                        GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
-                        e.thicc, e.color));
-                }
             }
         }
         else if (e.type == 1 || e.type == 3)
@@ -584,15 +576,6 @@ public unsafe class Splatoon : IDalamudPlugin
                     {
                         AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), Svc.Targets.Target.Rotation, e, radius, Svc.Targets.Target.HitboxRadius);
                     }
-
-                    if (e.tether)
-                    {
-                        displayObjects.Add(new DisplayObjectLine(Svc.Targets.Target.GetPositionXZY().X + e.offX,
-                            Svc.Targets.Target.GetPositionXZY().Y + e.offY,
-                            Svc.Targets.Target.GetPositionXZY().Z + e.offZ,
-                            GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
-                            e.thicc, e.color));
-                    }
                 }
             }
             else if (e.refActorType == 0)
@@ -606,7 +589,7 @@ public unsafe class Splatoon : IDalamudPlugin
                             && (!e.onlyUnTargetable || !targetable)
                             && (!e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr)))
                             && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is Character chr2 && chr2.IsCasting(e.refActorCastId)))
-                            && (!e.refActorObjectLife|| a.GetLifeTimeSeconds().InRange(e.refActorLifetimeMin, e.refActorLifetimeMax)))
+                            && (!e.refActorObjectLife || a.GetLifeTimeSeconds().InRange(e.refActorLifetimeMin, e.refActorLifetimeMax)))
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
                         {
@@ -621,14 +604,6 @@ public unsafe class Splatoon : IDalamudPlugin
                             else if (e.type == 3)
                             {
                                 AddRotatedLine(a.GetPositionXZY(), a.Rotation, e, aradius, a.HitboxRadius);
-                            }
-                            if (e.tether)
-                            {
-                                displayObjects.Add(new DisplayObjectLine(a.GetPositionXZY().X + e.offX,
-                                    a.GetPositionXZY().Y + e.offY,
-                                    a.GetPositionXZY().Z + e.offZ,
-                                    GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
-                                    e.thicc, e.color));
                             }
                         }
                     }
@@ -698,6 +673,14 @@ public unsafe class Splatoon : IDalamudPlugin
             cx = rotatedPoint.X;
             cy = rotatedPoint.Y;
         }
+        if (e.tether)
+        {
+            displayObjects.Add(new DisplayObjectLine(cx,
+                cy,
+                z,
+                GetPlayerPositionXZY().X, GetPlayerPositionXZY().Y, GetPlayerPositionXZY().Z,
+                e.thicc, e.color));
+        }
         if (!ShouldDraw(cx, GetPlayerPositionXZY().X, cy, GetPlayerPositionXZY().Y)) return;
         if (e.thicc > 0)
         {
@@ -723,6 +706,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     .Replace("$HITBOXR", $"{go.HitboxRadius:F1}")
                     .Replace("$KIND", $"{go.ObjectKind}")
                     .Replace("$NPCID", $"{MemoryManager.GetNpcID(go):X8}")
+                    .Replace("$LIFE", $"{go.GetLifeTimeSeconds():F1}")
                     .Replace("\\n", "\n");
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
