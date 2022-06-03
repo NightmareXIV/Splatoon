@@ -49,6 +49,17 @@ Tether on Thordan's jump for towers + jump on gaze - to make it easier to locate
 DSR King Thordan tether on leap~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"color":3372158464,"overlayBGColor":4294911744,"overlayVOffset":3.0,"thicc":19.9,"refActorName":"King Thordan","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":48.0,"Duration":3.0},{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
 ```
 
+# Phase 3 - Nidhogg triggers:
+Baits after tower:
+```
+(coming soon)
+```
+
+Drachenlance:
+```
+(coming soon)
+```
+
 # Phase 5 - Alternative timeline Thordan triggers:
 The second set of quakes seen in P5:
 ```
