@@ -6,6 +6,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal.Notifications;
+using ECommons;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
@@ -81,7 +82,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
     public Splatoon(DalamudPluginInterface pluginInterface)
     {
-        ECommons.ECommons.Init(pluginInterface);
+        ECommons.ECommons.Init(pluginInterface, Module.ObjectLife, Module.ObjectFunctions);
         new TickScheduler(delegate
         {
             var configRaw = Svc.PluginInterface.GetPluginConfig();
@@ -118,7 +119,6 @@ public unsafe class Splatoon : IDalamudPlugin
             Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
             Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
             LimitGaugeResets = Svc.Data.GetExcelSheet<LogMessage>().GetRow(2844).Text.ToString();
-            ObjectLife.Init();
             Init = true;
         });
     }
@@ -276,7 +276,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 if(ChatMessageQueue.Count > 5 * dequeueConcurrency)
                 {
                     dequeueConcurrency++;
-                    PluginLog.Information($"Too many queued messages ({ChatMessageQueue.Count}); concurrency increased to {dequeueConcurrency}");
+                    PluginLog.Debug($"Too many queued messages ({ChatMessageQueue.Count}); concurrency increased to {dequeueConcurrency}");
                 }
                 for(var i = 0; i < dequeueConcurrency; i++)
                 {
@@ -302,7 +302,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     CamAngleX = MemoryManager.GetCamAngleX() + Math.PI;
                     if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
                     CamAngleY = MemoryManager.GetCamAngleY();
-                    CamZoom = MemoryManager.GetCamZoom();
+                    CamZoom = Math.Min(MemoryManager.GetCamZoom(), 20);
                 }
                 /*Range conversion https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
                 slope = (output_end - output_start) / (input_end - input_start)

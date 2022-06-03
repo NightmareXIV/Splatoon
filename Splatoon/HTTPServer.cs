@@ -81,7 +81,7 @@ namespace Splatoon
                                         for (var i = p.dynamicElements.Count - 1; i >= 0; i--)
                                         {
                                             var de = p.dynamicElements[i];
-                                            if (de.Name == s)
+                                            if (s == "*" || de.Name == s)
                                             {
                                                 p.dynamicElements.RemoveAt(i);
                                             }
