@@ -25,6 +25,25 @@ Strength of the Ward - earthquake radius rings - alternative triggers in case fi
 DSR Quake markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type":1,"radius":6.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":12.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"3":{"type":1,"radius":18.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"4":{"type":1,"radius":24.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":15.0,"Match":"Ser Paulecrain readies Spiral Thrust"}],"Phase":2}
 ```
 
+Strength of the Ward Sequential Quake Marker - Displays the Quake markers sequentially instead of all at once.
+```
+DSR Strength Quake 1~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":6.0,"color":4278190335,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"Ser Guerrique","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":38.0,"Duration":4.0}],"Phase":2}
+```
+```
+DSR Strength Quake 2~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":12.0,"color":4278190335,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":42.0,"Duration":2.0}],"Phase":2}
+```
+```
+DSR Strength Quake 3~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":18.0,"color":4278190335,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":44.0,"Duration":2.0}],"Phase":2}
+```
+```
+DSR Strength Quake 4~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":24.0,"color":4278190335,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":46.0,"Duration":2.0}],"Phase":2}
+```
+
+Sanctity DRK Tether. Locates the DRK (Ser Zephirin) with a tether during Sanctity of the Ward for use with the DRK Relative strat:
+```
+DSR Sanctity DRK Tether~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":0.0,"color":3372158208,"thicc":5.0,"refActorName":"Ser Zephirin","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
+```
+
 Tether on Thordan's jump for towers + jump on gaze - to make it easier to locate him:
 ```
 DSR King Thordan tether on leap~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"color":3372158464,"overlayBGColor":4294911744,"overlayVOffset":3.0,"thicc":19.9,"refActorName":"King Thordan","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":48.0,"Duration":3.0},{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
