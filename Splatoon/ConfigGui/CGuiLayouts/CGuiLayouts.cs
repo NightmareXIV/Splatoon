@@ -138,7 +138,7 @@ namespace Splatoon
                             }
                             catch(Exception e)
                             {
-                                ImGui.Text("Error");
+                                ImGuiEx.Text("Error");
                                 PluginLog.Error($"Error: {e.Message}\n{e.StackTrace}");
                             }
                         }

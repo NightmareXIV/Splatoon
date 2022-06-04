@@ -62,7 +62,7 @@ namespace Splatoon
             ImGui.SetNextItemWidth(100f);
             ImGui.DragInt("##circlesmoothness", ref p.Config.segments, 0.1f, 10, 150);
             ImGui.SameLine();
-            ImGui.Text("(?)");
+            ImGuiEx.Text("(?)");
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip("Higher - smoother circle, higher cpu usage");
 
@@ -71,7 +71,7 @@ namespace Splatoon
             ImGui.SetNextItemWidth(100f);
             ImGui.DragFloat("##maxdistance", ref p.Config.maxdistance, 0.25f, 10f, 200f);
             ImGui.SameLine();
-            ImGui.Text("(?)");
+            ImGuiEx.Text("(?)");
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip("Only try to draw objects that are not \n" +
                     "further away from you than this value");
@@ -81,7 +81,7 @@ namespace Splatoon
             ImGui.SetNextItemWidth(100f);
             ImGui.DragInt("##linesegments", ref p.Config.lineSegments, 0.1f, 10, 50);
             ImGui.SameLine();
-            ImGui.Text("(?)");
+            ImGuiEx.Text("(?)");
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip("Increase this if your lines stop drawing too far from the screen edges \n" +
                     "   or if line disappears when you are zoomed in and near it's edge. \n" +
@@ -112,7 +112,7 @@ namespace Splatoon
                 ProcessStart(Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Backups"));
             }
             ImGui.Separator();
-            ImGui.Text("Contact developer:");
+            ImGuiEx.Text("Contact developer:");
             ImGui.SameLine();
             if (ImGui.Button("Github"))
             {

@@ -1,7 +1,5 @@
-﻿global using ECommons.Schedulers;
-using Dalamud.Game;
+﻿using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
@@ -11,7 +9,6 @@ using ECommons.GameFunctions;
 using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
-using Newtonsoft.Json;
 
 namespace Splatoon;
 public unsafe class Splatoon : IDalamudPlugin
@@ -90,7 +87,7 @@ public unsafe class Splatoon : IDalamudPlugin
             Config.Initialize(this);
             if (configRaw == null)
             {
-                Notify("New configuration file has been created");
+                Notify.Info("New configuration file has been created");
                 Config.Save();
             }
             ChatMessageQueue = new Queue<string>();
@@ -178,7 +175,7 @@ public unsafe class Splatoon : IDalamudPlugin
         if (SFind != null)
         {
             SFind = null;
-            Notify("Search stopped", NotificationType.Info);
+            Notify.Info("Search stopped");
         }
         for (var i = dynamicElements.Count - 1; i >= 0; i--)
         {

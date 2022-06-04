@@ -13,25 +13,25 @@ namespace Splatoon
             ImGui.BeginChild("##splatoonmaindbg");
             ImGui.Checkbox("Disable line fix", ref p.DisableLineFix);
             var t = Environment.TickCount64 - p.CombatStarted;
-            ImGui.Text("CombatStarted = " + t);
+            ImGuiEx.Text("CombatStarted = " + t);
             ImGui.SetNextItemWidth(60f);
             ImGui.DragInt($"Message concurrency", ref p.dequeueConcurrency, float.Epsilon);
             ImGui.Separator();
             if (Svc.ClientState.LocalPlayer != null)
             {
                 var mypos = GetPlayerPositionXZY();
-                ImGui.Text("My pos XYZ: \n" + mypos.X + "\n" + mypos.Y + "\n" + mypos.Z);
-                ImGui.Text("Rotation: " + Svc.ClientState.LocalPlayer.Rotation);
+                ImGuiEx.Text("My pos XYZ: \n" + mypos.X + "\n" + mypos.Y + "\n" + mypos.Z);
+                ImGuiEx.Text("Rotation: " + Svc.ClientState.LocalPlayer.Rotation);
                 var tar = Svc.Targets.Target;
                 if (tar != null)
                 {
-                    ImGui.Text("Target pos XYZ: \n" + tar.GetPositionXZY().X + "\n" + tar.GetPositionXZY().Y + "\n" + tar.GetPositionXZY().Z);
-                    ImGui.Text("Rotation: " + tar.Rotation.ToString());
-                    ImGui.Text("Hitbox: " + tar.HitboxRadius.ToString());
+                    ImGuiEx.Text("Target pos XYZ: \n" + tar.GetPositionXZY().X + "\n" + tar.GetPositionXZY().Y + "\n" + tar.GetPositionXZY().Z);
+                    ImGuiEx.Text("Rotation: " + tar.Rotation.ToString());
+                    ImGuiEx.Text("Hitbox: " + tar.HitboxRadius.ToString());
                 }
             }
             ImGui.Separator();
-            ImGui.Text("Query WorldToScreen");
+            ImGuiEx.Text("Query WorldToScreen");
             ImGui.PushItemWidth(50f);
             ImGui.DragFloat("##qs2wx", ref s2wx);
             ImGui.SameLine();
@@ -58,47 +58,47 @@ namespace Splatoon
             }
             ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(s2wb ? Colors.Green : Colors.Red), "X:" + s2wrx + "\nY:" + s2wry);
             ImGui.Separator();
-            ImGui.Text("Camera angle X:" + p.CamAngleX);
-            ImGui.Text("Camera angle Y:" + p.CamAngleY);
-            ImGui.Text("Camera zoom:" + p.CamZoom);
+            ImGuiEx.Text("Camera angle X:" + p.CamAngleX);
+            ImGuiEx.Text("Camera angle Y:" + p.CamAngleY);
+            ImGuiEx.Text("Camera zoom:" + p.CamZoom);
             ImGui.Separator();
-            ImGui.Text("Object table:");
-            ImGui.Text("Name");
+            ImGuiEx.Text("Object table:");
+            ImGuiEx.Text("Name");
             ImGui.SameLine();
             ImGui.SetCursorPosX(200f);
-            ImGui.Text("Object ID");
+            ImGuiEx.Text("Object ID");
             ImGui.SameLine();
             ImGui.SetCursorPosX(300f);
-            ImGui.Text($"Data ID");
+            ImGuiEx.Text($"Data ID");
             ImGui.SameLine();
             ImGui.SetCursorPosX(400f);
-            ImGui.Text($"Targetable");
+            ImGuiEx.Text($"Targetable");
             ImGui.SameLine();
             ImGui.SetCursorPosX(500f);
-            ImGui.Text($"Visible");
+            ImGuiEx.Text($"Visible");
             ImGui.SameLine();
             ImGui.SetCursorPosX(600f);
-            ImGui.Text($"Model ID");
+            ImGuiEx.Text($"Model ID");
             foreach (var a in Svc.Objects)
             {
                 Safe(delegate
                 {
-                    ImGui.Text(a.Name.ToString());
+                    ImGuiEx.Text(a.Name.ToString());
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(200f);
-                    ImGui.Text($"{a.ObjectId:X8}");
+                    ImGuiEx.Text($"{a.ObjectId:X8}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(300f);
-                    ImGui.Text($"{a.DataId:X8}");
+                    ImGuiEx.Text($"{a.DataId:X8}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(400f);
-                    ImGui.Text($"{p.MemoryManager.GetIsTargetable((a is Character ch) ? ch : a)}");
+                    ImGuiEx.Text($"{p.MemoryManager.GetIsTargetable((a is Character ch) ? ch : a)}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(500f);
-                    ImGui.Text($"{((a is Character chr) ? p.MemoryManager.GetIsVisible(chr) : "Not a char")}");
+                    ImGuiEx.Text($"{((a is Character chr) ? p.MemoryManager.GetIsVisible(chr) : "Not a char")}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(600f);
-                    ImGui.Text(a is Character chr2 ? $"{p.MemoryManager.GetModelId(chr2):X8}" : "Not a char");
+                    ImGuiEx.Text(a is Character chr2 ? $"{p.MemoryManager.GetModelId(chr2):X8}" : "Not a char");
                 });
             }
             ImGui.EndChild();

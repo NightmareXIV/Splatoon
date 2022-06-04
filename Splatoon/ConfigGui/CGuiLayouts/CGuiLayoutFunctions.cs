@@ -1,18 +1,11 @@
-﻿using Dalamud.Interface.Internal.Notifications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Splatoon
+﻿namespace Splatoon
 {
     internal partial class CGui
     {
         void DrawRotationSelector(Element el, string i, string k)
         {
             ImGui.SameLine();
-            ImGui.Text("Add angle:");
+            ImGuiEx.Text("Add angle:");
             ImGui.SameLine();
             var angleDegrees = el.AdditionalRotation.RadiansToDegrees();
             ImGui.SameLine();
@@ -60,7 +53,7 @@ namespace Splatoon
                 }
                 else
                 {
-                    Notify("Unable to use for hidden element", NotificationType.Error);
+                    Notify.Error("Unable to use for hidden element");
                 }
             }
         }

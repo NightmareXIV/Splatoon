@@ -56,7 +56,7 @@ namespace Splatoon
                     if (ImGui.Button("Copy to clipboard##" + i + k))
                     {
                         ImGui.SetClipboardText(JsonConvert.SerializeObject(el, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
-                        Notify("Copied to clipboard", NotificationType.Success);
+                        Notify.Success("Copied to clipboard");
                     }
 
                     ImGui.SameLine();
@@ -107,7 +107,7 @@ namespace Splatoon
                             ImGuiEx.Text($"Thickness: {p.Clipboard.thicc}");
                             ImGuiEx.Text($"Tether: {p.Clipboard.tether}");
                             ImGui.Separator();
-                            ImGui.TextColored((ImGui.GetIO().KeyCtrl ? Colors.Green : Colors.Gray).ToVector4(),
+                            ImGuiEx.Text((ImGui.GetIO().KeyCtrl ? Colors.Green : Colors.Gray).ToVector4(),
                                 "Holding CTRL when clicking will also paste:");
                             ImGuiEx.Text($"Radius: {p.Clipboard.radius}");
                             ImGuiEx.Text($"Include target hitbox: {p.Clipboard.includeHitbox}");
@@ -115,7 +115,7 @@ namespace Splatoon
                             ImGuiEx.Text($"Include rotation: {p.Clipboard.includeRotation}");
                             ImGuiEx.Text($"Only targetable: {p.Clipboard.onlyTargetable}");
                             ImGui.Separator();
-                            ImGui.TextColored((ImGui.GetIO().KeyShift ? Colors.Green : Colors.Gray).ToVector4(),
+                            ImGuiEx.Text((ImGui.GetIO().KeyShift ? Colors.Green : Colors.Gray).ToVector4(),
                                 "Holding SHIFT when clicking will also paste:");
                             ImGuiEx.Text($"X offset: {p.Clipboard.offX}");
                             ImGuiEx.Text($"Y offset: {p.Clipboard.offY}");
@@ -136,44 +136,16 @@ namespace Splatoon
                             el.radius = 0;
                         }
                     }
-                    /*if(el.type == 4)
-                    {
-                        ImGui.SameLine();
-                        if(ImGui.Button("Add point"))
-                        {
-                            el.Polygon.Add(Static.GetPlayerPositionXZY().ToPoint3());
-                        }
-                        if(el.Polygon.Count < 3)
-                        {
-                            ImGui.TextColored(ImGuiColors.DalamudRed, "At least 3 points must be present");
-                        }
-                        var toRem = -1;
-                        for(var x = 0;x<el.Polygon.Count;x++)
-                        {
-                            var d = el.Polygon[x];
-                            DrawVector3Selector($"polygon{i + k + x}", d, p.Config.Layouts[i], el, false);
-                            ImGui.SameLine();
-                            if (ImGui.Button($"X##{i + k + x}") && ImGui.GetIO().KeyCtrl)
-                            {
-                                toRem = x;
-                            }
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold CTRL + click to delete");
-                        }
-                        if(toRem != -1)
-                        {
-                            el.Polygon.RemoveAt(toRem);
-                        }
-                    }*/
-                    if(el.type == 1 || el.type == 3)
+                    if(el.type == 1 || el.type == 3 || el.type == 4)
                     {
                         ImGui.SameLine();
                         ImGui.Checkbox("Account for rotation##rota" + i + k, ref el.includeRotation);
-                        if (el.includeRotation)
+                        if (el.includeRotation && el.type != 4)
                         {
                             DrawRotationSelector(el, i, k);
                         }
                     }
-                    if (el.type == 1 || el.type == 3)
+                    if (el.type == 1 || el.type == 3 || el.type == 4)
                     {
                         
                         SImGuiEx.SizedText("Targeted object: ", WidthElement);
@@ -299,12 +271,12 @@ namespace Splatoon
                             {
                                 ImGui.SameLine();
                                 ImGui.SetNextItemWidth(50f);
-                                ImGui.DragFloat("##life1" + i + k, ref el.refActorLifetimeMin, 0.1f, 0f);
+                                ImGui.DragFloat("##life1" + i + k, ref el.refActorLifetimeMin, 0.1f, 0f, float.MaxValue);
                                 ImGui.SameLine();
                                 ImGuiEx.Text("-");
                                 ImGui.SameLine();
                                 ImGui.SetNextItemWidth(50f);
-                                ImGui.DragFloat("##life2" + i + k, ref el.refActorLifetimeMax, 0.1f, 0f);
+                                ImGui.DragFloat("##life2" + i + k, ref el.refActorLifetimeMax, 0.1f, 0f, float.MaxValue);
                                 ImGui.SameLine();
                                 ImGuiEx.Text("(in seconds)");
                             }
@@ -355,7 +327,7 @@ namespace Splatoon
                                 }
                                 else
                                 {
-                                    Notify("Unable to use for hidden element", NotificationType.Error);
+                                    Notify.Error("Unable to use for hidden element");
                                 }
                             }
                         }
@@ -363,14 +335,14 @@ namespace Splatoon
                         if ((el.type == 1 || el.type == 3) && el.includeRotation)
                         {
                             ImGui.SameLine();
-                            ImGui.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.type == 1 ? 0 : el.refX, el.type == 1 ? 0 : el.refY, el.offX, el.offY)));
+                            ImGuiEx.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.type == 1 ? 0 : el.refX, el.type == 1 ? 0 : el.refY, el.offX, el.offY)));
                         }
 
                         if ((el.type == 3) && el.refActorType != 1)
                         {
                             SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
-                            ImGui.Text("+my hitbox (XYZ):");
+                            ImGuiEx.Text("+my hitbox (XYZ):");
                             ImGui.SameLine();
                             ImGui.Checkbox($"##lineTHitboxXam{i + k}", ref el.LineAddPlayerHitboxLengthXA);
                             ImGui.SameLine();
@@ -378,7 +350,7 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGui.Checkbox($"##lineTHitboxZam{i + k}", ref el.LineAddPlayerHitboxLengthZA);
                             ImGui.SameLine();
-                            ImGui.Text("+target hitbox (XYZ):");
+                            ImGuiEx.Text("+target hitbox (XYZ):");
                             ImGui.SameLine();
                             ImGui.Checkbox($"##lineTHitboxXa{i + k}", ref el.LineAddHitboxLengthXA);
                             ImGui.SameLine();
@@ -388,7 +360,7 @@ namespace Splatoon
                         }
                     }
 
-                    if (el.type != 4)
+                    if (true)
                     {
 
                         SImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point B" : "Offset: ", WidthElement);
@@ -428,7 +400,7 @@ namespace Splatoon
                         {
                             SImGuiEx.SizedText("", WidthElement);
                             ImGui.SameLine();
-                            ImGui.Text("+my hitbox (XYZ):");
+                            ImGuiEx.Text("+my hitbox (XYZ):");
                             ImGui.SameLine();
                             ImGui.Checkbox($"##lineTHitboxXm{i + k}", ref el.LineAddPlayerHitboxLengthX);
                             ImGui.SameLine();
@@ -436,7 +408,7 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGui.Checkbox($"##lineTHitboxZm{i + k}", ref el.LineAddPlayerHitboxLengthZ);
                             ImGui.SameLine();
-                            ImGui.Text("+target hitbox (XYZ):");
+                            ImGuiEx.Text("+target hitbox (XYZ):");
                             ImGui.SameLine();
                             ImGui.Checkbox($"##lineTHitboxX{i + k}", ref el.LineAddHitboxLengthX);
                             ImGui.SameLine();
@@ -445,6 +417,20 @@ namespace Splatoon
                             ImGui.Checkbox($"##lineTHitboxZ{i + k}", ref el.LineAddHitboxLengthZ);
                         }
                     }
+
+                    if(el.type == 4)
+                    {
+                        SImGuiEx.SizedText("Angle:", WidthElement);
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(50f);
+                        ImGui.DragInt("##angle" + i + k, ref el.coneAngleMin, 0.1f);
+                        ImGui.SameLine();
+                        ImGuiEx.Text("-");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(50f);
+                        ImGui.DragInt("##angle2" + i + k, ref el.coneAngleMax, 0.1f);
+                    }
+
                     //ImGui.SameLine();
                     //ImGui.Checkbox("Actor relative##rota"+i+k, ref el.includeRotation);
                     if (el.type == 2)
@@ -459,7 +445,7 @@ namespace Splatoon
                             }
                             else
                             {
-                                Notify("Unable to use for hidden element", NotificationType.Error);
+                                Notify.Error("Unable to use for hidden element");
                             }
                         }
                     }
@@ -471,28 +457,20 @@ namespace Splatoon
                     if (el.type == 0 || el.type == 1 || el.type == 4)
                     {
                         if (el.Filled && ImGui.IsItemHovered()) ImGui.SetTooltip("This value is only for tether if object is set to be filled");
-                        if (el.Filled && el.thicc == 0) el.thicc = float.Epsilon;
+                        //if (el.Filled && el.thicc == 0) el.thicc = float.Epsilon;
                     }
-                    if (el.thicc > 0)
+                    ImGui.SameLine();
+                    var v4 = ImGui.ColorConvertU32ToFloat4(el.color);
+                    if (ImGui.ColorEdit4("##colorbutton" + i + k, ref v4, ImGuiColorEditFlags.NoInputs))
+                    {
+                        el.color = ImGui.ColorConvertFloat4ToU32(v4);
+                    }
+                    if (el.type == 0 || el.type == 1 || el.type == 4)
                     {
                         ImGui.SameLine();
-                        var v4 = ImGui.ColorConvertU32ToFloat4(el.color);
-                        if (ImGui.ColorEdit4("##colorbutton" + i + k, ref v4, ImGuiColorEditFlags.NoInputs))
-                        {
-                            el.color = ImGui.ColorConvertFloat4ToU32(v4);
-                        }
-                        if (el.type == 0 || el.type == 1 || el.type == 4)
-                        {
-                            ImGui.SameLine();
-                            ImGui.Checkbox($"Filled", ref el.Filled);
-                        }
+                        ImGui.Checkbox($"Filled", ref el.Filled);
                     }
-                    else
-                    {
-                        ImGui.SameLine();
-                        ImGuiEx.Text("Thickness is set to 0: only text overlay will be drawn.");
-                    }
-                    if (el.thicc > 0 || ((el.type == 2 || el.type == 3) && el.includeRotation))
+                    if ((el.type != 2 && el.type != 3) || el.includeRotation)
                     {
                         if (!(el.type == 3 && !el.includeRotation))
                         {
@@ -529,7 +507,7 @@ namespace Splatoon
                                 }
                             }
                         }
-                        if (el.type != 2 && el.type != 3)
+                        if (el.type != 2 && el.type != 3 && el.type != 4)
                         {
                             SImGuiEx.SizedText("Tether:", WidthElement);
                             ImGui.SameLine();

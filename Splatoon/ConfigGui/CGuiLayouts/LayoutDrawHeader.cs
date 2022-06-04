@@ -16,7 +16,7 @@ namespace Splatoon
         void CopyToCb(string i)
         {
             ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
-            Notify("Copied to clipboard", NotificationType.Success);
+            Notify.Success("Copied to clipboard");
         }
 
         void LayoutDrawHeader(string i)
@@ -33,7 +33,7 @@ namespace Splatoon
                 if (ImGui.Selectable("Any phase")) layout.Phase = 0;
                 if (ImGui.Selectable("Phase 1 (doorboss)")) layout.Phase = 1;
                 if (ImGui.Selectable("Phase 2 (post-doorboss)")) layout.Phase = 2;
-                ImGui.Text("Manual phase selection:");
+                ImGuiEx.Text("Manual phase selection:");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(30f);
                 ImGui.DragInt("##mPSel", ref layout.Phase, 0.1f, 0, 9);
@@ -60,17 +60,17 @@ namespace Splatoon
                 if (ImGui.Selectable("Copy enable command"))
                 {
                     ImGui.SetClipboardText("/splatoon enable " + i);
-                    Notify("Copied to clipboard", NotificationType.Success);
+                    Notify.Success("Copied to clipboard");
                 }
                 if (ImGui.Selectable("Copy disable command"))
                 {
                     ImGui.SetClipboardText("/splatoon disable " + i);
-                    Notify("Copied to clipboard", NotificationType.Success);
+                    Notify.Success("Copied to clipboard");
                 }
                 if (ImGui.Selectable("Copy as HTTP param##" + i))
                 {
                     HTTPExportToClipboard(p.Config.Layouts[i]);
-                    Notify("Copied to clipboard", NotificationType.Success);
+                    Notify.Success("Copied to clipboard");
                 }
                 if (ImGui.IsItemHovered())
                 {
@@ -82,7 +82,7 @@ namespace Splatoon
 
             SImGuiEx.GSameLine(delegate
             {
-                ImGui.Text("Display conditions:");
+                ImGuiEx.Text("Display conditions:");
                 ImGui.SetNextItemWidth(WidthCombo);
                 ImGui.Combo("##dcn" + i, ref layout.DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
             }, out var upperTextCursor);
@@ -97,7 +97,7 @@ namespace Splatoon
             SImGuiEx.GSameLine(delegate
             {
                 ImGui.SetCursorPosX(ImGui.GetCursorPosX() + delta);
-                ImGui.Text("Zone lock: ");
+                ImGuiEx.Text("Zone lock: ");
                 ImGui.SetNextItemWidth(WidthCombo);
                 ImGui.SetCursorPosX(upperTextCursor);
                 layout.ZoneLockH.RemoveWhere(el => !p.Zones.ContainsKey(el));
@@ -178,7 +178,7 @@ namespace Splatoon
             SImGuiEx.GSameLine(delegate
             {
                 ImGui.SetCursorPosX(ImGui.GetCursorPosX() + delta);
-                ImGui.Text("Job lock");
+                ImGuiEx.Text("Job lock");
                 ImGui.SetCursorPosX(upperTextCursor);
                 ImGui.SetNextItemWidth(WidthCombo);
                 if (ImGui.BeginCombo("##joblock" + i, jprev.Count < 3 ? string.Join(", ", jprev) : jprev.Count + " jobs"))

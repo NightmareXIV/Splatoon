@@ -59,7 +59,7 @@ namespace Splatoon
                 {
                     p.Config.Save();
                     WasOpen = false;
-                    Notify("Configuration saved", NotificationType.Success);
+                    Notify.Success("Configuration saved");
                     if(p.Config.verboselog) p.Log("Configuration saved");
                 }
                 return;
@@ -85,7 +85,7 @@ namespace Splatoon
             {
                 if (ChlogGui.ChlogVersion > p.Config.ChlogReadVer)
                 {
-                    ImGui.Text("You may not change configuration until you have read changelog and closed window.");
+                    ImGuiEx.Text("You may not change configuration until you have read changelog and closed window.");
                     if (ImGui.Button("Open changelog now"))
                     {
                         p.ChangelogGui.openLoggedOut = true;
@@ -107,7 +107,7 @@ namespace Splatoon
                         {
                             if (ImGui.Selectable("Phase 1 (doorboss)")) p.Phase = 1;
                             if (ImGui.Selectable("Phase 2 (post-doorboss)")) p.Phase = 2;
-                            ImGui.Text("Manual phase selection:");
+                            ImGuiEx.Text("Manual phase selection:");
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(30f);
                             ImGui.DragInt("##mPSel", ref p.Phase, 0.1f, 1, 9);

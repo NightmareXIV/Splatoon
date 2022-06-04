@@ -1,36 +1,28 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Splatoon;
 
-namespace Splatoon
+[Serializable]
+public class Point3
 {
-    [Serializable]
-    public class Point3
+    public float X = 0;
+    public float Y = 0;
+    public float Z = 0;
+
+
+    public Vector3 ToVector3()
     {
-        public float X = 0;
-        public float Y = 0;
-        public float Z = 0;
-
-
-        public Vector3 ToVector3()
-        {
-            return new Vector3(X, Y, Z);
-        }
+        return new Vector3(X, Y, Z);
     }
+}
 
-    internal static class Vector3Ex
+internal static class Vector3Ex
+{
+    internal static Point3 ToPoint3(this Vector3 v)
     {
-        internal static Point3 ToPoint3(this Vector3 v)
+        return new Point3
         {
-            return new Point3
-            {
-                X = v.X,
-                Y = v.Y,
-                Z = v.Z
-            };
-        }
+            X = v.X,
+            Y = v.Y,
+            Z = v.Z
+        };
     }
 }
