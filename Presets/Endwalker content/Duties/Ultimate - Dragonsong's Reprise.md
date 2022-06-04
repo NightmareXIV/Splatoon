@@ -50,14 +50,14 @@ DSR King Thordan tether on leap~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"t
 ```
 
 # Phase 3 - Nidhogg triggers:
-Baits after tower:
+Baits after tower (Geirskogul cast): (Requires Splatoon version 1.0.8.0 or higher)
 ```
-(coming soon)
+DSR Geirskogul~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"refY":30.0,"radius":4.0,"color":1174405375,"thicc":4.0,"refActorName":"Nidhogg","refActorRequireCast":true,"refActorCastId":[3555,6066,6312,8805,9274,21098,24732,26378,29491],"includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"Match":"Nidhogg readies Geirskogul."}],"Phase":2}
 ```
 
 Drachenlance:
 ```
-(coming soon)
+DSR Dranchenlance~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true},"2":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":0.7853982},"3":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":0.5235988},"4":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":0.2617994},"5":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":6.021386},"6":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":5.7595863},"7":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":5.497787}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":3.0,"Match":"Nidhogg readies Drachenlance."}],"Phase":2}
 ```
 
 # Phase 5 - Alternative timeline Thordan triggers:
