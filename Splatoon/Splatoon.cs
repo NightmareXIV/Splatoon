@@ -583,7 +583,13 @@ public unsafe class Splatoon : IDalamudPlugin
                 }
                 else if (e.type == 4)
                 {
-                    displayObjects.Add(new DisplayObjectCone(e, Svc.ClientState.LocalPlayer.Position, Svc.ClientState.LocalPlayer.Rotation, radius));
+                    if(e.coneAngleMax > e.coneAngleMin)
+                    {
+                        for(var x = e.coneAngleMin; x <= e.coneAngleMax; x++)
+                        {
+                            AddConeLine(GetPlayerPositionXZY(), (Svc.ClientState.LocalPlayer.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians(), e, radius);
+                        }
+                    }
                 }
             }
             else if (e.refActorType == 2 && Svc.Targets.Target != null
@@ -604,7 +610,14 @@ public unsafe class Splatoon : IDalamudPlugin
                     }
                     else if (e.type == 4)
                     {
-                        displayObjects.Add(new DisplayObjectCone(e, Svc.Targets.Target.Position, Svc.Targets.Target.Rotation, radius));
+                        if (e.coneAngleMax > e.coneAngleMin)
+                        {
+                            for (var x = e.coneAngleMin; x <= e.coneAngleMax; x++)
+                            {
+                                AddConeLine(Svc.Targets.Target.GetPositionXZY(), (Svc.Targets.Target.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians(), e, radius);
+                            }
+                        }
+                        //displayObjects.Add(new DisplayObjectCone(e, Svc.Targets.Target.Position, Svc.Targets.Target.Rotation, radius));
                     }
                 }
             }
@@ -637,7 +650,14 @@ public unsafe class Splatoon : IDalamudPlugin
                             }
                             else if (e.type == 4)
                             {
-                                displayObjects.Add(new DisplayObjectCone(e, a.Position, a.Rotation, aradius));
+                                if (e.coneAngleMax > e.coneAngleMin)
+                                {
+                                    for (var x = e.coneAngleMin; x <= e.coneAngleMax; x++)
+                                    {
+                                        AddConeLine(a.GetPositionXZY(), (a.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians(), e, aradius);
+                                    }
+                                }
+                                //displayObjects.Add(new DisplayObjectCone(e, a.Position, a.Rotation, aradius));
                             }
                         }
                     }
@@ -745,6 +765,24 @@ public unsafe class Splatoon : IDalamudPlugin
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
         }
+    }
+
+    void AddConeLine(Vector3 tPos, float angle, Element e, float radius)
+    {
+        tPos += new Vector3(e.offX, e.offY, e.offZ);
+        var pointA = RotatePoint(tPos.X, tPos.Y,
+                    -angle + e.AdditionalRotation, new Vector3(
+                    tPos.X,
+                    tPos.Y,
+                    tPos.Z));
+        var pointB = RotatePoint(tPos.X, tPos.Y,
+            -angle + e.AdditionalRotation, new Vector3(
+            tPos.X,
+            tPos.Y + radius,
+            tPos.Z));
+        displayObjects.Add(new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
+            pointB.X, pointB.Y, pointB.Z,
+            e.thicc, e.color));
     }
 
     void AddRotatedLine(Vector3 tPos, float angle, Element e, float aradius, float hitboxRadius)

@@ -136,11 +136,16 @@ namespace Splatoon
                             el.radius = 0;
                         }
                     }
+                    if(el.type == 4)
+                    {
+                        el.Filled = true;
+                        el.includeRotation = true;
+                    }
                     if(el.type == 1 || el.type == 3 || el.type == 4)
                     {
                         ImGui.SameLine();
                         ImGui.Checkbox("Account for rotation##rota" + i + k, ref el.includeRotation);
-                        if (el.includeRotation && el.type != 4)
+                        if (el.includeRotation )
                         {
                             DrawRotationSelector(el, i, k);
                         }
