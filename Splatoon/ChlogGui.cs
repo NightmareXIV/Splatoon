@@ -2,7 +2,7 @@
 
 class ChlogGui
 {
-    public const int ChlogVersion = 46;
+    public const int ChlogVersion = 48;
     readonly Splatoon p;
     bool open = true;
     internal bool openLoggedOut = false;
@@ -24,12 +24,17 @@ class ChlogGui
         if (!Svc.ClientState.IsLoggedIn && !openLoggedOut) return;
         ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
         ImGui.TextUnformatted(
-@"- Added new element conditions for elements relative to object position: object life and cast requirement.
-   This allows you to only display elements relative to characters that are casting something
-   and filter objects by amount of time they exist.
-- An attempt to fix problems when camera zoom goes beyond standard values.
-- Web api update: passing destroy=* will clear all existing dynamic elements.
-- Tether being offset for objects with rotation accounted should be fixed.");
+@"- New element: cone relative to object position
+   Limitations:
+   - Always has to be filled
+   - Fake filling with multiple lines because there is currently no known way to properly cull cone object
+   - May be performance heavy in certain situations
+- Experimental feature: Face me
+   Makes cone or line face your position
+- Version checker
+   Splatoon will be disallowed to load on new game patches.
+   You will be given a choice to either wait until confirmation or update,
+   or ignore the warning and load the plugin immediately.");
         if (ImGui.Button("Close this window"))
         {
             open = false;

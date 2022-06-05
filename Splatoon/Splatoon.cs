@@ -606,7 +606,10 @@ public unsafe class Splatoon : IDalamudPlugin
                     }
                     else if(e.type == 3)
                     {
-                        AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), Svc.Targets.Target.Rotation, e, radius, Svc.Targets.Target.HitboxRadius);
+                        var angle = e.FaceMe ?
+                                            (180 - (MathHelper.GetRelativeAngle(Svc.Targets.Target.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2()))).DegreesToRadians()
+                                            : Svc.Targets.Target.Rotation;
+                        AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), angle, e, radius, Svc.Targets.Target.HitboxRadius);
                     }
                     else if (e.type == 4)
                     {
@@ -614,7 +617,10 @@ public unsafe class Splatoon : IDalamudPlugin
                         {
                             for (var x = e.coneAngleMin; x <= e.coneAngleMax; x++)
                             {
-                                AddConeLine(Svc.Targets.Target.GetPositionXZY(), (Svc.Targets.Target.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians(), e, radius);
+                                var angle = e.FaceMe ?
+                                            (180 - (MathHelper.GetRelativeAngle(Svc.Targets.Target.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2()) - x.Float())).DegreesToRadians()
+                                            : (Svc.Targets.Target.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians();
+                                AddConeLine(Svc.Targets.Target.GetPositionXZY(), angle, e, radius);
                             }
                         }
                         //displayObjects.Add(new DisplayObjectCone(e, Svc.Targets.Target.Position, Svc.Targets.Target.Rotation, radius));
@@ -646,7 +652,10 @@ public unsafe class Splatoon : IDalamudPlugin
                             }
                             else if (e.type == 3)
                             {
-                                AddRotatedLine(a.GetPositionXZY(), a.Rotation, e, aradius, a.HitboxRadius);
+                                var angle = e.FaceMe ?
+                                            (180 - (MathHelper.GetRelativeAngle(a.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2()))).DegreesToRadians()
+                                            : a.Rotation;
+                                AddRotatedLine(a.GetPositionXZY(), angle, e, aradius, a.HitboxRadius);
                             }
                             else if (e.type == 4)
                             {
@@ -654,7 +663,10 @@ public unsafe class Splatoon : IDalamudPlugin
                                 {
                                     for (var x = e.coneAngleMin; x <= e.coneAngleMax; x++)
                                     {
-                                        AddConeLine(a.GetPositionXZY(), (a.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians(), e, aradius);
+                                        var angle = e.FaceMe ?
+                                            (180-(MathHelper.GetRelativeAngle(a.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2()) - x.Float())).DegreesToRadians()
+                                            : (a.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians();
+                                        AddConeLine(a.GetPositionXZY(), angle, e, aradius);
                                     }
                                 }
                                 //displayObjects.Add(new DisplayObjectCone(e, a.Position, a.Rotation, aradius));

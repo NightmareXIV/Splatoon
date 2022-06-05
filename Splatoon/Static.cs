@@ -1,9 +1,15 @@
-﻿using System.Diagnostics;
+﻿using ECommons.MathHelpers;
+using System.Diagnostics;
 
 namespace Splatoon;
 
 static class Static
 {
+    public static float GetAdditionalRotation(this Element e, float cx, float cy, float angle)
+    {
+        if (!e.FaceMe) return e.AdditionalRotation + angle;
+        return (e.AdditionalRotation.RadiansToDegrees() + MathHelper.GetRelativeAngle(new Vector2(cx, cy), Svc.ClientState.LocalPlayer.Position.ToVector2())).DegreesToRadians();
+    }
     public static void Toggle<T>(this HashSet<T> h, T o)
     {
         if(h.Contains(o))

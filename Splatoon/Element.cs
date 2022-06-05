@@ -84,6 +84,7 @@ public class Element
     [DefaultValue(false)] public bool LineAddPlayerHitboxLengthYA = false;
     [DefaultValue(false)] public bool LineAddPlayerHitboxLengthZA = false;
     [DefaultValue(false)] public bool Filled = false;
+    [DefaultValue(false)] public bool FaceMe = false;
     //public List<Point3> Polygon = new();
 
     /*public bool ShouldSerializePolygon()

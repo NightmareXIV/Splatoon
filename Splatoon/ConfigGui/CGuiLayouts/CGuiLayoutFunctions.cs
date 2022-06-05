@@ -14,6 +14,11 @@
             if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold shift for faster changing;\ndouble-click to enter manually.");
             if (angleDegrees < 0f || angleDegrees > 360f) angleDegrees = 0f;
             el.AdditionalRotation = angleDegrees.DegreesToRadians();
+            if (el.type != 1)
+            {
+                ImGui.SameLine();
+                ImGui.Checkbox("Face me##" + i + k, ref el.FaceMe);
+            }
         }
 
         void DrawVector3Selector(string lbl, Point3 point3, Layout l, Element e, bool text = true)

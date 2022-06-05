@@ -143,9 +143,10 @@ namespace Splatoon
                     }
                     if(el.type == 1 || el.type == 3 || el.type == 4)
                     {
+                        SImGuiEx.SizedText("Account for rotation:", WidthElement);
                         ImGui.SameLine();
-                        ImGui.Checkbox("Account for rotation##rota" + i + k, ref el.includeRotation);
-                        if (el.includeRotation )
+                        ImGui.Checkbox("##rota" + i + k, ref el.includeRotation);
+                        if (el.includeRotation)
                         {
                             DrawRotationSelector(el, i, k);
                         }
