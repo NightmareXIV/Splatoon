@@ -1,6 +1,7 @@
 ﻿using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Game.Command;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal.Notifications;
@@ -9,6 +10,7 @@ using ECommons.GameFunctions;
 using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
+using PInvoke;
 
 namespace Splatoon;
 public unsafe class Splatoon : IDalamudPlugin
@@ -61,67 +63,75 @@ public unsafe class Splatoon : IDalamudPlugin
     };*/
     internal static string LimitGaugeResets = "";
     public static bool Init = false;
+    public bool Disposed = false;
+
+    internal void Load(DalamudPluginInterface pluginInterface)
+    {
+        Init = true;
+        ECommons.ECommons.Init(pluginInterface, Module.ObjectLife, Module.ObjectFunctions);
+        var configRaw = Svc.PluginInterface.GetPluginConfig();
+        Config = configRaw as Configuration ?? new Configuration();
+        Config.Initialize(this);
+        if (configRaw == null)
+        {
+            Notify.Info("New configuration file has been created");
+            Config.Save();
+        }
+        ChatMessageQueue = new Queue<string>();
+        Profiler = new Profiling(this);
+        CommandManager = new Commands(this);
+        Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
+        Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
+        if (ChlogGui.ChlogVersion > Config.ChlogReadVer && ChangelogGui == null)
+        {
+            ChangelogGui = new ChlogGui(this);
+            Config.NoMemory = false;
+        }
+        MemoryManager = new GlobalMemory(this);
+        if (MemoryManager.ErrorCode != 0)
+        {
+            memerrGui = new MemerrGui(this);
+        }
+        tickScheduler = new ConcurrentQueue<System.Action>();
+        dynamicElements = new List<DynamicElement>();
+        SetupShutdownHttp(Config.UseHttpServer);
+
+        DrawingGui = new Gui(this);
+        ConfigGui = new CGui(this);
+        Svc.Chat.ChatMessage += OnChatMessage;
+        Svc.Framework.Update += Tick;
+        Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
+        Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
+        LimitGaugeResets = Svc.Data.GetExcelSheet<LogMessage>().GetRow(2844).Text.ToString();
+    }
 
     public void Dispose()
     {
+        Disposed = true;
+        if (!Init) return;
         Init = false;
-        Config.Save();
-        SetupShutdownHttp(false);
-        DrawingGui.Dispose();
-        ConfigGui.Dispose();
-        CommandManager.Dispose();
-        Svc.ClientState.TerritoryChanged -= TerritoryChangedEvent;
-        Svc.Framework.Update -= Tick;
-        Svc.Chat.ChatMessage -= OnChatMessage;
+        Safe(delegate { Config.Save(); });
+        Safe(delegate { SetupShutdownHttp(false); });
+        Safe(DrawingGui.Dispose);
+        Safe(ConfigGui.Dispose);
+        Safe(CommandManager.Dispose);
+        Safe(delegate
+        {
+            Svc.ClientState.TerritoryChanged -= TerritoryChangedEvent;
+            Svc.Framework.Update -= Tick;
+            Svc.Chat.ChatMessage -= OnChatMessage;
+        });
         ECommons.ECommons.Dispose();
         //Svc.Chat.Print("Disposing");
     }
 
-    public Splatoon(DalamudPluginInterface pluginInterface)
+    public Splatoon(DalamudPluginInterface pluginInterface, Framework framework, CommandManager commands)
     {
-        ECommons.ECommons.Init(pluginInterface, Module.ObjectLife, Module.ObjectFunctions);
-        new TickScheduler(delegate
-        {
-            var configRaw = Svc.PluginInterface.GetPluginConfig();
-            Config = configRaw as Configuration ?? new Configuration();
-            Config.Initialize(this);
-            if (configRaw == null)
-            {
-                Notify.Info("New configuration file has been created");
-                Config.Save();
-            }
-            ChatMessageQueue = new Queue<string>();
-            Profiler = new Profiling(this);
-            CommandManager = new Commands(this);
-            Zones = Svc.Data.GetExcelSheet<TerritoryType>().ToDictionary(row => (ushort)row.RowId, row => row);
-            Jobs = Svc.Data.GetExcelSheet<ClassJob>().ToDictionary(row => (int)row.RowId, row => row.Name.ToString());
-            if (ChlogGui.ChlogVersion > Config.ChlogReadVer && ChangelogGui == null)
-            {
-                ChangelogGui = new ChlogGui(this);
-                Config.NoMemory = false;
-            }
-            MemoryManager = new GlobalMemory(this);
-            if (MemoryManager.ErrorCode != 0)
-            {
-                memerrGui = new MemerrGui(this);
-            }
-            tickScheduler = new ConcurrentQueue<System.Action>();
-            dynamicElements = new List<DynamicElement>();
-            SetupShutdownHttp(Config.UseHttpServer);
-
-            DrawingGui = new Gui(this);
-            ConfigGui = new CGui(this);
-            Svc.Chat.ChatMessage += OnChatMessage;
-            Svc.Framework.Update += Tick;
-            Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
-            Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
-            LimitGaugeResets = Svc.Data.GetExcelSheet<LogMessage>().GetRow(2844).Text.ToString();
-            Init = true;
-        });
+        _ = new Loader(this, pluginInterface, framework, commands);
     }
 
     internal static readonly string[] InvalidSymbols = { "", "", "", "“", "”", "" };
-    private void OnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
+    internal void OnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {
         if (Profiler.Enabled) Profiler.MainTickChat.StartTick();
         var inttype = (int)type;
@@ -169,7 +179,7 @@ public unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    private void TerritoryChangedEvent(object sender, ushort e)
+    internal void TerritoryChangedEvent(object sender, ushort e)
     {
         Phase = 1;
         if (SFind != null)
@@ -223,7 +233,7 @@ public unsafe class Splatoon : IDalamudPlugin
     }
 
     
-    public void Tick(Framework framework)
+    internal void Tick(Framework framework)
     {
         if (Profiler.Enabled) Profiler.MainTick.StartTick();
         try
@@ -463,7 +473,7 @@ public unsafe class Splatoon : IDalamudPlugin
         if (Profiler.Enabled) Profiler.MainTick.StopTick();
     }
 
-    private void ProcessLayout(Layout i)
+    internal void ProcessLayout(Layout i)
     {
         if (!IsLayoutVisible(i)) return;
         LayoutAmount++;
@@ -500,7 +510,7 @@ public unsafe class Splatoon : IDalamudPlugin
     {
         if (s2wInfo != null)
         {
-            var lmbdown = Bitmask.IsBitSet(Native.GetKeyState(0x01), 15);
+            var lmbdown = Bitmask.IsBitSet(User32.GetKeyState(0x01), 15);
             var mousePos = ImGui.GetIO().MousePos;
             if (Svc.GameGui.ScreenToWorld(new Vector2(mousePos.X, mousePos.Y), out var worldPos, Config.maxdistance * 5))
             {
@@ -875,12 +885,12 @@ public unsafe class Splatoon : IDalamudPlugin
         return true;
     }
 
-    public bool CheckDistanceCondition(Layout i, float x, float y, float z)
+    internal bool CheckDistanceCondition(Layout i, float x, float y, float z)
     {
         return CheckDistanceCondition(i, new Vector3(x, y, z));
     }
 
-    public bool CheckDistanceCondition(Layout i, Vector3 v)
+    internal bool CheckDistanceCondition(Layout i, Vector3 v)
     {
         if (i.DistanceLimitType != 1) return true;
         var dist = Vector3.Distance(v, GetPlayerPositionXZY());
@@ -888,7 +898,7 @@ public unsafe class Splatoon : IDalamudPlugin
         return true;
     }
 
-    public bool CheckDistanceToLineCondition(Layout i, Element e)
+    internal bool CheckDistanceToLineCondition(Layout i, Element e)
     {
         if (i.DistanceLimitType != 1) return true;
         var dist = Vector3.Distance(FindClosestPointOnLine(GetPlayerPositionXZY(), new Vector3(e.refX, e.refY, e.refZ), new Vector3(e.offX, e.offY, e.offZ)), GetPlayerPositionXZY());
@@ -896,12 +906,12 @@ public unsafe class Splatoon : IDalamudPlugin
         return true;
     }
 
-    public bool ShouldDraw(float x1, float x2, float y1, float y2)
+    internal bool ShouldDraw(float x1, float x2, float y1, float y2)
     {
         return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < Config.maxdistance * Config.maxdistance;
     }
 
-    public void Log(string s, bool tochat = false)
+    internal void Log(string s, bool tochat = false)
     {
         if (tochat)
         {

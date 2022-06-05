@@ -4,6 +4,7 @@ using Dalamud.Interface.Internal.Notifications;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using Newtonsoft.Json;
+using PInvoke;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -208,12 +209,12 @@ namespace Splatoon
         {
             if (p.MemoryManager.WorldToScreen(new Vector3(refX, refZ, refY), out var screenPos))
             {
-                var point = new Native.POINT() { X = (int)screenPos.X, Y = (int)screenPos.Y };
+                var point = new POINT() { x = (int)screenPos.X, y = (int)screenPos.Y };
                 //Chat.Print(point.X + "/" + point.Y);
-                if (Native.ClientToScreen(Process.GetCurrentProcess().MainWindowHandle, ref point))
+                if (User32.ClientToScreen(Process.GetCurrentProcess().MainWindowHandle, ref point))
                 {
                     //Chat.Print(point.X + "/" + point.Y);
-                    Native.SetCursorPos(point.X, point.Y);
+                    User32.SetCursorPos(point.x, point.y);
                 }
             }
         }

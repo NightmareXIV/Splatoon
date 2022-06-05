@@ -70,6 +70,14 @@
 			<HintPath>$(DalamudLibPath)SharpDX.Mathematics.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="PInvoke.User32.dll">
+			<HintPath>$(DalamudLibPath)PInvoke.User32.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="PInvoke.Windows.Core.dll">
+			<HintPath>$(DalamudLibPath)PInvoke.Windows.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>

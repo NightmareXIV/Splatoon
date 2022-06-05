@@ -155,17 +155,6 @@ static class Static
         return (radian * (180 / MathF.PI));
     }
 
-    public static void Safe(Action a)
-    {
-        try
-        {
-            a();
-        }
-        catch(Exception e)
-        {
-            PluginLog.Error($"{e.Message}\n{e.StackTrace ?? ""}");
-        }
-    }
     public static Vector3 RotatePoint(float cx, float cy, float angle, Vector3 p)
     {
         if (angle == 0f) return p;
