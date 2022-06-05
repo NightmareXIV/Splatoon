@@ -5,7 +5,7 @@
         internal readonly Brush Brush;
         internal readonly ImDrawListPtr DrawList;
 
-        internal bool cullObject = true;
+        internal bool cullObject = false;
 
         internal ConvexShape(Brush brush)
         {
@@ -20,7 +20,7 @@
             // point
             var visible = Svc.GameGui.WorldToScreen(worldPos, out Vector2 pos);
             DrawList.PathLineTo(pos);
-            if (visible) { cullObject = false; }
+            if (!visible) { cullObject = true; }
         }
 
         internal void PointRadial(Vector3 center, float radius, float radians)

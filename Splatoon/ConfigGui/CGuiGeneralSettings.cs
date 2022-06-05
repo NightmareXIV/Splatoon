@@ -13,6 +13,9 @@ namespace Splatoon
     {
         void DisplayGeneralSettings()
         {
+            ImGuiEx.Text("Game version: ");
+            ImGui.SameLine(0, 0);
+            ImGuiEx.TextCopy(p.loader.gVersion);
             SImGuiEx.SizedText("Use web API", WidthLayout);
             ImGui.SameLine();
             if (ImGui.Checkbox("##usewebapi", ref p.Config.UseHttpServer))

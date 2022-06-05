@@ -1,4 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
+using ECommons.MathHelpers;
+using Splatoon.External;
 
 namespace Splatoon;
 
@@ -66,6 +68,18 @@ unsafe class Gui : IDisposable
                         else if (element is DisplayObjectRect elementRect)
                         {
                             DrawRectWorld(elementRect);
+                        }
+                        else if (element is DisplayObjectCone elementCone)
+                        {
+                            var brush = new Brush()
+                            {
+                                Color = elementCone.e.color.ToVector4(),
+                                Fill = elementCone.e.Filled ? elementCone.e.color.ToVector4() : Vector4.Zero,
+                                Thickness = elementCone.e.thicc
+                            };
+                            Canvas.ConeXZ(elementCone.v, elementCone.radius,
+                                (elementCone.angle.RadToDeg() - elementCone.e.coneAngleMin.Float()).DegreesToRadians(),
+                                (elementCone.angle.RadToDeg() - elementCone.e.coneAngleMax.Float()).DegreesToRadians(), brush);
                         }
                         /*else if(element is DisplayObjectPolygon elementPolygon)
                         {

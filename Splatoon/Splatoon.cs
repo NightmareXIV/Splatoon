@@ -62,13 +62,21 @@ public unsafe class Splatoon : IDalamudPlugin
         "极限槽被清零了……"
     };*/
     internal static string LimitGaugeResets = "";
+    internal Loader loader;
     public static bool Init = false;
+    public bool Loaded = false;
     public bool Disposed = false;
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
-        Init = true;
+        if(Loaded)
+        {
+            PluginLog.Fatal("Splatoon is already loaded, could not load again...");
+            return;
+        }
+        Loaded = true;
         ECommons.ECommons.Init(pluginInterface, Module.ObjectLife, Module.ObjectFunctions);
+        Svc.Commands.RemoveHandler("/loadsplatoon");
         var configRaw = Svc.PluginInterface.GetPluginConfig();
         Config = configRaw as Configuration ?? new Configuration();
         Config.Initialize(this);
@@ -103,12 +111,19 @@ public unsafe class Splatoon : IDalamudPlugin
         Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
         Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
         LimitGaugeResets = Svc.Data.GetExcelSheet<LogMessage>().GetRow(2844).Text.ToString();
+        Init = true;
     }
 
     public void Dispose()
     {
         Disposed = true;
-        if (!Init) return;
+        Safe(delegate
+        {
+            loader.cmd.RemoveHandler("/loadsplatoon");
+            loader.pi.UiBuilder.Draw -= loader.Draw;
+        });
+        if (!Loaded) return;
+        Loaded = false;
         Init = false;
         Safe(delegate { Config.Save(); });
         Safe(delegate { SetupShutdownHttp(false); });
@@ -127,7 +142,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
     public Splatoon(DalamudPluginInterface pluginInterface, Framework framework, CommandManager commands)
     {
-        _ = new Loader(this, pluginInterface, framework, commands);
+        loader = new Loader(this, pluginInterface, framework, commands);
     }
 
     internal static readonly string[] InvalidSymbols = { "", "", "", "“", "”", "" };
@@ -550,7 +565,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 draw(e, e.refX, e.refY, e.refZ, radius, 0f);
             }
         }
-        else if (e.type == 1 || e.type == 3)
+        else if (e.type == 1 || e.type == 3 || e.type == 4)
         {
             if (e.includeOwnHitbox) radius += Svc.ClientState.LocalPlayer.HitboxRadius;
             if (e.refActorType == 1)
@@ -565,6 +580,10 @@ public unsafe class Splatoon : IDalamudPlugin
                 {
                     AddRotatedLine(GetPlayerPositionXZY(), Svc.ClientState.LocalPlayer.Rotation, e, radius, 0f);
                     //Svc.Chat.Print(Svc.ClientState.LocalPlayer.Rotation.ToString());
+                }
+                else if (e.type == 4)
+                {
+                    displayObjects.Add(new DisplayObjectCone(e, Svc.ClientState.LocalPlayer.Position, Svc.ClientState.LocalPlayer.Rotation, radius));
                 }
             }
             else if (e.refActorType == 2 && Svc.Targets.Target != null
@@ -582,6 +601,10 @@ public unsafe class Splatoon : IDalamudPlugin
                     else if(e.type == 3)
                     {
                         AddRotatedLine(Svc.Targets.Target.GetPositionXZY(), Svc.Targets.Target.Rotation, e, radius, Svc.Targets.Target.HitboxRadius);
+                    }
+                    else if (e.type == 4)
+                    {
+                        displayObjects.Add(new DisplayObjectCone(e, Svc.Targets.Target.Position, Svc.Targets.Target.Rotation, radius));
                     }
                 }
             }
@@ -611,6 +634,10 @@ public unsafe class Splatoon : IDalamudPlugin
                             else if (e.type == 3)
                             {
                                 AddRotatedLine(a.GetPositionXZY(), a.Rotation, e, aradius, a.HitboxRadius);
+                            }
+                            else if (e.type == 4)
+                            {
+                                displayObjects.Add(new DisplayObjectCone(e, a.Position, a.Rotation, aradius));
                             }
                         }
                     }

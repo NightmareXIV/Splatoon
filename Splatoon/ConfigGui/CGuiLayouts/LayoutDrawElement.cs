@@ -480,7 +480,7 @@ namespace Splatoon
                             ImGui.DragFloat("##radius" + i + k, ref el.radius, 0.01f, 0, float.MaxValue);
                             if (ImGui.IsItemHovered())
                                 ImGui.SetTooltip("Leave at 0 to draw single dot");
-                            if (el.type == 1 || (el.type == 3 && el.includeRotation))
+                            if (el.type == 1 || (el.type == 3 && el.includeRotation) || el.type == 4)
                             {
                                 if (el.refActorType != 1)
                                 {

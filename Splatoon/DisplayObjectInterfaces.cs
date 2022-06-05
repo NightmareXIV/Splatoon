@@ -1,5 +1,20 @@
 ﻿namespace Splatoon;
 
+public class DisplayObjectCone : DisplayObject
+{
+    public Element e;
+    public Vector3 v;
+    public float angle, radius;
+
+    public DisplayObjectCone(Element e, Vector3 v, float angle, float radius)
+    {
+        this.e = e;
+        this.v = v;
+        this.angle = angle;
+        this.radius = radius;
+    }
+}
+
 public class DisplayObjectDot : DisplayObject
 {
     public float x, y, z, thickness;
