@@ -11,6 +11,7 @@ using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
 using PInvoke;
+using System.Linq;
 
 namespace Splatoon;
 public unsafe class Splatoon : IDalamudPlugin
@@ -568,7 +569,7 @@ public unsafe class Splatoon : IDalamudPlugin
         else if (e.type == 1 || e.type == 3 || e.type == 4)
         {
             if (e.includeOwnHitbox) radius += Svc.ClientState.LocalPlayer.HitboxRadius;
-            if (e.refActorType == 1)
+            if (e.refActorType == 1 && CheckCharacterAttributes(e, Svc.ClientState.LocalPlayer, true))
             {
                 if (e.type == 1)
                 {
@@ -593,7 +594,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 }
             }
             else if (e.refActorType == 2 && Svc.Targets.Target != null
-                && Svc.Targets.Target is BattleNpc)
+                && Svc.Targets.Target is BattleNpc && CheckCharacterAttributes(e, Svc.Targets.Target, true))
             {
                 if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, Svc.Targets.Target.GetPositionXZY()))
                 {
@@ -636,8 +637,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     if (IsAttributeMatches(e, a)
                             && (!e.onlyTargetable || targetable)
                             && (!e.onlyUnTargetable || !targetable)
-                            && (!e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr)))
-                            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is Character chr2 && chr2.IsCasting(e.refActorCastId)))
+                            && CheckCharacterAttributes(e, a)
                             && (!e.refActorObjectLife || a.GetLifeTimeSeconds().InRange(e.refActorLifetimeMin, e.refActorLifetimeMax)))
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
@@ -717,6 +717,18 @@ public unsafe class Splatoon : IDalamudPlugin
                 displayObjects.Add(new DisplayObjectPolygon(e));
             }
         }*/
+    }
+
+    private bool CheckCharacterAttributes(Element e, GameObject a, bool ignoreVisibility = false)
+    {
+        return
+            (ignoreVisibility || !e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr)))
+            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is Character chr2 && chr2.IsCasting(e.refActorCastId)))
+            && (!e.refActorRequireBuff || 
+                (e.refActorBuffId.Count > 0 && a is BattleChara chr3
+                && (e.refActorRequireAllBuffs? (chr3.StatusList.Select(x => x.StatusId).ContainsAll(e.refActorBuffId)): (chr3.StatusList.Select(x => x.StatusId).ContainsAny(e.refActorBuffId))).Invert(e.refActorRequireBuffsInvert)
+                )
+            );
     }
 
     bool IsAttributeMatches(Element e, GameObject o)

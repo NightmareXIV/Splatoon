@@ -8,7 +8,7 @@ public class Element
     [NonSerialized] public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
     "Line between two fixed coordinates", "Line relative to object position", "Cone relative to object position (beta)"};
     [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
-    [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID" };
+    [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "Party list position" };
     //[NonSerialized] public int screen2world = 0;
     /// <summary>
     /// 0: Object at fixed coordinates |
@@ -47,6 +47,10 @@ public class Element
     [DefaultValue(0)] public uint refActorNPCID = 0;
     [DefaultValue(false)] public bool refActorRequireCast = false;
     public List<uint> refActorCastId = new();
+    [DefaultValue(false)] public bool refActorRequireBuff = false;
+    public List<uint> refActorBuffId = new();
+    [DefaultValue(false)] public bool refActorRequireAllBuffs = false;
+    [DefaultValue(false)] public bool refActorRequireBuffsInvert = false;
     [DefaultValue(false)] public bool refActorObjectLife = false;
     [DefaultValue(0)] public float refActorLifetimeMin = 0;
     [DefaultValue(0)] public float refActorLifetimeMax = 0;
@@ -55,6 +59,7 @@ public class Element
     /// 1: Model ID |
     /// 2: Object ID |
     /// 3: Data ID
+    /// 4: Party member
     /// </summary>
     [DefaultValue(0)] public int refActorComparisonType = 0;
     /// <summary>
@@ -115,6 +120,11 @@ public class Element
     public bool ShouldSerializerefActorCastId()
     {
         return refActorRequireCast && refActorCastId.Count > 0;
+    }
+
+    public bool ShouldSerializerefActorBuffId()
+    {
+        return refActorRequireBuff && refActorBuffId.Count > 0;
     }
 
     public bool ShouldSerializerefActorName()

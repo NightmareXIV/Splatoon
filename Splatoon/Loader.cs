@@ -46,6 +46,7 @@ namespace Splatoon
                 PluginLog.Information($"Game version: {gVersion}, Splatoon version: {splatoonVersion}");
                 new Thread(() =>
                 {
+                    PluginLog.Information("Splatoon loader thread started");
                     //Thread.Sleep(5000);
                     try
                     {
@@ -81,7 +82,6 @@ namespace Splatoon
                     }
                     Safe(delegate
                     {
-                        PluginLog.Information("Splatoon loader thread started");
                         if (p.Disposed)
                         {
                             PluginLog.Fatal("Splatoon has been disposed, loading is impossible");

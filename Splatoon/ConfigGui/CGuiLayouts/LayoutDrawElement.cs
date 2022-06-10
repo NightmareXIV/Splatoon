@@ -1,6 +1,8 @@
-﻿using Dalamud.Interface.Colors;
+﻿using Dalamud;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Internal.Notifications;
 using ECommons.ImGuiMethods;
+using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ namespace Splatoon
     partial class CGui
     {
         string ActionName = "";
+        string BuffName = "";
         void LayoutDrawElement(string i, string k)
         {
             var cursor = ImGui.GetCursorPos();
@@ -243,33 +246,75 @@ namespace Splatoon
                                 ImGui.SetTooltip("Setting this checkbox will also restrict search to characters ONLY. \n(character - is a player, companion or friendly/hostile NPC that can fight and have HP)");
                             }
                         }
-                        if (el.refActorType == 0)
+                        
+                        SImGuiEx.SizedText("While casting: ", WidthElement);
+                        ImGui.SameLine();
+                        ImGui.Checkbox("##casting" + i + k, ref el.refActorRequireCast);
+                        if (el.refActorRequireCast)
                         {
-                            SImGuiEx.SizedText("While casting: ", WidthElement);
                             ImGui.SameLine();
-                            ImGui.Checkbox("##casting" + i + k, ref el.refActorRequireCast);
-                            if (el.refActorRequireCast)
+                            ImGui.SetNextItemWidth(WidthCombo);
+                            ImGuiEx.InputListUint("##casts" + i + k, el.refActorCastId, ActionNames);
+                            ImGui.SameLine();
+                            ImGuiEx.Text("Add all by name:");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(100f);
+                            ImGui.InputText("##ActionName" + i + k, ref ActionName, 100);
+                            ImGui.SameLine();
+                            if (ImGui.Button("Add##byactionname"+i+k))
                             {
-                                ImGui.SameLine();
-                                ImGui.SetNextItemWidth(WidthCombo);
-                                ImGuiEx.InputListUint("##casts" + i + k, el.refActorCastId, ActionNames);
-                                ImGui.SameLine();
-                                ImGuiEx.Text("Add all by name:");
-                                ImGui.SameLine();
-                                ImGui.SetNextItemWidth(100f);
-                                ImGui.InputText("##ActionName" + i + k, ref ActionName, 100);
-                                ImGui.SameLine();
-                                if (ImGui.Button("Add##byactionname"))
+                                foreach (var x in Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>().Union(Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>(Dalamud.ClientLanguage.English)))
                                 {
-                                    foreach(var x in Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>().Union(Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>(Dalamud.ClientLanguage.English)))
+                                    if (x.Name.ToString().Equals(ActionName, StringComparison.OrdinalIgnoreCase))
                                     {
-                                        if(x.Name.ToString().Equals(ActionName, StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            el.refActorCastId.Add(x.RowId);
-                                        }
+                                        el.refActorCastId.Add(x.RowId);
                                     }
                                 }
                             }
+                        }
+
+
+                        SImGuiEx.SizedText("Status requirement:", WidthElement);
+                        ImGui.SameLine();
+                        ImGui.Checkbox("##buffreq" + i + k, ref el.refActorRequireBuff);
+                        if (el.refActorRequireBuff)
+                        {
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(WidthCombo);
+                            ImGuiEx.InputListUint("##buffs" + i + k, el.refActorBuffId, BuffNames);
+                            ImGui.SameLine();
+                            ImGuiEx.Text("Add all by name:");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(100f);
+                            ImGui.InputText("##BuffNames" + i + k, ref BuffName, 100);
+                            ImGui.SameLine();
+                            if (ImGui.Button("Add##bybuffname"+i+k))
+                            {
+                                foreach (var x in Svc.Data.GetExcelSheet<Status>().Union(Svc.Data.GetExcelSheet<Status>(ClientLanguage.English)))
+                                {
+                                    if (x.Name.ToString().Equals(BuffName, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        el.refActorBuffId.Add(x.RowId);
+                                    }
+                                }
+                            }
+                            SImGuiEx.SizedText("", WidthElement);
+                            ImGui.SameLine();
+                            ImGui.Checkbox((el.refActorRequireBuffsInvert?"Require ANY status to be missing##": "Require ALL listed statuses to be present##") + i + k, ref el.refActorRequireAllBuffs);
+                            ImGui.SameLine();
+                            ImGui.Checkbox("Invert behavior##"+i+k, ref el.refActorRequireBuffsInvert);
+                            if(Svc.Targets.Target != null && Svc.Targets.Target is BattleChara bchr)
+                            {
+                                ImGui.SameLine();
+                                if (ImGui.Button("Add from target##bybuffname" + i + k))
+                                {
+                                    el.refActorBuffId.AddRange(bchr.StatusList.Select(x => x.StatusId));
+                                }
+                            }
+                        }
+
+                        if (el.refActorType == 0)
+                        {
                             SImGuiEx.SizedText("Object life time:", WidthElement);
                             ImGui.SameLine();
                             ImGui.Checkbox("##life" + i + k, ref el.refActorObjectLife);
