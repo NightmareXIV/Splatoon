@@ -3,6 +3,15 @@ Ser Grinnaux's knockback helper (draws small circle around it's hitbox so you ca
 ```
 DSR Grinnaux knockback~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"color":3370581760,"refActorName":"Ser Grinnaux","onlyTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":75.0,"Duration":10.0}],"Phase":1}
 ```
+P1 Knockback Tether: Tethers Adelphel when he jumps to help locate where the knockback is coming from
+```
+DSR P1 Knockback Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"Ser Adelphel","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":53.0,"Duration":15.0}],"Phase":1}
+```
+P1 Empty/Full Dimension Ring: Places a ring around Ser Grinnaux that displays the edge of Empty/Full Dimension when it is being cast.
+Note: Visually this looks accurate, but needs more testing.
+```
+DSR Empty/Full Dimension Ring~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"thicc":5.0,"refActorName":"Ser Grinnaux","includeHitbox":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":18.5,"Duration":5.0},{"TimeBegin":99.0,"Duration":5.0}],"Phase":1}
+```
 
 # Phase 2 - Thordan triggers
 King Thordan move reminder: (while Splatoon isn't really designed for being general-purpose trigger system, it can be used as such)
@@ -27,21 +36,21 @@ DSR Quake markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type
 
 Strength of the Ward Sequential Quake Marker - Displays the Quake markers sequentially instead of all at once.
 ```
-DSR Strength Quake 1~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":6.0,"color":4278190335,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"Ser Guerrique","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":38.0,"Duration":4.0}],"Phase":2}
+DSR Strength Quake 1~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":6.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"Ser Guerrique","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":35.0,"Duration":8.0}],"Phase":2}
 ```
 ```
-DSR Strength Quake 2~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":12.0,"color":4278190335,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":42.0,"Duration":2.0}],"Phase":2}
+DSR Strength Quake 2~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":12.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":41.5,"Duration":4.0}],"Phase":2}
 ```
 ```
-DSR Strength Quake 3~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":18.0,"color":4278190335,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":44.0,"Duration":2.0}],"Phase":2}
+DSR Strength Quake 3~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":18.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":43.5,"Duration":4.0}],"Phase":2}
 ```
 ```
-DSR Strength Quake 4~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":24.0,"color":4278190335,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":46.0,"Duration":2.0}],"Phase":2}
+DSR Strength Quake 4~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":24.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":45.5,"Duration":2.0}],"Phase":2}
 ```
 
 Sanctity DRK Tether. Locates the DRK (Ser Zephirin) with a tether during Sanctity of the Ward for use with the DRK Relative strat:
 ```
-DSR Sanctity DRK Tether~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":0.0,"color":3372158208,"thicc":5.0,"refActorName":"Ser Zephirin","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
+DSR Sanctity DRK Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"color":3372158208,"thicc":5.0,"refActorName":"Ser Zephirin","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":100.5,"Duration":12.5}],"Phase":2}
 ```
 
 Tether on Thordan's jump for towers + jump on gaze - to make it easier to locate him:
@@ -57,7 +66,7 @@ DSR Geirskogul~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"refY":30.
 
 Drachenlance:
 ```
-DSR Dranchenlance~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true},"2":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":0.7853982},"3":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":0.5235988},"4":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":0.2617994},"5":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":6.021386},"6":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":5.7595863},"7":{"type":3,"refY":15.0,"radius":0.0,"color":4294967040,"thicc":6.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"AdditionalRotation":5.497787}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":3.0,"Match":"Nidhogg readies Drachenlance."}],"Phase":2}
+DSR Dranchenlance~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":4,"refY":15.0,"radius":14.0,"coneAngleMin":-45,"coneAngleMax":45,"color":4294967040,"thicc":3.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"Filled":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":3.0,"Match":"Nidhogg readies Drachenlance."}],"Phase":2}
 ```
 
 # Phase 5 - Alternative timeline Thordan triggers:
