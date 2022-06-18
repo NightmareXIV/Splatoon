@@ -13,12 +13,24 @@ Knockback Tether: Tethers Adelphel when he jumps to help locate where you need t
 ```
 DSR P1 Knockback Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"Ser Adelphel","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":53.6,"Duration":9.0,"ResetOnTChange":false}],"Phase":1}
 ```
+Aetherial Tear Circles: Puts red circles around all of the Aetherial Tears that indicates their death zone.
+```
+DSR P1 Aetherial Tear AoE~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":9.5,"thicc":4.0,"refActorName":"aetherial tear"},"2":{"type":1,"radius":9.5,"color":503316735,"thicc":4.0,"refActorName":"aetherial tear","Filled":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":44.8,"Duration":25.2}],"Phase":1}
+```
 ### Holy Chains (Playstation)
 Ser Grinnaux Knockback Helper: Draws a small circle around the Ser Grinnaux's hitbox to help with the knockback.
 ```
 DSR P1 Grinnaux Knockback~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"color":3370581760,"refActorName":"Ser Grinnaux","onlyTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":75.0,"Duration":10.0}],"Phase":1}
 ```
 ### Planar Prison (Transition)
+Brightwing Cone: Displays a cone from Charibert towards you that indicates the size of the cone. Disappears when Brightwing hits you.
+```
+DSR P1 Prison Cone~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":4,"refX":-714.8652,"refY":-644.2318,"refZ":26.868929,"radius":10.0,"coneAngleMin":-15,"coneAngleMax":15,"refActorName":"Ser Charibert","includeRotation":true,"onlyTargetable":true,"Filled":true,"FaceMe":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Match":"You suffer the effect of Planar Imprisonment."},{"Type":3,"Match":"You suffer the effect of Skyblind."}],"Phase":1}
+```
+Skyblind Circles: Displays a circle around all players who have Skyblind on them. Disappears when Skyblind drops onto the floor.
+```
+DSR P1 Prison Skyblind~{"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"thicc":4.0,"refActorRequireBuff":true,"refActorBuffId":[2661],"refActorComparisonType":1}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":60.0,"Match":"You suffer the effect of Planar Imprisonment."}],"Phase":1}
+```
 # Phase 2 - Thordan triggers
 Ascalon's Mercy Move Reminder: Flashes "MOVE" on the screen when Ascalon's Mercy is fully cast to remind you to move. 
 
@@ -49,16 +61,16 @@ DSR Quake markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type
 ```
 Sequential Heavy Impact Rings: Displays the quake markers sequentially instead of all at once.
 ```
-DSR P2 Strength Quake 1~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":6.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"Ser Guerrique","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":35.0,"Duration":8.0}],"Phase":2}
+DSR P2 Strength Quake 1~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":6.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"Ser Guerrique","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":35.0,"Duration":8.5}],"Phase":2}
 ```
 ```
-DSR P2 Strength Quake 2~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":12.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":41.5,"Duration":4.0}],"Phase":2}
+DSR P2 Strength Quake 2~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":12.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":40.5,"Duration":4.0}],"Phase":2}
 ```
 ```
-DSR P2 Strength Quake 3~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":18.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":43.5,"Duration":4.0}],"Phase":2}
+DSR P2 Strength Quake 3~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":18.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":42.5,"Duration":4.0}],"Phase":2}
 ```
 ```
-DSR P2 Strength Quake 4~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":24.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":45.5,"Duration":2.0}],"Phase":2}
+DSR P2 Strength Quake 4~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":24.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":44.5,"Duration":2.0}],"Phase":2}
 ```
 Party Positions: Places blue circles on the spots where the party stack, two tankbusters and 3 defam dives should be.
 ```
