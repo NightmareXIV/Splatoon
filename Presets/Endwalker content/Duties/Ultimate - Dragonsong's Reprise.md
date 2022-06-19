@@ -15,7 +15,7 @@ DSR P1 Knockback Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"
 ```
 Aetherial Tear Circles: Puts red circles around all of the Aetherial Tears that indicates their death zone.
 ```
-DSR P1 Aetherial Tear AoE~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":9.5,"thicc":4.0,"refActorName":"aetherial tear"},"2":{"type":1,"radius":9.5,"color":503316735,"thicc":4.0,"refActorName":"aetherial tear","Filled":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":44.8,"Duration":25.2}],"Phase":1}
+DSR P1 Aetherial Tear AoE~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":9.0,"thicc":4.0,"refActorName":"aetherial tear"},"2":{"type":1,"radius":9.0,"color":503316735,"thicc":4.0,"refActorName":"aetherial tear","Filled":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":44.8,"Duration":25.2}],"Phase":1}
 ```
 ### Holy Chains (Playstation)
 Ser Grinnaux Knockback Helper: Draws a small circle around the Ser Grinnaux's hitbox to help with the knockback.
