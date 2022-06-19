@@ -121,7 +121,7 @@ DSR P3 Geirskogul Lines~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"
 ```
 Drachenlance:
 ```
-DSR P3 Drachenlance Cone~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":4,"refY":15.0,"radius":12.0,"coneAngleMin":-45,"coneAngleMax":45,"color":4294967040,"thicc":3.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"Filled":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":3.0,"Match":"Nidhogg readies Drachenlance."}],"Phase":2}
+DSR P3 Drachenlance Cone~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":4,"refY":15.0,"radius":13.0,"coneAngleMin":-45,"coneAngleMax":45,"color":4294967040,"thicc":3.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"Filled":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":3.0,"Match":"Nidhogg readies Drachenlance."}],"Phase":2}
 ```
 # Phase 5 - Alternative timeline Thordan triggers:
 The second set of quakes seen in P5:
