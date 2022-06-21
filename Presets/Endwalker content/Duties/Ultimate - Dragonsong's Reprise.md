@@ -1,9 +1,9 @@
 # General Fight triggers
 Brightsphere Circles: Places a circle around every active Brightsphere that shows you where they are.
 
-Note: Currently using an inefficient Display Condition until I figure out all of the timings in the fight.
+Note: Display conditions set for P1 and P2. Not sure if there are any more instances of Brightspheres later on in the fight or not.
 ```
-DSR Brightsphere Circles~{"ZoneLockH":[968],"DCond":1,"Elements":{"1":{"type":1,"radius":9.0,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5},"2":{"type":1,"radius":9.0,"color":503316735,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5,"Filled":true}},"Triggers":[{"TimeBegin":44.8,"Duration":25.2},{"TimeBegin":110.0,"Duration":7.0}]}
+DSR Brightsphere Circles~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":9.0,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5},"2":{"type":1,"radius":9.0,"color":503316735,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5,"Filled":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":50.0,"Duration":20.0},{"TimeBegin":110.0,"Duration":7.0}]}
 ```
 # Phase 1 - Knights triggers
 Empty/Full Dimension Ring: Places a ring around Ser Grinnaux that displays the edge of Empty/Full Dimension when it is being cast. Additionally shows a red danger zone around Ser Grinnaux if he is casting Full Dimension to tell you to go out.
