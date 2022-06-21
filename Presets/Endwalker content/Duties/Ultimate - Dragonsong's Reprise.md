@@ -1,13 +1,14 @@
 # General Fight triggers
 Brightsphere Circles: Places a circle around every active Brightsphere that shows you where they are.
+
 Note: Currently using an inefficient Display Condition until I figure out all of the timings in the fight.
 ```
-Brightsphere Circles~{"ZoneLockH":[968],"DCond":1,"Elements":{"1":{"type":1,"radius":9.0,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5},"2":{"type":1,"radius":9.0,"color":503316735,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5,"Filled":true}},"Triggers":[{"TimeBegin":44.8,"Duration":25.2},{"TimeBegin":110.0,"Duration":7.0}]}
+DSR Brightsphere Circles~{"ZoneLockH":[968],"DCond":1,"Elements":{"1":{"type":1,"radius":9.0,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5},"2":{"type":1,"radius":9.0,"color":503316735,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5,"Filled":true}},"Triggers":[{"TimeBegin":44.8,"Duration":25.2},{"TimeBegin":110.0,"Duration":7.0}]}
 ```
 # Phase 1 - Knights triggers
 Empty/Full Dimension Ring: Places a ring around Ser Grinnaux that displays the edge of Empty/Full Dimension when it is being cast.
 ```
-DSR P1 Empty/Full Dimension Ring~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"thicc":5.0,"refActorName":"Ser Grinnaux","includeHitbox":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":17.2,"Duration":6.0},{"TimeBegin":98.2,"Duration":6.0}],"Phase":1}
+DSR P1 Empty/Full Dimension Ring~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"thicc":5.0,"refActorName":"Ser Grinnaux","includeHitbox":true},"2":{"type":1,"radius":2.0,"color":503316735,"thicc":5.0,"refActorName":"Ser Grinnaux","refActorRequireCast":true,"refActorCastId":[25307],"includeHitbox":true,"Filled":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":17.2,"Duration":6.0},{"TimeBegin":98.2,"Duration":6.0}],"Phase":1}
 ```
 ### Hyperdimensional Slash (Spreads and Stacks)
 Slash Safespots: Places a circle showing roughly how far away you need to be with blue lines for individual positioning to help with uptime.
