@@ -6,12 +6,12 @@ Empty/Full Dimension Ring: Places a ring around Ser Grinnaux that displays the e
 ```
 DSR Empty/Full Dimension Ring~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"thicc":5.0,"refActorName":"聖騎士グリノー","includeHitbox":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":18.5,"Duration":5.0},{"TimeBegin":99.0,"Duration":5.0}],"Phase":1}
 ```
-## Holy Chains (Playstation)
+### Holy Chains (Playstation)
 Ser Grinnaux Knockback Helper: Draws a small circle around the Ser Grinnaux's hitbox to help with the knockback.
 ```
 DSR Grinnaux knockback~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"color":3370581760,"refActorName":"聖騎士グリノー","onlyTargetable":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":75.0,"Duration":10.0}]}
 ```
-## Shining Blade (Dashes)
+### Shining Blade (Dashes)
 Knockback Tether: Tethers Adelphel when he jumps to help locate where you need to get knocked back to.
 ```
 DSR P1 Knockback Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"聖騎士アデルフェル","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":53.0,"Duration":15.0}],"Phase":1}
