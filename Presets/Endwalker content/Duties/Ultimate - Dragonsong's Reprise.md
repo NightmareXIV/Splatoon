@@ -130,6 +130,11 @@ Drachenlance:
 ```
 DSR P3 Drachenlance Cone~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":4,"refY":15.0,"radius":13.0,"coneAngleMin":-45,"coneAngleMax":45,"color":4294967040,"thicc":3.0,"refActorName":"Nidhogg","includeRotation":true,"onlyTargetable":true,"Filled":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":3.0,"Match":"Nidhogg readies Drachenlance."}],"Phase":2}
 ```
+# Phase 4 - Eyes
+Mirage Dive Circles: Displays a red circle around all red tether players during the Mirage Dive section of Phase 4. Disappears when hit by a Mirage Dive.
+```
+DSR P4 Mirage Dives~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":4.0,"thicc":4.0,"refActorRequireBuff":true,"refActorBuffId":[2776,3131],"refActorRequireBuffsInvert":true,"refActorComparisonType":1}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":30.0,"Match":"You suffer the effect of Bleeding.","MatchDelay":30.0}],"Phase":2}
+```
 # Phase 5 - Alternative timeline Thordan triggers:
 The second set of quakes seen in P5:
 ```
