@@ -519,7 +519,7 @@ namespace Splatoon
                     if (el.type == 0 || el.type == 1 || el.type == 4)
                     {
                         ImGui.SameLine();
-                        ImGui.Checkbox($"Filled", ref el.Filled);
+                        ImGui.Checkbox($"Filled{i+k}", ref el.Filled);
                     }
                     if ((el.type != 2 && el.type != 3) || el.includeRotation)
                     {

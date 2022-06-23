@@ -8,7 +8,7 @@ public class Element
     [NonSerialized] public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
     "Line between two fixed coordinates", "Line relative to object position", "Cone relative to object position (beta)"};
     [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
-    [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "Party list position" };
+    [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "" };
     //[NonSerialized] public int screen2world = 0;
     /// <summary>
     /// 0: Object at fixed coordinates |
