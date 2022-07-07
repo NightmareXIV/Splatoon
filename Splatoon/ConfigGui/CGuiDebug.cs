@@ -58,6 +58,18 @@ namespace Splatoon
             }
             ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(s2wb ? Colors.Green : Colors.Red), "X:" + s2wrx + "\nY:" + s2wry);
             ImGui.Separator();
+            if (Svc.ClientState.LocalPlayer != null)
+            {
+                ImGuiEx.Text($"Player+1 distance: {Vector3.Distance(Svc.ClientState.LocalPlayer.Position, Svc.ClientState.LocalPlayer.Position + new Vector3(1, 0, 0))}");
+                ImGuiEx.Text($"Player+1+1 distance: {Vector3.Distance(Svc.ClientState.LocalPlayer.Position + new Vector3(1, 0, 0), Svc.ClientState.LocalPlayer.Position + new Vector3(2, 0, 0))}");
+                Svc.GameGui.WorldToScreen(Svc.ClientState.LocalPlayer.Position, out var v1);
+                Svc.GameGui.WorldToScreen(Svc.ClientState.LocalPlayer.Position + new Vector3(1, 0, 0), out var v2);
+                Svc.GameGui.WorldToScreen(Svc.ClientState.LocalPlayer.Position + new Vector3(2, 0, 0), out var v3);
+                Svc.GameGui.WorldToScreen(Svc.ClientState.LocalPlayer.Position + new Vector3(3, 0, 0), out var v4);
+                Svc.GameGui.WorldToScreen(Svc.ClientState.LocalPlayer.Position + new Vector3(4, 0, 0), out var v5);
+                ImGuiEx.Text($"Screen distance: {Vector2.Distance(v1, v2)}, {Vector2.Distance(v2, v3)}, {Vector2.Distance(v3, v4)}, {Vector2.Distance(v4, v5)}");
+                ImGui.Separator();
+            }
             ImGuiEx.Text("Camera angle X:" + p.CamAngleX);
             ImGuiEx.Text("Camera angle Y:" + p.CamAngleY);
             ImGuiEx.Text("Camera zoom:" + p.CamZoom);

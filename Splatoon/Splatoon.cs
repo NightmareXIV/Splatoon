@@ -67,6 +67,7 @@ public unsafe class Splatoon : IDalamudPlugin
     public static bool Init = false;
     public bool Loaded = false;
     public bool Disposed = false;
+    internal static (Vector2 X, Vector2 Y) Transform;
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
@@ -294,9 +295,9 @@ public unsafe class Splatoon : IDalamudPlugin
             }
             PlayerPosCache = null;
             displayObjects.Clear();
-            if (Svc.ClientState?.LocalPlayer != null)
+            if (Svc.ClientState.LocalPlayer != null)
             {
-                if(ChatMessageQueue.Count > 5 * dequeueConcurrency)
+                if (ChatMessageQueue.Count > 5 * dequeueConcurrency)
                 {
                     dequeueConcurrency++;
                     PluginLog.Debug($"Too many queued messages ({ChatMessageQueue.Count}); concurrency increased to {dequeueConcurrency}");

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommons.MathHelpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,7 +19,56 @@ namespace Splatoon
         float* Yptr;
         float* ZoomPtr;
 
-        
+        /*internal static bool MyWorldToScreen(Vector3 worldPos, out Vector2 screenPos)
+        {
+            if(Svc.ClientState.LocalPlayer == null)
+            {
+                screenPos = default;
+                return false;
+            }
+            var smallVector = worldPos.ToVector3Double();
+            double mult = 1;
+            Vector2 smallVectorScreenPos = Vector2.Zero;
+            Vector2Double smallVectorScreenPosD = Vector2Double.Zero;
+            Vector3Double playerWorldPos = Vector3Double.Zero;
+            if (Svc.GameGui.WorldToScreen(smallVector.ToVector3(), out smallVectorScreenPos))
+            {
+                screenPos = smallVectorScreenPos;
+                return true;
+            }
+            else
+            {
+                playerWorldPos = Svc.ClientState.LocalPlayer.Position.ToVector3Double();
+                smallVector = (playerWorldPos + smallVector) / 2;
+                mult = 2;
+                smallVectorScreenPosD = smallVectorScreenPos.ToVector2Double();
+            }
+            //step 1: find full world position distance
+            var worldDistanceFull = Vector3Double.Distance(worldPos.ToVector3Double(), playerWorldPos);
+            //step 2: find partial world position distance
+            var worldDistancePartial = Vector3Double.Distance(smallVector, playerWorldPos);
+            //step 3: find player position screen point
+            Svc.GameGui.WorldToScreen(Svc.ClientState.LocalPlayer.Position, out var playerPos);
+            var playerPosD = playerPos.ToVector2Double();
+            //step 3: find world to screen distance ratio
+            var ratio = Vector2Double.Distance(playerPosD, smallVectorScreenPosD) / worldDistancePartial;
+            //step 5: find partial world point, it's in smallVectorScreenPos
+            //step 6: find required screen distance
+            var screenDistance = worldDistanceFull * ratio;
+            PluginLog.Information($"dist full: {worldDistanceFull}, part: {worldDistancePartial}, screen:{Vector2.Distance(playerPos, smallVectorScreenPos)}, ratio: {ratio}, distance: {screenDistance}");
+            //step 7: extend line between player pos and small screen by certain distance
+            //var distanceWorld = Vector3.Distance(worldPos, )
+            screenPos = GetPointByDistance(playerPosD, smallVectorScreenPosD, screenDistance).ToVector2();
+            return true;
+        }
+
+        static Vector2Double GetPointByDistance(Vector2Double start, Vector2Double through, double distance)
+        {
+            var u = through - start;
+            var norm = Math.Pow(u.X * u.X + u.Y * u.Y, 0.5f);
+            var v = new Vector2Double(u.X / norm, u.Y / norm);
+            return start + v * distance;
+        }*/
 
         /*[UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate byte Character_GetIsTargetable(IntPtr characterPtr);
