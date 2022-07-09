@@ -1,3 +1,5 @@
+|Attention! Please do not blindly import all presets. Some presets can repeat what they do in different manner. Please read and decide whether you need something first.|
+|---|
 # General Fight triggers
 Brightsphere Circles: Places a circle around every active Brightsphere that shows you where they are.
 
