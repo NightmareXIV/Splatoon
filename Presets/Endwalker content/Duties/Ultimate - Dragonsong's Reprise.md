@@ -148,6 +148,21 @@ Mirage Dive Circles: Displays a red circle around all red tether players during 
 DSR P4 Mirage Dives~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":4.0,"thicc":4.0,"refActorRequireBuff":true,"refActorBuffId":[2776,3131],"refActorRequireBuffsInvert":true,"refActorComparisonType":1}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":30.0,"Match":"You suffer the effect of Bleeding.","MatchDelay":30.0}],"Phase":2}
 ```
 # Phase 5 - Alternative timeline Thordan triggers:
+Wrath of the Heavens: display tethers (make tethers same as red line) and safe spot for blue marker (**WIP, not precise yet**)
+```
+DSR Wrath of the Heavens resolve~{"ZoneLockH":[903,968],"DCond":5,"Elements":{"Right tether":{"type":3,"refY":43.0,"radius":0.0,"refActorName":"Ser Ignasse","includeRotation":true,"onlyVisible":true},"Left tether":{"type":3,"refY":43.0,"radius":0.0,"refActorName":"Ser Vellguine","includeRotation":true,"onlyVisible":true},"Blue marker safe spot":{"type":1,"offX":17.32,"offY":11.54,"radius":0.6,"color":4294901787,"thicc":7.6,"refActorName":"Vedrfolnir","includeRotation":true,"onlyVisible":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"King Thordan readies Wrath of the Heavens","MatchDelay":8.0}],"Phase":2}
+```
+
+Wrath of the heavens: display safespot under Ser Grinnaux
+```
+DSR Ser Grinnaux Empty dimension~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"thicc":5.0,"refActorName":"Ser Grinnaux","includeHitbox":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":30.0,"Match":"King Thordan readies Wrath of the Heavens","MatchDelay":10.0}]}
+```
+
+Weath of the heavens: display chain lightning radius around people. Whether it is precise - needs to be confirmed yet.
+```
+DSR Chain Lightning~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"offY":0.14,"radius":5.0,"color":1694433303,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[2833],"Filled":true}}}
+```
+
 The second set of quakes seen in P5:
 ```
 DSR P5 Quake Markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type":1,"radius":6.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":12.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"3":{"type":1,"radius":18.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"4":{"type":1,"radius":24.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":15.0,"Match":"King Thordan readies Death of the Heavens","MatchDelay":13.0}],"Phase":2}
