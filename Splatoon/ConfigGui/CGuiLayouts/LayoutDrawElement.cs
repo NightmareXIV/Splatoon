@@ -602,7 +602,7 @@ namespace Splatoon
                             ImGui.Checkbox("Enable##TetherEnable" + i + k, ref el.tether);
                         }
                     }
-                    if((el.type.EqualsAny(0, 1) && el.Donut > 0) || el.type == 4 || (el.type.EqualsAny(2,3) && el.Filled))
+                    if((el.type.EqualsAny(0, 1) && el.Donut > 0) || el.type == 4 || (el.type.EqualsAny(2,3) && (el.radius > 0 || el.includeHitbox || el.includeOwnHitbox)))
                     {
                         SImGuiEx.SizedText("Fill step:", WidthElement);
                         ImGui.SameLine();

@@ -105,11 +105,13 @@ namespace Splatoon
             {
                 p.Config.maxcamY = 0.05f;
             }*/
+            ImGui.Separator();
+            ImGuiEx.Text("Fill settings:");
             ImGui.Checkbox("Use line rectangle filling", ref p.Config.AltRectFill);
             ImGuiComponents.HelpMarker("Fill rectangles with stroke instead of full color. This will remove clipping issues, but may feel more disturbing.");
             
-            ImGui.Checkbox("Global fill step override", ref P.Config.AltRectStepOverride);
-            ImGuiComponents.HelpMarker("Globally ignore element-specific step settings and replace them with your own.");
+            ImGui.Checkbox("Global rectangle fill step override", ref P.Config.AltRectStepOverride);
+            ImGuiComponents.HelpMarker("Globally ignore element-specific step settings for rectangles (lines) and replace them with your own.");
             if (P.Config.AltRectStepOverride)
             {
                 ImGui.SameLine();
@@ -117,9 +119,22 @@ namespace Splatoon
                 ImGui.DragFloat("##fillstep", ref p.Config.AltRectStep, 0.001f, 0, float.MaxValue);
                 p.Config.AltRectStep.ValidateRange(0.01f, float.MaxValue);
             }
-            
+            ImGui.SetNextItemWidth(60f);
+            ImGui.DragFloat("Minimum rectangle fill line thickness", ref p.Config.AltRectMinLineThickness, 0.001f, 0, float.MaxValue);
+            ImGui.SameLine();
+            ImGui.Checkbox("Always force this value", ref P.Config.AltRectForceMinLineThickness);
+            ImGui.Checkbox("Additionally highlight rectangle outline", ref p.Config.AltRectHighlightOutline);
 
-
+            ImGui.Checkbox("Global cone fill step override", ref P.Config.AltConeStepOverride);
+            ImGuiComponents.HelpMarker("Globally ignore element-specific step settings for cones and replace them with your own.");
+            if (P.Config.AltConeStepOverride)
+            {
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(60f);
+                ImGui.DragInt("##fillstep2", ref p.Config.AltConeStep, 0.1f, 0, int.MaxValue);
+                p.Config.AltRectStep.ValidateRange(0.01f, float.MaxValue);
+            }
+            ImGui.Separator();
             ImGui.Checkbox("Use hexadecimal numbers", ref p.Config.Hexadecimal);
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
             ImGui.Checkbox("[Deprecared] Limit trigger message types to boss replies and system messages only", ref p.Config.LimitTriggerMessages);

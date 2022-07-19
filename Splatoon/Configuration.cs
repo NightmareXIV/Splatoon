@@ -29,8 +29,14 @@ class Configuration : IPluginConfiguration
     public bool ShowOnUiHide = false;
     public bool Hexadecimal = true;
     public bool AltRectFill = true;
+
     public bool AltRectStepOverride = false;
-    public float AltRectStep = 1f;
+    public float AltRectStep = 0.5f;
+    public bool AltRectHighlightOutline = true;
+    public float AltRectMinLineThickness = 4f;
+    public bool AltRectForceMinLineThickness = false;
+    public bool AltConeStepOverride = false;
+    public int AltConeStep = 1;
 
     public void Initialize(Splatoon plugin)
     {

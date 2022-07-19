@@ -625,7 +625,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 {
                     if(e.coneAngleMax > e.coneAngleMin)
                     {
-                        for(var x = e.coneAngleMin; x < e.coneAngleMax; x+=Math.Max(1, (int)GetFillStep(e.FillStep)))
+                        for(var x = e.coneAngleMin; x < e.coneAngleMax; x+= GetFillStepCone(e.FillStep))
                         {
                             AddConeLine(GetPlayerPositionXZY(), (Svc.ClientState.LocalPlayer.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians(), e, radius);
                         }
@@ -656,11 +656,17 @@ public unsafe class Splatoon : IDalamudPlugin
                     {
                         if (e.coneAngleMax > e.coneAngleMin)
                         {
-                            for (var x = e.coneAngleMin; x <= e.coneAngleMax; x++)
+                            for (var x = e.coneAngleMin; x < e.coneAngleMax; x += GetFillStepCone(e.FillStep))
                             {
                                 var angle = e.FaceMe ?
                                             (180 - (MathHelper.GetRelativeAngle(Svc.Targets.Target.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2()) - x.Float())).DegreesToRadians()
                                             : (Svc.Targets.Target.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians();
+                                AddConeLine(Svc.Targets.Target.GetPositionXZY(), angle, e, radius);
+                            }
+                            {
+                                var angle = e.FaceMe ?
+                                                (180 - (MathHelper.GetRelativeAngle(Svc.Targets.Target.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2()) - e.coneAngleMax.Float())).DegreesToRadians()
+                                                : (Svc.Targets.Target.Rotation.RadiansToDegrees() - e.coneAngleMax.Float()).DegreesToRadians();
                                 AddConeLine(Svc.Targets.Target.GetPositionXZY(), angle, e, radius);
                             }
                         }
@@ -701,11 +707,17 @@ public unsafe class Splatoon : IDalamudPlugin
                             {
                                 if (e.coneAngleMax > e.coneAngleMin)
                                 {
-                                    for (var x = e.coneAngleMin; x <= e.coneAngleMax; x++)
+                                    for (var x = e.coneAngleMin; x < e.coneAngleMax; x += GetFillStepCone(e.FillStep))
                                     {
                                         var angle = e.FaceMe ?
                                             (180-(MathHelper.GetRelativeAngle(a.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2()) - x.Float())).DegreesToRadians()
                                             : (a.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians();
+                                        AddConeLine(a.GetPositionXZY(), angle, e, aradius);
+                                    }
+                                    {
+                                        var angle = e.FaceMe ?
+                                            (180 - (MathHelper.GetRelativeAngle(a.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2()) - e.coneAngleMax.Float())).DegreesToRadians()
+                                            : (a.Rotation.RadiansToDegrees() - e.coneAngleMax.Float()).DegreesToRadians();
                                         AddConeLine(a.GetPositionXZY(), angle, e, aradius);
                                     }
                                 }
@@ -737,7 +749,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 };
                 if (Config.AltRectFill)
                 {
-                    AddAlternativeFillingRect(rect, GetFillStep(e.FillStep) / 10);
+                    AddAlternativeFillingRect(rect, GetFillStepRect(e.FillStep));
                 }
                 else
                 {
@@ -771,10 +783,16 @@ public unsafe class Splatoon : IDalamudPlugin
     {
         displayObjects.Add(rect.l1);
         displayObjects.Add(rect.l2);
-        var fl1 = new DisplayObjectLine(rect.l1.ax, rect.l1.ay, rect.l1.az, rect.l2.ax, rect.l2.ay, rect.l2.az, rect.l1.thickness, rect.l1.color);
-        var fl2 = new DisplayObjectLine(rect.l1.bx, rect.l1.by, rect.l1.bz, rect.l2.bx, rect.l2.by, rect.l2.bz, rect.l1.thickness, rect.l1.color);
+        var thc = P.Config.AltRectForceMinLineThickness || rect.l1.thickness < P.Config.AltRectMinLineThickness ? P.Config.AltRectMinLineThickness : rect.l1.thickness;
+        var col = P.Config.AltRectHighlightOutline ? (rect.l1.color.ToVector4() with { W = 1f }).ToUint() : rect.l1.color;
+        var fl1 = new DisplayObjectLine(rect.l1.ax, rect.l1.ay, rect.l1.az, rect.l2.ax, rect.l2.ay, rect.l2.az, thc, col);
+        var fl2 = new DisplayObjectLine(rect.l1.bx, rect.l1.by, rect.l1.bz, rect.l2.bx, rect.l2.by, rect.l2.bz, thc, col);
+        var fl3 = new DisplayObjectLine(rect.l1.ax, rect.l1.ay, rect.l1.az, rect.l1.bx, rect.l1.by, rect.l1.bz, thc, col);
+        var fl4 = new DisplayObjectLine(rect.l2.ax, rect.l2.ay, rect.l2.az, rect.l2.bx, rect.l2.by, rect.l2.bz, thc, col);
         displayObjects.Add(fl1);
         displayObjects.Add(fl2);
+        displayObjects.Add(fl3);
+        displayObjects.Add(fl4);
         {
             var v1 = new Vector3(rect.l1.ax, rect.l1.ay, rect.l1.az);
             var v2 = new Vector3(rect.l2.ax, rect.l2.ay, rect.l2.az);
@@ -788,7 +806,7 @@ public unsafe class Splatoon : IDalamudPlugin
             {
                 v1 += d1;
                 v3 += d2;
-                displayObjects.Add(new DisplayObjectLine(v1.X, v1.Y, v1.Z, v3.X, v3.Y, v3.Z, rect.l1.thickness, rect.l1.color));
+                displayObjects.Add(new DisplayObjectLine(v1.X, v1.Y, v1.Z, v3.X, v3.Y, v3.Z, thc, rect.l1.color));
             }
         }
         {
@@ -804,7 +822,7 @@ public unsafe class Splatoon : IDalamudPlugin
             {
                 v1 += d1;
                 v3 += d2;
-                displayObjects.Add(new DisplayObjectLine(v1.X, v1.Y, v1.Z, v3.X, v3.Y, v3.Z, rect.l1.thickness, rect.l1.color));
+                displayObjects.Add(new DisplayObjectLine(v1.X, v1.Y, v1.Z, v3.X, v3.Y, v3.Z, thc, rect.l1.color));
             }
         }
     }
@@ -890,11 +908,11 @@ public unsafe class Splatoon : IDalamudPlugin
                 displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color, e.Filled));
                 if(e != null && e.Donut > 0)
                 {
-                    var donutR = GetFillStep(e.FillStep) / 10;
+                    var donutR = GetFillStepRect(e.FillStep);
                     while(donutR < e.Donut)
                     {
                         displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r + donutR, e.thicc, e.color, e.Filled));
-                        donutR += GetFillStep(e.FillStep) / 10;
+                        donutR += GetFillStepRect(e.FillStep);
                     }
                     displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r + e.Donut, e.thicc, e.color, e.Filled));
                 }
@@ -996,7 +1014,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 };
                 if (Config.AltRectFill)
                 {
-                    AddAlternativeFillingRect(rect, GetFillStep(e.FillStep) / 10);
+                    AddAlternativeFillingRect(rect, GetFillStepRect(e.FillStep));
                 }
                 else
                 {
@@ -1020,13 +1038,22 @@ public unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    internal float GetFillStep(float original)
+    internal static float GetFillStepRect(float original)
     {
         if (P.Config.AltRectStepOverride)
         {
             return P.Config.AltRectStep;
         }
         return original;
+    }
+
+    internal static int GetFillStepCone(float original)
+    {
+        if (P.Config.AltConeStepOverride)
+        {
+            return P.Config.AltConeStep;
+        }
+        return (int)Math.Max(1f, original);
     }
 
     internal bool IsLayoutVisible(Layout i)

@@ -57,7 +57,7 @@ public class Element
     [DefaultValue(false)] public bool refActorObjectLife = false;
     [DefaultValue(0)] public float refActorLifetimeMin = 0;
     [DefaultValue(0)] public float refActorLifetimeMax = 0;
-    [DefaultValue(1f)] public float FillStep = 1f;
+    [DefaultValue(0.5f)] public float FillStep = 0.5f;
     /// <summary>
     /// 0: Name |
     /// 1: Model ID |
