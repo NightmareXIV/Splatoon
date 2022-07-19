@@ -71,6 +71,7 @@ public unsafe class Splatoon : IDalamudPlugin
     public bool Disposed = false;
     internal static (Vector2 X, Vector2 Y) Transform;
     internal Dictionary<string, IntPtr> PlaceholderCache = new();
+    internal Dictionary<string, uint> NameNpcIDsAll = new();
     internal Dictionary<string, uint> NameNpcIDs = new();
 
     internal void Load(DalamudPluginInterface pluginInterface)
@@ -124,13 +125,30 @@ public unsafe class Splatoon : IDalamudPlugin
         {
             if (x.Singular != "")
             {
-                NameNpcIDs[x.Singular.ToString().ToLower()] = x.RowId;
-            }
-            if (x.Plural != "")
-            {
-                NameNpcIDs[x.Plural.ToString().ToLower()] = x.RowId;
+                var n = x.Singular.ToString().ToLower();
+                NameNpcIDsAll[n] = x.RowId;
+                NameNpcIDs[n] = x.RowId;
             }
         }
+        var bNames = new HashSet<string>();
+        foreach (var lang in Enum.GetValues<ClientLanguage>())
+        {
+            bNames.Clear();
+            foreach (var x in Svc.Data.GetExcelSheet<BNpcName>(lang))
+            {
+                var n = x.Singular.ToString().ToLower();
+                if (bNames.Contains(n))
+                {
+                    NameNpcIDs[n] = 0;
+                    PluginLog.Verbose($"Name npc id {n} is ambiguous");
+                }
+                else
+                {
+                    bNames.Add(n);
+                }
+            }
+        }
+        NameNpcIDs = NameNpcIDs.Where(x => x.Value != 0).ToDictionary(x => x.Key, x => x.Value);
         Init = true;
     }
 

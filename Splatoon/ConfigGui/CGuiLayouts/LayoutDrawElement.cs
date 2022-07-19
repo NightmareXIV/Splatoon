@@ -187,7 +187,7 @@ namespace Splatoon
                                 if (p.NameNpcIDs.TryGetValue(el.refActorName.ToLower(), out var nameid))
                                 {
                                     ImGui.SameLine();
-                                    if(ImGui.Button($"Name ID: 0x{nameid.Format()}, convert?##{i + k}"))
+                                    if(ImGui.Button($"Name ID: {nameid.Format()}, convert?##{i + k}"))
                                     {
                                         el.refActorComparisonType = 6;
                                         el.refActorNPCNameID = nameid;
@@ -228,7 +228,7 @@ namespace Splatoon
                             else if (el.refActorComparisonType == 6)
                             {
                                 SImGuiEx.InputUintDynamic("##nameID" + i + k, ref el.refActorNPCNameID);
-                                var npcnames = p.NameNpcIDs.FindKeysByValue(el.refActorNPCNameID);
+                                var npcnames = p.NameNpcIDsAll.FindKeysByValue(el.refActorNPCNameID);
                                 if (npcnames.Any())
                                 {
                                     ImGuiComponents.HelpMarker($"NPC: \n{npcnames.Join("\n")}");
