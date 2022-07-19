@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface.Colors;
+using Dalamud.Interface.Components;
 using ECommons.ImGuiMethods;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,14 @@ namespace Splatoon
     internal partial class CGui
     {
         string LoggerSearch = "";
+        bool IsViewer = false;
         void DisplayLogger()
         {
             ImGui.Checkbox("Enable logger", ref p.LogObjects);
+            ImGui.SameLine();
+            ImGui.Checkbox("Viewer mode", ref IsViewer);
+            ImGuiComponents.HelpMarker("When enabled, only currently present objects are displayed");
+            ImGui.SameLine();
             if(ImGui.Button("Clear list"))
             {
                 p.loggedObjectList.Clear();
@@ -23,12 +29,14 @@ namespace Splatoon
             ImGui.SameLine();
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
             ImGui.InputText("##filterLog", ref LoggerSearch, 100);
-            ImGui.BeginTable("##logObjects", 11, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
+            ImGui.BeginTable("##logObjects", 13, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
             ImGui.TableSetupColumn("Object name", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableSetupColumn("Type");
             ImGui.TableSetupColumn("Object ID");
             ImGui.TableSetupColumn("Data ID");
             ImGui.TableSetupColumn("Model ID");
+            ImGui.TableSetupColumn("NPC ID");
+            ImGui.TableSetupColumn("Name ID");
             ImGui.TableSetupColumn("Tar. %");
             ImGui.TableSetupColumn("Vis. %");
             ImGui.TableSetupColumn("Exist");
@@ -43,6 +51,8 @@ namespace Splatoon
                 var mid = !x.Value.IsChar ? "--" : $"{x.Key.ModelID:X4}";
                 var oid = x.Key.ObjectID == 0xE0000000 ? "--" : $"{x.Key.ObjectID:X8}";
                 var did = x.Key.DataID == 0 ? "--" : $"{x.Key.DataID:X8}";
+                var npcid = $"{x.Key.NPCID:X4}";
+                var nameid = !x.Value.IsChar ? "--" : $"{x.Key.NameID:X4}";
                 if (LoggerSearch != "")
                 {
                     if (!x.Key.Name.ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
@@ -73,6 +83,10 @@ namespace Splatoon
                 ImGui.TableNextColumn();
                 ImGuiEx.TextCopy(mid);
                 ImGui.TableNextColumn();
+                ImGuiEx.TextCopy(npcid);
+                ImGui.TableNextColumn();
+                ImGuiEx.TextCopy(nameid);
+                ImGui.TableNextColumn();
                 if (x.Value.Targetable) ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
                 ImGui.TextUnformatted($"{(int)(((double)x.Value.TargetableTicks / (double)x.Value.ExistenceTicks) * 100)}%");
                 if (x.Value.Targetable) ImGui.PopStyleColor();
@@ -90,6 +104,10 @@ namespace Splatoon
                 ImGuiEx.Text($"{x.Value.Life:F1}");
             }
             ImGui.EndTable();
+            if (IsViewer)
+            {
+                p.loggedObjectList.Clear();
+            }
         }
     }
 }

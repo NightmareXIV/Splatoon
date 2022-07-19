@@ -1,5 +1,6 @@
 ﻿using Dalamud;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Internal.Notifications;
 using ECommons.ImGuiMethods;
 using Lumina.Excel.GeneratedSheets;
@@ -199,6 +200,15 @@ namespace Splatoon
                             else if (el.refActorComparisonType == 4)
                             {
                                 ImGuiEx.InputHex("##npcid" + i + k, ref el.refActorNPCID);
+                            }
+                            else if (el.refActorComparisonType == 5)
+                            {
+                                ImGui.InputText("##pholder" + i + k, ref el.refActorPlaceholder, 50);
+                                ImGuiComponents.HelpMarker("Placeholder like you'd type in macro <1>, <2>, <mo> etc");
+                            }
+                            else if (el.refActorComparisonType == 6)
+                            {
+                                ImGuiEx.InputHex("##nameID" + i + k, ref el.refActorNPCNameID);
                             }
                             if (ImGui.IsItemHovered())
                             {

@@ -48,7 +48,7 @@ public unsafe class Splatoon : IDalamudPlugin
     internal HashSet<string> CurrentChatMessages = new();
     internal Element Clipboard = null;
     internal int dequeueConcurrency = 1;
-    internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, ObjectKind type), ObjectInfo> loggedObjectList = new();
+    internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, uint NPCID, uint NameID, ObjectKind type), ObjectInfo> loggedObjectList = new();
     internal bool LogObjects = false;
     internal bool DisableLineFix = false;
     internal int Phase = 1;
@@ -68,6 +68,7 @@ public unsafe class Splatoon : IDalamudPlugin
     public bool Loaded = false;
     public bool Disposed = false;
     internal static (Vector2 X, Vector2 Y) Transform;
+    internal Dictionary<string, IntPtr> PlaceholderCache = new();
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
@@ -255,6 +256,7 @@ public unsafe class Splatoon : IDalamudPlugin
         if (Profiler.Enabled) Profiler.MainTick.StartTick();
         try
         {
+            PlaceholderCache.Clear();
             LayoutAmount = 0;
             ElementAmount = 0;
             if (LogObjects && Svc.ClientState.LocalPlayer != null)
@@ -262,7 +264,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 foreach(var t in Svc.Objects)
                 {
                     var ischar = t is Character;
-                    var obj = (t.Name.ToString(), t.ObjectId, t.DataId, ischar ? MemoryManager.GetModelId((Character)t) : 0, t.ObjectKind);
+                    var obj = (t.Name.ToString(), t.ObjectId, t.DataId, ischar ? MemoryManager.GetModelId((Character)t) : 0, this.MemoryManager.GetNpcID(t), ischar ? ((Character)t).NameId : 0, t.ObjectKind);
                     loggedObjectList.TryAdd(obj, new ObjectInfo());
                     loggedObjectList[obj].ExistenceTicks++;
                     loggedObjectList[obj].IsChar = ischar;
@@ -739,7 +741,23 @@ public unsafe class Splatoon : IDalamudPlugin
         if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
         if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
         if (e.refActorComparisonType == 4 && MemoryManager.GetNpcID(o) == e.refActorNPCID) return true;
+        if (e.refActorComparisonType == 5 && ResolvePlaceholder(e.refActorPlaceholder) == o.Address) return true;
+        if (e.refActorComparisonType == 6 && o is Character c2 && c2.NameId == e.refActorNPCNameID) return true;
         return false;
+    }
+
+    IntPtr ResolvePlaceholder(string ph)
+    {
+        if(PlaceholderCache.TryGetValue(ph, out var val))
+        {
+            return val;
+        }
+        else
+        {
+            var result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder(ph, 0, 0);
+            PlaceholderCache[ph] = result;
+            return result;
+        }
     }
 
     void draw(Element e, float x, float y, float z, float r, float angle, GameObject go = null)
