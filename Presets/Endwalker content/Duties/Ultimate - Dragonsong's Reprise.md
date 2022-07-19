@@ -1,3 +1,5 @@
+|Attention! Please do not blindly import all presets. Some presets can repeat what they do in different manner. Please read and decide whether you need something first.|
+|---|
 # General Fight triggers
 Brightsphere Circles: Places a circle around every active Brightsphere that shows you where they are.
 
@@ -5,6 +7,13 @@ Note: Display conditions set for P1 and P2. Not sure if there are any more insta
 ```
 DSR Brightsphere Circles~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":9.0,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5},"2":{"type":1,"radius":9.0,"color":503316735,"thicc":4.0,"refActorName":"Brightsphere","refActorObjectLife":true,"refActorLifetimeMin":0.0,"refActorLifetimeMax":1.5,"Filled":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":50.0,"Duration":20.0},{"TimeBegin":110.0,"Duration":7.0}]}
 ```
+
+Ser Grinnaux knockback
+Draws set of lines precisely on cardinals and intercardinals. Align yourself with the line and you will get knocked back perfectly into your position. Works for p1, p2, p5 knockbacks.
+```
+DSR Grinnaux knockback precise~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"radius":2.0,"color":3370581760,"refActorName":"Ser Grinnaux","refActorRequireCast":true,"refActorCastId":[4135,5275,25308],"onlyVisible":true},"2":{"type":3,"refY":1.0,"offY":-1.0,"radius":2.0,"color":3370581760,"thicc":5.0,"refActorName":"Ser Grinnaux","refActorRequireCast":true,"refActorCastId":[4135,5275,25308],"onlyVisible":true},"3":{"type":3,"refX":1.0,"offX":-1.0,"radius":2.0,"color":3370581760,"thicc":5.0,"refActorName":"Ser Grinnaux","refActorRequireCast":true,"refActorCastId":[4135,5275,25308],"onlyVisible":true},"4":{"type":3,"refX":1.0,"refY":1.0,"offX":-1.0,"offY":-1.0,"radius":2.0,"color":3370581760,"thicc":5.0,"refActorName":"Ser Grinnaux","refActorRequireCast":true,"refActorCastId":[4135,5275,25308],"onlyVisible":true},"5":{"type":3,"refX":1.0,"refY":-1.0,"offX":-1.0,"offY":1.0,"radius":2.0,"color":3370581760,"thicc":5.0,"refActorName":"Ser Grinnaux","refActorRequireCast":true,"refActorCastId":[4135,5275,25308],"onlyVisible":true}}}
+```
+
 # Phase 1 - Knights triggers
 Empty/Full Dimension Ring: Places a ring around Ser Grinnaux that displays the edge of Empty/Full Dimension when it is being cast. Additionally shows a red danger zone around Ser Grinnaux if he is casting Full Dimension to tell you to go out.
 ```
@@ -148,6 +157,29 @@ Mirage Dive Circles: Displays a red circle around all red tether players during 
 DSR P4 Mirage Dives~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":4.0,"thicc":4.0,"refActorRequireBuff":true,"refActorBuffId":[2776,3131],"refActorRequireBuffsInvert":true,"refActorComparisonType":1}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":30.0,"Match":"You suffer the effect of Bleeding.","MatchDelay":30.0}],"Phase":2}
 ```
 # Phase 5 - Alternative timeline Thordan triggers:
+### Wrath of the heavens
+Display tethers (make tethers same as red line) and safe spot for blue marker (**WIP, not precise yet**)
+```
+DSR Wrath of the Heavens resolve~{"ZoneLockH":[903,968],"DCond":5,"Elements":{"Right tether":{"type":3,"refY":43.0,"radius":0.0,"refActorName":"Ser Ignasse","includeRotation":true,"onlyVisible":true},"Left tether":{"type":3,"refY":43.0,"radius":0.0,"refActorName":"Ser Vellguine","includeRotation":true,"onlyVisible":true},"Blue marker safe spot":{"type":1,"offX":17.32,"offY":11.54,"radius":0.6,"color":4294901787,"thicc":7.6,"refActorName":"Vedrfolnir","includeRotation":true,"onlyVisible":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"King Thordan readies Wrath of the Heavens","MatchDelay":8.0}],"Phase":2}
+```
+
+Display safespot under Ser Grinnaux
+```
+DSR Ser Grinnaux Empty dimension~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"thicc":5.0,"refActorName":"Ser Grinnaux","includeHitbox":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":30.0,"Match":"King Thordan readies Wrath of the Heavens","MatchDelay":10.0}]}
+```
+
+Display chain lightning radius around people. Whether it is precise - needs to be confirmed yet.
+```
+DSR Chain Lightning~{"ZoneLockH":[968],"Elements":{"1":{"type":1,"offY":0.14,"radius":5.0,"color":1694433303,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[2833],"Filled":true}}}
+```
+
+Display Ascalon's Mercy Revealed on you. Might be not precise.
+```
+DSR p5 thordan cleave~{"ZoneLockH":[968],"Elements":{"Thordan cleave":{"type":4,"radius":20.0,"coneAngleMin":-20,"coneAngleMax":20,"color":2885746175,"refActorName":"King Thordan","refActorRequireCast":true,"refActorCastId":[25546,25547],"includeRotation":true,"Filled":true,"FaceMe":true}},"Phase":2}
+```
+
+### Death of the Heavens
+
 The second set of quakes seen in P5:
 ```
 DSR P5 Quake Markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type":1,"radius":6.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":12.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"3":{"type":1,"radius":18.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true},"4":{"type":1,"radius":24.0,"color":4293721856,"refActorName":"Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":15.0,"Match":"King Thordan readies Death of the Heavens","MatchDelay":13.0}],"Phase":2}
