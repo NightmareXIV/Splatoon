@@ -27,6 +27,7 @@ class Configuration : IPluginConfiguration
     public bool DirectNameComparison = false;
     public bool NoMemory = false;
     public bool ShowOnUiHide = false;
+    public bool Hexadecimal = true;
 
     public void Initialize(Splatoon plugin)
     {

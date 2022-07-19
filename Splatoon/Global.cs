@@ -18,3 +18,4 @@ global using System.Threading.Tasks;
 global using static Splatoon.Static;
 global using ECommons.Schedulers;
 global using static ECommons.GenericHelpers;
+global using static Splatoon.Splatoon;

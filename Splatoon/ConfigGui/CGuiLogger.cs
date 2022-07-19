@@ -48,11 +48,11 @@ namespace Splatoon
             foreach (var x in p.loggedObjectList)
             {
                 i++;
-                var mid = !x.Value.IsChar ? "--" : $"{x.Key.ModelID:X4}";
-                var oid = x.Key.ObjectID == 0xE0000000 ? "--" : $"{x.Key.ObjectID:X8}";
-                var did = x.Key.DataID == 0 ? "--" : $"{x.Key.DataID:X8}";
-                var npcid = $"{x.Key.NPCID:X4}";
-                var nameid = !x.Value.IsChar ? "--" : $"{x.Key.NameID:X4}";
+                var mid = !x.Value.IsChar ? "--" : $"{x.Key.ModelID.Format()}";
+                var oid = x.Key.ObjectID == 0xE0000000 ? "--" : $"{x.Key.ObjectID.Format()}";
+                var did = x.Key.DataID == 0 ? "--" : $"{x.Key.DataID.Format()}";
+                var npcid = $"{x.Key.NPCID.Format()}";
+                var nameid = !x.Value.IsChar ? "--" : $"{x.Key.NameID.Format()}";
                 if (LoggerSearch != "")
                 {
                     if (!x.Key.Name.ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)

@@ -1,4 +1,5 @@
-﻿using Dalamud.Game;
+﻿using Dalamud;
+using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Command;
@@ -18,6 +19,7 @@ public unsafe class Splatoon : IDalamudPlugin
 {
     public const string DiscordURL = "https://discord.gg/m8NRt4X8Gf";
     public string Name => "Splatoon";
+    internal static Splatoon P;
     internal Gui DrawingGui;
     internal CGui ConfigGui;
     internal Commands CommandManager;
@@ -69,6 +71,7 @@ public unsafe class Splatoon : IDalamudPlugin
     public bool Disposed = false;
     internal static (Vector2 X, Vector2 Y) Transform;
     internal Dictionary<string, IntPtr> PlaceholderCache = new();
+    internal Dictionary<string, uint> NameNpcIDs = new();
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
@@ -114,6 +117,20 @@ public unsafe class Splatoon : IDalamudPlugin
         Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
         Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
         LimitGaugeResets = Svc.Data.GetExcelSheet<LogMessage>().GetRow(2844).Text.ToString();
+        foreach(var x in Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.English)
+            .Union(Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.French))
+            .Union(Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.Japanese))
+            .Union(Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.German)))
+        {
+            if (x.Singular != "")
+            {
+                NameNpcIDs[x.Singular.ToString().ToLower()] = x.RowId;
+            }
+            if (x.Plural != "")
+            {
+                NameNpcIDs[x.Plural.ToString().ToLower()] = x.RowId;
+            }
+        }
         Init = true;
     }
 
@@ -145,6 +162,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
     public Splatoon(DalamudPluginInterface pluginInterface, Framework framework, CommandManager commands)
     {
+        P = this;
         loader = new Loader(this, pluginInterface, framework, commands);
     }
 
@@ -756,6 +774,7 @@ public unsafe class Splatoon : IDalamudPlugin
         {
             var result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder(ph, 0, 0);
             PlaceholderCache[ph] = result;
+            //PluginLog.Information($"Phaceholder {ph} result {result}");
             return result;
         }
     }
@@ -797,12 +816,12 @@ public unsafe class Splatoon : IDalamudPlugin
             {
                 text = text
                     .Replace("$NAME", go.Name.ToString())
-                    .Replace("$OBJECTID", $"{go.ObjectId:X8}")
-                    .Replace("$DATAID", $"{go.DataId:X8}")
-                    .Replace("$MODELID", $"{(go is Character chr ? MemoryManager.GetModelId(chr) : 0):X4}")
+                    .Replace("$OBJECTID", $"{go.ObjectId.Format()}")
+                    .Replace("$DATAID", $"{go.DataId.Format()}")
+                    .Replace("$MODELID", $"{(go is Character chr ? MemoryManager.GetModelId(chr) : 0).Format()}")
                     .Replace("$HITBOXR", $"{go.HitboxRadius:F1}")
                     .Replace("$KIND", $"{go.ObjectKind}")
-                    .Replace("$NPCID", $"{MemoryManager.GetNpcID(go):X8}")
+                    .Replace("$NPCID", $"{MemoryManager.GetNpcID(go).Format()}")
                     .Replace("$LIFE", $"{go.GetLifeTimeSeconds():F1}")
                     .Replace("\\n", "\n");
             }

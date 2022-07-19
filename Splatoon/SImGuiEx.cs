@@ -2,6 +2,30 @@
 
 static class SImGuiEx //came here to laugh on how scuffed it is? let's do so together.
 {
+    internal static void InputUintDynamic(string id, ref uint u)
+    {
+        if (P.Config.Hexadecimal)
+        {
+            ImGuiEx.Text("0x");
+            ImGui.SameLine(0, 1);
+            ImGui.SetNextItemWidth(200f);
+            ImGuiEx.InputHex(id, ref u);
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetTooltip("Hexadecimal input");
+            }
+        }
+        else
+        {
+            ImGui.SetNextItemWidth(200f);
+            ImGuiEx.InputUint(id, ref u);
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetTooltip("Decimal input");
+            }
+        }
+    }
+
     public static void SizedText(string text, float width)
     {
         ImGui.PushStyleColor(ImGuiCol.Button, Colors.Transparent);

@@ -5,6 +5,21 @@ namespace Splatoon;
 
 static class Static
 {
+    public static string Format(this uint num)
+    {
+        return P.Config.Hexadecimal ? $"0x{num:X}" : $"{num}";
+    }
+
+    public static string Format(this int num)
+    {
+        return P.Config.Hexadecimal ? $"0x{num:X}" : $"{num}";
+    }
+
+    public static string Format(this long num)
+    {
+        return P.Config.Hexadecimal ? $"0x{num:X}" : $"{num}";
+    }
+
     public static float GetAdditionalRotation(this Element e, float cx, float cy, float angle)
     {
         if (!e.FaceMe) return e.AdditionalRotation + angle;

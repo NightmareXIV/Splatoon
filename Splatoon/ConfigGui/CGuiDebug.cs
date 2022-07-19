@@ -98,10 +98,10 @@ namespace Splatoon
                     ImGuiEx.Text(a.Name.ToString());
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(200f);
-                    ImGuiEx.Text($"{a.ObjectId:X8}");
+                    ImGuiEx.Text($"{a.ObjectId.Format()}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(300f);
-                    ImGuiEx.Text($"{a.DataId:X8}");
+                    ImGuiEx.Text($"{a.DataId.Format()}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(400f);
                     ImGuiEx.Text($"{p.MemoryManager.GetIsTargetable((a is Character ch) ? ch : a)}");
@@ -110,8 +110,16 @@ namespace Splatoon
                     ImGuiEx.Text($"{((a is Character chr) ? p.MemoryManager.GetIsVisible(chr) : "Not a char")}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(600f);
-                    ImGuiEx.Text(a is Character chr2 ? $"{p.MemoryManager.GetModelId(chr2):X8}" : "Not a char");
+                    ImGuiEx.Text(a is Character chr2 ? $"{p.MemoryManager.GetModelId(chr2).Format()}" : "Not a char");
                 });
+            }
+            ImGui.Separator();
+            if (ImGui.CollapsingHeader("NameNpcID"))
+            {
+                foreach(var x in p.NameNpcIDs)
+                {
+                    ImGuiEx.Text($"{x.Key} = {x.Value}");
+                }
             }
             ImGui.EndChild();
         }

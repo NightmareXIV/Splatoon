@@ -180,41 +180,54 @@ namespace Splatoon
                             ImGui.SetNextItemWidth(100f);
                             ImGui.Combo($"##attrSelect{i + k}", ref el.refActorComparisonType, Element.ComparisonTypes, Element.ComparisonTypes.Length);
                             ImGui.SameLine();
-                            ImGui.SetNextItemWidth(200f);
                             if (el.refActorComparisonType == 0)
                             {
+                                ImGui.SetNextItemWidth(200f);
                                 ImGui.InputText("##actorname" + i + k, ref el.refActorName, 100);
+                                if (p.NameNpcIDs.TryGetValue(el.refActorName.ToLower(), out var nameid))
+                                {
+                                    ImGui.SameLine();
+                                    if(ImGui.Button($"Name ID: 0x{nameid.Format()}, convert?##{i + k}"))
+                                    {
+                                        el.refActorComparisonType = 6;
+                                        el.refActorNPCNameID = nameid;
+                                    }
+                                    ImGuiComponents.HelpMarker("Name ID has been found for this string. " +
+                                        "If you will convert comparison to Name ID, it will make element work with any languare. " +
+                                        "In addition, such conversion will provide a performance boost.\n\n" +
+                                        "Selection by Name ID will target only Characters (usually it's fine). If you're targeting GameObject, EventObj or EventNpc, do not convert.");
+                                }
                             }
                             else if (el.refActorComparisonType == 1)
                             {
-                                ImGuiEx.InputHex("##actormid" + i + k, ref el.refActorModelID);
+                                SImGuiEx.InputUintDynamic("##actormid" + i + k, ref el.refActorModelID);
                             }
                             else if (el.refActorComparisonType == 2)
                             {
-                                ImGuiEx.InputHex("##actoroid" + i + k, ref el.refActorObjectID);
+                                SImGuiEx.InputUintDynamic("##actoroid" + i + k, ref el.refActorObjectID);
                             }
                             else if (el.refActorComparisonType == 3)
                             {
-                                ImGuiEx.InputHex("##actordid" + i + k, ref el.refActorDataID);
+                                SImGuiEx.InputUintDynamic("##actordid" + i + k, ref el.refActorDataID);
                             }
                             else if (el.refActorComparisonType == 4)
                             {
-                                ImGuiEx.InputHex("##npcid" + i + k, ref el.refActorNPCID);
+                                SImGuiEx.InputUintDynamic("##npcid" + i + k, ref el.refActorNPCID);
                             }
                             else if (el.refActorComparisonType == 5)
                             {
+                                ImGui.SetNextItemWidth(200f);
                                 ImGui.InputText("##pholder" + i + k, ref el.refActorPlaceholder, 50);
                                 ImGuiComponents.HelpMarker("Placeholder like you'd type in macro <1>, <2>, <mo> etc");
                             }
                             else if (el.refActorComparisonType == 6)
                             {
-                                ImGuiEx.InputHex("##nameID" + i + k, ref el.refActorNPCNameID);
-                            }
-                            if (ImGui.IsItemHovered())
-                            {
-                                ImGui.SetTooltip("Keep in mind that searching object is\n" +
-                                    "relatively resource expensive operation. \n" +
-                                    "Try to keep amount of these down to reasonable number.");
+                                SImGuiEx.InputUintDynamic("##nameID" + i + k, ref el.refActorNPCNameID);
+                                var npcnames = p.NameNpcIDs.FindKeysByValue(el.refActorNPCNameID);
+                                if (npcnames.Any())
+                                {
+                                    ImGuiComponents.HelpMarker($"NPC: \n{npcnames.Join("\n")}");
+                                }
                             }
                             if (Svc.Targets.Target != null)
                             {
@@ -529,7 +542,7 @@ namespace Splatoon
                     if (el.type == 0 || el.type == 1 || el.type == 4)
                     {
                         ImGui.SameLine();
-                        ImGui.Checkbox($"Filled{i+k}", ref el.Filled);
+                        ImGui.Checkbox($"Filled##{i+k}", ref el.Filled);
                     }
                     if ((el.type != 2 && el.type != 3) || el.includeRotation)
                     {
