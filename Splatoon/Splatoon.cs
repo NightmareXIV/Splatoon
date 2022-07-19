@@ -584,7 +584,7 @@ public unsafe class Splatoon : IDalamudPlugin
         {
             if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, e.refX, e.refY, e.refZ))
             {
-                draw(e, e.refX, e.refY, e.refZ, radius, 0f);
+                DrawCircle(e, e.refX, e.refY, e.refZ, radius, 0f);
             }
         }
         else if (e.type == 1 || e.type == 3 || e.type == 4)
@@ -595,7 +595,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 if (e.type == 1)
                 {
                     var pointPos = GetPlayerPositionXZY();
-                    draw(e, pointPos.X, pointPos.Y, pointPos.Z, radius, e.includeRotation ? Svc.ClientState.LocalPlayer.Rotation : 0f, 
+                    DrawCircle(e, pointPos.X, pointPos.Y, pointPos.Z, radius, e.includeRotation ? Svc.ClientState.LocalPlayer.Rotation : 0f, 
                         e.overlayPlaceholders?Svc.ClientState.LocalPlayer:null);
                 }
                 else if (e.type == 3)
@@ -607,10 +607,11 @@ public unsafe class Splatoon : IDalamudPlugin
                 {
                     if(e.coneAngleMax > e.coneAngleMin)
                     {
-                        for(var x = e.coneAngleMin; x <= e.coneAngleMax; x++)
+                        for(var x = e.coneAngleMin; x < e.coneAngleMax; x+=Math.Max(1, (int)e.FillStep))
                         {
                             AddConeLine(GetPlayerPositionXZY(), (Svc.ClientState.LocalPlayer.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians(), e, radius);
                         }
+                        AddConeLine(GetPlayerPositionXZY(), (Svc.ClientState.LocalPlayer.Rotation.RadiansToDegrees() - e.coneAngleMax.Float()).DegreesToRadians(), e, radius);
                     }
                 }
             }
@@ -622,7 +623,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     if (e.includeHitbox) radius += Svc.Targets.Target.HitboxRadius;
                     if (e.type == 1)
                     {
-                        draw(e, Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
+                        DrawCircle(e, Svc.Targets.Target.GetPositionXZY().X, Svc.Targets.Target.GetPositionXZY().Y,
                             Svc.Targets.Target.GetPositionXZY().Z, radius, e.includeRotation ? Svc.Targets.Target.Rotation : 0f,
                             e.overlayPlaceholders ? Svc.Targets.Target : null);
                     }
@@ -667,7 +668,7 @@ public unsafe class Splatoon : IDalamudPlugin
                             if (e.includeHitbox) aradius += a.HitboxRadius;
                             if (e.type == 1)
                             {
-                                draw(e, a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius, 
+                                DrawCircle(e, a.GetPositionXZY().X, a.GetPositionXZY().Y, a.GetPositionXZY().Z, aradius, 
                                     e.includeRotation ? a.Rotation : 0f,
                                     e.overlayPlaceholders ? a : null);
                             }
@@ -795,7 +796,7 @@ public unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    void draw(Element e, float x, float y, float z, float r, float angle, GameObject go = null)
+    void DrawCircle(Element e, float x, float y, float z, float r, float angle, GameObject go = null)
     {
         var cx = x + e.offX;
         var cy = y + e.offY;
@@ -819,6 +820,16 @@ public unsafe class Splatoon : IDalamudPlugin
             if (r > 0)
             {
                 displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color, e.Filled));
+                if(e != null && e.Donut > 0)
+                {
+                    var donutR = e.FillStep / 10;
+                    while(donutR < e.Donut)
+                    {
+                        displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r + donutR, e.thicc, e.color, e.Filled));
+                        donutR += e.FillStep / 10;
+                    }
+                    displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r + e.Donut, e.thicc, e.color, e.Filled));
+                }
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using Dalamud.Interface.Components;
+using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -104,6 +105,18 @@ namespace Splatoon
             {
                 p.Config.maxcamY = 0.05f;
             }*/
+            ImGui.Checkbox("Use alternative rectangle filling", ref p.Config.AltRectFill);
+            ImGuiComponents.HelpMarker("Fill rectangles with stroke instead of full color. This will remove clipping issues, but may feel more disturbing.");
+            if (P.Config.AltRectFill)
+            {
+                ImGui.SameLine();
+
+                ImGuiEx.Text("Fill step:");
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(60f);
+                ImGui.DragFloat("##fillstep", ref p.Config.AltRectStep, 0.001f, 0, float.MaxValue);
+                p.Config.AltRectStep.ValidateRange(0.1f, float.MaxValue);
+            }
             ImGui.Checkbox("Use hexadecimal numbers", ref p.Config.Hexadecimal);
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
             ImGui.Checkbox("Limit trigger message types to boss replies and system messages only", ref p.Config.LimitTriggerMessages);

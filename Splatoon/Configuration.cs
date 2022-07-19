@@ -28,6 +28,8 @@ class Configuration : IPluginConfiguration
     public bool NoMemory = false;
     public bool ShowOnUiHide = false;
     public bool Hexadecimal = true;
+    public bool AltRectFill = false;
+    public float AltRectStep = 0.5f;
 
     public void Initialize(Splatoon plugin)
     {

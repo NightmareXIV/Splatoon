@@ -585,6 +585,15 @@ namespace Splatoon
                                         "enable only \"+target hitbox\" to make indicators valid.");
                                 }
                             }
+                            if (el.type.EqualsAny(0, 1))
+                            {
+                                ImGui.SameLine();
+                                ImGuiEx.Text("Donut:");
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(60f);
+                                ImGui.DragFloat("##radiusdonut" + i + k, ref el.Donut, 0.01f, 0, float.MaxValue);
+                                el.Donut.ValidateRange(0, float.MaxValue);
+                            }
                         }
                         if (el.type != 2 && el.type != 3 && el.type != 4)
                         {
@@ -592,6 +601,14 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGui.Checkbox("Enable##TetherEnable" + i + k, ref el.tether);
                         }
+                    }
+                    if((el.type.EqualsAny(0, 1) && el.Donut > 0) || el.type == 4)
+                    {
+                        SImGuiEx.SizedText("Fill step:", WidthElement);
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##fillstep" + i + k, ref el.FillStep, 0.001f, 0, float.MaxValue);
+                        el.FillStep.ValidateRange(0.1f, float.MaxValue);
                     }
                     if (el.type == 0 || el.type == 1)
                     {
