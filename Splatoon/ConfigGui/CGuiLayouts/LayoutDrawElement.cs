@@ -217,8 +217,13 @@ namespace Splatoon
                             else if (el.refActorComparisonType == 5)
                             {
                                 ImGui.SetNextItemWidth(200f);
-                                ImGui.InputText("##pholder" + i + k, ref el.refActorPlaceholder, 50);
-                                ImGuiComponents.HelpMarker("Placeholder like you'd type in macro <1>, <2>, <mo> etc");
+                                ImGuiEx.InputListString("##pholder" + i + k, el.refActorPlaceholder);
+                                ImGuiComponents.HelpMarker("Placeholder like you'd type in macro <1>, <2>, <mo> etc. You can add multiple." +
+                                    "\nAdditional placeholders are supported:" +
+                                    "\n<d1>, <d2>, <d3> etc - DPS player in a party" +
+                                    "\n<h1>, <h2> etc - Healer player in a party" +
+                                    "\n<t1>, <t2> etc - Tank player in a party" +
+                                    "\nNumber corresponds to the party list.");
                             }
                             else if (el.refActorComparisonType == 6)
                             {

@@ -1,10 +1,35 @@
-﻿using ECommons.MathHelpers;
+﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using ECommons.GameFunctions;
+using ECommons.MathHelpers;
 using System.Diagnostics;
 
 namespace Splatoon;
 
-static class Static
+static unsafe class Static
 {
+    internal static PlayerCharacter GetRolePlaceholder(CombatRole role, int num)
+    {
+        int curIndex = 1;
+        for(var i = 1; i <= 8; i++)
+        {
+            var result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder($"<{i}>", 0, 0);
+            if (result == IntPtr.Zero) return null;
+            var go = Svc.Objects.CreateObjectReference(result);
+            if(go is PlayerCharacter pc)
+            {
+                if(pc.GetRole() == role)
+                {
+                    if(num == curIndex)
+                    {
+                        return pc;
+                    }
+                    curIndex++;
+                }
+            }
+        }
+        return null;
+    }
+
     public static string Format(this uint num)
     {
         return P.Config.Hexadecimal ? $"0x{num:X}" : $"{num}";
@@ -25,6 +50,7 @@ static class Static
         if (!e.FaceMe) return e.AdditionalRotation + angle;
         return (e.AdditionalRotation.RadiansToDegrees() + MathHelper.GetRelativeAngle(new Vector2(cx, cy), Svc.ClientState.LocalPlayer.Position.ToVector2())).DegreesToRadians();
     }
+
     public static void Toggle<T>(this HashSet<T> h, T o)
     {
         if(h.Contains(o))

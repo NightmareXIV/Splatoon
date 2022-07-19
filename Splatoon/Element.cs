@@ -46,7 +46,7 @@ public class Element
     [DefaultValue(0)] public uint refActorObjectID = 0;
     [DefaultValue(0)] public uint refActorDataID = 0;
     [DefaultValue(0)] public uint refActorNPCID = 0;
-    [DefaultValue("")] public string refActorPlaceholder = "";
+    [DefaultValue("")] public List<string> refActorPlaceholder = new();
     [DefaultValue(0)] public uint refActorNPCNameID = 0;
     [DefaultValue(false)] public bool refActorRequireCast = false;
     public List<uint> refActorCastId = new();

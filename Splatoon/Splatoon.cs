@@ -759,7 +759,7 @@ public unsafe class Splatoon : IDalamudPlugin
         if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
         if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
         if (e.refActorComparisonType == 4 && MemoryManager.GetNpcID(o) == e.refActorNPCID) return true;
-        if (e.refActorComparisonType == 5 && ResolvePlaceholder(e.refActorPlaceholder) == o.Address) return true;
+        if (e.refActorComparisonType == 5 && e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) return true;
         if (e.refActorComparisonType == 6 && o is Character c2 && c2.NameId == e.refActorNPCNameID) return true;
         return false;
     }
@@ -772,7 +772,23 @@ public unsafe class Splatoon : IDalamudPlugin
         }
         else
         {
-            var result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder(ph, 0, 0);
+            var result = IntPtr.Zero;
+            if (ph.StartsWith("<t") && int.TryParse(ph[2..3], out var n))
+            {
+                result = Static.GetRolePlaceholder(CombatRole.Tank, n)?.Address ?? IntPtr.Zero;
+            }
+            else if (ph.StartsWith("h") && int.TryParse(ph[2..3], out n))
+            {
+                result = Static.GetRolePlaceholder(CombatRole.Healer, n)?.Address ?? IntPtr.Zero;
+            }
+            else if (ph.StartsWith("<d") && int.TryParse(ph[2..3], out n))
+            {
+                result = Static.GetRolePlaceholder(CombatRole.DPS, n)?.Address ?? IntPtr.Zero;
+            }
+            else
+            {
+                result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder(ph, 0, 0);
+            }
             PlaceholderCache[ph] = result;
             //PluginLog.Information($"Phaceholder {ph} result {result}");
             return result;
