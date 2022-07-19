@@ -105,21 +105,24 @@ namespace Splatoon
             {
                 p.Config.maxcamY = 0.05f;
             }*/
-            ImGui.Checkbox("Use alternative rectangle filling", ref p.Config.AltRectFill);
+            ImGui.Checkbox("Use line rectangle filling", ref p.Config.AltRectFill);
             ImGuiComponents.HelpMarker("Fill rectangles with stroke instead of full color. This will remove clipping issues, but may feel more disturbing.");
-            if (P.Config.AltRectFill)
+            
+            ImGui.Checkbox("Global fill step override", ref P.Config.AltRectStepOverride);
+            ImGuiComponents.HelpMarker("Globally ignore element-specific step settings and replace them with your own.");
+            if (P.Config.AltRectStepOverride)
             {
-                ImGui.SameLine();
-
-                ImGuiEx.Text("Fill step:");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(60f);
                 ImGui.DragFloat("##fillstep", ref p.Config.AltRectStep, 0.001f, 0, float.MaxValue);
-                p.Config.AltRectStep.ValidateRange(0.1f, float.MaxValue);
+                p.Config.AltRectStep.ValidateRange(0.01f, float.MaxValue);
             }
+            
+
+
             ImGui.Checkbox("Use hexadecimal numbers", ref p.Config.Hexadecimal);
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
-            ImGui.Checkbox("Limit trigger message types to boss replies and system messages only", ref p.Config.LimitTriggerMessages);
+            ImGui.Checkbox("[Deprecared] Limit trigger message types to boss replies and system messages only", ref p.Config.LimitTriggerMessages);
             ImGui.Checkbox("Force show Splatoon's UI when game UI is hidden", ref p.Config.ShowOnUiHide);
             Svc.PluginInterface.UiBuilder.DisableUserUiHide = p.Config.ShowOnUiHide;
             ImGui.Checkbox("Force failsafe mode (requires plugin restart)", ref p.Config.NoMemory);

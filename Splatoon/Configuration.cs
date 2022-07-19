@@ -23,13 +23,14 @@ class Configuration : IPluginConfiguration
     public bool UseHttpServer = false;
     public int port = 47774;
     public bool TetherOnFind = true;
-    public bool LimitTriggerMessages = false;
+    [NonSerialized] internal bool LimitTriggerMessages = false;
     public bool DirectNameComparison = false;
     public bool NoMemory = false;
     public bool ShowOnUiHide = false;
     public bool Hexadecimal = true;
-    public bool AltRectFill = false;
-    public float AltRectStep = 0.5f;
+    public bool AltRectFill = true;
+    public bool AltRectStepOverride = false;
+    public float AltRectStep = 1f;
 
     public void Initialize(Splatoon plugin)
     {

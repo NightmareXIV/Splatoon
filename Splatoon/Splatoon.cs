@@ -607,7 +607,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 {
                     if(e.coneAngleMax > e.coneAngleMin)
                     {
-                        for(var x = e.coneAngleMin; x < e.coneAngleMax; x+=Math.Max(1, (int)e.FillStep))
+                        for(var x = e.coneAngleMin; x < e.coneAngleMax; x+=Math.Max(1, (int)GetFillStep(e.FillStep)))
                         {
                             AddConeLine(GetPlayerPositionXZY(), (Svc.ClientState.LocalPlayer.Rotation.RadiansToDegrees() - x.Float()).DegreesToRadians(), e, radius);
                         }
@@ -708,7 +708,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 PerpOffset(new Vector2(e.refX, e.refY), new Vector2(e.offX, e.offY), 0f, -e.radius, out _, out var p2);
                 PerpOffset(new Vector2(e.refX, e.refY), new Vector2(e.offX, e.offY), 1f, e.radius, out _, out var p3);
                 PerpOffset(new Vector2(e.refX, e.refY), new Vector2(e.offX, e.offY), 1f, -e.radius, out _, out var p4);
-                displayObjects.Add(new DisplayObjectRect()
+                var rect = new DisplayObjectRect()
                 {
                     l1 = new DisplayObjectLine(p1.X, p1.Y, e.refZ,
                     p2.X, p2.Y, e.refZ,
@@ -716,7 +716,15 @@ public unsafe class Splatoon : IDalamudPlugin
                     l2 = new DisplayObjectLine(p3.X, p3.Y, e.offZ,
                     p4.X, p4.Y, e.offZ,
                     e.thicc, e.color)
-                });
+                };
+                if (Config.AltRectFill)
+                {
+                    AddAlternativeFillingRect(rect, GetFillStep(e.FillStep) / 10);
+                }
+                else
+                {
+                    displayObjects.Add(rect);
+                }
             }
             else
             {
@@ -739,6 +747,48 @@ public unsafe class Splatoon : IDalamudPlugin
                 displayObjects.Add(new DisplayObjectPolygon(e));
             }
         }*/
+    }
+
+    void AddAlternativeFillingRect(DisplayObjectRect rect, float step)
+    {
+        displayObjects.Add(rect.l1);
+        displayObjects.Add(rect.l2);
+        var fl1 = new DisplayObjectLine(rect.l1.ax, rect.l1.ay, rect.l1.az, rect.l2.ax, rect.l2.ay, rect.l2.az, rect.l1.thickness, rect.l1.color);
+        var fl2 = new DisplayObjectLine(rect.l1.bx, rect.l1.by, rect.l1.bz, rect.l2.bx, rect.l2.by, rect.l2.bz, rect.l1.thickness, rect.l1.color);
+        displayObjects.Add(fl1);
+        displayObjects.Add(fl2);
+        {
+            var v1 = new Vector3(rect.l1.ax, rect.l1.ay, rect.l1.az);
+            var v2 = new Vector3(rect.l2.ax, rect.l2.ay, rect.l2.az);
+            var v3 = new Vector3(rect.l1.bx, rect.l1.by, rect.l1.bz);
+            var v4 = new Vector3(rect.l2.bx, rect.l2.by, rect.l2.bz);
+            var dst = Vector3.Distance(v2, v1);
+            var stp = dst / step;
+            var d1 = (v2 - v1) / stp;
+            var d2 = (v4 - v3) / stp;
+            for (var i = step; i < dst; i += step)
+            {
+                v1 += d1;
+                v3 += d2;
+                displayObjects.Add(new DisplayObjectLine(v1.X, v1.Y, v1.Z, v3.X, v3.Y, v3.Z, rect.l1.thickness, rect.l1.color));
+            }
+        }
+        {
+            var v1 = new Vector3(rect.l1.ax, rect.l1.ay, rect.l1.az);
+            var v3 = new Vector3(rect.l2.ax, rect.l2.ay, rect.l2.az);
+            var v2 = new Vector3(rect.l1.bx, rect.l1.by, rect.l1.bz);
+            var v4 = new Vector3(rect.l2.bx, rect.l2.by, rect.l2.bz);
+            var dst = Vector3.Distance(v2, v1);
+            var stp = dst / step;
+            var d1 = (v2 - v1) / stp;
+            var d2 = (v4 - v3) / stp;
+            for (var i = step; i < dst; i += step)
+            {
+                v1 += d1;
+                v3 += d2;
+                displayObjects.Add(new DisplayObjectLine(v1.X, v1.Y, v1.Z, v3.X, v3.Y, v3.Z, rect.l1.thickness, rect.l1.color));
+            }
+        }
     }
 
     private bool CheckCharacterAttributes(Element e, GameObject a, bool ignoreVisibility = false)
@@ -822,11 +872,11 @@ public unsafe class Splatoon : IDalamudPlugin
                 displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color, e.Filled));
                 if(e != null && e.Donut > 0)
                 {
-                    var donutR = e.FillStep / 10;
+                    var donutR = GetFillStep(e.FillStep) / 10;
                     while(donutR < e.Donut)
                     {
                         displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r + donutR, e.thicc, e.color, e.Filled));
-                        donutR += e.FillStep / 10;
+                        donutR += GetFillStep(e.FillStep) / 10;
                     }
                     displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r + e.Donut, e.thicc, e.color, e.Filled));
                 }
@@ -916,7 +966,8 @@ public unsafe class Splatoon : IDalamudPlugin
                     tPos.X + -e.offX + aradius,
                     tPos.Y + e.offY,
                     tPos.Z + e.offZ));
-                displayObjects.Add(new DisplayObjectRect()
+
+                var rect = new DisplayObjectRect()
                 {
                     l1 = new DisplayObjectLine(pointA.X, pointA.Y, pointA.Z,
                     pointB.X, pointB.Y, pointB.Z,
@@ -924,7 +975,15 @@ public unsafe class Splatoon : IDalamudPlugin
                     l2 = new DisplayObjectLine(pointA2.X, pointA2.Y, pointA2.Z,
                     pointB2.X, pointB2.Y, pointB2.Z,
                     e.thicc, e.color)
-                });
+                };
+                if (Config.AltRectFill)
+                {
+                    AddAlternativeFillingRect(rect, GetFillStep(e.FillStep) / 10);
+                }
+                else
+                {
+                    displayObjects.Add(rect);
+                }
             }
         }
         else
@@ -941,6 +1000,15 @@ public unsafe class Splatoon : IDalamudPlugin
                 pointB.X, pointB.Y, pointB.Z,
                 e.thicc, e.color));
         }
+    }
+
+    internal float GetFillStep(float original)
+    {
+        if (P.Config.AltRectStepOverride)
+        {
+            return P.Config.AltRectStep;
+        }
+        return original;
     }
 
     internal bool IsLayoutVisible(Layout i)
