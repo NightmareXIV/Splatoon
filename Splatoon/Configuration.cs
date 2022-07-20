@@ -31,10 +31,14 @@ class Configuration : IPluginConfiguration
     public bool AltRectFill = true;
 
     public bool AltRectStepOverride = false;
-    public float AltRectStep = 0.5f;
+    public float AltRectStep = 0.01f;
     public bool AltRectHighlightOutline = true;
     public float AltRectMinLineThickness = 4f;
     public bool AltRectForceMinLineThickness = false;
+
+    public bool AltDonutStepOverride = false;
+    public float AltDonutStep = 0.01f;
+
     public bool AltConeStepOverride = false;
     public int AltConeStep = 1;
 

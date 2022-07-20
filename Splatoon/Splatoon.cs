@@ -781,8 +781,6 @@ public unsafe class Splatoon : IDalamudPlugin
 
     void AddAlternativeFillingRect(DisplayObjectRect rect, float step)
     {
-        displayObjects.Add(rect.l1);
-        displayObjects.Add(rect.l2);
         var thc = P.Config.AltRectForceMinLineThickness || rect.l1.thickness < P.Config.AltRectMinLineThickness ? P.Config.AltRectMinLineThickness : rect.l1.thickness;
         var col = P.Config.AltRectHighlightOutline ? (rect.l1.color.ToVector4() with { W = 1f }).ToUint() : rect.l1.color;
         var fl1 = new DisplayObjectLine(rect.l1.ax, rect.l1.ay, rect.l1.az, rect.l2.ax, rect.l2.ay, rect.l2.az, thc, col);
@@ -908,11 +906,11 @@ public unsafe class Splatoon : IDalamudPlugin
                 displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r, e.thicc, e.color, e.Filled));
                 if(e != null && e.Donut > 0)
                 {
-                    var donutR = GetFillStepRect(e.FillStep);
+                    var donutR = GetFillStepDonut(e.FillStep);
                     while(donutR < e.Donut)
                     {
                         displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r + donutR, e.thicc, e.color, e.Filled));
-                        donutR += GetFillStepRect(e.FillStep);
+                        donutR += GetFillStepDonut(e.FillStep);
                     }
                     displayObjects.Add(new DisplayObjectCircle(cx, cy, z + e.offZ, r + e.Donut, e.thicc, e.color, e.Filled));
                 }
@@ -1040,16 +1038,25 @@ public unsafe class Splatoon : IDalamudPlugin
 
     internal static float GetFillStepRect(float original)
     {
-        if (P.Config.AltRectStepOverride)
+        if (P.Config.AltRectStepOverride || original < P.Config.AltRectStep)
         {
             return P.Config.AltRectStep;
         }
         return original;
     }
 
+    internal static float GetFillStepDonut(float original)
+    {
+        if (P.Config.AltDonutStepOverride || original < P.Config.AltDonutStep)
+        {
+            return P.Config.AltDonutStep;
+        }
+        return original;
+    }
+
     internal static int GetFillStepCone(float original)
     {
-        if (P.Config.AltConeStepOverride)
+        if (P.Config.AltConeStepOverride || original < P.Config.AltConeStep)
         {
             return P.Config.AltConeStep;
         }
