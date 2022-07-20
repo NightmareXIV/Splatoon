@@ -242,7 +242,11 @@ namespace Splatoon
                                     el.refActorName = Svc.Targets.Target.Name.ToString();
                                     el.refActorDataID = Svc.Targets.Target.DataId;
                                     el.refActorObjectID = Svc.Targets.Target.ObjectId;
-                                    if(Svc.Targets.Target is Character c) el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
+                                    if (Svc.Targets.Target is Character c) {
+                                        el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
+                                        el.refActorNPCNameID = c.NameId;
+                                    }
+                                    el.refActorNPCID = p.MemoryManager.GetNpcID(Svc.Targets.Target);
                                 }
                             }
                             SImGuiEx.SizedText("Targetability: ", WidthElement);
@@ -635,6 +639,8 @@ namespace Splatoon
                             ImGuiEx.TextCopy("$NPCID");
                             ImGui.SameLine();
                             ImGuiEx.TextCopy("$LIFE");
+                            ImGui.SameLine();
+                            ImGuiEx.TextCopy("$NAMEID");
                             ImGui.SameLine();
                             ImGuiEx.TextCopy("\\n");
                         }

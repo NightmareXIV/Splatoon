@@ -221,7 +221,7 @@ namespace Splatoon
             }
         }
 
-        private void ImportFromText(string import)
+        internal void ImportFromText(string import)
         {
             try
             {

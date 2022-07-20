@@ -59,7 +59,8 @@ namespace Splatoon
                         && !x.Key.type.ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
                         && !oid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
                         && !did.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
-                        && !mid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)) continue;
+                        && !mid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
+                        && !nameid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)) continue;
                 }
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();

@@ -934,6 +934,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     .Replace("$KIND", $"{go.ObjectKind}")
                     .Replace("$NPCID", $"{MemoryManager.GetNpcID(go).Format()}")
                     .Replace("$LIFE", $"{go.GetLifeTimeSeconds():F1}")
+                    .Replace("$NAMEID", $"{(go is Character chr2 ? chr2.NameId : 0).Format()}")
                     .Replace("\\n", "\n");
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
