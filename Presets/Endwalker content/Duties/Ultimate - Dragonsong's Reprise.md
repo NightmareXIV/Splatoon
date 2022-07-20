@@ -209,7 +209,7 @@ DSR P6 TankBusters~{"ZoneLockH":[968],"DCond":5,"Elements":{"Marks":{"type":1,"r
 
 [UNTESTED] [EN] Nidhogg's Cauterize:
 ```
-DSR P6 Hraesvelgr's Cauterize~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":4954,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"Nidhogg readies Akh Morn."}],"Phase":2}
+DSR P6 Nidhogg's Cauterize~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":3458,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"I swore to Shiva─swore that I would not take the lives of men... Stop me, I prithee!","MatchDelay":14.0}],"Phase":2}
 ```
 
 [UNTESTED] [EN] Hraesvelgr's Cauterize:
