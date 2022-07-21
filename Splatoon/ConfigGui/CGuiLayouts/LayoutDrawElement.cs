@@ -183,8 +183,9 @@ namespace Splatoon
                             if (el.refActorComparisonType == 0)
                             {
                                 ImGui.SetNextItemWidth(200f);
-                                ImGui.InputText("##actorname" + i + k, ref el.refActorName, 100);
-                                if (p.NameNpcIDs.TryGetValue(el.refActorName.ToLower(), out var nameid))
+                                //ImGui.InputText("##actorname" + i + k, ref el.refActorName, 100);
+                                el.refActorNameIntl.ImGuiEdit(ref el.refActorName);
+                                if (p.NameNpcIDs.TryGetValue(el.refActorNameIntl.Get(el.refActorName).ToLower(), out var nameid))
                                 {
                                     ImGui.SameLine();
                                     if(ImGui.Button($"Name ID: {nameid.Format()}, convert?##{i + k}"))
@@ -239,7 +240,7 @@ namespace Splatoon
                                 ImGui.SameLine();
                                 if (ImGui.Button("Target##btarget" + i + k))
                                 {
-                                    el.refActorName = Svc.Targets.Target.Name.ToString();
+                                    el.refActorNameIntl.CurrentLangString = Svc.Targets.Target.Name.ToString();
                                     el.refActorDataID = Svc.Targets.Target.DataId;
                                     el.refActorObjectID = Svc.Targets.Target.ObjectId;
                                     if (Svc.Targets.Target is Character c) {
@@ -691,7 +692,7 @@ namespace Splatoon
                 elcolored = false;
             }
             var currentCursor = ImGui.GetCursorPos();
-            var text = Element.ElementTypes[el.type] + (el.type == 1 ? " [" + (el.refActorType == 0 ? el.refActorName : Element.ActorTypes[el.refActorType]) + "]" : "");
+            var text = Element.ElementTypes[el.type] + (el.type == 1 ? " [" + (el.refActorType == 0 ? el.refActorNameIntl.Get(el.refActorName) : Element.ActorTypes[el.refActorType]) + "]" : "");
             var textSize = ImGui.CalcTextSize(text);
             ImGui.SetCursorPosX(ImGui.GetColumnWidth() - textSize.X - ImGui.GetStyle().ItemInnerSpacing.X);
             ImGui.SetCursorPosY(cursor.Y + ImGui.GetStyle().ItemInnerSpacing.Y / 2);

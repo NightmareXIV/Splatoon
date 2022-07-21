@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Splatoon
@@ -86,7 +87,7 @@ namespace Splatoon
                 ImGui.SetNextItemWidth(WidthCombo);
                 ImGui.Combo("##dcn" + i, ref layout.DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
             }, out var upperTextCursor);
-            var delta = (ImGui.GetWindowContentRegionWidth() - WidthCombo * 3f - ImGui.GetStyle().ItemSpacing.X * 2f) / 2;
+            var delta = (ImGuiEx.GetWindowContentRegionWidth() - WidthCombo * 3f - ImGui.GetStyle().ItemSpacing.X * 2f) / 2;
             upperTextCursor += delta;
 
             var colorZLock = Svc.ClientState?.TerritoryType != null
@@ -153,7 +154,7 @@ namespace Splatoon
                     if (colorZLock) ImGui.PopStyleColor();
                 }
             }, out upperTextCursor);
-            upperTextCursor += (ImGui.GetWindowContentRegionWidth() - WidthCombo * 3f - ImGui.GetStyle().ItemSpacing.X * 2f) / 2;
+            upperTextCursor += (ImGuiEx.GetWindowContentRegionWidth() - WidthCombo * 3f - ImGui.GetStyle().ItemSpacing.X * 2f) / 2;
 
             var jprev = new List<string>();
             if (layout.JobLock == 0)
@@ -299,7 +300,8 @@ namespace Splatoon
                         else
                         {
                             ImGui.SetNextItemWidth(300f);
-                            ImGui.InputTextWithHint("##textinput1" + n + i, "Case-insensitive message", ref layout.Triggers[n].Match, 1000);
+                            layout.Triggers[n].MatchIntl.ImGuiEdit(ref layout.Triggers[n].Match, "Case-insensitive (partial) message");
+                            //ImGui.InputTextWithHint("##textinput1" + n + i, "Case-insensitive message", ref layout.Triggers[n].Match, 1000);
 
                             ImGui.SameLine(); 
                             ImGui.TextUnformatted("Delay: ");

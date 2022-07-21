@@ -12,6 +12,7 @@ namespace Splatoon
         {
             ImGui.BeginChild("##splatoonmaindbg");
             ImGui.Checkbox("Disable line fix", ref p.DisableLineFix);
+            ImGuiEx.Text($"Line segments: {P.CurrentLineSegments}");
             var t = Environment.TickCount64 - p.CombatStarted;
             ImGuiEx.Text("CombatStarted = " + t);
             ImGui.SetNextItemWidth(60f);

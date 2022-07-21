@@ -839,7 +839,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
     bool IsAttributeMatches(Element e, GameObject o)
     {
-        if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorName) && (e.refActorName == "*" || IsNameContainsValue(o, e.refActorName))) return true;
+        if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || IsNameContainsValue(o, e.refActorNameIntl.Get(e.refActorName)))) return true;
         if (e.refActorComparisonType == 1 && o is Character c && MemoryManager.GetModelId(c) == e.refActorModelID) return true;
         if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
         if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
@@ -1096,7 +1096,8 @@ public unsafe class Splatoon : IDalamudPlugin
                 {
                     foreach (var CurrentChatMessage in CurrentChatMessages)
                     {
-                        if (CurrentChatMessage.ContainsIgnoreCase(t.Match))
+                        var trg = t.MatchIntl.Get(t.Match);
+                        if (trg != string.Empty && CurrentChatMessage.ContainsIgnoreCase(trg))
                         {
                             if (t.Duration == 0)
                             {

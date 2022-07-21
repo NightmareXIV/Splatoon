@@ -23,10 +23,10 @@ partial class CGui
             p.Profiler.GuiLines.Reset();
         }
         ImGui.Columns(4);
-        ImGui.SetColumnWidth(0, ImGui.GetWindowContentRegionWidth() / 4);
-        ImGui.SetColumnWidth(1, ImGui.GetWindowContentRegionWidth() / 4);
-        ImGui.SetColumnWidth(2, ImGui.GetWindowContentRegionWidth() / 4);
-        ImGui.SetColumnWidth(3, ImGui.GetWindowContentRegionWidth() / 4);
+        ImGui.SetColumnWidth(0, ImGuiEx.GetWindowContentRegionWidth() / 4);
+        ImGui.SetColumnWidth(1, ImGuiEx.GetWindowContentRegionWidth() / 4);
+        ImGui.SetColumnWidth(2, ImGuiEx.GetWindowContentRegionWidth() / 4);
+        ImGui.SetColumnWidth(3, ImGuiEx.GetWindowContentRegionWidth() / 4);
         DisplayProfiler("Main tick\nTotal", p.Profiler.MainTick);
         ImGui.NextColumn();
         DisplayProfiler("Main tick\nDequeue", p.Profiler.MainTickDequeue);
@@ -46,8 +46,8 @@ partial class CGui
         ImGui.NextColumn();
         ImGui.Separator();
         ImGui.Columns(2);
-        ImGui.SetColumnWidth(0, ImGui.GetWindowContentRegionWidth() / 2);
-        ImGui.SetColumnWidth(1, ImGui.GetWindowContentRegionWidth() / 2);
+        ImGui.SetColumnWidth(0, ImGuiEx.GetWindowContentRegionWidth() / 2);
+        ImGui.SetColumnWidth(1, ImGuiEx.GetWindowContentRegionWidth() / 2);
         DisplayProfiler("GUI: total", p.Profiler.Gui);
         ImGui.NextColumn();
         DisplayProfiler("GUI: lines", p.Profiler.GuiLines);

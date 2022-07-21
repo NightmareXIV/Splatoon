@@ -42,6 +42,7 @@ public class Element
     [DefaultValue(2f)] public float thicc = 2f;
     [DefaultValue("")] public string overlayText = "";
     [DefaultValue("")] public string refActorName = "";
+    public InternationalString refActorNameIntl = new();
     [DefaultValue(0)] public uint refActorModelID = 0;
     [DefaultValue(0)] public uint refActorObjectID = 0;
     [DefaultValue(0)] public uint refActorDataID = 0;
@@ -96,6 +97,11 @@ public class Element
     [DefaultValue(false)] public bool LineAddPlayerHitboxLengthZA = false;
     [DefaultValue(false)] public bool Filled = false;
     [DefaultValue(false)] public bool FaceMe = false;
+
+    public bool ShouldSerializerefActorNameIntl()
+    {
+        return ShouldSerializerefActorName() && !refActorNameIntl.IsEmpty();
+    }
 
     public bool ShouldSerializeconeAngleMax()
     {

@@ -135,6 +135,7 @@ unsafe class Gui : IDisposable
                 posB = posB2.Value;
             }
         }
+
         return (posA, posB);
     }
 

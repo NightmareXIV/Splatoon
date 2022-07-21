@@ -21,6 +21,7 @@ namespace Splatoon
         [DefaultValue(0f)] public float TimeBegin = 0;
         [DefaultValue(0f)] public float Duration = 0;
         [DefaultValue("")] public string Match = "";
+        public InternationalString MatchIntl = new();
         [DefaultValue(0f)] public float MatchDelay = 0;
         [DefaultValue(true)] public bool ResetOnCombatExit = true;
         [DefaultValue(true)] public bool ResetOnTChange = true;
@@ -32,5 +33,10 @@ namespace Splatoon
         [NonSerialized] public int FiredState = 0;
         [NonSerialized] public List<long> EnableAt = new();
         [NonSerialized] public List<long> DisableAt = new();
+
+        public bool ShouldSerializeMatchIntl()
+        {
+            return !this.MatchIntl.IsEmpty();
+        }
     }
 }

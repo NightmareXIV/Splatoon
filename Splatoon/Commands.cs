@@ -50,7 +50,7 @@ class Commands : IDisposable
                     {
                         var name = arguments.Substring(arguments.IndexOf("settarget ") + 10).Split('~');
                         var el = p.Config.Layouts[name[0]].Elements[name[1]];
-                        el.refActorName = Svc.Targets.Target.Name.ToString();
+                        el.refActorNameIntl.CurrentLangString = Svc.Targets.Target.Name.ToString();
                         el.refActorDataID = Svc.Targets.Target.DataId;
                         el.refActorObjectID = Svc.Targets.Target.ObjectId;
                         if (Svc.Targets.Target is Character c) el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
