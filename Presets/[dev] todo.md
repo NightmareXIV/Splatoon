@@ -69,3 +69,11 @@ DSR P5 Death of the Heavens Quake Markers~{"ZoneLockH":[968],"DCond":5,"Elements
 ```
 DSR P5 Death of the Heavens DIve Markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Spear of the Fury":{"type":3,"refY":45.0,"radius":5.0,"color":1690288127,"refActorNPCNameID":3633,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true},"Cauterize":{"type":3,"refY":30.0,"offY":-15.0,"radius":10.0,"color":1690288127,"refActorNPCNameID":3641,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true},"Twisting Dive":{"type":3,"refY":45.0,"radius":5.0,"color":1690288127,"refActorNPCNameID":3984,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"King Thordan readies Death of the Heavens","Jp":"騎神トールダンは「至天の陣：死刻」の構え。"},"MatchDelay":13.0}],"Phase":2}
 ```
+
+
+p6
+
+[EN] Wroth flames stack/spread aoes display
+```
+DSR P6 spread/stack debuff aoe markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Spread":{"type":1,"radius":5.0,"Donut":0.0,"color":838861055,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[2758],"Filled":true},"Stack":{"type":1,"radius":5.0,"Donut":0.0,"color":841481984,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[2759],"Filled":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":19.5}],"Phase":2}
+```
