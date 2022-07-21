@@ -25,3 +25,14 @@ Heavy Impact alternative triggers - delete, irrelevant
 p3
 
 
+[International] Geirskogul
+justification: scanning object table can't be worse than comparing strings
+```
+DSR P3 Geirskogul Lines~{"ZoneLockH":[968],"Elements":{"1":{"type":3,"refY":30.0,"radius":4.0,"color":1174405375,"thicc":4.0,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[26378],"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true}},"Phase":2}
+```
+
+
+[International] Drachenlance
+```
+DSR P3 Drachenlance Cone~{"ZoneLockH":[968],"Elements":{"1":{"type":4,"refY":15.0,"radius":13.0,"coneAngleMin":-45,"coneAngleMax":45,"color":4294967040,"thicc":3.0,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[26379,26380],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true,"Filled":true}},"Phase":2}
+```
