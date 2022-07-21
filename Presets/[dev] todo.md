@@ -49,7 +49,7 @@ DSR P5 Wrath of the Heavens resolve~{"ZoneLockH":[903,968],"DCond":5,"Elements":
 
 [EN] Display safespot under Ser Grinnaux
 ```
-DSR P5 Wrath of the Heavens resolve~{"ZoneLockH":[903,968],"DCond":5,"Elements":{"Right tether":{"type":3,"refY":43.0,"radius":0.0,"refActorNPCNameID":3638,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":6.2308254},"Left tether":{"type":3,"refY":43.0,"radius":0.0,"refActorNPCNameID":3636,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":0.05235988},"Blue marker safe spot":{"type":1,"offX":17.42,"offY":12.22,"radius":0.6,"Donut":0.0,"color":4294901787,"thicc":7.6,"refActorNPCNameID":3984,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"King Thordan readies Wrath of the Heavens"},"MatchDelay":8.0}],"Phase":2}
+DSR P5 Wrath of the heavens - Ser Grinnaux's Empty Dimension safe spot~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"Donut":0.0,"thicc":5.0,"refActorNPCNameID":3639,"refActorComparisonType":6,"includeHitbox":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":22.0,"MatchIntl":{"En":"King Thordan readies Wrath of the Heavens"},"MatchDelay":10.0}]}
 ```
 
 
