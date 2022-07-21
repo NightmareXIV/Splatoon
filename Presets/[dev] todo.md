@@ -1,6 +1,8 @@
 # this is developer notes, do not copy from here
 p2
 
+priority: dont break people's stuff
+
 [EN] Divebomb Helper: Shows both divebomb safespots [Translation required: trigger]
 ```
 DSR P2 Strength Divebombs~{"ZoneLockH":[968],"DCond":5,"Elements":{"Ser Vellguine":{"type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3636,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true},"Ser Ignasse":{"type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3638,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true},"Ser Paulecrain":{"type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3637,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":7.0,"MatchIntl":{"En":"King Thordan readies Strength of the Ward."},"MatchDelay":8.0}],"Phase":2}
