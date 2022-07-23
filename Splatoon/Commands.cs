@@ -49,7 +49,7 @@ class Commands : IDisposable
                     else 
                     {
                         var name = arguments.Substring(arguments.IndexOf("settarget ") + 10).Split('~');
-                        var el = p.Config.Layouts[name[0]].Elements[name[1]];
+                        var el = p.Config.LayoutsL.First(x => x.Name == name[0]).ElementsL.First(x => x.Name == name[1]);
                         el.refActorNameIntl.CurrentLangString = Svc.Targets.Target.Name.ToString();
                         el.refActorDataID = Svc.Targets.Target.DataId;
                         el.refActorObjectID = Svc.Targets.Target.ObjectId;
@@ -64,7 +64,6 @@ class Commands : IDisposable
             }
             else if(arguments.StartsWith("floodchat "))
             {
-                int a = 2;
                 Safe(delegate
                 {
                     for(var i = 0;i<uint.Parse(arguments.Replace("floodchat ", "")); i++)
@@ -120,13 +119,22 @@ class Commands : IDisposable
             if (name.Contains("~"))
             {
                 var aname = name.Split('~');
-                if (web && p.Config.Layouts[aname[0]].DisableDisabling) return;
-                p.Config.Layouts[aname[0]].Elements[aname[1]].Enabled = enable;
+                foreach (var x in P.Config.LayoutsL.Where(x => x.Name == aname[0]))
+                {
+                    if (web && x.DisableDisabling) continue;
+                    foreach(var z in x.ElementsL.Where(z => z.Name == aname[1]))
+                    {
+                        z.Enabled = enable;
+                    }
+                }
             }
             else
             {
-                if (web && p.Config.Layouts[name].DisableDisabling) return;
-                p.Config.Layouts[name].Enabled = enable;
+                foreach (var x in P.Config.LayoutsL.Where(x => x.Name == name))
+                {
+                    if (web && x.DisableDisabling) continue;
+                    x.Enabled = enable;
+                }
             }
         }
         catch(Exception e)

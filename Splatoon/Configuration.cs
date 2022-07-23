@@ -10,9 +10,10 @@ class Configuration : IPluginConfiguration
     [NonSerialized] Splatoon plugin;
     [NonSerialized] SemaphoreSlim ZipSemaphore;
 
-    public int Version { get; set; } = 1;
+    public int Version { get; set; } = 2;
 
-    public Dictionary<string, Layout> Layouts = new Dictionary<string, Layout>();
+    [Obsolete] public Dictionary<string, Layout> Layouts = new Dictionary<string, Layout>(); //never delete
+    public List<Layout> LayoutsL = new();
     public bool dumplog = false;
     public bool verboselog = false;
     public int segments = 100;
@@ -52,12 +53,15 @@ class Configuration : IPluginConfiguration
         };
     }
 
-    public void Save()
+    public void Save(bool suppressError = false)
     {
         if (ChlogGui.ChlogVersion > ChlogReadVer)
         {
-            Svc.Chat.PrintError("[Splatoon] Configuration can not be saved until you have read changelog and closed window");
-            Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Configuration can not be saved until you have read changelog and closed window", plugin.Name, NotificationType.Error);
+            if (!suppressError)
+            {
+                Svc.Chat.PrintError("[Splatoon] Configuration can not be saved until you have read changelog and closed window");
+                Svc.PluginInterface.UiBuilder.AddNotification("[Splatoon] Configuration can not be saved until you have read changelog and closed window", plugin.Name, NotificationType.Error);
+            }
         }
         else
         {

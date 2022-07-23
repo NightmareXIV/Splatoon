@@ -9,6 +9,7 @@ public class Layout
         //0               1                 2                   3                              4
         { "Always shown", "Only in combat", "Only in instance", "Only in combat AND instance", "Only in combat OR instance", "On trigger only" }; 
     [DefaultValue(true)] public bool Enabled = true;
+    public string Name = "";
     public HashSet<ushort> ZoneLockH = new();
 
     /// <summary>
@@ -20,7 +21,8 @@ public class Layout
     /// 5: Never
     /// </summary>
     [DefaultValue(0)] public int DCond = 0;
-    public Dictionary<string, Element> Elements = new();
+    [Obsolete] public Dictionary<string, Element> Elements = new(); //never delete
+    public List<Element> ElementsL = new();
     [DefaultValue(false)] public bool DisableDisabling = false;
     [DefaultValue(0)] public ulong JobLock = 0;
     [DefaultValue(false)] public bool DisableInDuty = false;

@@ -9,7 +9,9 @@ public class Element
     "Line between two fixed coordinates", "Line relative to object position", "Cone relative to object position (beta)"};
     [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
     [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "Placeholder", "NPC Name ID" };
-    //[NonSerialized] public int screen2world = 0;
+
+
+    public string Name = "";
     /// <summary>
     /// 0: Object at fixed coordinates |
     /// 1: Object relative to actor position | 

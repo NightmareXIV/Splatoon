@@ -87,6 +87,7 @@ public unsafe class Splatoon : IDalamudPlugin
         var configRaw = Svc.PluginInterface.GetPluginConfig();
         Config = configRaw as Configuration ?? new Configuration();
         Config.Initialize(this);
+        ConfigurationMigrator1to2.Migrate(Config); //never delete this
         if (configRaw == null)
         {
             Notify.Info("New configuration file has been created");
@@ -268,7 +269,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 }
             }
         }
-        foreach(var l in Config.Layouts.Values)
+        foreach(var l in Config.LayoutsL)
         {
             if (l.UseTriggers)
             {
@@ -384,7 +385,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     {
                         CombatStarted = 0;
                         Log("Combat ended event");
-                        foreach (var l in Config.Layouts.Values)
+                        foreach (var l in Config.LayoutsL)
                         {
                             if (l.UseTriggers)
                             {
@@ -460,7 +461,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     Profiler.MainTickCalcPresets.StartTick();
                 }
 
-                foreach (var i in Config.Layouts.Values)
+                foreach (var i in Config.LayoutsL)
                 {
                     ProcessLayout(i);
                 }
@@ -532,7 +533,7 @@ public unsafe class Splatoon : IDalamudPlugin
     {
         if (!IsLayoutVisible(i)) return;
         LayoutAmount++;
-        foreach (var e in i.Elements.Values.ToArray())
+        foreach (var e in i.ElementsL)
         {
             ProcessElement(e, i);
         }

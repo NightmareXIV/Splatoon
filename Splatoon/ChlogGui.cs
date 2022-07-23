@@ -4,7 +4,7 @@ namespace Splatoon;
 
 class ChlogGui
 {
-    public const int ChlogVersion = 54;
+    public const int ChlogVersion = 55;
     readonly Splatoon p;
     bool open = true;
     internal bool openLoggedOut = false;
