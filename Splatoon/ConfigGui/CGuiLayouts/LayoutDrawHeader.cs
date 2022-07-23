@@ -16,14 +16,15 @@ namespace Splatoon
 
         void CopyToCb(string i)
         {
-            ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
-            Notify.Success("Copied to clipboard");
+            //ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+            //Notify.Success("Copied to clipboard");
         }
 
-        void LayoutDrawHeader(string i)
+        void LayoutDrawHeader(Layout layout)
         {
+            var i = layout.Name;
             var topCursorPos = ImGui.GetCursorPos();
-            var layout = p.Config.Layouts[i];
+            //var layout = p.Config.Layouts[i];
             ImGui.Checkbox("Enabled##" + i, ref layout.Enabled);
             ImGui.SameLine();
             ImGui.Checkbox("Disable in duty##" + i, ref layout.DisableInDuty);
@@ -70,7 +71,7 @@ namespace Splatoon
                 }
                 if (ImGui.Selectable("Copy as HTTP param##" + i))
                 {
-                    HTTPExportToClipboard(p.Config.Layouts[i]);
+                    HTTPExportToClipboard(layout);
                     Notify.Success("Copied to clipboard");
                 }
                 if (ImGui.IsItemHovered())
@@ -352,7 +353,7 @@ namespace Splatoon
             ImGui.SameLine();
             if (ImGui.Button("Add element##addelement" + i))
             {
-                if (layout.Elements.ContainsKey(ename))
+                if (layout.ElementsL.Any(x => x.Name == ename))
                 {
                     p.Log("Error: this name already exists", true);
                 }
@@ -366,14 +367,14 @@ namespace Splatoon
                     el.refX = GetPlayerPositionXZY().X;
                     el.refY = GetPlayerPositionXZY().Y;
                     el.refZ = GetPlayerPositionXZY().Z;
-                    layout.Elements.Add(ename, el);
+                    layout.AddLegacyElement(ename, el);
                     ename = "";
                 }
             }
             ImGui.SameLine();
             if (ImGui.Button("Paste from clipboard##addelement" + i))
             {
-                if (layout.Elements.ContainsKey(ename))
+                if (layout.ElementsL.Any(x => x.Name == ename))
                 {
                     p.Log("Error: this name already exists", true);
                 }
@@ -386,7 +387,7 @@ namespace Splatoon
                     try
                     {
                         var el = JsonConvert.DeserializeObject<Element>(ImGui.GetClipboardText());
-                        layout.Elements.Add(ename, el);
+                        layout.AddLegacyElement(ename, el);
                         ename = "";
                     }
                     catch(Exception e)

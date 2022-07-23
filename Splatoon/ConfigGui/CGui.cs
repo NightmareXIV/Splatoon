@@ -32,7 +32,7 @@ namespace Splatoon
         string ename = "";
         string zlockf = "";
         bool zlockcur = false;
-        string curEdit = null;
+        int curEdit = -1;
         bool enableDeletion = false;
         bool enableDeletionElement = false;
         bool WasOpen = false;
@@ -188,7 +188,7 @@ namespace Splatoon
         {
             var l = JsonConvert.DeserializeObject<Layout>(JsonConvert.SerializeObject(el));
             l.Enabled = true;
-            foreach (var e in l.Elements.Values) e.Enabled = true;
+            foreach (var e in l.ElementsL) e.Enabled = true;
             var json = "~" + JsonConvert.SerializeObject(l, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
             var jsonraw = "~" + JsonConvert.SerializeObject(l, Formatting.Indented, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
             var compressed = json.Compress();
@@ -238,7 +238,7 @@ namespace Splatoon
                     {
                         p.Log("Import type: JSON", true);
                     }
-                    if (p.Config.Layouts.ContainsKey(name))
+                    if (p.Config.LayoutsL.Any(x => x.Name == name))
                     {
                         p.Log("Error: this name already exists", true);
                     }
@@ -252,7 +252,7 @@ namespace Splatoon
                     }
                     else
                     {
-                        p.Config.Layouts.Add(name, JsonConvert.DeserializeObject<Layout>(json));
+                        p.Config.AddLegacyLayout(name, JsonConvert.DeserializeObject<Layout>(json));
                         import = "";
                     }
                 }
@@ -266,7 +266,7 @@ namespace Splatoon
                     {
                         p.Log("Error importing: invalid data", true);
                     }
-                    else if (p.Config.Layouts.ContainsKey("Legacy preset: " + lp.Name))
+                    else if (p.Config.LayoutsL.Any(x => x.Name == "Legacy preset: " + lp.Name))
                     {
                         p.Log("Error: this name already exists", true);
                     }
@@ -280,15 +280,15 @@ namespace Splatoon
                         {
                             ZoneLockH = new HashSet<ushort>() { Svc.ClientState.TerritoryType }
                         };
-                        if (lp.A != null && lp.A.Active) l.Elements.Add("A", lp.A.ToElement("A", 0xff00ff00));
-                        if (lp.B != null && lp.B.Active) l.Elements.Add("B", lp.B.ToElement("B", 0xff00ffff));
-                        if (lp.C != null && lp.C.Active) l.Elements.Add("C", lp.C.ToElement("C", 0xffffff00));
-                        if (lp.D != null && lp.D.Active) l.Elements.Add("D", lp.D.ToElement("D", 0xffff00ff));
-                        if (lp.One != null && lp.One.Active) l.Elements.Add("1", lp.One.ToElement("1", 0xff00ff00));
-                        if (lp.Two != null && lp.Two.Active) l.Elements.Add("2", lp.Two.ToElement("2", 0xff00ffff));
-                        if (lp.Three != null && lp.Three.Active) l.Elements.Add("3", lp.Three.ToElement("3", 0xffffff00));
-                        if (lp.Four != null && lp.Four.Active) l.Elements.Add("4", lp.Four.ToElement("4", 0xffff00ff));
-                        p.Config.Layouts.Add("Legacy preset: " + lp.Name, l);
+                        if (lp.A != null && lp.A.Active) l.AddLegacyElement("A", lp.A.ToElement("A", 0xff00ff00));
+                        if (lp.B != null && lp.B.Active) l.AddLegacyElement("B", lp.B.ToElement("B", 0xff00ffff));
+                        if (lp.C != null && lp.C.Active) l.AddLegacyElement("C", lp.C.ToElement("C", 0xffffff00));
+                        if (lp.D != null && lp.D.Active) l.AddLegacyElement("D", lp.D.ToElement("D", 0xffff00ff));
+                        if (lp.One != null && lp.One.Active) l.AddLegacyElement("1", lp.One.ToElement("1", 0xff00ff00));
+                        if (lp.Two != null && lp.Two.Active) l.AddLegacyElement("2", lp.Two.ToElement("2", 0xff00ffff));
+                        if (lp.Three != null && lp.Three.Active) l.AddLegacyElement("3", lp.Three.ToElement("3", 0xffffff00));
+                        if (lp.Four != null && lp.Four.Active) l.AddLegacyElement("4", lp.Four.ToElement("4", 0xffff00ff));
+                        p.Config.AddLegacyLayout("Legacy preset: " + lp.Name, l);
                         import = "";
                     }
                 }

@@ -69,7 +69,7 @@ public unsafe class Splatoon : IDalamudPlugin
     public static bool Init = false;
     public bool Loaded = false;
     public bool Disposed = false;
-    internal static (Vector2 X, Vector2 Y) Transform;
+    internal static (Vector2 X, Vector2 Y) Transform = default;
     internal Dictionary<string, IntPtr> PlaceholderCache = new();
     internal Dictionary<string, uint> NameNpcIDsAll = new();
     internal Dictionary<string, uint> NameNpcIDs = new();

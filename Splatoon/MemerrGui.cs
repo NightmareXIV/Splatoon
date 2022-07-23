@@ -4,7 +4,7 @@ class MemerrGui
 {
     readonly Splatoon p;
     bool open = true;
-    bool understood = false;
+    //bool understood = false;
     public MemerrGui(Splatoon p)
     {
         this.p = p;

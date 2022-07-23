@@ -22,7 +22,7 @@ namespace Splatoon
                         ImGuiEx.TextCentered("Either lift your camera up or adjust camera settings in general settings below.");
                         ImGui.PopStyleColor();
                     }*/
-            if (curEdit == null)
+            if (curEdit == -1)
             {
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                 ImGui.InputTextWithHint("##layoutFilter", "Filter...", ref layoutFilter, 1000);
@@ -35,7 +35,7 @@ namespace Splatoon
             }
 
 
-            if (curEdit == null)
+            if (curEdit == -1)
             {
                 ImGui.Separator();
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - 3f * ImGui.GetStyle().ItemSpacing.X - GetPresetWidth);
@@ -44,7 +44,7 @@ namespace Splatoon
                 ImGui.SameLine();
                 if (ImGui.Button("Add layout"))
                 {
-                    if (p.Config.Layouts.ContainsKey(lname))
+                    if (p.Config.LayoutsL.Any(x => x.Name == lname))
                     {
                         p.Log("Error: this name already exists", true);
                     }
@@ -64,7 +64,7 @@ namespace Splatoon
                     {
                         var l = new Layout();
                         if (Svc.ClientState != null) l.ZoneLockH.Add(Svc.ClientState.TerritoryType);
-                        p.Config.Layouts.Add(lname, l);
+                        p.Config.AddLegacyLayout(lname, l);
                         lname = "";
                     }
                 }
@@ -85,17 +85,18 @@ namespace Splatoon
 
             ImGui.BeginChild("##layoutlist");
             var open = false;
-            foreach (var i in p.Config.Layouts.Keys.ToArray())
+            for (var i = 0;i < p.Config.LayoutsL.Count; i++)
             {
-                if (layoutFilter.Length == 0 || i.Contains(layoutFilter, StringComparison.OrdinalIgnoreCase))
+                var layout = p.Config.LayoutsL[i];
+                if (layoutFilter.Length == 0 || layout.Name.Contains(layoutFilter, StringComparison.OrdinalIgnoreCase))
                 {
                     var colored = false;
-                    if (!p.Config.Layouts[i].Enabled)
+                    if (!layout.Enabled)
                     {
                         colored = true;
                         ImGui.PushStyleColor(ImGuiCol.Text, Colors.Gray);
                     }
-                    else if (p.Config.Layouts[i].DisableDisabling)
+                    else if (layout.DisableDisabling)
                     {
                         colored = true;
                         ImGui.PushStyleColor(ImGuiCol.Text, Colors.Orange);
@@ -106,7 +107,7 @@ namespace Splatoon
                         SImGuiEx.TextCentered("Editing layout: " + curEdit);
                         ImGui.PopStyleColor();
                     }
-                    if ((curEdit == null || curEdit == i) && ImGui.CollapsingHeader(i))
+                    if ((curEdit == -1 || curEdit == i) && ImGui.CollapsingHeader(layout.Name))
                     {
                         if (colored)
                         {
@@ -120,27 +121,24 @@ namespace Splatoon
                             ImGui.PushStyleColor(ImGuiCol.Button, Colors.Red);
                             if (ImGui.Button("Delete##dltlt" + i))
                             {
-                                p.Config.Layouts.Remove(i);
+                                //p.Config.Layouts.Remove(i);
                                 enableDeletion = false;
                             }
                             ImGui.PopStyleColor();
                             ImGui.SameLine();
                         }
-                        if (p.Config.Layouts.ContainsKey(i))
+                        try
                         {
-                            try
+                            LayoutDrawHeader(layout);
+                            foreach (var k in layout.ElementsL)
                             {
-                                LayoutDrawHeader(i);
-                                foreach (var k in p.Config.Layouts[i].Elements.Keys.ToArray())
-                                {
-                                    LayoutDrawElement(i, k);
-                                }
+                                LayoutDrawElement(layout, k);
                             }
-                            catch(Exception e)
-                            {
-                                ImGuiEx.Text("Error");
-                                PluginLog.Error($"Error: {e.Message}\n{e.StackTrace}");
-                            }
+                        }
+                        catch (Exception e)
+                        {
+                            ImGuiEx.Text("Error");
+                            PluginLog.Error($"Error: {e.Message}\n{e.StackTrace}");
                         }
                     }
                     if (colored)
@@ -150,7 +148,7 @@ namespace Splatoon
                     }
                 }
             }
-            if (!open) curEdit = null;
+            if (!open) curEdit = -1;
             ImGui.EndChild();
         }
     }

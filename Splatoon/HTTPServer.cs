@@ -180,7 +180,7 @@ class HTTPServer : IDisposable
             //status.Add(decoded);
             var l = JsonConvert.DeserializeObject<Layout>(decoded.Substring(1));
             l.Enabled = true;
-            foreach (var el in l.Elements.Values) el.Enabled = true;
+            foreach (var el in l.ElementsL) el.Enabled = true;
             Layouts.Add(l);
         }
         else

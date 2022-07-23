@@ -7,6 +7,25 @@ namespace Splatoon;
 
 static unsafe class Static
 {
+#pragma warning disable CS0612
+    internal static void AddLegacyLayout(this Configuration config, string name, Layout layout)
+    {
+        layout.Name = name;
+        foreach (var x in layout.Elements)
+        {
+            x.Value.Name = x.Key;
+            layout.ElementsL.Add(x.Value);
+        }
+        config.LayoutsL.Add(layout);
+    }
+#pragma warning restore CS0612
+
+    internal static void AddLegacyElement(this Layout layout, string name, Element element)
+    {
+        element.Name = name;
+        layout.ElementsL.Add(element);
+    }
+
     internal static PlayerCharacter GetRolePlaceholder(CombatRole role, int num)
     {
         int curIndex = 1;
