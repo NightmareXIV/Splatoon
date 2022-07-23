@@ -177,6 +177,6 @@ public class Element
 
     public bool ShouldSerializeDonut()
     {
-        return this.type.EqualsAny(0, 1);
+        return this.type.EqualsAny(0, 1) && Donut > 0;
     }
 }
