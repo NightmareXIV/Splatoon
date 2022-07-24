@@ -89,14 +89,14 @@ namespace Splatoon
                 ImGuiEx.TextCopy(nameid);
                 ImGui.TableNextColumn();
                 if (x.Value.Targetable) ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-                ImGui.TextUnformatted($"{(int)(((double)x.Value.TargetableTicks / (double)x.Value.ExistenceTicks) * 100)}%");
+                ImGuiEx.Text($"{(int)(((double)x.Value.TargetableTicks / (double)x.Value.ExistenceTicks) * 100)}%");
                 if (x.Value.Targetable) ImGui.PopStyleColor();
                 ImGui.TableNextColumn();
                 if (x.Value.Visible) ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-                ImGui.TextUnformatted(!x.Value.IsChar ? "--":$"{(int)(((double)x.Value.VisibleTicks / (double)x.Value.ExistenceTicks) * 100)}%");
+                ImGuiEx.Text(!x.Value.IsChar ? "--":$"{(int)(((double)x.Value.VisibleTicks / (double)x.Value.ExistenceTicks) * 100)}%");
                 if (x.Value.Visible) ImGui.PopStyleColor();
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted($"{x.Value.ExistenceTicks}");
+                ImGuiEx.Text($"{x.Value.ExistenceTicks}");
                 ImGui.TableNextColumn();
                 ImGuiEx.Text($"{x.Value.Distance:F1}");
                 ImGui.TableNextColumn();

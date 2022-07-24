@@ -27,7 +27,7 @@ namespace Splatoon
             ImGui.SameLine();
             if (p.Config.UseHttpServer)
             {
-                ImGui.TextUnformatted("http://127.0.0.1:" + p.Config.port + "/");
+                ImGuiEx.Text("http://127.0.0.1:" + p.Config.port + "/");
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
@@ -39,7 +39,7 @@ namespace Splatoon
             }
             else
             {
-                ImGui.TextUnformatted("Port: ");
+                ImGuiEx.Text("Port: ");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(100f);
                 ImGui.DragInt("##webapiport", ref p.Config.port, float.Epsilon, 1, 65535);

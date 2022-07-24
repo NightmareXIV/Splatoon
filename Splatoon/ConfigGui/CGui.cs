@@ -24,8 +24,8 @@ namespace Splatoon
         Dictionary<uint, string> ActionNames;
         Dictionary<uint, string> BuffNames;
         const float WidthLayout = 150f;
-        const float WidthElement = 150f;
-        const float WidthCombo = 200f;
+        internal const float WidthElement = 150f;
+        internal const float WidthCombo = 200f;
         internal readonly Splatoon p;
         public bool Open = false;
         string lname = "";

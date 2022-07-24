@@ -10,6 +10,7 @@ public class Layout
         { "Always shown", "Only in combat", "Only in instance", "Only in combat AND instance", "Only in combat OR instance", "On trigger only" }; 
     [DefaultValue(true)] public bool Enabled = true;
     public string Name = "";
+    public string Group = "";
     [NonSerialized] internal string GUID = Guid.NewGuid().ToString();
     public HashSet<ushort> ZoneLockH = new();
 

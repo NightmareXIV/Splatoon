@@ -18,7 +18,7 @@ namespace Splatoon
         void DislayLayouts()
         {
             ImGui.BeginChild("TableWrapper", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-            if (ImGui.BeginTable("LayoutsTable", 2, ImGuiTableFlags.Resizable | ImGuiTableFlags.NoSavedSettings))
+            if (ImGui.BeginTable("LayoutsTable", 2, ImGuiTableFlags.Resizable))
             {
                 ImGui.TableSetupColumn("Layout list###Layout id", ImGuiTableColumnFlags.None, 200);
                 ImGui.TableSetupColumn($"{(CurrentLayout == null ? "" : $"{CurrentLayout.Name}") + (CurrentElement == null ? "" : $" | {CurrentElement.Name}")}###Layout edit", ImGuiTableColumnFlags.None, 600);

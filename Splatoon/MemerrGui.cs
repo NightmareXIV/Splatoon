@@ -22,7 +22,7 @@ class MemerrGui
         if (!Svc.ClientState.IsLoggedIn) return;
         ImGui.Begin("Splatoon is running in failsafe mode", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
         ImGui.TextColored(Colors.Red.ToVector4(), "Certain functions will perform differently or will be unavailable until plugin update.");
-        ImGui.TextUnformatted(
+        ImGuiEx.Text(
 @"Splatoon uses some native functions and fields to be able to work properly.
 Due to game update some of them have failed to resolve. Normally in a situation like that you should disable plugin until it's updated by developer.
 However, Splatoon was build for raiding, and often raiding does not accepts any waiting. Therefore a failsafe mode was introduced.

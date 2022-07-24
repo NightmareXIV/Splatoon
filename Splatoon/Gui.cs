@@ -202,7 +202,7 @@ unsafe class Gui : IDisposable
             | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.AlwaysUseWindowPadding);
         ImGui.PushStyleColor(ImGuiCol.Text, e.fgcolor);
         if (scaled) ImGui.SetWindowFontScale(e.fscale);
-        ImGui.TextUnformatted(e.text);
+        ImGuiEx.Text(e.text);
         if (scaled) ImGui.SetWindowFontScale(1f);
         ImGui.PopStyleColor();
         ImGui.EndChild();

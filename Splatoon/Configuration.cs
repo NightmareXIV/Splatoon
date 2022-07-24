@@ -14,6 +14,7 @@ class Configuration : IPluginConfiguration
 
     [Obsolete] public Dictionary<string, Layout> Layouts = new Dictionary<string, Layout>(); //never delete
     public List<Layout> LayoutsL = new();
+    public List<string> GroupOrder = new();
     public bool dumplog = false;
     public bool verboselog = false;
     public int segments = 100;
