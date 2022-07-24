@@ -15,6 +15,14 @@ namespace Splatoon.ConfigGui.CGuiLayouts
         internal static Element CurrentElement = null;
         internal static void DrawSelector(this Layout x, string group, int index)
         {
+            if (CGui.layoutFilter != "" && !x.Name.Contains(CGui.layoutFilter, StringComparison.OrdinalIgnoreCase))
+            {
+                if(CGui.ScrollTo == x)
+                {
+                    CGui.ScrollTo = null;
+                }
+                return;
+            }
             ImGui.PushID(x.GUID);
             {
                 var col = false;
@@ -26,6 +34,11 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                 ImGui.SetCursorPosX(group == null ? 0 : 10);
                 var curpos = ImGui.GetCursorScreenPos();
                 var contRegion = ImGui.GetContentRegionAvail().X;
+                if (CGui.ScrollTo == x)
+                {
+                    ImGui.SetScrollHereY();
+                    CGui.ScrollTo = null;
+                }
                 if (ImGui.Selectable($"{x.Name}", CurrentLayout == x))
                 {
                     if (CurrentLayout == x && CurrentElement == null)
@@ -34,7 +47,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     }
                     else
                     {
-                        CGui.CurrentGroup = group;
+                        CGui.OpenedGroup.Add(group);
                         CurrentLayout = x;
                         CurrentElement = null;
                     }
@@ -94,7 +107,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     }
                     if (ImGui.Selectable($"{e.Name}", CurrentElement == e))
                     {
-                        CGui.CurrentGroup = group;
+                        CGui.OpenedGroup.Add(group);
                         CurrentElement = e;
                     }
                     if (ImGui.IsItemClicked(ImGuiMouseButton.Middle))

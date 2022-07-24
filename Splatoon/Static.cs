@@ -70,18 +70,6 @@ static unsafe class Static
         return (e.AdditionalRotation.RadiansToDegrees() + MathHelper.GetRelativeAngle(new Vector2(cx, cy), Svc.ClientState.LocalPlayer.Position.ToVector2())).DegreesToRadians();
     }
 
-    public static void Toggle<T>(this HashSet<T> h, T o)
-    {
-        if(h.Contains(o))
-        {
-            h.Remove(o);
-        }
-        else
-        {
-            h.Add(o);
-        }
-    }
-
     public static bool EqualsIgnoreCase(this string a, string b)
     {
         return a.Equals(b, StringComparison.OrdinalIgnoreCase);

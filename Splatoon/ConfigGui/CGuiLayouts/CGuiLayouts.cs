@@ -14,10 +14,13 @@ namespace Splatoon
     partial class CGui
     {
         float GetPresetWidth = 0;
-        string layoutFilter = "";
+        internal static string layoutFilter = "";
         string PopupRename = "";
-        internal static string CurrentGroup = null;
+        //internal static string CurrentGroup = null;
         internal static string HighlightGroup = null;
+        internal static HashSet<string> OpenedGroup = new();
+        internal static string NewLayoytName = "";
+        internal static Layout ScrollTo = null;
         void DislayLayouts()
         {
             ImGui.BeginChild("TableWrapper", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
@@ -29,12 +32,34 @@ namespace Splatoon
                 ImGui.TableHeadersRow();
 
                 ImGui.TableNextColumn();
-
-                ImGui.BeginChild("LayoutsTableSelector");
-                if(CurrentLayout != null)
+                ImGuiEx.InputWithRightButtonsArea("Search layouts", delegate
                 {
-                    CurrentGroup = CurrentLayout.Group.NullWhenEmpty();
+                    ImGui.InputTextWithHint("##layoutFilter", "Search layouts...", ref layoutFilter, 100);
+                }, delegate
+                {
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.Plus))
+                    {
+                        ImGui.OpenPopup("Add layout");
+                    }
+                    ImGuiEx.Tooltip("Add new layout...");
+                });
+                if(ImGui.BeginPopup("Add layout"))
+                {
+                    ImGui.InputTextWithHint("", "Unique layout name", ref NewLayoytName, 100);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Add"))
+                    {
+                        if (CGui.AddEmptyLayout(out var newLayout))
+                        {
+                            ImGui.CloseCurrentPopup();
+                            Notify.Success($"Layout created: {newLayout.Name}");
+                            ScrollTo = newLayout;
+                            CurrentLayout = newLayout;
+                        }
+                    }
+                    ImGui.EndPopup();
                 }
+                ImGui.BeginChild("LayoutsTableSelector");
                 foreach (var x in P.Config.LayoutsL)
                 {
                     if (x.Group == null) x.Group = "";
@@ -45,9 +70,13 @@ namespace Splatoon
                 }
                 P.Config.GroupOrder.RemoveAll(x => x.IsNullOrEmpty());
                 Layout[] takenLayouts = P.Config.LayoutsL.ToArray();
+                var groupToRemove = -1;
                 for (var i = 0;i<P.Config.GroupOrder.Count;i++)
                 {
                     var g = P.Config.GroupOrder[i];
+                    if (layoutFilter != "" &&
+                        !P.Config.LayoutsL.Any(x => x.Group == g && x.Name.Contains(layoutFilter, StringComparison.OrdinalIgnoreCase))) continue;
+
                     ImGui.PushID(g);
                     ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
 
@@ -59,18 +88,11 @@ namespace Splatoon
                     }
                     var curpos = ImGui.GetCursorScreenPos();
                     var contRegion = ImGui.GetContentRegionAvail().X;
-                    if (ImGui.Selectable($"[{g}]", CurrentGroup == g || HighlightGroup == g))
+                    if (ImGui.Selectable($"[{g}]", HighlightGroup == g))
                     {
-                        if (CurrentGroup == g)
+                        if (!OpenedGroup.Toggle(g))
                         {
-                            CurrentGroup = null;
-                            CurrentLayout = null;
-                            CurrentElement = null;
-                        }
-                        else
-                        {
-                            CurrentGroup = g;
-                            if (CurrentLayout?.Group != g)
+                            if(CurrentLayout?.Group == g)
                             {
                                 CurrentLayout = null;
                                 CurrentElement = null;
@@ -120,6 +142,7 @@ namespace Splatoon
                     }
                     if (ImGui.BeginPopup("GroupPopup"))
                     {
+                        ImGuiEx.Text($"[{g}]");
                         ImGui.SetNextItemWidth(200f);
                         ImGui.InputTextWithHint("##GroupRename", "Enter new name...", ref PopupRename, 100);
                         ImGui.SameLine();
@@ -142,14 +165,25 @@ namespace Splatoon
                                 PopupRename = "";
                             }
                         }
+                        if(ImGui.Selectable("Remove group and disband layouts"))
+                        {
+                            foreach(var l in P.Config.LayoutsL)
+                            {
+                                if(l.Group == g)
+                                {
+                                    l.Group = "";
+                                }
+                            }
+                            groupToRemove = i;
+                        }
                         ImGui.EndPopup();
                     }
                     for (var n = 0; n < takenLayouts.Length; n++)
                     {
                         var x = takenLayouts[n];
-                        if (x != null && x.Group == g)
+                        if (x != null && (x.Group == g))
                         {
-                            if (g == CurrentGroup)
+                            if (OpenedGroup.Contains(g) || layoutFilter != "")
                             {
                                 x.DrawSelector(g, n);
                             }
@@ -165,6 +199,10 @@ namespace Splatoon
                     {
                         x.DrawSelector(null, i);
                     }
+                }
+                if(groupToRemove != -1)
+                {
+                    P.Config.GroupOrder.RemoveAt(groupToRemove);
                 }
                 ImGui.EndChild();
 

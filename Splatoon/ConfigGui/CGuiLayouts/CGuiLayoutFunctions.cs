@@ -2,6 +2,39 @@
 {
     internal partial class CGui
     {
+        internal static bool AddEmptyLayout(out Layout l)
+        {
+            if (P.Config.LayoutsL.Any(x => x.Name == NewLayoytName))
+            {
+                Notify.Error("Error: this name already exists");
+            }
+            else if (NewLayoytName.Length == 0)
+            {
+                Notify.Error("Error: you must name layout");
+            }
+            else if (NewLayoytName.Contains("~"))
+            {
+                Notify.Error("Name can't contain reserved characters: ~");
+            }
+            else if (NewLayoytName.Contains(","))
+            {
+                Notify.Error("Name can't contain reserved characters: ,");
+            }
+            else
+            {
+                l = new Layout()
+                {
+                    Name = CGui.NewLayoytName
+                };
+                if (Svc.ClientState != null) l.ZoneLockH.Add(Svc.ClientState.TerritoryType);
+                P.Config.LayoutsL.Add(l);
+                CGui.NewLayoytName = "";
+                return true;
+            }
+            l = default;
+            return false;
+        }
+
         void DrawRotationSelector(Element el, string i, string k)
         {
             ImGui.SameLine();
