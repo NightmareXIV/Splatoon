@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface.Internal.Notifications;
+﻿using Dalamud.Interface.Colors;
+using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Newtonsoft.Json;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Splatoon.ConfigGui.CGuiLayouts.LayoutDrawSelector;
 
 namespace Splatoon
 {
@@ -13,8 +15,9 @@ namespace Splatoon
     {
         float GetPresetWidth = 0;
         string layoutFilter = "";
-        Layout CurrentLayout = null;
-        Element CurrentElement = null;
+        string PopupRename = "";
+        internal static string CurrentGroup = null;
+        internal static string HighlightGroup = null;
         void DislayLayouts()
         {
             ImGui.BeginChild("TableWrapper", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
@@ -28,42 +31,140 @@ namespace Splatoon
                 ImGui.TableNextColumn();
 
                 ImGui.BeginChild("LayoutsTableSelector");
-                foreach(var x in P.Config.LayoutsL)
+                if(CurrentLayout != null)
                 {
-                    ImGui.PushID(x.GUID);
-                    if (ImGui.Selectable($"{x.Name}", CurrentLayout == x))
+                    CurrentGroup = CurrentLayout.Group.NullWhenEmpty();
+                }
+                foreach (var x in P.Config.LayoutsL)
+                {
+                    if (x.Group == null) x.Group = "";
+                    if(x.Group != "" && !P.Config.GroupOrder.Contains(x.Group))
                     {
-                        if(CurrentLayout == x)
+                        P.Config.GroupOrder.Add(x.Group);
+                    }
+                }
+                P.Config.GroupOrder.RemoveAll(x => x.IsNullOrEmpty());
+                Layout[] takenLayouts = P.Config.LayoutsL.ToArray();
+                for (var i = 0;i<P.Config.GroupOrder.Count;i++)
+                {
+                    var g = P.Config.GroupOrder[i];
+                    ImGui.PushID(g);
+                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
+
+                    if(HighlightGroup == g)
+                    {
+                        ImGui.PushStyleColor(ImGuiCol.Header, ImGuiColors.DalamudYellow with { W = 0.5f });
+                        ImGui.PushStyleColor(ImGuiCol.HeaderActive, ImGuiColors.DalamudYellow with { W = 0.5f });
+                        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, ImGuiColors.DalamudYellow with { W = 0.5f });
+                    }
+                    var curpos = ImGui.GetCursorScreenPos();
+                    var contRegion = ImGui.GetContentRegionAvail().X;
+                    if (ImGui.Selectable($"[{g}]", CurrentGroup == g || HighlightGroup == g))
+                    {
+                        if (CurrentGroup == g)
                         {
+                            CurrentGroup = null;
                             CurrentLayout = null;
                             CurrentElement = null;
                         }
                         else
                         {
-                            CurrentLayout = x;
+                            CurrentGroup = g;
+                            if (CurrentLayout?.Group != g)
+                            {
+                                CurrentLayout = null;
+                                CurrentElement = null;
+                            }
                         }
                     }
-                    if(CurrentLayout == x)
+                    if(HighlightGroup == g)
                     {
-                        foreach(var e in CurrentLayout.ElementsL)
+                        ImGui.PopStyleColor(3);
+                        HighlightGroup = null;
+                    }
+                    ImGui.PopStyleColor();
+                    if (ImGui.BeginDragDropSource())
+                    {
+                        ImGuiDragDrop.SetDragDropPayload("MoveGroup", i);
+                        ImGuiEx.Text($"Moving group\n[{g}]");
+                        ImGui.EndDragDropSource();
+                    }
+                    if (ImGui.BeginDragDropTarget())
+                    {
+                        if (ImGuiDragDrop.AcceptDragDropPayload("MoveLayout", out int indexOfMovedObj
+                            , ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
                         {
-                            ImGui.PushID(e.GUID);
-                            ImGui.SetCursorPosX(20);
-                            if (ImGui.Selectable($"{e.Name}", CurrentElement == e))
+                            HighlightGroup = g;
+                            if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
                             {
-                                if(CurrentElement == e)
-                                {
-                                    CurrentElement = null;
-                                }
-                                else
-                                {
-                                    CurrentElement = e;
-                                }
+                                P.Config.LayoutsL[indexOfMovedObj].Group = g;
                             }
-                            ImGui.PopID();
+                        }
+                        if(ImGuiDragDrop.AcceptDragDropPayload("MoveGroup", out int indexOfMovedGroup
+                            , ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
+                        {
+                            SImGuiEx.DrawLine(curpos, contRegion);
+                            if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
+                            {
+                                var exch = P.Config.GroupOrder[indexOfMovedGroup];
+                                P.Config.GroupOrder[indexOfMovedGroup] = null;
+                                P.Config.GroupOrder.Insert(i, exch);
+                                P.Config.GroupOrder.RemoveAll(x => x == null);
+                            }
+                        }
+                        ImGui.EndDragDropTarget();
+                    }
+                    if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                    {
+                        ImGui.OpenPopup("GroupPopup");
+                    }
+                    if (ImGui.BeginPopup("GroupPopup"))
+                    {
+                        ImGui.SetNextItemWidth(200f);
+                        ImGui.InputTextWithHint("##GroupRename", "Enter new name...", ref PopupRename, 100);
+                        ImGui.SameLine();
+                        if (ImGui.Button("OK"))
+                        {
+                            if (P.Config.GroupOrder.Contains(PopupRename))
+                            {
+                                Notify.Error("Error: this name is already exists");
+                            }
+                            else
+                            {
+                                foreach (var x in P.Config.LayoutsL)
+                                {
+                                    if (x.Group == g)
+                                    {
+                                        x.Group = PopupRename;
+                                    }
+                                }
+                                P.Config.GroupOrder[i] = PopupRename;
+                                PopupRename = "";
+                            }
+                        }
+                        ImGui.EndPopup();
+                    }
+                    for (var n = 0; n < takenLayouts.Length; n++)
+                    {
+                        var x = takenLayouts[n];
+                        if (x != null && x.Group == g)
+                        {
+                            if (g == CurrentGroup)
+                            {
+                                x.DrawSelector(g, n);
+                            }
+                            takenLayouts[n] = null;
                         }
                     }
                     ImGui.PopID();
+                }
+                for (var i = 0; i < takenLayouts.Length; i++)
+                {
+                    var x = takenLayouts[i];
+                    if (x != null)
+                    {
+                        x.DrawSelector(null, i);
+                    }
                 }
                 ImGui.EndChild();
 

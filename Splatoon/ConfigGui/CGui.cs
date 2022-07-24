@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -19,7 +20,7 @@ using System.Web;
 namespace Splatoon
 {
     // Master class
-    partial class CGui:IDisposable
+    unsafe partial class CGui:IDisposable
     {
         Dictionary<uint, string> ActionNames;
         Dictionary<uint, string> BuffNames;
@@ -38,6 +39,7 @@ namespace Splatoon
         bool WasOpen = false;
         string jobFilter = "";
         float RightWidth = 0;
+        internal static GCHandle imGuiPayloadPtr;
 
         public CGui(Splatoon p)
         {
@@ -49,9 +51,23 @@ namespace Splatoon
 
         public void Dispose()
         {
+            if (imGuiPayloadPtr.IsAllocated)
+            {
+                imGuiPayloadPtr.Free();
+            }
             Svc.PluginInterface.UiBuilder.Draw -= Draw;
         }
 
+        internal static (IntPtr Ptr, uint Size) GetPayloadPtr(string s)
+        {
+            if (imGuiPayloadPtr.IsAllocated)
+            {
+                imGuiPayloadPtr.Free();
+            }
+            Svc.Chat.Print("Allocating ImGuiPayload");
+            imGuiPayloadPtr = GCHandle.Alloc(s, GCHandleType.Pinned);
+            return (imGuiPayloadPtr.AddrOfPinnedObject(), (uint)sizeof(ImGuiPayload));
+        }
         
         void Draw()
         {

@@ -11,6 +11,7 @@ namespace Splatoon
     public class Trigger
     {
         [NonSerialized] public static string[] Types = { "Show at time in combat", "Hide at time in combat", "Show at log message", "Hide at log message" };
+        [NonSerialized] internal string GUID = Guid.NewGuid().ToString();
         /// <summary>
         /// 0: Show at time |
         /// 1: Hide at time |

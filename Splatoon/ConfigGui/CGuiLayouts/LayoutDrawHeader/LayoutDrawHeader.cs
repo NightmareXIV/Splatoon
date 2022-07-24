@@ -14,6 +14,7 @@ namespace Splatoon;
 partial class CGui
 {
     float ShareWidth = 0;
+    string NewGroupName = "";
 
     void CopyToCb(string i)
     {
@@ -29,6 +30,37 @@ partial class CGui
             ImGui.TableSetupColumn("##LayoutEdit2", ImGuiTableColumnFlags.WidthStretch);
 
             //ImGui.TableHeadersRow();
+
+            ImGui.TableNextColumn();
+            ImGuiEx.TextV("Group:");
+            ImGui.TableNextColumn();
+            ImGuiEx.SetNextItemFullWidth();
+            if(ImGui.BeginCombo("##group", $"{(layout.Group == ""?"- No group -" : $"{layout.Group}")}"))
+            {
+                if (ImGui.Selectable("- No group -"))
+                {
+                    layout.Group = "";
+                }
+                foreach (var x in P.Config.GroupOrder)
+                {
+                    if (ImGui.Selectable(x))
+                    {
+                        layout.Group = x;
+                    }
+                }
+                ImGuiEx.InputWithRightButtonsArea("SelectGroup", delegate
+                {
+                    ImGui.InputTextWithHint("##NewGroupName", "New group...", ref NewGroupName, 100);
+                }, delegate
+                {
+                    if (ImGui.Button("Add"))
+                    {
+                        layout.Group = NewGroupName;
+                        NewGroupName = "";
+                    }
+                });
+                ImGui.EndCombo();
+            }
 
             ImGui.TableNextColumn();
             ImGui.Checkbox("Enabled", ref layout.Enabled);
@@ -69,6 +101,18 @@ partial class CGui
             ImGui.TableNextColumn();
             layout.DrawDistanceLimit();
 
+            ImGui.TableNextColumn();
+            ImGui.Checkbox("Enable triggers", ref layout.UseTriggers);
+            if (layout.UseTriggers)
+            {
+                if (ImGui.Button("Add new trigger"))
+                {
+                    layout.Triggers.Add(new Trigger());
+                }
+            }
+            ImGui.TableNextColumn();
+            layout.DrawTriggers();
+
             ImGui.EndTable();
         }
 
@@ -76,10 +120,7 @@ partial class CGui
         var i = layout.Name;
         var topCursorPos = ImGui.GetCursorPos();
         //var layout = p.Config.Layouts[i];
-        
-        ImGui.SameLine();
-        
-        
+        /*       
         ImGui.SetCursorPos(new Vector2(ImGui.GetColumnWidth() - ShareWidth - ImGui.GetStyle().ItemSpacing.X, topCursorPos.Y));
         ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
         if(ImGui.Button("Share layout"))
@@ -119,101 +160,7 @@ partial class CGui
             }
             ImGui.EndCombo();
         }
-        ShareWidth += ImGui.GetItemRectSize().X;
               
-        
-
-        
-        
-
-        if (layout.UseTriggers)
-        {
-            ImGui.Checkbox("##usetrigger" + i, ref layout.UseTriggers);
-            ImGui.SameLine();
-            ImGui.PushStyleColor(ImGuiCol.Header, Colors.Transparent);
-            if (ImGui.CollapsingHeader("Trigger settings##" + i))
-            {
-                if (ImGui.Button("Add new trigger##" + i))
-                {
-                    layout.Triggers.Add(new Trigger());
-                }
-                var deleteTrigger = -1;
-                for (var n = 0; n < layout.Triggers.Count; n++)
-                {
-                    if (ImGui.Button("[X]##" + n + i) && ImGui.GetIO().KeyCtrl)
-                    {
-                        deleteTrigger = n;
-                    }
-                    if (ImGui.IsItemHovered())
-                    {
-                        ImGui.SetTooltip("Hold CTRL + left click to delete");
-                    }
-                    ImGui.SameLine();
-                    ImGui.SetNextItemWidth(WidthCombo);
-                    ImGui.Combo("##trigger" + i + n, ref layout.Triggers[n].Type, Trigger.Types, Trigger.Types.Length);
-                    ImGui.SameLine();
-                    ImGuiEx.Text("Reset on:");
-                    ImGui.SameLine();
-                    ImGui.Checkbox("Combat exit##" + i + n, ref layout.Triggers[n].ResetOnCombatExit);
-                    ImGui.SameLine();
-                    ImGui.Checkbox("Territory change##" + i + n, ref layout.Triggers[n].ResetOnTChange);
-                    ImGui.SameLine();
-                    ImGuiEx.Text("State: " + layout.Triggers[n].FiredState);
-                    if (layout.Triggers[n].Type == 0 || layout.Triggers[n].Type == 1)
-                    {
-                        ImGuiEx.Text("Time: ");
-                        ImGui.SameLine();
-                        ImGui.SetNextItemWidth(50f);
-                        ImGui.DragFloat("##triggertime1" + i + n, ref layout.Triggers[n].TimeBegin, 0.1f, 0, 3599, "%.1f");
-                        ImGui.SameLine();
-                        ImGuiEx.Text(DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].TimeBegin * 1000)).ToString("mm:ss.f"));
-                    }
-                    else
-                    {
-                        ImGui.SetNextItemWidth(300f);
-                        layout.Triggers[n].MatchIntl.ImGuiEdit(ref layout.Triggers[n].Match, "Case-insensitive (partial) message");
-                        //ImGui.InputTextWithHint("##textinput1" + n + i, "Case-insensitive message", ref layout.Triggers[n].Match, 1000);
-
-                        ImGui.SameLine(); 
-                        ImGuiEx.Text("Delay: ");
-                        ImGui.SameLine(); 
-                        ImGui.SetNextItemWidth(50f);
-                        ImGui.DragFloat("##triggertime1" + i + n, ref layout.Triggers[n].MatchDelay, 0.1f, 0, 3599, "%.1f");
-                        ImGui.SameLine();
-                        ImGuiEx.Text(DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].MatchDelay*1000)).ToString("mm:ss.f"));
-                        layout.Triggers[n].Match = layout.Triggers[n].Match.RemoveSymbols(Splatoon.InvalidSymbols);
-                    }
-                    ImGui.SameLine();
-                    ImGuiEx.Text("Duration: ");
-                    ImGui.SameLine();
-                    ImGui.SetNextItemWidth(50f);
-                    ImGui.DragFloat("##triggertime2" + i + n, ref layout.Triggers[n].Duration, 0.1f, 0, 3599, "%.1f");
-                    ImGui.SameLine();
-                    ImGuiEx.Text(layout.Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].Duration * 1000)).ToString("mm:ss.f"));
-                    ImGui.Separator();
-                }
-                if (deleteTrigger != -1)
-                {
-                    try
-                    {
-                        layout.Triggers.RemoveAt(deleteTrigger);
-                    }
-                    catch (Exception e)
-                    {
-                        p.Log(e.Message + "\n" + e.StackTrace);
-                    }
-                }
-                ImGui.PopStyleColor(1);
-            }
-            else
-            {
-                ImGui.PopStyleColor(1);
-            }
-        }
-        else
-        {
-            ImGui.Checkbox("Use trigger system##usetrigger" + i, ref layout.UseTriggers);
-        }
 
         ImGui.TextColored(ImGui.ColorConvertU32ToFloat4(Colors.Green), "Add elements to the layout to create markers:");
         ImGui.SameLine();
@@ -266,5 +213,6 @@ partial class CGui
                 }
             }
         }
+        */
     }
 }
