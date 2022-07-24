@@ -13,16 +13,80 @@ namespace Splatoon
     {
         float GetPresetWidth = 0;
         string layoutFilter = "";
+        Layout CurrentLayout = null;
+        Element CurrentElement = null;
         void DislayLayouts()
         {
-            /*if(p.CamAngleY > p.Config.maxcamY)
+            ImGui.BeginChild("TableWrapper", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+            if (ImGui.BeginTable("LayoutsTable", 2, ImGuiTableFlags.Resizable | ImGuiTableFlags.NoSavedSettings))
+            {
+                ImGui.TableSetupColumn("Layout list###Layout id", ImGuiTableColumnFlags.None, 200);
+                ImGui.TableSetupColumn($"{(CurrentLayout == null ? "" : $"{CurrentLayout.Name}") + (CurrentElement == null ? "" : $" | {CurrentElement.Name}")}###Layout edit", ImGuiTableColumnFlags.None, 600);
+
+                ImGui.TableHeadersRow();
+
+                ImGui.TableNextColumn();
+
+                ImGui.BeginChild("LayoutsTableSelector");
+                foreach(var x in P.Config.LayoutsL)
+                {
+                    ImGui.PushID(x.GUID);
+                    if (ImGui.Selectable($"{x.Name}", CurrentLayout == x))
                     {
-                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
-                        ImGuiEx.TextCentered("Your camera settings prevent waymarks from displaying in your current camera position.");
-                        ImGuiEx.TextCentered("Either lift your camera up or adjust camera settings in general settings below.");
-                        ImGui.PopStyleColor();
-                    }*/
-            if (curEdit == -1)
+                        if(CurrentLayout == x)
+                        {
+                            CurrentLayout = null;
+                            CurrentElement = null;
+                        }
+                        else
+                        {
+                            CurrentLayout = x;
+                        }
+                    }
+                    if(CurrentLayout == x)
+                    {
+                        foreach(var e in CurrentLayout.ElementsL)
+                        {
+                            ImGui.PushID(e.GUID);
+                            ImGui.SetCursorPosX(20);
+                            if (ImGui.Selectable($"{e.Name}", CurrentElement == e))
+                            {
+                                if(CurrentElement == e)
+                                {
+                                    CurrentElement = null;
+                                }
+                                else
+                                {
+                                    CurrentElement = e;
+                                }
+                            }
+                            ImGui.PopID();
+                        }
+                    }
+                    ImGui.PopID();
+                }
+                ImGui.EndChild();
+
+                ImGui.TableNextColumn();
+
+                ImGui.BeginChild("LayoutsTableEdit");
+                if(CurrentLayout != null)
+                {
+                    if(CurrentElement != null && CurrentLayout.ElementsL.Contains(CurrentElement))
+                    {
+                        LayoutDrawElement(CurrentLayout, CurrentElement);
+                    }
+                    else
+                    {
+                        LayoutDrawHeader(CurrentLayout);
+                    }
+                }
+                ImGui.EndChild();
+
+                ImGui.EndTable();
+            }
+            ImGui.EndChild();
+            /*if (curEdit == -1)
             {
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                 ImGui.InputTextWithHint("##layoutFilter", "Filter...", ref layoutFilter, 1000);
@@ -149,7 +213,7 @@ namespace Splatoon
                 }
             }
             if (!open) curEdit = -1;
-            ImGui.EndChild();
+            ImGui.EndChild();*/
         }
     }
 }

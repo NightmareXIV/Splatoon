@@ -19,23 +19,13 @@ namespace Splatoon
         string BuffName = "";
         void LayoutDrawElement(Layout l, Element el)
         {
-            var cursor = ImGui.GetCursorPos();
+            //var cursor = ImGui.GetCursorPos();
             var i = l.Name;
             var k = el.Name;
             //var el = p.Config.Layouts[i].Elements[k];
             var elcolored = false;
-            if (!el.Enabled)
+            //if (ImGui.CollapsingHeader(i + " / " + k + "##elem" + i + k))
             {
-                ImGui.PushStyleColor(ImGuiCol.Text, Colors.Gray);
-                elcolored = true;
-            }
-            if (ImGui.CollapsingHeader(i + " / " + k + "##elem" + i + k))
-            {
-                if (elcolored)
-                {
-                    ImGui.PopStyleColor();
-                    elcolored = false;
-                }
                 if (enableDeletionElement)
                 {
                     ImGui.PushStyleColor(ImGuiCol.Button, Colors.Orange);
@@ -691,13 +681,13 @@ namespace Splatoon
                 ImGui.PopStyleColor();
                 elcolored = false;
             }
-            var currentCursor = ImGui.GetCursorPos();
+            /*var currentCursor = ImGui.GetCursorPos();
             var text = Element.ElementTypes[el.type] + (el.type == 1 ? " [" + (el.refActorType == 0 ? el.refActorNameIntl.Get(el.refActorName) : Element.ActorTypes[el.refActorType]) + "]" : "");
             var textSize = ImGui.CalcTextSize(text);
             ImGui.SetCursorPosX(ImGui.GetColumnWidth() - textSize.X - ImGui.GetStyle().ItemInnerSpacing.X);
             ImGui.SetCursorPosY(cursor.Y + ImGui.GetStyle().ItemInnerSpacing.Y / 2);
             ImGuiEx.Text(text);
-            ImGui.SetCursorPos(currentCursor);
+            ImGui.SetCursorPos(currentCursor);*/
         }
     }
 }
