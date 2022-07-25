@@ -44,6 +44,8 @@ class Configuration : IPluginConfiguration
     public bool AltConeStepOverride = false;
     public int AltConeStep = 1;
 
+    public bool FocusMode = false;
+
     public void Initialize(Splatoon plugin)
     {
         this.plugin = plugin;

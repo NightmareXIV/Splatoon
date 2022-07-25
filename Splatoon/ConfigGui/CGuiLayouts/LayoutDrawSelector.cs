@@ -45,6 +45,10 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     if (CurrentLayout == x && CurrentElement == null)
                     {
                         CurrentLayout = null;
+                        if (P.Config.FocusMode)
+                        {
+                            CGui.ScrollTo = x;
+                        }
                     }
                     else
                     {

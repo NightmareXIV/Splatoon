@@ -53,7 +53,7 @@ namespace Splatoon
                         ImGui.OpenPopup("Add layout");
                     }
                     ImGuiEx.Tooltip("Add new layout...");
-                    ImGui.SameLine();
+                    ImGui.SameLine(0, 1);
                     if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport))
                     {
                         if(Static.TryImportLayout(ImGui.GetClipboardText(), out var l))
@@ -66,6 +66,12 @@ namespace Splatoon
                         }
                     }
                     ImGuiEx.Tooltip("Import from clipboard");
+                    ImGui.SameLine(0, 1);
+                    if(ImGuiEx.IconButton(P.Config.FocusMode? FontAwesomeIcon.SearchMinus: FontAwesomeIcon.SearchPlus))
+                    {
+                        P.Config.FocusMode = !P.Config.FocusMode;
+                    }
+                    ImGuiEx.Tooltip("Toggle focus mode.\nFocus mode: when layout is selected, hide all other layouts.");
                 });
                 if(ImGui.BeginPopup("Add layout"))
                 {
@@ -104,147 +110,163 @@ namespace Splatoon
                 P.Config.GroupOrder.RemoveAll(x => x.IsNullOrEmpty());
                 Layout[] takenLayouts = P.Config.LayoutsL.ToArray();
                 var groupToRemove = -1;
-                for (var i = 0;i<P.Config.GroupOrder.Count;i++)
+                if (!P.Config.FocusMode || CurrentLayout == null)
                 {
-                    var g = P.Config.GroupOrder[i];
-                    if (layoutFilter != "" &&
-                        !P.Config.LayoutsL.Any(x => x.Group == g && x.GetName().Contains(layoutFilter, StringComparison.OrdinalIgnoreCase))) continue;
+                    for (var i = 0; i < P.Config.GroupOrder.Count; i++)
+                    {
+                        var g = P.Config.GroupOrder[i];
+                        if (layoutFilter != "" &&
+                            !P.Config.LayoutsL.Any(x => x.Group == g && x.GetName().Contains(layoutFilter, StringComparison.OrdinalIgnoreCase))) continue;
 
-                    ImGui.PushID(g);
-                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
+                        ImGui.PushID(g);
+                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
 
-                    if(HighlightGroup == g)
-                    {
-                        ImGui.PushStyleColor(ImGuiCol.Header, ImGuiColors.DalamudYellow with { W = 0.5f });
-                        ImGui.PushStyleColor(ImGuiCol.HeaderActive, ImGuiColors.DalamudYellow with { W = 0.5f });
-                        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, ImGuiColors.DalamudYellow with { W = 0.5f });
-                    }
-                    var curpos = ImGui.GetCursorScreenPos();
-                    var contRegion = ImGui.GetContentRegionAvail().X;
-                    if (ImGui.Selectable($"[{g}]", HighlightGroup == g))
-                    {
-                        if (!OpenedGroup.Toggle(g))
+                        if (HighlightGroup == g)
                         {
-                            if(CurrentLayout?.Group == g)
-                            {
-                                CurrentLayout = null;
-                                CurrentElement = null;
-                            }
+                            ImGui.PushStyleColor(ImGuiCol.Header, ImGuiColors.DalamudYellow with { W = 0.5f });
+                            ImGui.PushStyleColor(ImGuiCol.HeaderActive, ImGuiColors.DalamudYellow with { W = 0.5f });
+                            ImGui.PushStyleColor(ImGuiCol.HeaderHovered, ImGuiColors.DalamudYellow with { W = 0.5f });
                         }
-                    }
-                    if(HighlightGroup == g)
-                    {
-                        ImGui.PopStyleColor(3);
-                        HighlightGroup = null;
-                    }
-                    ImGui.PopStyleColor();
-                    if (ImGui.BeginDragDropSource())
-                    {
-                        ImGuiDragDrop.SetDragDropPayload("MoveGroup", i);
-                        ImGuiEx.Text($"Moving group\n[{g}]");
-                        ImGui.EndDragDropSource();
-                    }
-                    if (ImGui.BeginDragDropTarget())
-                    {
-                        if (ImGuiDragDrop.AcceptDragDropPayload("MoveLayout", out int indexOfMovedObj
-                            , ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
+                        var curpos = ImGui.GetCursorScreenPos();
+                        var contRegion = ImGui.GetContentRegionAvail().X;
+                        if (ImGui.Selectable($"[{g}]", HighlightGroup == g))
                         {
-                            HighlightGroup = g;
-                            if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
+                            if (!OpenedGroup.Toggle(g))
                             {
-                                P.Config.LayoutsL[indexOfMovedObj].Group = g;
-                            }
-                        }
-                        if(ImGuiDragDrop.AcceptDragDropPayload("MoveGroup", out int indexOfMovedGroup
-                            , ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
-                        {
-                            SImGuiEx.DrawLine(curpos, contRegion);
-                            if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
-                            {
-                                var exch = P.Config.GroupOrder[indexOfMovedGroup];
-                                P.Config.GroupOrder[indexOfMovedGroup] = null;
-                                P.Config.GroupOrder.Insert(i, exch);
-                                P.Config.GroupOrder.RemoveAll(x => x == null);
-                            }
-                        }
-                        ImGui.EndDragDropTarget();
-                    }
-                    if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                    {
-                        ImGui.OpenPopup("GroupPopup");
-                    }
-                    if (ImGui.BeginPopup("GroupPopup"))
-                    {
-                        ImGuiEx.Text($"[{g}]");
-                        ImGui.SetNextItemWidth(200f);
-                        ImGui.InputTextWithHint("##GroupRename", "Enter new name...", ref PopupRename, 100);
-                        ImGui.SameLine();
-                        if (ImGui.Button("OK"))
-                        {
-                            if (P.Config.GroupOrder.Contains(PopupRename))
-                            {
-                                Notify.Error("Error: this name is already exists");
-                            }
-                            else
-                            {
-                                foreach (var x in P.Config.LayoutsL)
+                                if (CurrentLayout?.Group == g)
                                 {
-                                    if (x.Group == g)
+                                    CurrentLayout = null;
+                                    CurrentElement = null;
+                                }
+                            }
+                        }
+                        if (HighlightGroup == g)
+                        {
+                            ImGui.PopStyleColor(3);
+                            HighlightGroup = null;
+                        }
+                        ImGui.PopStyleColor();
+                        if (ImGui.BeginDragDropSource())
+                        {
+                            ImGuiDragDrop.SetDragDropPayload("MoveGroup", i);
+                            ImGuiEx.Text($"Moving group\n[{g}]");
+                            ImGui.EndDragDropSource();
+                        }
+                        if (ImGui.BeginDragDropTarget())
+                        {
+                            if (ImGuiDragDrop.AcceptDragDropPayload("MoveLayout", out int indexOfMovedObj
+                                , ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
+                            {
+                                HighlightGroup = g;
+                                if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
+                                {
+                                    P.Config.LayoutsL[indexOfMovedObj].Group = g;
+                                }
+                            }
+                            if (ImGuiDragDrop.AcceptDragDropPayload("MoveGroup", out int indexOfMovedGroup
+                                , ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
+                            {
+                                SImGuiEx.DrawLine(curpos, contRegion);
+                                if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
+                                {
+                                    var exch = P.Config.GroupOrder[indexOfMovedGroup];
+                                    P.Config.GroupOrder[indexOfMovedGroup] = null;
+                                    P.Config.GroupOrder.Insert(i, exch);
+                                    P.Config.GroupOrder.RemoveAll(x => x == null);
+                                }
+                            }
+                            ImGui.EndDragDropTarget();
+                        }
+                        if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                        {
+                            ImGui.OpenPopup("GroupPopup");
+                        }
+                        if (ImGui.BeginPopup("GroupPopup"))
+                        {
+                            ImGuiEx.Text($"[{g}]");
+                            ImGui.SetNextItemWidth(200f);
+                            var result = ImGui.InputTextWithHint("##GroupRename", "Enter new name...", ref PopupRename, 100, ImGuiInputTextFlags.EnterReturnsTrue);
+                            PopupRename = PopupRename.SanitizeName();
+                            ImGui.SameLine();
+                            if (ImGui.Button("OK") || result)
+                            {
+                                if (P.Config.GroupOrder.Contains(PopupRename))
+                                {
+                                    Notify.Error("Error: this name is already exists");
+                                }
+                                else if (PopupRename.Length == 0)
+                                {
+                                    Notify.Error("Error: empty names are not allowed");
+                                }
+                                else
+                                {
+                                    if (OpenedGroup.Contains(g))
                                     {
-                                        x.Group = PopupRename;
+                                        OpenedGroup.Add(PopupRename);
+                                        OpenedGroup.Remove(g);
+                                    }
+                                    foreach (var x in P.Config.LayoutsL)
+                                    {
+                                        if (x.Group == g)
+                                        {
+                                            x.Group = PopupRename;
+                                        }
+                                    }
+                                    P.Config.GroupOrder[i] = PopupRename;
+                                    PopupRename = "";
+                                }
+                            }
+                            if (ImGui.Selectable("Remove group and disband layouts") && ImGui.GetIO().KeyCtrl)
+                            {
+                                foreach (var l in P.Config.LayoutsL)
+                                {
+                                    if (l.Group == g)
+                                    {
+                                        l.Group = "";
                                     }
                                 }
-                                P.Config.GroupOrder[i] = PopupRename;
-                                PopupRename = "";
+                                groupToRemove = i;
                             }
-                        }
-                        if (ImGui.Selectable("Remove group and disband layouts") && ImGui.GetIO().KeyCtrl)
-                        {
-                            foreach (var l in P.Config.LayoutsL)
+                            ImGuiEx.Tooltip("Hold CTRL+click");
+                            if (ImGui.Selectable("Remove group and it's layouts") && ImGui.GetIO().KeyCtrl && ImGui.GetIO().KeyShift)
                             {
-                                if (l.Group == g)
+                                foreach (var l in P.Config.LayoutsL)
                                 {
-                                    l.Group = "";
+                                    if (l.Group == g)
+                                    {
+                                        l.Group = "";
+                                        l.Delete = true;
+                                    }
                                 }
+                                groupToRemove = i;
                             }
-                            groupToRemove = i;
+                            ImGuiEx.Tooltip("Hold CTRL+SHIFT+click");
+                            ImGui.EndPopup();
                         }
-                        ImGuiEx.Tooltip("Hold CTRL+click");
-                        if (ImGui.Selectable("Remove group and it's layouts") && ImGui.GetIO().KeyCtrl && ImGui.GetIO().KeyShift)
+                        for (var n = 0; n < takenLayouts.Length; n++)
                         {
-                            foreach (var l in P.Config.LayoutsL)
+                            var x = takenLayouts[n];
+                            if (x != null && (x.Group == g))
                             {
-                                if (l.Group == g)
+                                if (OpenedGroup.Contains(g) || layoutFilter != "")
                                 {
-                                    l.Group = "";
-                                    l.Delete = true;
+                                    x.DrawSelector(g, n);
                                 }
+                                takenLayouts[n] = null;
                             }
-                            groupToRemove = i;
                         }
-                        ImGuiEx.Tooltip("Hold CTRL+SHIFT+click");
-                        ImGui.EndPopup();
+                        ImGui.PopID();
                     }
-                    for (var n = 0; n < takenLayouts.Length; n++)
-                    {
-                        var x = takenLayouts[n];
-                        if (x != null && (x.Group == g))
-                        {
-                            if (OpenedGroup.Contains(g) || layoutFilter != "")
-                            {
-                                x.DrawSelector(g, n);
-                            }
-                            takenLayouts[n] = null;
-                        }
-                    }
-                    ImGui.PopID();
                 }
                 for (var i = 0; i < takenLayouts.Length; i++)
                 {
                     var x = takenLayouts[i];
-                    if (x != null)
+                    if (!P.Config.FocusMode || CurrentLayout == x || CurrentLayout == null)
                     {
-                        x.DrawSelector(null, i);
+                        if (x != null)
+                        {
+                            x.DrawSelector(null, i);
+                        }
                     }
                 }
                 if(groupToRemove != -1)
@@ -266,6 +288,15 @@ namespace Splatoon
                     {
                         LayoutDrawHeader(CurrentLayout);
                     }
+                }
+                else
+                {
+                    ImGuiEx.Text("UI Help:");
+                    ImGuiEx.Text("- Left panel contains groups, layouts and elements.");
+                    ImGuiEx.Text("- You can drag and drop layouts, elements and groups to reorder them.");
+                    ImGuiEx.Text("- Right click on a group to rename or delete it.");
+                    ImGuiEx.Text("- Right click on a layout/element to delete it.");
+                    ImGuiEx.Text("- Middle click on layout/element for quick enable/disable");
                 }
                 ImGui.EndChild();
 
