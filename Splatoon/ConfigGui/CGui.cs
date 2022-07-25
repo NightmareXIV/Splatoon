@@ -26,7 +26,13 @@ namespace Splatoon
         Dictionary<uint, string> ActionNames;
         Dictionary<uint, string> BuffNames;
         const float WidthLayout = 150f;
-        internal const float WidthElement = 150f;
+        internal static float WidthElement
+        {
+            get
+            {
+                return 130f.Scale();
+            }
+        }
         internal const float WidthCombo = 200f;
         internal readonly Splatoon p;
         public bool Open = false;

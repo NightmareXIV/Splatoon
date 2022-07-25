@@ -279,6 +279,7 @@ namespace Splatoon
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);
                         ImGuiEx.InputListUint("##casts" + i + k, el.refActorCastId, ActionNames);
+                        SImGuiEx.SizedText("Status requirement:", WidthElement);
                         ImGui.SameLine();
                         ImGuiEx.Text("Add all by name:");
                         ImGui.SameLine();
@@ -306,6 +307,7 @@ namespace Splatoon
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);
                         ImGuiEx.InputListUint("##buffs" + i + k, el.refActorBuffId, BuffNames);
+                        SImGuiEx.SizedText("", WidthElement);
                         ImGui.SameLine();
                         ImGuiEx.Text("Add all by name:");
                         ImGui.SameLine();
@@ -377,23 +379,25 @@ namespace Splatoon
                     ImGui.SetNextItemWidth(60f);
                     ImGui.DragFloat("##refz" + i + k, ref el.refZ, 0.02f, float.MinValue, float.MaxValue);
                     ImGui.SameLine();
-                    if (ImGui.Button("0 0 0##ref" + i + k))
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.Circle, "0 0 0##ref" + i + k))
                     {
                         el.refX = 0;
                         el.refY = 0;
                         el.refZ = 0;
                     }
+                    ImGuiEx.Tooltip("0 0 0");
                     if (el.type != 3)
                     {
                         ImGui.SameLine();
-                        if (ImGui.Button("My position##ref" + i + k))
+                        if (ImGuiEx.IconButton(FontAwesomeIcon.MapMarked, "My position##ref" + i + k))
                         {
                             el.refX = GetPlayerPositionXZY().X;
                             el.refY = GetPlayerPositionXZY().Y;
                             el.refZ = GetPlayerPositionXZY().Z;
                         }
+                        ImGuiEx.Tooltip("My position");
                         ImGui.SameLine();
-                        if (ImGui.Button("Screen2World##s2w1" + i + k))
+                        if (ImGuiEx.IconButton(FontAwesomeIcon.MousePointer, "Screen2World##s2w1" + i + k))
                         {
                             if (p.IsLayoutVisible(l) && el.Enabled)
                             {
@@ -405,6 +409,7 @@ namespace Splatoon
                                 Notify.Error("Unable to use for hidden element");
                             }
                         }
+                        ImGuiEx.Tooltip("Select on screen");
                     }
 
                     if ((el.type == 1 || el.type == 3) && el.includeRotation)
@@ -455,21 +460,23 @@ namespace Splatoon
                     ImGui.SetNextItemWidth(60f);
                     ImGui.DragFloat("##offz" + i + k, ref el.offZ, 0.02f, float.MinValue, float.MaxValue);
                     ImGui.SameLine();
-                    if (ImGui.Button("0 0 0##off" + i + k))
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.Circle, "0 0 0##off" + i + k))
                     {
                         el.offX = 0;
                         el.offY = 0;
                         el.offZ = 0;
                     }
+                    ImGuiEx.Tooltip("0 0 0");
                     if (el.type == 2)
                     {
                         ImGui.SameLine();
-                        if (ImGui.Button("My position##off" + i + k))
+                        if (ImGuiEx.IconButton(FontAwesomeIcon.MapMarked, "My position##off" + i + k))
                         {
                             el.offX = GetPlayerPositionXZY().X;
                             el.offY = GetPlayerPositionXZY().Y;
                             el.offZ = GetPlayerPositionXZY().Z;
                         }
+                        ImGuiEx.Tooltip("My position");
                     }
                     if ((el.type == 3) && el.refActorType != 1)
                     {
@@ -511,7 +518,7 @@ namespace Splatoon
                 if (el.type == 2)
                 {
                     ImGui.SameLine();
-                    if (ImGui.Button("Screen2World##s2w2" + i + k))
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.MousePointer, "Screen2World##s2w2" + i + k))
                     {
                         if (p.IsLayoutVisible(l) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
                         {
@@ -523,6 +530,7 @@ namespace Splatoon
                             Notify.Error("Unable to use for hidden element");
                         }
                     }
+                    ImGuiEx.Tooltip("Select on screen");
                 }
 
                 SImGuiEx.SizedText("Line thickness:", WidthElement);
@@ -625,6 +633,7 @@ namespace Splatoon
                         ImGuiEx.TextCopy("$MODELID");
                         ImGui.SameLine();
                         ImGuiEx.TextCopy("$HITBOXR");
+                        SImGuiEx.SizedText("", WidthElement);
                         ImGui.SameLine();
                         ImGuiEx.TextCopy("$KIND");
                         ImGui.SameLine();
@@ -645,6 +654,15 @@ namespace Splatoon
                         ImGui.SetNextItemWidth(60f);
                         ImGui.DragFloat("##vtextadj" + i + k, ref el.overlayVOffset, 0.02f);
                         ImGui.SameLine();
+                        ImGuiEx.Text("Font scale:");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##vtextsize" + i + k, ref el.overlayFScale, 0.02f, 0.1f, 50f);
+                        if (el.overlayFScale < 0.1f) el.overlayFScale = 0.1f;
+                        if (el.overlayFScale > 50f) el.overlayFScale = 50f;
+
+                        SImGuiEx.SizedText("", WidthElement);
+                        ImGui.SameLine();
                         ImGuiEx.Text("BG color:");
                         ImGui.SameLine();
                         var v4b = ImGui.ColorConvertU32ToFloat4(el.overlayBGColor);
@@ -660,13 +678,6 @@ namespace Splatoon
                         {
                             el.overlayTextColor = ImGui.ColorConvertFloat4ToU32(v4t);
                         }
-                        ImGui.SameLine();
-                        ImGuiEx.Text("Font scale:");
-                        ImGui.SameLine();
-                        ImGui.SetNextItemWidth(60f);
-                        ImGui.DragFloat("##vtextsize" + i + k, ref el.overlayFScale, 0.02f, 0.1f, 50f);
-                        if (el.overlayFScale < 0.1f) el.overlayFScale = 0.1f;
-                        if (el.overlayFScale > 50f) el.overlayFScale = 50f;
                     }
                     if (el.type == 1)
                     {

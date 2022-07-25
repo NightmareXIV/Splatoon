@@ -1,6 +1,7 @@
 ﻿using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Colors;
 using Dalamud.Memory;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,6 +178,25 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     }
                     ImGui.PopID();
                 }
+                ImGuiEx.ImGuiLineCentered("AddElement", delegate
+                {
+                    if(ImGui.SmallButton("Add element"))
+                    {
+                        x.ElementsL.Add(new(0));
+                    }
+                    ImGui.SameLine(); 
+                    if (ImGui.SmallButton("Paste"))
+                    {
+                        try
+                        {
+                            x.ElementsL.Add(JsonConvert.DeserializeObject<Element>(ImGui.GetClipboardText()));
+                        }
+                        catch(Exception e)
+                        {
+                            Notify.Error($"{e.Message}");
+                        }
+                    }
+                });
             }
             ImGui.PopID();
         }

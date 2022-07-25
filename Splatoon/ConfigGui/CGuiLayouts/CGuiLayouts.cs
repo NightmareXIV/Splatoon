@@ -255,7 +255,7 @@ namespace Splatoon
 
                 ImGui.TableNextColumn();
 
-                ImGui.BeginChild("LayoutsTableEdit");
+                ImGui.BeginChild("LayoutsTableEdit", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar);
                 if(CurrentLayout != null)
                 {
                     if(CurrentElement != null && CurrentLayout.ElementsL.Contains(CurrentElement))
