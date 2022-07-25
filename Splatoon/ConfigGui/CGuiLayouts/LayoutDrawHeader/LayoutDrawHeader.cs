@@ -13,14 +13,7 @@ namespace Splatoon;
 
 partial class CGui
 {
-    float ShareWidth = 0;
     string NewGroupName = "";
-
-    void CopyToCb(string i)
-    {
-        //ImGui.SetClipboardText(i + "~" + JsonConvert.SerializeObject(p.Config.Layouts[i], Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
-        //Notify.Success("Copied to clipboard");
-    }
 
     void LayoutDrawHeader(Layout layout)
     {
@@ -51,6 +44,7 @@ partial class CGui
                 ImGuiEx.InputWithRightButtonsArea("SelectGroup", delegate
                 {
                     ImGui.InputTextWithHint("##NewGroupName", "New group...", ref NewGroupName, 100);
+                    NewGroupName = NewGroupName.SanitizeName();
                 }, delegate
                 {
                     if (ImGui.Button("Add"))
@@ -79,6 +73,15 @@ partial class CGui
             }
             ImGui.SameLine();
             ImGui.Checkbox("Disable in duty", ref layout.DisableInDuty);
+
+            ImGui.TableNextColumn();
+            ImGuiEx.TextV("Name:");
+            ImGui.TableNextColumn();
+            ImGuiEx.SetNextItemFullWidth();
+            if(ImGui.InputText("##name", ref layout.Name, 100))
+            {
+                layout.Name = layout.Name.SanitizeName();
+            }
 
             ImGui.TableNextColumn();
             ImGuiEx.TextV("Display conditions:");

@@ -15,7 +15,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts
         internal static Element CurrentElement = null;
         internal static void DrawSelector(this Layout x, string group, int index)
         {
-            if (CGui.layoutFilter != "" && !x.Name.Contains(CGui.layoutFilter, StringComparison.OrdinalIgnoreCase))
+            if (CGui.layoutFilter != "" && !x.GetName().Contains(CGui.layoutFilter, StringComparison.OrdinalIgnoreCase))
             {
                 if(CGui.ScrollTo == x)
                 {
@@ -39,7 +39,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     ImGui.SetScrollHereY();
                     CGui.ScrollTo = null;
                 }
-                if (ImGui.Selectable($"{x.Name}", CurrentLayout == x))
+                if (ImGui.Selectable($"{x.GetName()}", CurrentLayout == x))
                 {
                     if (CurrentLayout == x && CurrentElement == null)
                     {
@@ -61,12 +61,11 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     if (ImGui.BeginDragDropSource())
                     {
                         ImGuiDragDrop.SetDragDropPayload("MoveLayout", index);
-                        ImGuiEx.Text($"Moving layout\n{x.Name}");
+                        ImGuiEx.Text($"Moving layout\n{x.GetName()}");
                         ImGui.EndDragDropSource();
                     }
                     if (ImGui.BeginDragDropTarget())
                     {
-                        //Svc.Chat.Print($"DragDropTarget: {index}");
                         if (ImGuiDragDrop.AcceptDragDropPayload("MoveLayout", out int indexOfMovedObj, 
                             ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
                         {
@@ -90,8 +89,9 @@ namespace Splatoon.ConfigGui.CGuiLayouts
             }
             if (CurrentLayout == x)
             {
-                foreach (var e in CurrentLayout.ElementsL)
+                for (var i = 0;i<CurrentLayout.ElementsL.Count;i++)
                 {
+                    var e = CurrentLayout.ElementsL[i];
                     ImGui.PushID(e.GUID);
                     ImGui.SetCursorPosX(group == null? 10 : 20);
                     var col = false;
@@ -105,14 +105,45 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                         col = true;
                         ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
                     }
-                    if (ImGui.Selectable($"{e.Name}", CurrentElement == e))
+                    var curpos = ImGui.GetCursorScreenPos();
+                    var contRegion = ImGui.GetContentRegionAvail().X;
+                    if (ImGui.Selectable($"{e.GetName()}", CurrentElement == e))
                     {
-                        CGui.OpenedGroup.Add(group);
-                        CurrentElement = e;
+                        if (CurrentElement == e)
+                        {
+                            CurrentElement = null;
+                        }
+                        else
+                        {
+                            CGui.OpenedGroup.Add(group);
+                            CurrentElement = e;
+                        }
                     }
                     if (ImGui.IsItemClicked(ImGuiMouseButton.Middle))
                     {
                         e.Enabled = !e.Enabled;
+                    }
+                    if (ImGui.BeginDragDropSource())
+                    {
+                        ImGuiDragDrop.SetDragDropPayload($"MoveElement{index}", i);
+                        ImGuiEx.Text($"Moving element\n{x.GetName()}");
+                        ImGui.EndDragDropSource();
+                    }
+                    if (ImGui.BeginDragDropTarget())
+                    {
+                        if (ImGuiDragDrop.AcceptDragDropPayload($"MoveElement{index}", out int indexOfMovedObj,
+                            ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
+                        {
+                            SImGuiEx.DrawLine(curpos, contRegion);
+                            if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
+                            {
+                                var exch = CurrentLayout.ElementsL[indexOfMovedObj];
+                                CurrentLayout.ElementsL[indexOfMovedObj] = null;
+                                CurrentLayout.ElementsL.Insert(i, exch);
+                                CurrentLayout.ElementsL.RemoveAll(x => x == null);
+                            }
+                        }
+                        ImGui.EndDragDropTarget();
                     }
                     if (col)
                     {

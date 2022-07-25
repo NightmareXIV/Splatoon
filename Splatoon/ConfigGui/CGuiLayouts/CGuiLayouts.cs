@@ -27,7 +27,7 @@ namespace Splatoon
             if (ImGui.BeginTable("LayoutsTable", 2, ImGuiTableFlags.Resizable))
             {
                 ImGui.TableSetupColumn("Layout list###Layout id", ImGuiTableColumnFlags.None, 200);
-                ImGui.TableSetupColumn($"{(CurrentLayout == null ? "" : $"{CurrentLayout.Name}") + (CurrentElement == null ? "" : $" | {CurrentElement.Name}")}###Layout edit", ImGuiTableColumnFlags.None, 600);
+                ImGui.TableSetupColumn($"{(CurrentLayout == null ? "" : $"{CurrentLayout.GetName()}") + (CurrentElement == null ? "" : $" | {CurrentElement.GetName()}")}###Layout edit", ImGuiTableColumnFlags.None, 600);
 
                 ImGui.TableHeadersRow();
 
@@ -42,6 +42,19 @@ namespace Splatoon
                         ImGui.OpenPopup("Add layout");
                     }
                     ImGuiEx.Tooltip("Add new layout...");
+                    ImGui.SameLine();
+                    if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport))
+                    {
+                        if(Static.TryImportLayout(ImGui.GetClipboardText(), out var l))
+                        {
+                            CurrentLayout = l;
+                            if(l.Group != "")
+                            {
+                                OpenedGroup.Add(l.Group);
+                            }
+                        }
+                    }
+                    ImGuiEx.Tooltip("Import from clipboard");
                 });
                 if(ImGui.BeginPopup("Add layout"))
                 {
@@ -52,7 +65,7 @@ namespace Splatoon
                         if (CGui.AddEmptyLayout(out var newLayout))
                         {
                             ImGui.CloseCurrentPopup();
-                            Notify.Success($"Layout created: {newLayout.Name}");
+                            Notify.Success($"Layout created: {newLayout.GetName()}");
                             ScrollTo = newLayout;
                             CurrentLayout = newLayout;
                         }
@@ -75,7 +88,7 @@ namespace Splatoon
                 {
                     var g = P.Config.GroupOrder[i];
                     if (layoutFilter != "" &&
-                        !P.Config.LayoutsL.Any(x => x.Group == g && x.Name.Contains(layoutFilter, StringComparison.OrdinalIgnoreCase))) continue;
+                        !P.Config.LayoutsL.Any(x => x.Group == g && x.GetName().Contains(layoutFilter, StringComparison.OrdinalIgnoreCase))) continue;
 
                     ImGui.PushID(g);
                     ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
@@ -165,17 +178,18 @@ namespace Splatoon
                                 PopupRename = "";
                             }
                         }
-                        if(ImGui.Selectable("Remove group and disband layouts"))
+                        if (ImGui.Selectable("Remove group and disband layouts") && ImGui.GetIO().KeyCtrl)
                         {
-                            foreach(var l in P.Config.LayoutsL)
+                            foreach (var l in P.Config.LayoutsL)
                             {
-                                if(l.Group == g)
+                                if (l.Group == g)
                                 {
                                     l.Group = "";
                                 }
                             }
                             groupToRemove = i;
                         }
+                        ImGuiEx.Tooltip("Hold CTRL+click");
                         ImGui.EndPopup();
                     }
                     for (var n = 0; n < takenLayouts.Length; n++)

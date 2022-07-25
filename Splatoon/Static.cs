@@ -1,29 +1,188 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace Splatoon;
 
 static unsafe class Static
 {
-#pragma warning disable CS0612
-    internal static void AddLegacyLayout(this Configuration config, string name, Layout layout)
+    internal static string SanitizeName(this string s)
     {
-        layout.Name = name;
-        foreach (var x in layout.Elements)
-        {
-            x.Value.Name = x.Key;
-            layout.ElementsL.Add(x.Value);
-        }
-        config.LayoutsL.Add(layout);
+        return s.Replace(",", "_").Replace("~", "_");
     }
-#pragma warning restore CS0612
 
-    internal static void AddLegacyElement(this Layout layout, string name, Element element)
+    internal static bool TryImportLayout(string s, out Layout l, bool silent = false)
     {
-        element.Name = name;
-        layout.ElementsL.Add(element);
+        try
+        {
+            if (s.StartsWith("~Lv2~"))
+            {
+                s = s[4..];
+                l = JsonConvert.DeserializeObject<Layout>(s);
+                l.Name = l.Name.SanitizeName();
+                var lname = l.Name;
+                if(P.Config.LayoutsL.Any(x => x.Name == lname) && !ImGui.GetIO().KeyCtrl)
+                {
+                    throw new Exception("Error: this name already exists.\nTo override, hold CTRL.");
+                }
+                P.Config.LayoutsL.Add(l);
+                CGui.ScrollTo = l;
+                if (!silent) Notify.Success($"Layout version 2\n{l.GetName()}");
+                return true;
+            }
+            else
+            {
+                if (!silent) Notify.Info("Attempting to perform legacy import");
+                l = DeserializeLegacyLayout(s);
+                P.Config.LayoutsL.Add(l);
+                CGui.ScrollTo = l;
+                return true;
+            }
+        }
+        catch (Exception e)
+        {
+            if (!silent) Notify.Error($"Error parsing layout: {e.Message}");
+            l = null;
+            return false;
+        }
+    }
+
+    internal static Layout DeserializeLegacyLayout(string import)
+    {
+        if (import.Contains('~'))
+        {
+            var name = import.Split('~')[0];
+            var json = import.Substring(name.Length + 1);
+            try
+            {
+                json = Encoding.UTF8.GetString(Convert.FromBase64String(json));
+                Notify.Info("Import type: Base64");
+            }
+            catch (Exception)
+            {
+                Notify.Info("Import type: JSON");
+            }
+            if (P.Config.LayoutsL.Any(x => x.Name == name) && !ImGui.GetIO().KeyCtrl)
+            {
+                throw new Exception("Error: this name already exists.\nTo override, hold CTRL.");
+            }
+            else if (name.Length == 0 && !ImGui.GetIO().KeyCtrl)
+            {
+                throw new Exception("Error: name not present.\nTo override, hold CTRL.");
+            }
+            else if (name.Contains(","))
+            {
+                throw new Exception("Name can't contain reserved characters: ,");
+            }
+            else
+            {
+                var layout = JsonConvert.DeserializeObject<Layout>(json);
+                layout.Name = name;
+#pragma warning disable CS0612 // Type or member is obsolete
+                foreach (var x in layout.Elements)
+                {
+                    x.Value.Name = x.Key;
+                    layout.ElementsL.Add(x.Value);
+                }
+#pragma warning restore CS0612 // Type or member is obsolete
+                return layout;
+            }
+        }
+        else
+        {
+            Notify.Info("Import type: Legacy/Paisley Park/Waymark preset plugin");
+            var lp = JsonConvert.DeserializeObject<LegacyPreset>(import);
+            if (lp.Name == null || lp.Name == "") lp.Name = DateTimeOffset.Now.ToLocalTime().ToString().Replace(",", ".");
+            if (lp.A == null && lp.B == null && lp.C == null && lp.D == null &&
+                lp.One == null && lp.Two == null && lp.Three == null && lp.Four == null)
+            {
+                throw new Exception("Error importing: invalid data");
+            }
+            else if (P.Config.LayoutsL.Any(x => x.Name == "Legacy preset: " + lp.Name))
+            {
+                throw new Exception("Error: this name already exists");
+            }
+            else if (lp.Name.Contains(",") || lp.Name.Contains("~"))
+            {
+                throw new Exception("Name can't contain reserved characters: , and ~");
+            }
+            else
+            {
+                static void AddLegacyElement(Layout layout, string name, Element element)
+                {
+                    element.Name = name;
+                    layout.ElementsL.Add(element);
+                }
+                Layout l = new()
+                {
+                    ZoneLockH = new HashSet<ushort>() { Svc.ClientState.TerritoryType },
+                    Name = "Legacy preset: " + lp.Name
+                };
+                if (lp.A != null && lp.A.Active) AddLegacyElement(l, "A", lp.A.ToElement("A", 0xff00ff00));
+                if (lp.B != null && lp.B.Active) AddLegacyElement(l, "B", lp.B.ToElement("B", 0xff00ffff));
+                if (lp.C != null && lp.C.Active) AddLegacyElement(l, "C", lp.C.ToElement("C", 0xffffff00));
+                if (lp.D != null && lp.D.Active) AddLegacyElement(l, "D", lp.D.ToElement("D", 0xffff00ff));
+                if (lp.One != null && lp.One.Active) AddLegacyElement(l, "1", lp.One.ToElement("1", 0xff00ff00));
+                if (lp.Two != null && lp.Two.Active) AddLegacyElement(l, "2", lp.Two.ToElement("2", 0xff00ffff));
+                if (lp.Three != null && lp.Three.Active) AddLegacyElement(l, "3", lp.Three.ToElement("3", 0xffffff00));
+                if (lp.Four != null && lp.Four.Active) AddLegacyElement(l, "4", lp.Four.ToElement("4", 0xffff00ff));
+                return l;
+            }
+        }
+    }
+
+    internal static void ExportToClipboard(this Layout l)
+    {
+        ImGui.SetClipboardText("~Lv2~" + JsonConvert.SerializeObject(l, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+        Notify.Success($"{l.GetName()} copied to clipboard.");
+    }
+
+    internal static void ExportToClipboard(this Element l)
+    {
+        ImGui.SetClipboardText("~Ev2~" + JsonConvert.SerializeObject(l, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+        Notify.Success($"{l.GetName()} copied to clipboard.");
+    }
+
+    internal static string GetName(this Layout l)
+    {
+        if (l.Name.IsNullOrEmpty())
+        {
+            var index = P.Config.LayoutsL.IndexOf(l);
+            if (index >= 0)
+            {
+                return $"Unnamed layout {index}";
+            }
+            else
+            {
+                return $"Unnamed layout {l.GUID}";
+            }
+        }
+        else
+        {
+            return l.Name;
+        }
+    }
+
+    internal static string GetName(this Element e)
+    {
+        if (e.Name.IsNullOrEmpty())
+        {
+            if (P.Config.LayoutsL.TryGetFirst(x => x.ElementsL.Contains(e), out var l))
+            {
+                var index = l.ElementsL.IndexOf(e);
+                if (index >= 0)
+                {
+                    return $"Unnamed element {index}";
+                }
+            }
+            return $"Unnamed element {e.GUID}";
+        }
+        else
+        {
+            return e.Name;
+        }
     }
 
     internal static PlayerCharacter GetRolePlaceholder(CombatRole role, int num)

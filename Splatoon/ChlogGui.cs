@@ -38,7 +38,7 @@ class ChlogGui
         ImGui.SetCursorPosX(50f);
         if(ImGui.Button("Import test layout for Ifrit hard"))
         {
-            P.ConfigGui.ImportFromText("Ifrit Test~{\"ZoneLockH\":[292],\"Elements\":{\"Ifrit\":{\"type\":3,\"refY\":50.0,\"radius\":1.0,\"color\":1509949695,\"refActorNPCNameID\":1185,\"refActorComparisonType\":6,\"includeHitbox\":true,\"includeRotation\":true,\"onlyVisible\":true}}}");
+            //P.ConfigGui.ImportFromText("Ifrit Test~{\"ZoneLockH\":[292],\"Elements\":{\"Ifrit\":{\"type\":3,\"refY\":50.0,\"radius\":1.0,\"color\":1509949695,\"refActorNPCNameID\":1185,\"refActorComparisonType\":6,\"includeHitbox\":true,\"includeRotation\":true,\"onlyVisible\":true}}}");
         }
         ImGuiEx.Text(ImGuiColors.DalamudOrange, "     You should see rectangle in front of ifrit. Damage him until he jumps into the air, then\n" +
             "     wait for a while until 3 copies of him charge from the edge of the arena.\n" +
