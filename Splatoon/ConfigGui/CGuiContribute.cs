@@ -4,11 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Splatoon
+namespace Splatoon.ConfigGui
 {
-    partial class CGui
+    internal class Contribute
     {
-        void DisplayContribute()
+        internal static void OpenGithubPresetSubmit()
+        {
+            var url = "https://github.com/Eternita-S/Splatoon/tree/master/Presets#adding-your-preset";
+            Svc.Chat.Print("[Splatoon] How to submit your preset: " + url);
+            ProcessStart(url);
+        }
+
+        internal static void OpenDiscordLink()
+        {
+            Svc.Chat.Print("[Splatoon] Server invite link: " + Splatoon.DiscordURL);
+            ProcessStart(Splatoon.DiscordURL);
+        }
+
+        internal static void Draw()
         {
             ImGui.PushTextWrapPos();
             ImGuiEx.Text("If you like Splatoon, you may consider contributing in any following way:");
@@ -18,15 +31,12 @@ namespace Splatoon
             ImGuiEx.Text("You may send it to Github if you have account or to my Discord server.");
             if(ImGui.Button("Open Github page"))
             {
-                var url = "https://github.com/Eternita-S/Splatoon/tree/master/Presets#adding-your-preset";
-                Svc.Chat.Print("[Splatoon] How to submit your preset: "+url);
-                ProcessStart(url);
+                OpenGithubPresetSubmit();
             }
             ImGui.SameLine();
             if (ImGui.Button("Open Discord server"))
             {
-                Svc.Chat.Print("[Splatoon] Server invite link: " + Splatoon.DiscordURL);
-                ProcessStart(Splatoon.DiscordURL);
+                OpenDiscordLink();
             }
             ImGui.Separator();
             ImGuiEx.Text("- Adding a star to the repo");

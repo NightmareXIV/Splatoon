@@ -12,6 +12,7 @@ public class Layout
     public string Name = "";
     public string Group = "";
     [NonSerialized] internal string GUID = Guid.NewGuid().ToString();
+    [NonSerialized] internal bool Delete = false;
     public HashSet<ushort> ZoneLockH = new();
 
     /// <summary>

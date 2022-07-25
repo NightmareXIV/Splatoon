@@ -5,6 +5,7 @@ using ECommons.ImGuiMethods;
 using ImGuiNET;
 using Newtonsoft.Json;
 using PInvoke;
+using Splatoon.ConfigGui;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -182,7 +183,7 @@ namespace Splatoon
                     if (ImGui.BeginTabItem("Contribute"))
                     {
                         ImGui.PopStyleColor();
-                        DisplayContribute();
+                        Contribute.Draw();
                         ImGui.EndTabItem();
                     }
                     else

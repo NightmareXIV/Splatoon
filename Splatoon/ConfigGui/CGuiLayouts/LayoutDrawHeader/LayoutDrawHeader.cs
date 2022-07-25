@@ -1,6 +1,7 @@
 ﻿using Dalamud.Interface.Colors;
 using Dalamud.Interface.Internal.Notifications;
 using Newtonsoft.Json;
+using Splatoon.ConfigGui;
 using Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader;
 using System;
 using System.Collections.Generic;
@@ -41,20 +42,58 @@ partial class CGui
                         layout.Group = x;
                     }
                 }
+                void Add()
+                {
+                    layout.Group = NewGroupName;
+                    NewGroupName = "";
+                    ImGui.CloseCurrentPopup();
+                }
                 ImGuiEx.InputWithRightButtonsArea("SelectGroup", delegate
                 {
-                    ImGui.InputTextWithHint("##NewGroupName", "New group...", ref NewGroupName, 100);
+                    if(ImGui.InputTextWithHint("##NewGroupName", "New group...", ref NewGroupName, 100, ImGuiInputTextFlags.EnterReturnsTrue))
+                    {
+                        Add();
+                    }
                     NewGroupName = NewGroupName.SanitizeName();
                 }, delegate
                 {
                     if (ImGui.Button("Add"))
                     {
-                        layout.Group = NewGroupName;
-                        NewGroupName = "";
+                        Add();
                     }
                 });
                 ImGui.EndCombo();
             }
+
+
+            ImGui.TableNextColumn();
+            ImGuiEx.TextV("Export:");
+            ImGui.TableNextColumn();
+            if (ImGui.Button("Copy to clipboard"))
+            {
+                layout.ExportToClipboard();
+            }
+            ImGui.SameLine();
+            ImGuiEx.TextV("Share:");
+            ImGui.SameLine();
+            if (ImGui.Button("GitHub"))
+            {
+                layout.ExportToClipboard();
+                Contribute.OpenGithubPresetSubmit();
+            }
+            ImGui.SameLine(0, 1);
+            if (ImGui.Button("Discord"))
+            {
+                layout.ExportToClipboard();
+                Contribute.OpenDiscordLink();
+            }
+            ImGui.SameLine();
+            if(ImGui.Button("Copy for Web API"))
+            {
+                HTTPExportToClipboard(layout);
+            }
+            ImGuiEx.Tooltip("Hold ALT to copy raw JSON (for usage with post body or you'll have to urlencode it yourself)\nHold CTRL and click to copy urlencoded raw");
+
 
             ImGui.TableNextColumn();
             ImGui.Checkbox("Enabled", ref layout.Enabled);

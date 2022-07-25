@@ -13,6 +13,7 @@ public class Element
 
     public string Name = "";
     [NonSerialized] internal string GUID = Guid.NewGuid().ToString();
+    [NonSerialized] internal bool Delete = false;
     /// <summary>
     /// 0: Object at fixed coordinates |
     /// 1: Object relative to actor position | 

@@ -13,7 +13,6 @@ namespace Splatoon
 {
     partial class CGui
     {
-        float GetPresetWidth = 0;
         internal static string layoutFilter = "";
         string PopupRename = "";
         //internal static string CurrentGroup = null;
@@ -23,6 +22,18 @@ namespace Splatoon
         internal static Layout ScrollTo = null;
         void DislayLayouts()
         {
+            {
+                var deleted = P.Config.LayoutsL.RemoveAll(x => x.Delete);
+                if (deleted > 0)
+                {
+                    Notify.Info($"Removed {deleted} layouts");
+                    if (!P.Config.LayoutsL.Contains(CurrentLayout))
+                    {
+                        CurrentLayout = null;
+                        CurrentElement = null;
+                    }
+                }
+            }
             ImGui.BeginChild("TableWrapper", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             if (ImGui.BeginTable("LayoutsTable", 2, ImGuiTableFlags.Resizable))
             {
@@ -58,7 +69,7 @@ namespace Splatoon
                 });
                 if(ImGui.BeginPopup("Add layout"))
                 {
-                    ImGui.InputTextWithHint("", "Unique layout name", ref NewLayoytName, 100);
+                    ImGui.InputTextWithHint("", "Layout name", ref NewLayoytName, 100);
                     ImGui.SameLine();
                     if (ImGui.Button("Add"))
                     {
@@ -75,6 +86,15 @@ namespace Splatoon
                 ImGui.BeginChild("LayoutsTableSelector");
                 foreach (var x in P.Config.LayoutsL)
                 {
+                    var deleted = x.ElementsL.RemoveAll(k => k.Delete);
+                    if(deleted > 0)
+                    {
+                        Notify.Info($"Deleted {deleted} elements");
+                        if(!P.Config.LayoutsL.Any(l => l.ElementsL.Contains(CurrentElement)))
+                        {
+                            CurrentElement = null;
+                        }
+                    }
                     if (x.Group == null) x.Group = "";
                     if(x.Group != "" && !P.Config.GroupOrder.Contains(x.Group))
                     {
@@ -190,6 +210,19 @@ namespace Splatoon
                             groupToRemove = i;
                         }
                         ImGuiEx.Tooltip("Hold CTRL+click");
+                        if (ImGui.Selectable("Remove group and it's layouts") && ImGui.GetIO().KeyCtrl && ImGui.GetIO().KeyShift)
+                        {
+                            foreach (var l in P.Config.LayoutsL)
+                            {
+                                if (l.Group == g)
+                                {
+                                    l.Group = "";
+                                    l.Delete = true;
+                                }
+                            }
+                            groupToRemove = i;
+                        }
+                        ImGuiEx.Tooltip("Hold CTRL+SHIFT+click");
                         ImGui.EndPopup();
                     }
                     for (var n = 0; n < takenLayouts.Length; n++)

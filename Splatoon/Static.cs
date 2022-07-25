@@ -19,7 +19,7 @@ static unsafe class Static
         {
             if (s.StartsWith("~Lv2~"))
             {
-                s = s[4..];
+                s = s[5..];
                 l = JsonConvert.DeserializeObject<Layout>(s);
                 l.Name = l.Name.SanitizeName();
                 var lname = l.Name;

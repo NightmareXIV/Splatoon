@@ -52,9 +52,17 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                         CurrentElement = null;
                     }
                 }
+                if (col)
+                {
+                    ImGui.PopStyleColor();
+                }
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Middle))
                 {
                     x.Enabled = !x.Enabled;
+                }
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                {
+                    ImGui.OpenPopup("LayoutContext");
                 }
                 Safe(delegate
                 {
@@ -82,9 +90,14 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                         ImGui.EndDragDropTarget();
                     }
                 });
-                if (col)
+                if (ImGui.BeginPopup("LayoutContext"))
                 {
-                    ImGui.PopStyleColor();
+                    ImGuiEx.Text($"Layout {x.GetName()}");
+                    if (ImGui.Selectable("Delete layout"))
+                    {
+                        x.Delete = true;
+                    }
+                    ImGui.EndPopup();
                 }
             }
             if (CurrentLayout == x)
@@ -119,9 +132,17 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                             CurrentElement = e;
                         }
                     }
+                    if (col)
+                    {
+                        ImGui.PopStyleColor();
+                    }
                     if (ImGui.IsItemClicked(ImGuiMouseButton.Middle))
                     {
                         e.Enabled = !e.Enabled;
+                    }
+                    if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                    {
+                        ImGui.OpenPopup("ElementContext");
                     }
                     if (ImGui.BeginDragDropSource())
                     {
@@ -145,9 +166,14 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                         }
                         ImGui.EndDragDropTarget();
                     }
-                    if (col)
+                    if (ImGui.BeginPopup("ElementContext"))
                     {
-                        ImGui.PopStyleColor();
+                        ImGuiEx.Text($"Layout {x.GetName()}\nElement {e.GetName()}");
+                        if (ImGui.Selectable("Delete element"))
+                        {
+                            e.Delete = true;
+                        }
+                        ImGui.EndPopup();
                     }
                     ImGui.PopID();
                 }
