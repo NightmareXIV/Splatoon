@@ -20,3 +20,21 @@
 ```
 ~Lv2~{"Name":"DSR P6 WF Move Center","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","refX":100.0,"refY":100.0,"radius":2.0,"color":3371433728,"thicc":5.0,"tether":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":16.0}]}
 ```
+
+
+[EN] P6 Wroth flames movement pattern 2
+```
+~Lv2~{"Name":"DSR P6 WF Move SW","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"Start","refX":80.0,"refY":115.0,"refZ":-3.8146973E-06,"radius":5.0,"overlayBGColor":1879048447,"thicc":5.0,"overlayText":"Start"},{"Name":"Move 2","refX":88.0,"refY":115.0,"refZ":-1.9073486E-06,"radius":5.0,"overlayBGColor":1879048447,"thicc":5.0,"overlayText":"Puddle 2"},{"Name":"First aoe line","type":2,"refX":91.0,"refY":109.0,"refZ":-1.9073484E-06,"offX":91.0,"offY":122.0,"offZ":-5.722046E-06,"radius":0.0,"thicc":5.0},{"Name":"Second AOE line","type":2,"refX":96.0,"refY":122.0,"refZ":-2.861023E-06,"offX":96.0,"offY":108.0,"offZ":-4.7683716E-06,"radius":0.0,"color":3355508484,"thicc":5.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":16.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":5.0}],"MaxDistance":20.0,"DistanceLimitType":1}
+```
+```
+~Lv2~{"Name":"DSR P6 WF Move SE","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"Start","refX":120.0,"refY":115.0,"refZ":-3.8146973E-06,"radius":5.0,"overlayBGColor":1879048447,"thicc":5.0,"overlayText":"Start"},{"Name":"Move 2","refX":112.0,"refY":115.0,"refZ":-1.9073486E-06,"radius":5.0,"overlayBGColor":1879048447,"thicc":5.0,"overlayText":"Puddle 2"},{"Name":"First aoe line","type":2,"refX":109.0,"refY":109.0,"refZ":-1.9073484E-06,"offX":109.0,"offY":122.0,"offZ":-5.722046E-06,"radius":0.0,"thicc":5.0},{"Name":"Second AOE line","type":2,"refX":104.0,"refY":122.0,"refZ":-2.861023E-06,"offX":104.0,"offY":108.0,"offZ":-4.7683716E-06,"radius":0.0,"color":3355508484,"thicc":5.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":16.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":5.0}],"MaxDistance":10.0}
+```
+```
+~Lv2~{"Name":"DSR P6 WF Move NW","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"Start","refX":80.0,"refY":85.0,"refZ":-3.8146973E-06,"radius":5.0,"overlayBGColor":1879048447,"thicc":5.0,"overlayText":"Start"},{"Name":"Move 2","refX":88.0,"refY":85.0,"refZ":-1.9073486E-06,"radius":5.0,"overlayBGColor":1879048447,"thicc":5.0,"overlayText":"Puddle 2"},{"Name":"First aoe line","type":2,"refX":91.0,"refY":91.0,"refZ":-1.9073484E-06,"offX":91.0,"offY":78.0,"offZ":-5.722046E-06,"radius":0.0,"thicc":5.0},{"Name":"Second AOE line","type":2,"refX":96.0,"refY":91.0,"refZ":-2.861023E-06,"offX":96.0,"offY":78.0,"offZ":-4.7683716E-06,"radius":0.0,"color":3355508484,"thicc":5.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":16.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":5.0}],"MaxDistance":20.0,"DistanceLimitType":1}
+```
+```
+~Lv2~{"Name":"DSR P6 WF Move NE","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"Start","refX":120.0,"refY":85.0,"refZ":-3.8146973E-06,"radius":5.0,"overlayBGColor":1879048447,"thicc":5.0,"overlayText":"Start"},{"Name":"Move 2","refX":112.0,"refY":85.0,"refZ":-1.9073486E-06,"radius":5.0,"overlayBGColor":1879048447,"thicc":5.0,"overlayText":"Puddle 2"},{"Name":"First aoe line","type":2,"refX":109.0,"refY":91.0,"refZ":-1.9073484E-06,"offX":109.0,"offY":78.0,"offZ":-5.722046E-06,"radius":0.0,"thicc":5.0},{"Name":"Second AOE line","type":2,"refX":104.0,"refY":91.0,"refZ":-2.861023E-06,"offX":104.0,"offY":78.0,"offZ":-4.7683716E-06,"radius":0.0,"color":3355508484,"thicc":5.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":16.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":5.0}],"MaxDistance":20.0,"DistanceLimitType":1}
+```
+```
+~Lv2~{"Name":"DSR P6 WF Move Center","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","refX":100.0,"refY":100.0,"radius":2.0,"color":3371433728,"thicc":5.0,"tether":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":16.0}]}
+```
