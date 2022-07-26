@@ -57,4 +57,9 @@ public class Layout
     {
         return Triggers.Count > 0;
     }
+
+    public bool ShouldSerializeElements()
+    {
+        return false;
+    }
 }

@@ -120,6 +120,11 @@ namespace Splatoon
                 }
 
 
+                SImGuiEx.SizedText("Name:", WidthElement);
+                ImGui.SameLine();
+                ImGuiEx.SetNextItemFullWidth();
+                ImGui.InputText("##Name", ref el.Name, 100);
+
                 SImGuiEx.SizedText("Element type:", WidthElement);
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(WidthCombo);

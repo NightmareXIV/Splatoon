@@ -86,6 +86,7 @@ static unsafe class Static
                     x.Value.Name = x.Key;
                     layout.ElementsL.Add(x.Value);
                 }
+                layout.Elements.Clear();
 #pragma warning restore CS0612 // Type or member is obsolete
                 return layout;
             }

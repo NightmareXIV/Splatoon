@@ -46,6 +46,11 @@ class Configuration : IPluginConfiguration
 
     public bool FocusMode = false;
 
+    public bool ShouldSerializeLayouts()
+    {
+        return false;
+    }
+
     public void Initialize(Splatoon plugin)
     {
         this.plugin = plugin;
