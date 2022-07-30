@@ -18,13 +18,12 @@ partial class CGui
 
     void LayoutDrawHeader(Layout layout)
     {
-        if(ImGui.BeginTable("SingleLayoutEdit", 2, ImGuiTableFlags.NoSavedSettings | ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.BordersInnerH))
+        if(ImGui.BeginTable("SingleLayoutEdit", 2, ImGuiTableFlags.NoSavedSettings | ImGuiTableFlags.BordersInnerH))
         {
-            ImGui.TableSetupColumn("##LayoutEdit1");
+            ImGui.TableSetupColumn("##LayoutEdit1", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("##LayoutEdit2", ImGuiTableColumnFlags.WidthStretch);
 
             //ImGui.TableHeadersRow();
-
             ImGui.TableNextColumn();
             ImGuiEx.TextV("Group:");
             ImGui.TableNextColumn();
@@ -150,6 +149,25 @@ partial class CGui
                 if (ImGui.Button("Add new trigger"))
                 {
                     layout.Triggers.Add(new Trigger());
+                }
+                if (ImGui.Button("Copy triggers"))
+                {
+                    ImGui.SetClipboardText(JsonConvert.SerializeObject(layout.Triggers));
+                }
+                if (ImGui.Button("Paste triggers") && (ImGui.GetIO().KeyCtrl || layout.Triggers.Count == 0))
+                {
+                    try
+                    {
+                        layout.Triggers = JsonConvert.DeserializeObject<List<Trigger>>(ImGui.GetClipboardText());
+                    }
+                    catch(Exception e)
+                    {
+                        Notify.Error(e.Message);
+                    }
+                }
+                if(layout.Triggers.Count != 0)
+                {
+                    ImGuiEx.Tooltip("Hold CTRL and click. Existing triggers will be overwritten.");
                 }
             }
             ImGui.TableNextColumn();

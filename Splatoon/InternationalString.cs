@@ -26,7 +26,7 @@ namespace Splatoon
             if (Svc.Data.Language == ClientLanguage.Japanese) return this.Jp == string.Empty ? Default : this.Jp;
             if (Svc.Data.Language == ClientLanguage.German) return this.De == string.Empty ? Default : this.De;
             if (Svc.Data.Language == ClientLanguage.French) return this.Fr == string.Empty ? Default : this.Fr;
-            return Other;
+            return this.Other == string.Empty ? Default : this.Other;
         }
 
         internal ref string CurrentLangString
@@ -72,6 +72,13 @@ namespace Splatoon
                 {
                     EditLangSpecificString(Svc.Data.Language, ref this.Other);
                 }
+                else
+                {
+                    if(this.Other != "")
+                    {
+                        EditLangSpecificString((ClientLanguage)(-1), ref this.Other);
+                    }
+                }
                 
                 SImGuiEx.SizedText("Default:", 100);
                 ImGui.SameLine();
@@ -96,7 +103,7 @@ namespace Splatoon
 
         public bool IsEmpty()
         {
-            return this.En.IsNullOrEmpty() && this.Jp.IsNullOrEmpty() && this.De.IsNullOrEmpty() && this.Fr.IsNullOrEmpty();
+            return this.En.IsNullOrEmpty() && this.Jp.IsNullOrEmpty() && this.De.IsNullOrEmpty() && this.Fr.IsNullOrEmpty() && this.Other.IsNullOrEmpty();
         }
 
         void EditLangSpecificString(ClientLanguage language, ref string str)

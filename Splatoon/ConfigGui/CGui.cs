@@ -109,93 +109,101 @@ namespace Splatoon
             var title = $"Splatoon v{p.loader.splatoonVersion} | {(p.Zones.TryGetValue(Svc.ClientState.TerritoryType, out var t) ? p.Zones[Svc.ClientState.TerritoryType].PlaceName.Value.Name : "Terr: " + Svc.ClientState.TerritoryType)} | {(p.CombatStarted == 0?"Not in combat":$"Combat: {ctspan.Minutes:D2}{(ctspan.Milliseconds < 500?":":" ")}{ctspan.Seconds:D2} ({(int)ctspan.TotalSeconds}.{(ctspan.Milliseconds / 100):D1}s)")} | Phase: {p.Phase} | Layouts: {p.LayoutAmount} | Elements: {p.ElementAmount} | {GetPlayerPositionXZY().X:F1}, {GetPlayerPositionXZY().Y:F1}###Splatoon";
             if (ImGui.Begin(title, ref Open))
             {
-                if (ChlogGui.ChlogVersion > p.Config.ChlogReadVer)
+                try
                 {
-                    ImGuiEx.Text("You may not change configuration until you have read changelog and closed window.");
-                    if (ImGui.Button("Open changelog now"))
+                    if (ChlogGui.ChlogVersion > p.Config.ChlogReadVer)
                     {
-                        p.ChangelogGui.openLoggedOut = true;
+                        ImGuiEx.Text("You may not change configuration until you have read changelog and closed window.");
+                        if (ImGui.Button("Open changelog now"))
+                        {
+                            p.ChangelogGui.openLoggedOut = true;
+                        }
+                    }
+                    else
+                    {
+                        var curCursor = ImGui.GetCursorPos();
+                        ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - RightWidth);
+                        RightWidth = ImGuiEx.Measure(delegate
+                        {
+                            if (p.MemoryManager.ErrorCode != 0)
+                            {
+                                ImGui.TextColored((Environment.TickCount % 1000 < 500 ? Colors.Red : Colors.Yellow).ToVector4(), "Failsafe mode");
+                                ImGui.SameLine();
+                            }
+                            ImGui.SetNextItemWidth(100f);
+                            if (ImGui.BeginCombo("##phaseSelector", $"Phase {p.Phase}"))
+                            {
+                                if (ImGui.Selectable("Phase 1 (doorboss)")) p.Phase = 1;
+                                if (ImGui.Selectable("Phase 2 (post-doorboss)")) p.Phase = 2;
+                                ImGuiEx.Text("Manual phase selection:");
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(30f);
+                                ImGui.DragInt("##mPSel", ref p.Phase, 0.1f, 1, 9);
+                                ImGui.EndCombo();
+                            }
+                        });
+                        ImGui.SetCursorPos(curCursor);
+
+                        ImGui.BeginTabBar("SplatoonSettings");
+                        if (ImGui.BeginTabItem("General settings"))
+                        {
+                            DisplayGeneralSettings();
+                            ImGui.EndTabItem();
+                        }
+                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.Green);
+                        if (ImGui.BeginTabItem("Layouts"))
+                        {
+                            ImGui.PopStyleColor();
+                            DislayLayouts();
+                            ImGui.EndTabItem();
+                        }
+                        else
+                        {
+                            ImGui.PopStyleColor();
+                        }
+
+                        if (ImGui.BeginTabItem("Logger"))
+                        {
+                            DisplayLogger();
+                            ImGui.EndTabItem();
+                        }
+                        if (ImGui.BeginTabItem("Debug"))
+                        {
+                            DisplayDebug();
+                            ImGui.EndTabItem();
+                        }
+                        if (ImGui.BeginTabItem("Log"))
+                        {
+                            DisplayLog();
+                            ImGui.EndTabItem();
+                        }
+                        if (ImGui.BeginTabItem("Dynamic"))
+                        {
+                            DisplayDynamicElements();
+                            ImGui.EndTabItem();
+                        }
+                        if (ImGui.BeginTabItem("Profiling"))
+                        {
+                            DisplayProfiling();
+                            ImGui.EndTabItem();
+                        }
+                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedGold);
+                        if (ImGui.BeginTabItem("Contribute"))
+                        {
+                            ImGui.PopStyleColor();
+                            Contribute.Draw();
+                            ImGui.EndTabItem();
+                        }
+                        else
+                        {
+                            ImGui.PopStyleColor();
+                        }
                     }
                 }
-                else
+                catch(Exception ex)
                 {
-                    var curCursor = ImGui.GetCursorPos();
-                    ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - RightWidth);
-                    RightWidth = ImGuiEx.Measure(delegate
-                    {
-                        if (p.MemoryManager.ErrorCode != 0)
-                        {
-                            ImGui.TextColored((Environment.TickCount % 1000 < 500 ? Colors.Red : Colors.Yellow).ToVector4(), "Failsafe mode");
-                            ImGui.SameLine();
-                        }
-                        ImGui.SetNextItemWidth(100f);
-                        if (ImGui.BeginCombo("##phaseSelector", $"Phase {p.Phase}"))
-                        {
-                            if (ImGui.Selectable("Phase 1 (doorboss)")) p.Phase = 1;
-                            if (ImGui.Selectable("Phase 2 (post-doorboss)")) p.Phase = 2;
-                            ImGuiEx.Text("Manual phase selection:");
-                            ImGui.SameLine();
-                            ImGui.SetNextItemWidth(30f);
-                            ImGui.DragInt("##mPSel", ref p.Phase, 0.1f, 1, 9);
-                            ImGui.EndCombo();
-                        }
-                    });
-                    ImGui.SetCursorPos(curCursor);
-                    
-                    ImGui.BeginTabBar("SplatoonSettings");
-                    if (ImGui.BeginTabItem("General settings"))
-                    {
-                        DisplayGeneralSettings();
-                        ImGui.EndTabItem();
-                    }
-                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.Green);
-                    if (ImGui.BeginTabItem("Layouts"))
-                    {
-                        ImGui.PopStyleColor();
-                        DislayLayouts();
-                        ImGui.EndTabItem();
-                    }
-                    else
-                    {
-                        ImGui.PopStyleColor();
-                    }
-
-                    if (ImGui.BeginTabItem("Logger"))
-                    {
-                        DisplayLogger();
-                        ImGui.EndTabItem();
-                    }
-                    if (ImGui.BeginTabItem("Debug"))
-                    {
-                        DisplayDebug();
-                        ImGui.EndTabItem();
-                    }
-                    if (ImGui.BeginTabItem("Log"))
-                    {
-                        DisplayLog();
-                        ImGui.EndTabItem();
-                    }
-                    if (ImGui.BeginTabItem("Dynamic"))
-                    {
-                        DisplayDynamicElements();
-                        ImGui.EndTabItem();
-                    }
-                    if (ImGui.BeginTabItem("Profiling"))
-                    {
-                        DisplayProfiling();
-                        ImGui.EndTabItem();
-                    }
-                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedGold);
-                    if (ImGui.BeginTabItem("Contribute"))
-                    {
-                        ImGui.PopStyleColor();
-                        Contribute.Draw();
-                        ImGui.EndTabItem();
-                    }
-                    else
-                    {
-                        ImGui.PopStyleColor();
-                    }
+                    ex.Log();
+                    ImGuiEx.Text(ImGuiColors.DalamudRed, $"Error: {ex.Message}\n{ex.StackTrace}");
                 }
             }
             ImGui.PopStyleVar();

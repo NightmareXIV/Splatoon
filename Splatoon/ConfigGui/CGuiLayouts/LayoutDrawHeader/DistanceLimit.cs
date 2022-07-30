@@ -12,9 +12,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader
         {
             if (layout.UseDistanceLimit)
             {
-                ImGui.SameLine();
                 ImGui.SetNextItemWidth(150f);
-                ImGui.SameLine();
                 ImGui.Combo("##dlimittype", ref layout.DistanceLimitType, new string[] { "Distance to current target", "Distance to element" }, 2);
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(50f);
