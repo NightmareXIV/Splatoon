@@ -48,3 +48,8 @@ Attack Range Rings (Positional Jobs Only)
 ```
 Attack Range Rings (Positional Jobs Only)~{"Elements":{"Melee Action Range":{"type":1,"radius":3.0,"color":4294967295,"refActorType":2,"includeHitbox":true,"includeOwnHitbox":true},"Melee Auto-Attack Range":{"type":1,"Enabled":false,"radius":3.1,"color":4294967295,"refActorType":2,"includeHitbox":true,"includeOwnHitbox":true},"Positional Line 1":{"type":3,"refY":3.0,"radius":0.0,"color":4294967295,"refActorType":2,"includeRotation":true,"AdditionalRotation":0.7853982,"LineAddHitboxLengthYA":true,"LineAddPlayerHitboxLengthYA":true},"Positional Line 2":{"type":3,"refY":3.0,"radius":0.0,"color":4294967295,"refActorType":2,"includeRotation":true,"AdditionalRotation":2.3561945,"LineAddHitboxLengthYA":true,"LineAddPlayerHitboxLengthYA":true},"Positional Line 3":{"type":3,"refY":3.0,"radius":0.0,"color":4294967295,"refActorType":2,"includeRotation":true,"AdditionalRotation":3.9269907,"LineAddHitboxLengthYA":true,"LineAddPlayerHitboxLengthYA":true},"Positional Line 4":{"type":3,"refY":3.0,"radius":0.0,"color":4294967295,"refActorType":2,"includeRotation":true,"AdditionalRotation":5.497787,"LineAddHitboxLengthYA":true,"LineAddPlayerHitboxLengthYA":true}},"JobLock":551371669524}
 ```
+
+DNC's standard and technical step radius while dancing:
+```
+~Lv2~{"Name":"DNC step circles around self","Group":"","ElementsL":[{"Name":"","type":1,"radius":15.0,"refActorRequireBuff":true,"refActorBuffId":[1818,1819],"refActorType":1}],"JobLock":274877906944}
+```
