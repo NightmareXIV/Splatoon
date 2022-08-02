@@ -863,7 +863,7 @@ public unsafe class Splatoon : IDalamudPlugin
             {
                 result = Static.GetRolePlaceholder(CombatRole.Tank, n)?.Address ?? IntPtr.Zero;
             }
-            else if (ph.StartsWith("h") && int.TryParse(ph[2..3], out n))
+            else if (ph.StartsWith("<h") && int.TryParse(ph[2..3], out n))
             {
                 result = Static.GetRolePlaceholder(CombatRole.Healer, n)?.Address ?? IntPtr.Zero;
             }

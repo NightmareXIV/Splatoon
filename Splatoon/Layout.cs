@@ -48,6 +48,31 @@ public class Layout
     [DefaultValue(0)] public int DistanceLimitType = 0;
     [DefaultValue(0)] public int Phase = 0;
 
+    public bool ShouldSerializeMinDistance()
+    {
+        return this.UseDistanceLimit;
+    }
+
+    public bool ShouldSerializeMaxDistance()
+    {
+        return this.UseDistanceLimit;
+    }
+
+    public bool ShouldSerializeDistanceLimitMyHitbox()
+    {
+        return this.UseDistanceLimit;
+    }
+
+    public bool ShouldSerializeDistanceLimitTargetHitbox()
+    {
+        return this.UseDistanceLimit;
+    }
+
+    public bool ShouldSerializeDistanceLimitType()
+    {
+        return this.UseDistanceLimit;
+    }
+
     public bool ShouldSerializeZoneLockH()
     {
         return ZoneLockH.Count > 0;

@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Authors>Eternita</Authors>
-		<Version>2.0.0.3</Version>
+		<Version>2.0.0.4</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
