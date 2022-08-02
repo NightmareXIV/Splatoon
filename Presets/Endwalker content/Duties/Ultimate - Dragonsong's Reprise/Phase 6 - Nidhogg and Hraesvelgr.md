@@ -1,7 +1,7 @@
 [International] P6 Arena Quarter
 Helps with keeping melee uptime when Nidhogg dives one half of the arena in addition to Hraesvelgr cleaving the other half leaving one quarter safe. (exact trigger to be improved):
 ```
-DSR P6 Arena Quarter~{"ZoneLockH":[968],"DCond":5,"Elements":{"P6 Quarter":{"type":2,"refX":100.0,"refY":80.0,"offX":100.0,"offY":120.0,"radius":0.0},"P6 Quarter 2":{"type":2,"refX":80.0,"refY":100.0,"offX":120.0,"offY":100.0,"radius":0.0}},"UseTriggers":true,"Triggers":[{"TimeBegin":660.0,"Duration":240.0}],"Phase":2}
+~Lv2~{"Name":"DSR P6 Arena Quarter","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"P6 Quarter","type":2,"refX":100.0,"refY":80.0,"offX":100.0,"offY":120.0,"radius":0.0,"color":1677721855,"FillStep":1.0},{"Name":"P6 Quarter 2","type":2,"refX":80.0,"refY":100.0,"offX":120.0,"offY":100.0,"radius":0.0,"color":1677721855,"FillStep":1.0}],"UseTriggers":true,"Triggers":[{"TimeBegin":660.0,"Duration":240.0}],"Phase":2}
 ```
 
 [EN] Tether to your healer during Akh Afah. Don't forget to actually put your healer's name here.
@@ -26,21 +26,21 @@ DSR P6 Arena Quarter~{"ZoneLockH":[968],"DCond":5,"Elements":{"P6 Quarter":{"typ
 
 [EN] Tankbusters during Hallowed Wings:
 ```
-DSR P6 TankBusters~{"ZoneLockH":[968],"DCond":5,"Elements":{"Marks":{"type":1,"radius":10.0,"Donut":0.0,"color":1191116816,"refActorPlaceholder":["<t1>","<t2>"],"refActorComparisonType":5,"Filled":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"Hraesvelgr readies Hallowed Wings."}],"Phase":2}
+~Lv2~{"Name":"DSR P6 TankBusters","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"Marks","type":1,"radius":10.0,"color":1191116816,"refActorPlaceholder":["<t1>","<t2>"],"refActorComparisonType":5,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"Hraesvelgr readies Hallowed Wings."}],"Phase":2}
 ```
 
 [EN] Nidhogg's Cauterize:
 ```
-DSR P6 Nidhogg's Cauterize~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":3458,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"I swore to Shiva─swore that I would not take the lives of men... Stop me, I prithee!","MatchDelay":14.0}],"Phase":2}
+~Lv2~{"Name":"DSR P6 Nidhogg's Cauterize","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"1","type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":3458,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"I swore to Shiva─swore that I would not take the lives of men... Stop me, I prithee!","MatchDelay":14.0}],"Phase":2}
 ```
 
 [EN] Hraesvelgr's Cauterize:
 ```
-DSR P6 Hraesvelgr's Cauterize~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":4954,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"Nidhogg readies Akh Morn."}],"Phase":2}
+~Lv2~{"Name":"DSR P6 Hraesvelgr's Cauterize","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"1","type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":4954,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"Nidhogg readies Akh Morn."}],"Phase":2}
 ```
 [International] Nidhogg's Hot tail/Hot wings:
 ```
-DSR P6 Hot tail / Hot wings~{"ZoneLockH":[968],"Elements":{"Hot tail":{"type":3,"refY":44.0,"radius":8.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27949,27950],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true},"Hot wing 1":{"type":3,"refX":-13.0,"refY":44.0,"offX":-13.0,"radius":9.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27947,27948],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true},"Hot wing 2":{"type":3,"refX":13.0,"refY":44.0,"offX":13.0,"radius":9.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27947,27948],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}},"Phase":2}
+~Lv2~{"Name":"DSR P6 Hot tail / Hot wings","Group":"DSR","ZoneLockH":[968],"ElementsL":[{"Name":"Hot tail","type":3,"refY":44.0,"radius":8.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27949,27950],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true},{"Name":"Hot wing 1","type":3,"refX":-13.0,"refY":44.0,"offX":-13.0,"radius":9.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27947,27948],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true},{"Name":"Hot wing 2","type":3,"refX":13.0,"refY":44.0,"offX":13.0,"radius":9.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27947,27948],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}],"Phase":2}
 ```
 
 [EN] P6 Wroth flames movement pattern. Does NOT includes indication of which spot is safe. (Movement pattern: drop 1st and 2nd aoes in respective circles, do not cross red line until game's indicator disappears, then cross green line and rush to the middle)
@@ -62,5 +62,5 @@ DSR P6 Hot tail / Hot wings~{"ZoneLockH":[968],"Elements":{"Hot tail":{"type":3,
 
 [EN] Wroth flames stack/spread aoes display
 ```
-DSR P6 spread/stack debuff aoe markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Spread":{"type":1,"radius":5.0,"Donut":0.0,"color":838861055,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[2758],"Filled":true},"Stack":{"type":1,"radius":5.0,"Donut":0.0,"color":841481984,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[2759],"Filled":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":19.5}],"Phase":2}
+~Lv2~{"Name":"DSR P6 spread/stack debuff aoe markers","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"Spread","type":1,"radius":5.0,"color":838861055,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[2758],"Filled":true},{"Name":"Stack","type":1,"radius":5.0,"color":841481984,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[2759],"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Wroth Flames"},"MatchDelay":19.5}],"Phase":2}
 ```
