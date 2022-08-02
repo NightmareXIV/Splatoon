@@ -49,10 +49,30 @@ public class Layout
     [DefaultValue(0)] public int Phase = 0;
     [DefaultValue(false)] public bool Freezing = false;
     [DefaultValue(0f)] public float FreezeFor = 0f;
-    [DefaultValue(1f)] public float IntervalBetweenFreezes = 1f;
+    [DefaultValue(10f)] public float IntervalBetweenFreezes = 10f;
     [DefaultValue(true)] public bool FreezeResetCombat = true;
     [DefaultValue(true)] public bool FreezeResetTerr = true;
     [NonSerialized] internal FreezeInfo freezeInfo = new();
+
+    public bool ShouldSerializeIntervalBetweenFreezes()
+    {
+        return this.Freezing;
+    }
+
+    public bool ShouldSerializeFreezeResetCombat()
+    {
+        return this.Freezing;
+    }
+
+    public bool ShouldSerializeFreezeResetTerr()
+    {
+        return this.Freezing;
+    }
+
+    public bool ShouldSerializeFreezeFor()
+    {
+        return this.Freezing;
+    }
 
     public bool ShouldSerializeMinDistance()
     {
