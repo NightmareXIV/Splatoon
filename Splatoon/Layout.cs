@@ -50,6 +50,8 @@ public class Layout
     [DefaultValue(false)] public bool Freezing = false;
     [DefaultValue(0f)] public float FreezeFor = 0f;
     [DefaultValue(1f)] public float IntervalBetweenFreezes = 1f;
+    [DefaultValue(true)] public bool FreezeResetCombat = true;
+    [DefaultValue(true)] public bool FreezeResetTerr = true;
     [NonSerialized] internal FreezeInfo freezeInfo = new();
 
     public bool ShouldSerializeMinDistance()

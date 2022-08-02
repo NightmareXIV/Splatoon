@@ -284,6 +284,10 @@ public unsafe class Splatoon : IDalamudPlugin
                     }
                 }
             }
+            if(l.Freezing && l.FreezeResetTerr)
+            {
+                l.freezeInfo = new();
+            }
         }
     }
 
@@ -399,6 +403,10 @@ public unsafe class Splatoon : IDalamudPlugin
                                         t.DisableAt.Clear();
                                     }
                                 }
+                            }
+                            if (l.Freezing && l.FreezeResetCombat)
+                            {
+                                l.freezeInfo = new();
                             }
                         }
                         foreach (var de in dynamicElements)

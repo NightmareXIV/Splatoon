@@ -21,6 +21,11 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(50f);
                 ImGui.DragFloat("##freezeInt", ref layout.IntervalBetweenFreezes, 0.1f, 0, 99999, $"{layout.IntervalBetweenFreezes:F1}");
+                ImGuiEx.Text("Reset on:");
+                ImGui.SameLine();
+                ImGui.Checkbox("Combat end", ref layout.FreezeResetCombat);
+                ImGui.SameLine();
+                ImGui.Checkbox("Zone change", ref layout.FreezeResetZone);
             }
         }
     }
