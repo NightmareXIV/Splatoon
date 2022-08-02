@@ -143,7 +143,7 @@ partial class CGui
             layout.DrawDistanceLimit();
 
             ImGui.TableNextColumn();
-            ImGui.Checkbox("Freezing", ref layout.Freezing);
+            ImGui.Checkbox("Freeze (beta)", ref layout.Freezing);
             ImGui.TableNextColumn();
             layout.DrawFreezing();
 

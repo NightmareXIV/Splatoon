@@ -531,34 +531,46 @@ public unsafe class Splatoon : IDalamudPlugin
 
     internal void ProcessLayout(Layout l)
     {
-        if (!IsLayoutVisible(l)) return;
-        LayoutAmount++;
-        if (l.Freezing)
+        if (IsLayoutVisible(l))
         {
-            if (l.freezeInfo?.IsActive() == true)
+            LayoutAmount++;
+            if (l.Freezing)
             {
-                displayObjects.UnionWith(l.freezeInfo.Objects);
+                if (l.freezeInfo.CanDisplay())
+                {
+                    var a = displayObjects;
+                    displayObjects = new();
+                    for (var i = 0; i < l.ElementsL.Count; i++)
+                    {
+                        ProcessElement(l.ElementsL[i], l);
+                    }
+                    l.freezeInfo.States.Add(new()
+                    {
+                        Objects = displayObjects,
+                        ShowUntil = Environment.TickCount64 + (int)(l.FreezeFor * 1000f),
+                    });
+                    displayObjects = a;
+                    l.freezeInfo.AllowRefreezeAt = Environment.TickCount64 + (int)(l.IntervalBetweenFreezes * 1000f);
+                }
             }
             else
             {
-                displayObjects.Clear();
                 for (var i = 0; i < l.ElementsL.Count; i++)
                 {
                     ProcessElement(l.ElementsL[i], l);
                 }
-                l.freezeInfo = new()
-                {
-                    Objects = displayObjects,
-                    ShowUntil = Environment.TickCount64 + (int)(l.FreezeFor * 1000f),
-                };
-                displayObjects = new();
             }
         }
-        else
+        for (var i = l.freezeInfo.States.Count - 1;i>=0;i--)
         {
-            for (var i = 0; i < l.ElementsL.Count; i++)
+            var x = l.freezeInfo.States[i];
+            if (x.IsActive())
             {
-                ProcessElement(l.ElementsL[i], l);
+                displayObjects.UnionWith(x.Objects);
+            }
+            else
+            {
+                l.freezeInfo.States.RemoveAt(i);
             }
         }
     }
