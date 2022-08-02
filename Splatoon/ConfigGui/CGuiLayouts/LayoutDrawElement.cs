@@ -2,6 +2,7 @@
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Internal.Notifications;
+using ECommons.GameFunctions;
 using ECommons.ImGuiMethods;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Splatoon
 {
-    partial class CGui
+    unsafe partial class CGui
     {
         string ActionName = "";
         string BuffName = "";
@@ -230,10 +231,10 @@ namespace Splatoon
                                 el.refActorObjectID = Svc.Targets.Target.ObjectId;
                                 if (Svc.Targets.Target is Character c)
                                 {
-                                    el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
+                                    el.refActorModelID = (uint)c.Struct()->ModelCharaId;
                                     el.refActorNPCNameID = c.NameId;
                                 }
-                                el.refActorNPCID = p.MemoryManager.GetNpcID(Svc.Targets.Target);
+                                el.refActorNPCID = Svc.Targets.Target.Struct()->GetNpcID();
                             }
                         }
                         SImGuiEx.SizedText("Targetability: ", WidthElement);
@@ -274,6 +275,20 @@ namespace Splatoon
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);
                         ImGuiEx.InputListUint("##casts" + i + k, el.refActorCastId, ActionNames);
+                        SImGuiEx.SizedText("", WidthElement);
+                        ImGui.SameLine();
+                        ImGui.Checkbox("Limit by cast time", ref el.refActorUseCastTime);
+                        if (el.refActorUseCastTime)
+                        {
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##casttime1", ref el.refActorCastTimeMin, 0.1f, 0f, 99999f, $"{el.refActorCastTimeMin:F1}");
+                            ImGui.SameLine();
+                            ImGuiEx.Text("-");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##casttime2", ref el.refActorCastTimeMax, 0.1f, 0f, 99999f, $"{el.refActorCastTimeMax:F1}");
+                        }
                         SImGuiEx.SizedText("", WidthElement);
                         ImGui.SameLine();
                         ImGuiEx.Text("Add all by name:");

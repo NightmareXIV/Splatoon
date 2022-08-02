@@ -25,7 +25,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader
                 ImGui.SameLine();
                 ImGui.Checkbox("Combat end", ref layout.FreezeResetCombat);
                 ImGui.SameLine();
-                ImGui.Checkbox("Zone change", ref layout.FreezeResetZone);
+                ImGui.Checkbox("Zone change", ref layout.FreezeResetTerr);
             }
         }
     }

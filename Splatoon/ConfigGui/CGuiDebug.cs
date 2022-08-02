@@ -1,8 +1,9 @@
 ﻿using Dalamud.Interface.Internal.Notifications;
+using ECommons.GameFunctions;
 
 namespace Splatoon
 {
-    partial class CGui
+    unsafe partial class CGui
     {
         bool autoscrollLog = true;
         float s2wx, s2wy, s2wz, s2wrx, s2wry;
@@ -52,7 +53,7 @@ namespace Splatoon
             {
                 Safe(delegate
                 {
-                    s2wb = p.MemoryManager.WorldToScreen(new Vector3(s2wx, s2wz, s2wy), out Vector2 pos);
+                    s2wb = Svc.GameGui.WorldToScreen(new Vector3(s2wx, s2wz, s2wy), out Vector2 pos);
                     s2wrx = pos.X;
                     s2wry = pos.Y;
                 });
@@ -105,13 +106,13 @@ namespace Splatoon
                     ImGuiEx.Text($"{a.DataId.Format()}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(400f);
-                    ImGuiEx.Text($"{p.MemoryManager.GetIsTargetable((a is Character ch) ? ch : a)}");
+                    ImGuiEx.Text($"{a.Struct()->GetIsTargetable()}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(500f);
-                    ImGuiEx.Text($"{((a is Character chr) ? p.MemoryManager.GetIsVisible(chr) : "Not a char")}");
+                    ImGuiEx.Text($"{((a is Character chr) ? chr.IsCharacterVisible() : "Not a char")}");
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(600f);
-                    ImGuiEx.Text(a is Character chr2 ? $"{p.MemoryManager.GetModelId(chr2).Format()}" : "Not a char");
+                    ImGuiEx.Text(a is Character chr2 ? $"{chr2.Struct()->ModelCharaId.Format()}" : "Not a char");
                 });
             }
             ImGui.Separator();

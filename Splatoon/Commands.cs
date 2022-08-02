@@ -1,11 +1,12 @@
 ﻿using Dalamud.Game.Command;
+using ECommons.GameFunctions;
 
 namespace Splatoon;
 
 class Commands : IDisposable
 {
     Splatoon p;
-    internal Commands(Splatoon p)
+    internal unsafe Commands(Splatoon p)
     {
         this.p = p;
         Svc.Commands.AddHandler("/splatoon", new CommandInfo(delegate (string command, string arguments)
@@ -53,7 +54,7 @@ class Commands : IDisposable
                         el.refActorNameIntl.CurrentLangString = Svc.Targets.Target.Name.ToString();
                         el.refActorDataID = Svc.Targets.Target.DataId;
                         el.refActorObjectID = Svc.Targets.Target.ObjectId;
-                        if (Svc.Targets.Target is Character c) el.refActorModelID = (uint)p.MemoryManager.GetModelId(c);
+                        if (Svc.Targets.Target is Character c) el.refActorModelID = (uint)c.Struct()->ModelCharaId;
                         Notify.Success("Successfully set target");
                     }
                 }

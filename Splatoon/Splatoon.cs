@@ -23,7 +23,6 @@ public unsafe class Splatoon : IDalamudPlugin
     internal Gui DrawingGui;
     internal CGui ConfigGui;
     internal Commands CommandManager;
-    internal IMemoryManager MemoryManager;
     internal ChlogGui ChangelogGui = null;
     internal Configuration Config;
     internal MemerrGui memerrGui;
@@ -102,11 +101,6 @@ public unsafe class Splatoon : IDalamudPlugin
         {
             ChangelogGui = new ChlogGui(this);
             Config.NoMemory = false;
-        }
-        MemoryManager = new GlobalMemory(this);
-        if (MemoryManager.ErrorCode != 0)
-        {
-            memerrGui = new MemerrGui(this);
         }
         tickScheduler = new ConcurrentQueue<System.Action>();
         dynamicElements = new List<DynamicElement>();
@@ -305,20 +299,20 @@ public unsafe class Splatoon : IDalamudPlugin
                 foreach(var t in Svc.Objects)
                 {
                     var ischar = t is Character;
-                    var obj = (t.Name.ToString(), t.ObjectId, t.DataId, ischar ? MemoryManager.GetModelId((Character)t) : 0, this.MemoryManager.GetNpcID(t), ischar ? ((Character)t).NameId : 0, t.ObjectKind);
+                    var obj = (t.Name.ToString(), t.ObjectId, t.DataId, ischar ? ((Character)t).Struct()->ModelCharaId : 0, t.Struct()->GetNpcID(), ischar ? ((Character)t).NameId : 0, t.ObjectKind);
                     loggedObjectList.TryAdd(obj, new ObjectInfo());
                     loggedObjectList[obj].ExistenceTicks++;
                     loggedObjectList[obj].IsChar = ischar;
                     if (ischar)
                     {
-                        loggedObjectList[obj].Targetable = MemoryManager.GetIsTargetable((Character)t);
-                        loggedObjectList[obj].Visible = MemoryManager.GetIsVisible((Character)t);
+                        loggedObjectList[obj].Targetable = t.Struct()->GetIsTargetable();
+                        loggedObjectList[obj].Visible = ((Character)t).IsCharacterVisible();
                         if (loggedObjectList[obj].Targetable) loggedObjectList[obj].TargetableTicks++;
                         if (loggedObjectList[obj].Visible) loggedObjectList[obj].VisibleTicks++;
                     }
                     else
                     {
-                        loggedObjectList[obj].Targetable = MemoryManager.GetIsTargetable(t);
+                        loggedObjectList[obj].Targetable = t.Struct()->GetIsTargetable();
                         if (loggedObjectList[obj].Targetable) loggedObjectList[obj].TargetableTicks++;
                     }
                     loggedObjectList[obj].Distance = Vector3.Distance(Svc.ClientState.LocalPlayer.Position, t.Position);
@@ -364,13 +358,10 @@ public unsafe class Splatoon : IDalamudPlugin
                     Log("Pointer to LocalPlayer.Address is zero");
                     return;
                 }
-                if (MemoryManager.ErrorCode == 0)
-                {
-                    CamAngleX = MemoryManager.GetCamAngleX() + Math.PI;
-                    if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
-                    CamAngleY = MemoryManager.GetCamAngleY();
-                    CamZoom = Math.Min(MemoryManager.GetCamZoom(), 20);
-                }
+                CamAngleX = Camera.GetAngleX() + Math.PI;
+                if (CamAngleX > Math.PI) CamAngleX -= 2 * Math.PI;
+                CamAngleY = Camera.GetAngleY();
+                CamZoom = Math.Min(Camera.GetZoom(), 20);
                 /*Range conversion https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
                 slope = (output_end - output_start) / (input_end - input_start)
                 output = output_start + slope * (input - input_start) */
@@ -724,7 +715,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 if (Profiler.Enabled) Profiler.MainTickActorTableScan.StartTick();
                 foreach (var a in Svc.Objects)
                 {
-                    var targetable = MemoryManager.GetIsTargetable(a);
+                    var targetable = a.Struct()->GetIsTargetable();
                     if (IsAttributeMatches(e, a)
                             && (!e.onlyTargetable || targetable)
                             && (!e.onlyUnTargetable || !targetable)
@@ -873,7 +864,7 @@ public unsafe class Splatoon : IDalamudPlugin
     private bool CheckCharacterAttributes(Element e, GameObject a, bool ignoreVisibility = false)
     {
         return
-            (ignoreVisibility || !e.onlyVisible || (a is Character chr && MemoryManager.GetIsVisible(chr)))
+            (ignoreVisibility || !e.onlyVisible || (a is Character chr && chr.IsCharacterVisible()))
             && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is Character chr2 && chr2.IsCasting(e.refActorCastId)))
             && (!e.refActorRequireBuff || 
                 (e.refActorBuffId.Count > 0 && a is BattleChara chr3
@@ -885,10 +876,10 @@ public unsafe class Splatoon : IDalamudPlugin
     bool IsAttributeMatches(Element e, GameObject o)
     {
         if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || IsNameContainsValue(o, e.refActorNameIntl.Get(e.refActorName)))) return true;
-        if (e.refActorComparisonType == 1 && o is Character c && MemoryManager.GetModelId(c) == e.refActorModelID) return true;
+        if (e.refActorComparisonType == 1 && o is Character c && c.Struct()->ModelCharaId == e.refActorModelID) return true;
         if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
         if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
-        if (e.refActorComparisonType == 4 && MemoryManager.GetNpcID(o) == e.refActorNPCID) return true;
+        if (e.refActorComparisonType == 4 && o.Struct()->GetNpcID() == e.refActorNPCID) return true;
         if (e.refActorComparisonType == 5 && e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) return true;
         if (e.refActorComparisonType == 6 && o is Character c2 && c2.NameId == e.refActorNPCNameID) return true;
         return false;
@@ -971,15 +962,16 @@ public unsafe class Splatoon : IDalamudPlugin
             if (go != null)
             {
                 text = text
+                    .Replace("$NAMEID", $"{(go is Character chr2 ? chr2.NameId : 0).Format()}")
                     .Replace("$NAME", go.Name.ToString())
                     .Replace("$OBJECTID", $"{go.ObjectId.Format()}")
                     .Replace("$DATAID", $"{go.DataId.Format()}")
-                    .Replace("$MODELID", $"{(go is Character chr ? MemoryManager.GetModelId(chr) : 0).Format()}")
+                    .Replace("$MODELID", $"{(go is Character chr ? chr.Struct()->ModelCharaId : 0).Format()}")
                     .Replace("$HITBOXR", $"{go.HitboxRadius:F1}")
                     .Replace("$KIND", $"{go.ObjectKind}")
-                    .Replace("$NPCID", $"{MemoryManager.GetNpcID(go).Format()}")
+                    .Replace("$NPCID", $"{go.Struct()->GetNpcID().Format()}")
                     .Replace("$LIFE", $"{go.GetLifeTimeSeconds():F1}")
-                    .Replace("$NAMEID", $"{(go is Character chr2 ? chr2.NameId : 0).Format()}")
+                    .Replace("$DISTANCE", $"{Vector3.Distance((Svc.ClientState.LocalPlayer?.Position ?? Vector3.Zero), go.Position):F1}")
                     .Replace("\\n", "\n");
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));

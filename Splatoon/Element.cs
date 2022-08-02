@@ -55,10 +55,16 @@ public class Element
     [DefaultValue(0)] public uint refActorNPCNameID = 0;
     [DefaultValue(false)] public bool refActorRequireCast = false;
     public List<uint> refActorCastId = new();
+    [DefaultValue(false)] public bool refActorUseCastTime = false;
+    [DefaultValue(0f)] public float refActorCastTimeMin = 0f;
+    [DefaultValue(0f)] public float refActorCastTimeMax = 0f;
     [DefaultValue(false)] public bool refActorRequireBuff = false;
     public List<uint> refActorBuffId = new();
     [DefaultValue(false)] public bool refActorRequireAllBuffs = false;
     [DefaultValue(false)] public bool refActorRequireBuffsInvert = false;
+    [DefaultValue(false)] public bool refActorUseBuffTime = false;
+    [DefaultValue(0f)] public float refActorBuffTimeMin = 0f;
+    [DefaultValue(0f)] public float refActorBuffTimeMax = 0f;
     [DefaultValue(false)] public bool refActorObjectLife = false;
     [DefaultValue(0)] public float refActorLifetimeMin = 0;
     [DefaultValue(0)] public float refActorLifetimeMax = 0;

@@ -105,7 +105,7 @@ unsafe class Gui : IDisposable
 
     (Vector2? posA, Vector2? posB) GetAdjustedLine(Vector3 pointA, Vector3 pointB)
     {
-        var resultA = p.MemoryManager.WorldToScreen(new Vector3(pointA.X, pointA.Z, pointA.Y), out Vector2 posA);
+        var resultA = Svc.GameGui.WorldToScreen(new Vector3(pointA.X, pointA.Z, pointA.Y), out Vector2 posA);
         if (!resultA && !p.DisableLineFix)
         {
             var posA2 = GetLineClosestToVisiblePoint(pointA,
@@ -120,7 +120,7 @@ unsafe class Gui : IDisposable
                 posA = posA2.Value;
             }
         }
-        var resultB = p.MemoryManager.WorldToScreen(new Vector3(pointB.X, pointB.Z, pointB.Y), out Vector2 posB);
+        var resultB = Svc.GameGui.WorldToScreen(new Vector3(pointB.X, pointB.Z, pointB.Y), out Vector2 posB);
         if (!resultB && !p.DisableLineFix)
         {
             var posB2 = GetLineClosestToVisiblePoint(pointB,
@@ -167,7 +167,7 @@ unsafe class Gui : IDisposable
     {
         if (curSegment > numSegments) return null;
         var nextPos = currentPos + delta;
-        if(p.MemoryManager.WorldToScreen(new Vector3(nextPos.X, nextPos.Z, nextPos.Y), out Vector2 pos))
+        if(Svc.GameGui.WorldToScreen(new Vector3(nextPos.X, nextPos.Z, nextPos.Y), out Vector2 pos))
         {
             var preciseVector = GetLineClosestToVisiblePoint(currentPos, (nextPos - currentPos) / p.Config.lineSegments, 0, p.Config.lineSegments);
             return preciseVector.HasValue?preciseVector.Value:pos;
@@ -180,7 +180,7 @@ unsafe class Gui : IDisposable
 
     public void DrawTextWorld(DisplayObjectText e)
     {
-        if (p.MemoryManager.WorldToScreen(
+        if (Svc.GameGui.WorldToScreen(
                         new Vector3(e.x, e.z, e.y),
                         out Vector2 pos))
         {
@@ -213,7 +213,7 @@ unsafe class Gui : IDisposable
     public void DrawRingWorld(DisplayObjectCircle e)
     {
         int seg = p.Config.segments / 2;
-        p.MemoryManager.WorldToScreen(new Vector3(
+        Svc.GameGui.WorldToScreen(new Vector3(
             e.x + (e.radius * (float)Math.Sin(p.CamAngleX)),
             e.z, 
             e.y + (e.radius * (float)Math.Cos(p.CamAngleX))
@@ -222,14 +222,14 @@ unsafe class Gui : IDisposable
         Vector2?[] elements = new Vector2?[p.Config.segments];
         for (int i = 0; i < p.Config.segments; i++)
         {
-            visible = p.MemoryManager.WorldToScreen(
+            visible = Svc.GameGui.WorldToScreen(
                 new Vector3(e.x + (e.radius * (float)Math.Sin((Math.PI / seg) * i)),
                 e.z,
                 e.y + (e.radius * (float)Math.Cos((Math.PI / seg) * i))
                 ),
                 out Vector2 pos) 
                 || visible;
-            if (pos.Y > refpos.Y || p.MemoryManager.ErrorCode != 0) elements[i] = new Vector2(pos.X, pos.Y);
+            if (pos.Y > refpos.Y) elements[i] = new Vector2(pos.X, pos.Y);
         }
         if (visible)
         {
@@ -252,7 +252,7 @@ unsafe class Gui : IDisposable
 
     public void DrawPoint(DisplayObjectDot e)
     {
-        if(p.MemoryManager.WorldToScreen(new Vector3(e.x, e.z, e.y), out Vector2 pos)) 
+        if(Svc.GameGui.WorldToScreen(new Vector3(e.x, e.z, e.y), out Vector2 pos)) 
             ImGui.GetWindowDrawList().AddCircleFilled(
             new Vector2(pos.X, pos.Y),
             e.thickness,

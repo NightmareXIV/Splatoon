@@ -106,11 +106,6 @@ namespace Splatoon
                         ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - RightWidth);
                         RightWidth = ImGuiEx.Measure(delegate
                         {
-                            if (p.MemoryManager.ErrorCode != 0)
-                            {
-                                ImGui.TextColored((Environment.TickCount % 1000 < 500 ? Colors.Red : Colors.Yellow).ToVector4(), "Failsafe mode");
-                                ImGui.SameLine();
-                            }
                             ImGui.SetNextItemWidth(100f);
                             if (ImGui.BeginCombo("##phaseSelector", $"Phase {p.Phase}"))
                             {
@@ -221,7 +216,7 @@ namespace Splatoon
 
         private void SetCursorTo(float refX, float refZ, float refY)
         {
-            if (p.MemoryManager.WorldToScreen(new Vector3(refX, refZ, refY), out var screenPos))
+            if (Svc.GameGui.WorldToScreen(new Vector3(refX, refZ, refY), out var screenPos))
             {
                 var point = new POINT() { x = (int)screenPos.X, y = (int)screenPos.Y };
                 //Chat.Print(point.X + "/" + point.Y);
