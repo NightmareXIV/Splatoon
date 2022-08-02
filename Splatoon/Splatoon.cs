@@ -529,13 +529,37 @@ public unsafe class Splatoon : IDalamudPlugin
         if (Profiler.Enabled) Profiler.MainTick.StopTick();
     }
 
-    internal void ProcessLayout(Layout i)
+    internal void ProcessLayout(Layout l)
     {
-        if (!IsLayoutVisible(i)) return;
+        if (!IsLayoutVisible(l)) return;
         LayoutAmount++;
-        foreach (var e in i.ElementsL)
+        if (l.Freezing)
         {
-            ProcessElement(e, i);
+            if (l.freezeInfo?.IsActive() == true)
+            {
+                displayObjects.UnionWith(l.freezeInfo.Objects);
+            }
+            else
+            {
+                displayObjects.Clear();
+                for (var i = 0; i < l.ElementsL.Count; i++)
+                {
+                    ProcessElement(l.ElementsL[i], l);
+                }
+                l.freezeInfo = new()
+                {
+                    Objects = displayObjects,
+                    ShowUntil = Environment.TickCount64 + (int)(l.FreezeFor * 1000f),
+                };
+                displayObjects = new();
+            }
+        }
+        else
+        {
+            for (var i = 0; i < l.ElementsL.Count; i++)
+            {
+                ProcessElement(l.ElementsL[i], l);
+            }
         }
     }
 

@@ -47,6 +47,9 @@ public class Layout
     /// </summary>
     [DefaultValue(0)] public int DistanceLimitType = 0;
     [DefaultValue(0)] public int Phase = 0;
+    [DefaultValue(false)] public bool Freezing = false;
+    [DefaultValue(0f)] public float FreezeFor = 0f;
+    [NonSerialized] internal FreezeInfo freezeInfo = null;
 
     public bool ShouldSerializeMinDistance()
     {

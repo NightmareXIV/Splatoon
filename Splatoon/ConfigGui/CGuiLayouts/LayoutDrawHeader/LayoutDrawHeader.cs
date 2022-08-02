@@ -143,6 +143,11 @@ partial class CGui
             layout.DrawDistanceLimit();
 
             ImGui.TableNextColumn();
+            ImGui.Checkbox("Freezing", ref layout.Freezing);
+            ImGui.TableNextColumn();
+            layout.DrawFreezing();
+
+            ImGui.TableNextColumn();
             ImGui.Checkbox("Enable triggers", ref layout.UseTriggers);
             if (layout.UseTriggers)
             {

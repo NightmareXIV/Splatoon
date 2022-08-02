@@ -26,16 +26,6 @@ namespace Splatoon
             var elcolored = false;
             //if (ImGui.CollapsingHeader(i + " / " + k + "##elem" + i + k))
             {
-                if (enableDeletionElement)
-                {
-                    ImGui.PushStyleColor(ImGuiCol.Button, Colors.Orange);
-                    if (ImGui.Button("Delete##elemdel" + i + k))
-                    {
-                        //p.Config.Layouts[i].Elements.Remove(k);
-                    }
-                    ImGui.PopStyleColor();
-                    ImGui.SameLine();
-                }
                 ImGui.Checkbox("Enabled##" + i + k, ref el.Enabled);
                 ImGui.SameLine();
                 if (ImGui.Button("Copy as HTTP param##" + i + k))
@@ -284,7 +274,7 @@ namespace Splatoon
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(WidthCombo);
                         ImGuiEx.InputListUint("##casts" + i + k, el.refActorCastId, ActionNames);
-                        SImGuiEx.SizedText("Status requirement:", WidthElement);
+                        SImGuiEx.SizedText("", WidthElement);
                         ImGui.SameLine();
                         ImGuiEx.Text("Add all by name:");
                         ImGui.SameLine();
