@@ -12,3 +12,8 @@ Draws a tether to the center to remind you to bait Landslide during Titan Gaols.
 ```
 UWU Titan Gaols~{"ZoneLockH":[777],"DCond":5,"Elements":{"center":{"refX":100.0,"refY":100.0,"thicc":5.0,"tether":true},"left":{"refX":98.0,"refY":106.3,"thicc":5.0},"right":{"refX":102.0,"refY":106.3,"thicc":5.0},"left1":{"refX":106.3,"refY":98.0,"thicc":5.0},"right1":{"refX":106.3,"refY":102.0,"thicc":5.0},"left2":{"refX":93.7,"refY":98.0,"thicc":5.0},"right2":{"refX":93.7,"refY":102.0,"thicc":5.0},"left3":{"refX":102.0,"refY":93.7,"thicc":5.0},"right3":{"refX":98.0,"refY":93.7,"thicc":5.0}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"titan uses upheaval"}]}
 ```
+
+Simple border during Suppression to avoid running into feathers.
+```
+~Lv2~{"Name":"UWU Suppression Border","Group":"UWU","ZoneLockH":[777],"DCond":5,"ElementsL":[{"Name":"border","refX":100.0,"refY":100.0,"radius":15.0,"thicc":10.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":"The Ultima Weapon uses Ultimate Suppression"}]}
+```
