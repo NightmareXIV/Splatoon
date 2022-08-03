@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader
+namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
 {
     internal static class Triggers
     {
@@ -57,7 +57,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader
                         ImGui.DragFloat("##triggertime1", ref layout.Triggers[n].MatchDelay, 0.1f, 0, 3599, "%.1f");
                         ImGui.SameLine();
                         ImGuiEx.Text(DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].MatchDelay * 1000)).ToString("mm:ss.f"));
-                        layout.Triggers[n].Match = layout.Triggers[n].Match.RemoveSymbols(Splatoon.InvalidSymbols);
+                        layout.Triggers[n].Match = layout.Triggers[n].Match.RemoveSymbols(InvalidSymbols);
                     }
                     ImGui.SameLine();
                     ImGuiEx.TextV("Duration: ");

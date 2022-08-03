@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader
+namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
 {
     internal static class ZlockSelector
     {

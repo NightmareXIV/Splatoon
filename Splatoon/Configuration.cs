@@ -43,6 +43,7 @@ class Configuration : IPluginConfiguration
     public int AltConeStep = 1;
 
     public bool FocusMode = false;
+    public bool NoStreamWarning = false;
 
     public bool ShouldSerializeLayouts()
     {

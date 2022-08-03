@@ -142,6 +142,7 @@ public unsafe class Splatoon : IDalamudPlugin
             }
         }
         NameNpcIDs = NameNpcIDs.Where(x => x.Value != 0).ToDictionary(x => x.Key, x => x.Value);
+        StreamDetector.Start();
         Init = true;
     }
 
