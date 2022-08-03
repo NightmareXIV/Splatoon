@@ -163,10 +163,8 @@ namespace Splatoon
             ImGui.Separator();
             ImGui.Checkbox("Use hexadecimal numbers", ref p.Config.Hexadecimal);
             ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
-            ImGui.Checkbox("[Deprecared] Limit trigger message types to boss replies and system messages only", ref p.Config.LimitTriggerMessages);
             ImGui.Checkbox("Force show Splatoon's UI when game UI is hidden", ref p.Config.ShowOnUiHide);
             Svc.PluginInterface.UiBuilder.DisableUserUiHide = p.Config.ShowOnUiHide;
-            ImGui.Checkbox("[Deprecated] Force failsafe mode (requires plugin restart)", ref p.Config.NoMemory);
             //ImGui.Checkbox("Always compare names directly (debug option, ~4x performance loss)", ref p.Config.DirectNameComparison);
             if(ImGui.Button("Open backup directory"))
             {

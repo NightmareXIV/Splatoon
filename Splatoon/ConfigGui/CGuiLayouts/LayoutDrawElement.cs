@@ -277,20 +277,6 @@ namespace Splatoon
                         ImGuiEx.InputListUint("##casts" + i + k, el.refActorCastId, ActionNames);
                         SImGuiEx.SizedText("", WidthElement);
                         ImGui.SameLine();
-                        ImGui.Checkbox("Limit by cast time", ref el.refActorUseCastTime);
-                        if (el.refActorUseCastTime)
-                        {
-                            ImGui.SameLine();
-                            ImGui.SetNextItemWidth(50f);
-                            ImGui.DragFloat("##casttime1", ref el.refActorCastTimeMin, 0.1f, 0f, 99999f, $"{el.refActorCastTimeMin:F1}");
-                            ImGui.SameLine();
-                            ImGuiEx.Text("-");
-                            ImGui.SameLine();
-                            ImGui.SetNextItemWidth(50f);
-                            ImGui.DragFloat("##casttime2", ref el.refActorCastTimeMax, 0.1f, 0f, 99999f, $"{el.refActorCastTimeMax:F1}");
-                        }
-                        SImGuiEx.SizedText("", WidthElement);
-                        ImGui.SameLine();
                         ImGuiEx.Text("Add all by name:");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(100f);
@@ -305,6 +291,20 @@ namespace Splatoon
                                     el.refActorCastId.Add(x.RowId);
                                 }
                             }
+                        }
+                        SImGuiEx.SizedText("", WidthElement);
+                        ImGui.SameLine();
+                        ImGui.Checkbox("Limit by cast time", ref el.refActorUseCastTime);
+                        if (el.refActorUseCastTime)
+                        {
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##casttime1", ref el.refActorCastTimeMin, 0.1f, 0f, 99999f, $"{el.refActorCastTimeMin:F1}");
+                            ImGui.SameLine();
+                            ImGuiEx.Text("-");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##casttime2", ref el.refActorCastTimeMax, 0.1f, 0f, 99999f, $"{el.refActorCastTimeMax:F1}");
                         }
                     }
 
@@ -334,11 +334,6 @@ namespace Splatoon
                                 }
                             }
                         }
-                        SImGuiEx.SizedText("", WidthElement);
-                        ImGui.SameLine();
-                        ImGui.Checkbox((el.refActorRequireBuffsInvert ? "Require ANY status to be missing##" : "Require ALL listed statuses to be present##") + i + k, ref el.refActorRequireAllBuffs);
-                        ImGui.SameLine();
-                        ImGui.Checkbox("Invert behavior##" + i + k, ref el.refActorRequireBuffsInvert);
                         if (Svc.Targets.Target != null && Svc.Targets.Target is BattleChara bchr)
                         {
                             ImGui.SameLine();
@@ -347,6 +342,25 @@ namespace Splatoon
                                 el.refActorBuffId.AddRange(bchr.StatusList.Select(x => x.StatusId));
                             }
                         }
+                        SImGuiEx.SizedText("", WidthElement);
+                        ImGui.SameLine();
+                        ImGui.Checkbox("Limit by remaining time", ref el.refActorUseBuffTime);
+                        if (el.refActorUseBuffTime)
+                        {
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##btime1", ref el.refActorBuffTimeMin, 0.1f, 0f, 99999f, $"{el.refActorBuffTimeMin:F1}");
+                            ImGui.SameLine();
+                            ImGuiEx.Text("-");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGui.DragFloat("##btime2", ref el.refActorBuffTimeMax, 0.1f, 0f, 99999f, $"{el.refActorBuffTimeMax:F1}");
+                        }
+                        SImGuiEx.SizedText("", WidthElement);
+                        ImGui.SameLine();
+                        ImGui.Checkbox((el.refActorRequireBuffsInvert ? "Require ANY status to be missing##" : "Require ALL listed statuses to be present##") + i + k, ref el.refActorRequireAllBuffs);
+                        ImGui.SameLine();
+                        ImGui.Checkbox("Invert behavior##" + i + k, ref el.refActorRequireBuffsInvert);
                     }
 
                     if (el.refActorType == 0)

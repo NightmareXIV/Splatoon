@@ -873,7 +873,7 @@ public unsafe class Splatoon : IDalamudPlugin
             );
     }
 
-    bool CheckEffect(Element e, BattleChara c)
+    static bool CheckEffect(Element e, BattleChara c)
     {
         if (e.refActorRequireAllBuffs)
         {
@@ -897,7 +897,6 @@ public unsafe class Splatoon : IDalamudPlugin
                 return c.StatusList.Select(x => x.StatusId).ContainsAny(e.refActorBuffId).Invert(e.refActorRequireBuffsInvert);
             }
         }
-        return false;
     }
 
     bool IsAttributeMatches(Element e, GameObject o)
