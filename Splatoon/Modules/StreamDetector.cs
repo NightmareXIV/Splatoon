@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 
-namespace Splatoon
+namespace Splatoon.Modules
 {
     internal static class StreamDetector
     {
@@ -14,28 +14,35 @@ namespace Splatoon
             started = true;
             new Thread(() =>
             {
-                while (!P.Disposed)
+                try
                 {
-                    if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat])
+                    while (P != null && !P.Disposed)
                     {
-                        var processes = Process.GetProcesses();
-                        if (processes.Any(x => x.ProcessName.EqualsIgnoreCaseAny("obs32", "obs64")))
+                        if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat])
                         {
-                            Svc.PluginInterface.UiBuilder.Draw += Draw;
-                            break;
+                            var processes = Process.GetProcesses();
+                            if (processes.Any(x => x.ProcessName.EqualsIgnoreCaseAny("obs32", "obs64")))
+                            {
+                                Svc.PluginInterface.UiBuilder.Draw += Draw;
+                                break;
+                            }
                         }
+                        Thread.Sleep(10000);
                     }
-                    Thread.Sleep(10000);
+                }
+                catch(Exception e)
+                {
+                    e.Log();
                 }
             }).Start();
         }
 
         static void Draw()
         {
-            if(ImGui.Begin("Hold on!", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
+            if (ImGui.Begin("Hold on!", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
             {
                 ImGui.SetWindowFontScale(2f);
-                ImGuiEx.Text(Environment.TickCount % 1000 > 500? ImGuiColors.DalamudRed:ImGuiColors.DalamudYellow, "Please do not stream with third party tools visible.");
+                ImGuiEx.Text(Environment.TickCount % 1000 > 500 ? ImGuiColors.DalamudRed : ImGuiColors.DalamudYellow, "Please do not stream with third party tools visible.");
                 ImGui.SetWindowFontScale(1f);
                 ImGuiEx.Text("Normally, most of plugins are completely safe to use. Square Enix will not be able to detect their usage, including Splatoon.");
                 ImGuiEx.Text(ImGuiColors.DalamudOrange, "However, streaming with third party tools visible may result in consequences.");
@@ -46,14 +53,14 @@ namespace Splatoon
                 ImGuiEx.Text(ImGuiColors.DalamudYellow, "If you intended to stream your game, absolutely make sure that your plugins\nand other third party tools are NOT VISIBLE ON STREAM.");
                 ImGui.SetWindowFontScale(1f);
                 ImGuiEx.Text("And it does not matters how many viewers you have - even just one is already enough.");
-                if(ImGui.Button("I understand and will not stream with third party tools visible"))
+                if (ImGui.Button("I understand and will not stream with third party tools visible"))
                 {
                     Svc.PluginInterface.UiBuilder.Draw -= Draw;
                 }
                 ImGuiEx.Text(ImGuiColors.DalamudGrey, "You are seeing this message because a streaming software has been detected.\nYou will not see it again in your current game session.");
                 ImGuiEx.Text(ImGuiColors.DalamudGrey, "If you believe this is an error, please");
                 ImGui.SameLine();
-                if(ImGui.SmallButton("contact the developer."))
+                if (ImGui.SmallButton("contact the developer."))
                 {
                     ShellStart("https://discord.gg/m8NRt4X8Gf");
                 }

@@ -1,6 +1,6 @@
-﻿global using static Splatoon.Logging;
+﻿global using static Splatoon.Modules.Logging;
 
-namespace Splatoon;
+namespace Splatoon.Modules;
 
 internal static class Logging
 {

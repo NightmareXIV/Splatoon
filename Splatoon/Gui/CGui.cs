@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PInvoke;
 using Splatoon.ConfigGui;
+using Splatoon.Gui;
 using Splatoon.Utils;
 using System.Diagnostics;
 using System.Runtime.InteropServices;

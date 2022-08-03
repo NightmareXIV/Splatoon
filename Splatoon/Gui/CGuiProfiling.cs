@@ -1,5 +1,5 @@
 ﻿using Splatoon.Utils;
-using static Splatoon.Profiling;
+using static Splatoon.Modules.Profiling;
 
 namespace Splatoon;
 

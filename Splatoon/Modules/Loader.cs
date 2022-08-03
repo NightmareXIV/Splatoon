@@ -5,7 +5,7 @@ using ECommons.Reflection;
 using System.Net.Http;
 using System.Threading;
 
-namespace Splatoon
+namespace Splatoon.Modules
 {
     internal class Loader
     {
@@ -32,7 +32,7 @@ namespace Splatoon
             this.pi = pi;
             this.f = f;
             this.cmd = cmd;
-            cmd.AddHandler("/loadsplatoon", new(delegate { Load(f); }) { HelpMessage = "Manually load Splatoon"});
+            cmd.AddHandler("/loadsplatoon", new(delegate { Load(f); }) { HelpMessage = "Manually load Splatoon" });
             splatoonVersion = p.GetType().Assembly.GetName().Version;
             file = Path.Combine(pi.GetPluginConfigDirectory(), "safeVersion.nfo");
             if (DalamudReflector.TryGetDalamudStartInfo(out var startInfo, pi))
@@ -47,7 +47,7 @@ namespace Splatoon
                     {
                         if (File.Exists(file))
                         {
-                            if(File.ReadAllText(file) == gVersion)
+                            if (File.ReadAllText(file) == gVersion)
                             {
                                 PluginLog.Information("Loading is allowed via file, skipping checking GitHub...");
                                 f.Update += Load;
@@ -115,9 +115,9 @@ namespace Splatoon
         {
             ImGuiHelpers.ForceNextWindowMainViewport();
             ImGuiHelpers.SetNextWindowPosRelativeMainViewport(ImGuiHelpers.MainViewport.Size / 2 - size / 2);
-            if(ImGui.Begin("Splatoon - Can not confirm compatibility with current game version", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
+            if (ImGui.Begin("Splatoon - Can not confirm compatibility with current game version", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
             {
-                if(verdict == Verdict.Error)
+                if (verdict == Verdict.Error)
                 {
                     ImGuiEx.Text(ImGuiColors.DalamudRed, "Splatoon could not connect to the GitHub to verify\n" +
                         "if it could be running on current game version.");
@@ -133,16 +133,16 @@ namespace Splatoon
                     "On a smaller patches it will usually work, but it may crash your game\n" +
                     "in which case please wait for an update.");
                 }
-                if(maxVersion > splatoonVersion)
+                if (maxVersion > splatoonVersion)
                 {
                     ImGuiEx.TextWrapped(ImGuiColors.DalamudViolet, "An update for Splatoon is available. \n" +
                         "Please open plugin installer and update Splatoon plugin.");
-                    if(ImGui.Button("Open plugin installer"))
+                    if (ImGui.Button("Open plugin installer"))
                     {
                         cmd.ProcessCommand("/xlplugins");
                     }
                 }
-                if(ImGui.Button("Load Splatoon anyway"))
+                if (ImGui.Button("Load Splatoon anyway"))
                 {
                     pi.UiBuilder.Draw -= Draw;
                     PluginLog.Warning("Received confirmation to load Splatoon with unverified game version");

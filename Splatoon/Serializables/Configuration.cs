@@ -1,5 +1,6 @@
 ﻿using Dalamud.Configuration;
 using Dalamud.Interface.Internal.Notifications;
+using Splatoon.Gui;
 using System.Threading;
 
 namespace Splatoon;

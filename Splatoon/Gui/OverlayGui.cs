@@ -1,13 +1,13 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
 using Splatoon.Structures;
 
-namespace Splatoon;
+namespace Splatoon.Gui;
 
-unsafe class Gui : IDisposable
+unsafe class OverlayGui : IDisposable
 {
     readonly Splatoon p;
     int uid = 0;
-    public Gui(Splatoon p)
+    public OverlayGui(Splatoon p)
     {
         this.p = p;
         Svc.PluginInterface.UiBuilder.Draw += Draw;
@@ -84,7 +84,7 @@ unsafe class Gui : IDisposable
                 }
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             p.Log("Caught exception: " + e.Message, true);
             p.Log(e.StackTrace, true);
@@ -147,7 +147,7 @@ unsafe class Gui : IDisposable
         var result2 = GetAdjustedLine(new Vector3(e.l2.ax, e.l2.ay, e.l2.az), new Vector3(e.l2.bx, e.l2.by, e.l2.bz));
         if (result2.posA == null) goto Alternative;
         goto Build;
-        Alternative:
+    Alternative:
         result1 = GetAdjustedLine(new Vector3(e.l1.ax, e.l1.ay, e.l1.az), new Vector3(e.l2.ax, e.l2.ay, e.l2.az));
         if (result1.posA == null) goto Quit;
         result2 = GetAdjustedLine(new Vector3(e.l1.bx, e.l1.by, e.l1.bz), new Vector3(e.l2.bx, e.l2.by, e.l2.bz));
@@ -159,7 +159,7 @@ unsafe class Gui : IDisposable
             new Vector2(result2.posB.Value.X, result2.posB.Value.Y),
             new Vector2(result2.posA.Value.X, result2.posA.Value.Y), e.l1.color
             );
-        Quit:
+    Quit:
         if (p.Profiler.Enabled) p.Profiler.GuiLines.StopTick();
     }
 
@@ -167,10 +167,10 @@ unsafe class Gui : IDisposable
     {
         if (curSegment > numSegments) return null;
         var nextPos = currentPos + delta;
-        if(Svc.GameGui.WorldToScreen(new Vector3(nextPos.X, nextPos.Z, nextPos.Y), out Vector2 pos))
+        if (Svc.GameGui.WorldToScreen(new Vector3(nextPos.X, nextPos.Z, nextPos.Y), out Vector2 pos))
         {
             var preciseVector = GetLineClosestToVisiblePoint(currentPos, (nextPos - currentPos) / p.Config.lineSegments, 0, p.Config.lineSegments);
-            return preciseVector.HasValue?preciseVector.Value:pos;
+            return preciseVector.HasValue ? preciseVector.Value : pos;
         }
         else
         {
@@ -191,7 +191,7 @@ unsafe class Gui : IDisposable
     public void DrawText(DisplayObjectText e, Vector2 pos)
     {
         var scaled = e.fscale != 1f;
-        var size = scaled? ImGui.CalcTextSize(e.text)*e.fscale: ImGui.CalcTextSize(e.text);
+        var size = scaled ? ImGui.CalcTextSize(e.text) * e.fscale : ImGui.CalcTextSize(e.text);
         size = new Vector2(size.X + 10f, size.Y + 10f);
         ImGui.SetNextWindowPos(new Vector2(pos.X - size.X / 2, pos.Y - size.Y / 2));
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
@@ -214,31 +214,31 @@ unsafe class Gui : IDisposable
     {
         int seg = p.Config.segments / 2;
         Svc.GameGui.WorldToScreen(new Vector3(
-            e.x + (e.radius * (float)Math.Sin(p.CamAngleX)),
-            e.z, 
-            e.y + (e.radius * (float)Math.Cos(p.CamAngleX))
+            e.x + e.radius * (float)Math.Sin(p.CamAngleX),
+            e.z,
+            e.y + e.radius * (float)Math.Cos(p.CamAngleX)
             ), out Vector2 refpos);
         var visible = false;
         Vector2?[] elements = new Vector2?[p.Config.segments];
         for (int i = 0; i < p.Config.segments; i++)
         {
             visible = Svc.GameGui.WorldToScreen(
-                new Vector3(e.x + (e.radius * (float)Math.Sin((Math.PI / seg) * i)),
+                new Vector3(e.x + e.radius * (float)Math.Sin(Math.PI / seg * i),
                 e.z,
-                e.y + (e.radius * (float)Math.Cos((Math.PI / seg) * i))
+                e.y + e.radius * (float)Math.Cos(Math.PI / seg * i)
                 ),
-                out Vector2 pos) 
+                out Vector2 pos)
                 || visible;
             if (pos.Y > refpos.Y) elements[i] = new Vector2(pos.X, pos.Y);
         }
         if (visible)
         {
-            foreach(var pos in elements)
+            foreach (var pos in elements)
             {
                 if (pos == null) continue;
                 ImGui.GetWindowDrawList().PathLineTo(pos.Value);
             }
-            
+
             if (e.filled)
             {
                 ImGui.GetWindowDrawList().PathFillConvex(e.color);
@@ -252,7 +252,7 @@ unsafe class Gui : IDisposable
 
     public void DrawPoint(DisplayObjectDot e)
     {
-        if(Svc.GameGui.WorldToScreen(new Vector3(e.x, e.z, e.y), out Vector2 pos)) 
+        if (Svc.GameGui.WorldToScreen(new Vector3(e.x, e.z, e.y), out Vector2 pos))
             ImGui.GetWindowDrawList().AddCircleFilled(
             new Vector2(pos.X, pos.Y),
             e.thickness,

@@ -1,7 +1,7 @@
 ﻿using Dalamud.Interface.Colors;
 using System.Diagnostics;
 
-namespace Splatoon;
+namespace Splatoon.Gui;
 
 class ChlogGui
 {
@@ -39,7 +39,7 @@ If you are updating from version 1.x, your configuration will be converted to ne
 Nothing should be lost, and backup of your old configuration will be made and stored at %appdata%\XIVLauncher\pluginConfigs\Splatoon\configV1.json,
 but please make sure to backup your configuration file manually if you have valuable presets there.
 ");
-        if(ImGui.Button("Open folder with my configuration file"))
+        if (ImGui.Button("Open folder with my configuration file"))
         {
             Safe(delegate
             {
@@ -54,7 +54,7 @@ but please make sure to backup your configuration file manually if you have valu
         ImGuiEx.Text(
 @"Don't forget to test that the plugin functions correctly before you go into your raid.
 If you will encounter any problems, feel free to join the discord for help: ");
-        if(ImGui.Button("Join discord"))
+        if (ImGui.Button("Join discord"))
         {
             ShellStart("https://discord.gg/m8NRt4X8Gf");
         }
@@ -79,6 +79,6 @@ If you will encounter any problems, feel free to join the discord for help: ");
         p.Config.Backup(true);
         p.Config.ChlogReadVer = ChlogVersion;
         p.Config.Save();
-        this.Dispose();
+        Dispose();
     }
 }

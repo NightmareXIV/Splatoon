@@ -4,7 +4,7 @@ using Splatoon.Utils;
 using System.Net;
 using System.Threading;
 
-namespace Splatoon;
+namespace Splatoon.Modules;
 
 class HTTPServer : IDisposable
 {
@@ -35,7 +35,7 @@ class HTTPServer : IDisposable
                     var disableElements = request.QueryString.Get("disable");
                     var rawElement = request.QueryString.Get("raw");
                     var contents = "";
-                    using (var a = new StreamReader(context.Request.InputStream)) 
+                    using (var a = new StreamReader(context.Request.InputStream))
                     {
                         contents = a.ReadToEnd();
                         //p.Log("Body length: " + contents.Length);
@@ -86,7 +86,7 @@ class HTTPServer : IDisposable
                             }
                         }
 
-                        if (directElements != null || rawElement != null || (contents != null && contents != ""))
+                        if (directElements != null || rawElement != null || contents != null && contents != "")
                         {
                             var dynElem = new DynamicElement()
                             {
@@ -135,7 +135,7 @@ class HTTPServer : IDisposable
                                     {
                                         decoded = e.Decompress();
                                     }
-                                    catch(Exception)
+                                    catch (Exception)
                                     {
                                         decoded = e.FromBase64UrlSafe();
                                     }
@@ -152,7 +152,7 @@ class HTTPServer : IDisposable
                                 $"Layouts: {dynElem.Layouts.Length}, destroyAt: {dynElem.DestroyTime})");
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         status.Add("Error:");
                         status.Add(e.Message);
@@ -161,9 +161,9 @@ class HTTPServer : IDisposable
                     HttpListenerResponse response = context.Response;
                     response.AppendHeader("Access-Control-Allow-Origin", "*");
                     string responseString = string.Join("\n", status);
-                    byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                    byte[] buffer = Encoding.UTF8.GetBytes(responseString);
                     response.ContentLength64 = buffer.Length;
-                    System.IO.Stream output = response.OutputStream;
+                    Stream output = response.OutputStream;
                     output.Write(buffer, 0, buffer.Length);
                     output.Close();
                 }

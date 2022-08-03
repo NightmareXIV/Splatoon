@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Splatoon;
+namespace Splatoon.Modules;
 
 class Profiling
 {
@@ -69,12 +69,12 @@ class Profiling
 
         public float GetAverageMSPT()
         {
-            return ((float)time / (float)ticks) / (float)Stopwatch.Frequency * 1000f;
+            return time / (float)ticks / Stopwatch.Frequency * 1000f;
         }
 
         public float GetAverageTicks()
         {
-            return (float)time / (float)ticks;
+            return time / (float)ticks;
         }
     }
 }

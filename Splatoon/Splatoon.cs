@@ -12,6 +12,8 @@ using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
 using PInvoke;
+using Splatoon.Gui;
+using Splatoon.Modules;
 using Splatoon.Structures;
 using Splatoon.Utils;
 
@@ -21,7 +23,7 @@ public unsafe class Splatoon : IDalamudPlugin
     public const string DiscordURL = "https://discord.gg/m8NRt4X8Gf";
     public string Name => "Splatoon";
     internal static Splatoon P;
-    internal Gui DrawingGui;
+    internal OverlayGui DrawingGui;
     internal CGui ConfigGui;
     internal Commands CommandManager;
     internal ChlogGui ChangelogGui = null;
@@ -105,7 +107,7 @@ public unsafe class Splatoon : IDalamudPlugin
         dynamicElements = new List<DynamicElement>();
         SetupShutdownHttp(Config.UseHttpServer);
 
-        DrawingGui = new Gui(this);
+        DrawingGui = new OverlayGui(this);
         ConfigGui = new CGui(this);
         Camera.Init();
         Svc.Chat.ChatMessage += OnChatMessage;

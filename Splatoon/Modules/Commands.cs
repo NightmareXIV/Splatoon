@@ -1,7 +1,7 @@
 ﻿using Dalamud.Game.Command;
 using ECommons.GameFunctions;
 
-namespace Splatoon;
+namespace Splatoon.Modules;
 
 class Commands : IDisposable
 {
@@ -47,7 +47,7 @@ class Commands : IDisposable
                     {
                         Notify.Error("Target not selected");
                     }
-                    else 
+                    else
                     {
                         var name = arguments.Substring(arguments.IndexOf("settarget ") + 10).Split('~');
                         var el = p.Config.LayoutsL.First(x => x.Name == name[0]).ElementsL.First(x => x.Name == name[1]);
@@ -63,11 +63,11 @@ class Commands : IDisposable
                     p.Log(e.Message);
                 }
             }
-            else if(arguments.StartsWith("floodchat "))
+            else if (arguments.StartsWith("floodchat "))
             {
                 Safe(delegate
                 {
-                    for(var i = 0;i<uint.Parse(arguments.Replace("floodchat ", "")); i++)
+                    for (var i = 0; i < uint.Parse(arguments.Replace("floodchat ", "")); i++)
                     {
                         Svc.Chat.Print(new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 30).Select(s => s[new Random().Next(30)]).ToArray()));
                     }
@@ -105,7 +105,7 @@ class Commands : IDisposable
                 {
                     p.SFind.name = arguments[2..];
                 }
-                Notify.Success("Searching for: " + p.SFind.name + (p.SFind.includeUntargetable?" (+untargetable)":""));
+                Notify.Success("Searching for: " + p.SFind.name + (p.SFind.includeUntargetable ? " (+untargetable)" : ""));
             }
         })
         {
@@ -123,7 +123,7 @@ class Commands : IDisposable
                 foreach (var x in P.Config.LayoutsL.Where(x => x.Name == aname[0]))
                 {
                     if (web && x.DisableDisabling) continue;
-                    foreach(var z in x.ElementsL.Where(z => z.Name == aname[1]))
+                    foreach (var z in x.ElementsL.Where(z => z.Name == aname[1]))
                     {
                         z.Enabled = enable;
                     }
@@ -138,7 +138,7 @@ class Commands : IDisposable
                 }
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             p.Log(e.Message, true);
             p.Log(e.StackTrace);

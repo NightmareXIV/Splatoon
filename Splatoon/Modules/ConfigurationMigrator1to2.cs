@@ -1,13 +1,13 @@
 ﻿using ECommons;
 #pragma warning disable CS0612
 
-namespace Splatoon
+namespace Splatoon.Modules
 {
     internal static class ConfigurationMigrator1to2
     {
         internal static void Migrate(Configuration config)
         {
-            if(config.Version == 1)
+            if (config.Version == 1)
             {
                 DuoLog.Warning("Migrating configuration from version 1 to version 2");
                 var bkpPath = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "configV1.json");
@@ -26,7 +26,7 @@ namespace Splatoon
                             e.Value.Name = e.Key;
                         }
                         DuoLog.Warning($"Layout {x.Key}: old size: {x.Value.Elements.Count}, new size: {x.Value.ElementsL.Count}");
-                        if(x.Value.Elements.Count > x.Value.ElementsL.Count)
+                        if (x.Value.Elements.Count > x.Value.ElementsL.Count)
                         {
                             throw new Exception($"Migration failed: original collection contains more items than new.");
                         }
@@ -42,7 +42,7 @@ namespace Splatoon
                     config.Save(true);
                     DuoLog.Warning($"Migration success!");
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     DuoLog.Error("Failed to migrate configuration (1 -> 2). Please contact developer.");
                     DuoLog.Error($"{e.Message}\n{e.StackTrace}");
