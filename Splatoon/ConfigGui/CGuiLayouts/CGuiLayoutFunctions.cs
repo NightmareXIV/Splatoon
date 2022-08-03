@@ -27,7 +27,7 @@
             return false;
         }
 
-        void DrawRotationSelector(Element el, string i, string k)
+        static void DrawRotationSelector(Element el, string i, string k)
         {
             ImGui.SameLine();
             ImGuiEx.Text("Add angle:");

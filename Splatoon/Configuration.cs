@@ -25,9 +25,7 @@ class Configuration : IPluginConfiguration
     public bool UseHttpServer = false;
     public int port = 47774;
     public bool TetherOnFind = true;
-    [NonSerialized] internal bool LimitTriggerMessages = false;
     public bool DirectNameComparison = false;
-    public bool NoMemory = false;
     public bool ShowOnUiHide = false;
     public bool Hexadecimal = true;
     public bool AltRectFill = true;

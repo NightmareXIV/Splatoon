@@ -12,7 +12,6 @@ using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
 using PInvoke;
-using System.Linq;
 
 namespace Splatoon;
 public unsafe class Splatoon : IDalamudPlugin
@@ -25,7 +24,6 @@ public unsafe class Splatoon : IDalamudPlugin
     internal Commands CommandManager;
     internal ChlogGui ChangelogGui = null;
     internal Configuration Config;
-    internal MemerrGui memerrGui;
     internal Dictionary<ushort, TerritoryType> Zones;
     internal string[] LogStorage = new string[100];
     internal long CombatStarted = 0;
@@ -100,7 +98,6 @@ public unsafe class Splatoon : IDalamudPlugin
         if (ChlogGui.ChlogVersion > Config.ChlogReadVer && ChangelogGui == null)
         {
             ChangelogGui = new ChlogGui(this);
-            Config.NoMemory = false;
         }
         tickScheduler = new ConcurrentQueue<System.Action>();
         dynamicElements = new List<DynamicElement>();
@@ -108,6 +105,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
         DrawingGui = new Gui(this);
         ConfigGui = new CGui(this);
+        Camera.Init();
         Svc.Chat.ChatMessage += OnChatMessage;
         Svc.Framework.Update += Tick;
         Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
@@ -155,7 +153,11 @@ public unsafe class Splatoon : IDalamudPlugin
             loader.cmd.RemoveHandler("/loadsplatoon");
             loader.pi.UiBuilder.Draw -= loader.Draw;
         });
-        if (!Loaded) return;
+        if (!Loaded)
+        {
+            P = null;
+            return;
+        }
         Loaded = false;
         Init = false;
         Safe(delegate { Config.Save(); });
@@ -170,6 +172,7 @@ public unsafe class Splatoon : IDalamudPlugin
             Svc.Chat.ChatMessage -= OnChatMessage;
         });
         ECommons.ECommons.Dispose();
+        P = null;
         //Svc.Chat.Print("Disposing");
     }
 
@@ -190,7 +193,7 @@ public unsafe class Splatoon : IDalamudPlugin
             CombatStarted = Environment.TickCount64;
             Svc.PluginInterface.UiBuilder.AddNotification($"Phase transition to Phase {Phase}", this.Name, NotificationType.Info, 10000);
         }
-        if(!Config.LimitTriggerMessages || inttype == 68 || inttype == 2105 || type == XivChatType.SystemMessage)
+        if(!type.EqualsAny(XivChatType.Party, XivChatType.Alliance, XivChatType.FreeCompany, XivChatType.Yell, XivChatType.Say, XivChatType.Shout))
         {
             ChatMessageQueue.Enqueue(message.Payloads.Where(p => p is ITextProvider)
                     .Cast<ITextProvider>()
@@ -865,12 +868,36 @@ public unsafe class Splatoon : IDalamudPlugin
     {
         return
             (ignoreVisibility || !e.onlyVisible || (a is Character chr && chr.IsCharacterVisible()))
-            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is Character chr2 && chr2.IsCasting(e.refActorCastId)))
-            && (!e.refActorRequireBuff || 
-                (e.refActorBuffId.Count > 0 && a is BattleChara chr3
-                && (e.refActorRequireAllBuffs? (chr3.StatusList.Select(x => x.StatusId).ContainsAll(e.refActorBuffId)): (chr3.StatusList.Select(x => x.StatusId).ContainsAny(e.refActorBuffId))).Invert(e.refActorRequireBuffsInvert)
-                )
+            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is BattleChara chr2 && chr2.IsCasting(e.refActorCastId) && (!e.refActorUseCastTime || chr2.IsCastInRange(e.refActorCastTimeMin, e.refActorCastTimeMax))))
+            && (!e.refActorRequireBuff || (e.refActorBuffId.Count > 0 && a is BattleChara chr3 && CheckEffect(e, chr3))
             );
+    }
+
+    bool CheckEffect(Element e, BattleChara c)
+    {
+        if (e.refActorRequireAllBuffs)
+        {
+            if (e.refActorUseBuffTime)
+            {
+                return c.StatusList.Where(x => x.RemainingTime.InRange(e.refActorBuffTimeMin, e.refActorBuffTimeMax)).Select(x => x.StatusId).ContainsAll(e.refActorBuffId).Invert(e.refActorRequireBuffsInvert);
+            }
+            else
+            {
+                return c.StatusList.Select(x => x.StatusId).ContainsAll(e.refActorBuffId).Invert(e.refActorRequireBuffsInvert);
+            }
+        }
+        else
+        {
+            if (e.refActorUseBuffTime)
+            {
+                return c.StatusList.Where(x => x.RemainingTime.InRange(e.refActorBuffTimeMin, e.refActorBuffTimeMax)).Select(x => x.StatusId).ContainsAny(e.refActorBuffId).Invert(e.refActorRequireBuffsInvert);
+            }
+            else
+            {
+                return c.StatusList.Select(x => x.StatusId).ContainsAny(e.refActorBuffId).Invert(e.refActorRequireBuffsInvert);
+            }
+        }
+        return false;
     }
 
     bool IsAttributeMatches(Element e, GameObject o)

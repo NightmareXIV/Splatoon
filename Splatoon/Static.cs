@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.ClientState.Statuses;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
 using Newtonsoft.Json;
@@ -8,6 +9,24 @@ namespace Splatoon;
 
 static unsafe class Static
 {
+    internal static bool IsCastInRange(this BattleChara c, float min, float max)
+    {
+        if (c.CurrentCastTime.InRange(min, max))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    internal static bool IsInRange(this Status buff, float min, float max)
+    {
+        if(buff.RemainingTime.InRange(min, max))
+        {
+            return true;
+        }
+        return false;
+    }
+
     internal static string SanitizeName(this string s)
     {
         return s.Replace(",", "_").Replace("~", "_");
