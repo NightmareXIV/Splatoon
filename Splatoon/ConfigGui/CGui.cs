@@ -1,21 +1,10 @@
-﻿using Dalamud.Interface;
-using Dalamud.Interface.Colors;
-using Dalamud.Interface.Internal.Notifications;
-using ECommons.ImGuiMethods;
-using ImGuiNET;
+﻿using Dalamud.Interface.Colors;
 using Newtonsoft.Json;
 using PInvoke;
 using Splatoon.ConfigGui;
-using System;
-using System.Collections.Generic;
+using Splatoon.Utils;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Splatoon

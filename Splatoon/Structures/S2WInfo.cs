@@ -1,4 +1,4 @@
-﻿namespace Splatoon;
+﻿namespace Splatoon.Structures;
 
 internal class S2WInfo
 {

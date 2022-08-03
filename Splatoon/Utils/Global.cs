@@ -15,7 +15,8 @@ global using System.Numerics;
 global using System.Runtime.ExceptionServices;
 global using System.Text;
 global using System.Threading.Tasks;
-global using static Splatoon.Static;
+global using static Splatoon.Utils.Static;
 global using ECommons.Schedulers;
 global using static ECommons.GenericHelpers;
 global using static Splatoon.Splatoon;
+

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ECommons.MathHelpers;
+using Splatoon.Utils;
 
 namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
 {

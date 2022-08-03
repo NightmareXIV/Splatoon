@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
+﻿namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
 {
     internal static class Freezing
     {

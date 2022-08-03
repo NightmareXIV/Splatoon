@@ -12,6 +12,8 @@ using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
 using PInvoke;
+using Splatoon.Structures;
+using Splatoon.Utils;
 
 namespace Splatoon;
 public unsafe class Splatoon : IDalamudPlugin

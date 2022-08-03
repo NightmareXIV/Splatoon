@@ -1,4 +1,6 @@
-﻿namespace Splatoon;
+﻿
+
+namespace Splatoon.Structures;
 
 public class DisplayObjectDot : DisplayObject
 {
@@ -72,18 +74,6 @@ public class DisplayObjectRect : DisplayObject
 {
     public DisplayObjectLine l1;
     public DisplayObjectLine l2;
-}
-
-public class DisplayObjectQuad : DisplayObject
-{
-    public Point3[] rect;
-    public uint bgcolor;
-
-    public DisplayObjectQuad(Point3[] rect, uint bgcolor)
-    {
-        this.rect = rect;
-        this.bgcolor = bgcolor;
-    }
 }
 
 public class DisplayObjectPolygon : DisplayObject

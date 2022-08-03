@@ -1,6 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
 
-namespace Splatoon;
+namespace Splatoon.Utils;
 
 static class SImGuiEx //came here to laugh on how scuffed it is? let's do so together.
 {

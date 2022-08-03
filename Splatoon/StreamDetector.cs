@@ -1,11 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Splatoon
 {
@@ -44,7 +39,7 @@ namespace Splatoon
                 ImGui.SetWindowFontScale(1f);
                 ImGuiEx.Text("Normally, most of plugins are completely safe to use. Square Enix will not be able to detect their usage, including Splatoon.");
                 ImGuiEx.Text(ImGuiColors.DalamudOrange, "However, streaming with third party tools visible may result in consequences.");
-                ImGuiEx.Text("Regardless of how innocent a plugin or modification might be, modification is a modification and a violation of FFXIV's terms of service.");
+                ImGuiEx.Text("Regardless of how innocent a plugin or modification might be, it IS a violation of FFXIV's terms of service.");
                 ImGuiEx.Text("This includes not only third party tools, but also official Dalamud plugins, Advanced Combat Tracker and visual mods as well.");
                 ImGuiEx.Text(" ");
                 ImGui.SetWindowFontScale(1.5f);
@@ -55,12 +50,15 @@ namespace Splatoon
                 {
                     Svc.PluginInterface.UiBuilder.Draw -= Draw;
                 }
-                ImGuiEx.Text(ImGuiColors.DalamudGrey, "You are seeing this message because a streaming software has been detected.\nYou will not see it again in your current game session.\nIf you believe this is an error, please contact the developer.");
-                if (ImGui.Button("Never show this message again"))
+                ImGuiEx.Text(ImGuiColors.DalamudGrey, "You are seeing this message because a streaming software has been detected.\nYou will not see it again in your current game session.");
+                ImGuiEx.Text(ImGuiColors.DalamudGrey, "If you believe this is an error, please");
+                ImGui.SameLine();
+                if(ImGui.SmallButton("contact the developer."))
                 {
-                    P.Config.NoStreamWarning = true;
-                    Svc.PluginInterface.UiBuilder.Draw -= Draw;
+                    ShellStart("https://discord.gg/m8NRt4X8Gf");
                 }
+
+                ImGui.Checkbox("Never show this message again", ref P.Config.NoStreamWarning);
                 ImGuiEx.Tooltip("Be reasonable, okay?");
             }
             ImGui.End();

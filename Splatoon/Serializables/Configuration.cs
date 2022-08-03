@@ -98,17 +98,18 @@ class Configuration : IPluginConfiguration
             bkpFile = Path.Combine(bkpFPath, "Backup." + DateTimeOffset.Now.ToString("yyyy-MM-dd HH-mm-ss-fffffff") + (update ? $"-update-{ChlogGui.ChlogVersion}" : "") + ".zip");
             File.Copy(cFile, tempFile, true);
         }
-        catch(FileNotFoundException e)
+        catch (FileNotFoundException e)
         {
             ZipSemaphore.Release();
             LogErrorAndNotify(e, "Could not find configuration to backup.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             ZipSemaphore.Release();
             LogErrorAndNotify(e, "Failed to create a backup:\n" + e.Message);
         }
-        Task.Run(new Action(delegate { 
+        Task.Run(new Action(delegate
+        {
             try
             {
                 ZipFile.CreateFromDirectory(tempDir, bkpFile, CompressionLevel.Optimal, false);

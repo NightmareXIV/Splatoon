@@ -5,7 +5,8 @@ namespace Splatoon;
 [Serializable]
 public class Element
 {
-    [NonSerialized] public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
+    [NonSerialized]
+    public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
     "Line between two fixed coordinates", "Line relative to object position", "Cone relative to object position (beta)"};
     [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
     [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "Placeholder", "NPC Name ID" };
@@ -120,7 +121,7 @@ public class Element
 
     public bool ShouldSerializeconeAngleMin()
     {
-        return this.type == 4;
+        return type == 4;
     }
 
     public bool ShouldSerializerefActorLifetimeMax()
@@ -180,13 +181,13 @@ public class Element
 
     public bool ShouldSerializerefX()
     {
-        return this.type != 1;
+        return type != 1;
     }
     public bool ShouldSerializerefY() { return ShouldSerializerefX(); }
     public bool ShouldSerializerefZ() { return ShouldSerializerefX(); }
 
     public bool ShouldSerializeDonut()
     {
-        return this.type.EqualsAny(0, 1) && Donut > 0;
+        return type.EqualsAny(0, 1) && Donut > 0;
     }
 }

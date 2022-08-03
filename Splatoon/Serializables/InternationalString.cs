@@ -1,12 +1,8 @@
 ﻿using Dalamud;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
-using System;
-using System.Collections.Generic;
+using Splatoon.Utils;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Splatoon
 {
@@ -22,11 +18,11 @@ namespace Splatoon
 
         public string Get(string Default = "")
         {
-            if (Svc.Data.Language == ClientLanguage.English) return this.En == string.Empty ? Default : this.En;
-            if (Svc.Data.Language == ClientLanguage.Japanese) return this.Jp == string.Empty ? Default : this.Jp;
-            if (Svc.Data.Language == ClientLanguage.German) return this.De == string.Empty ? Default : this.De;
-            if (Svc.Data.Language == ClientLanguage.French) return this.Fr == string.Empty ? Default : this.Fr;
-            return this.Other == string.Empty ? Default : this.Other;
+            if (Svc.Data.Language == ClientLanguage.English) return En == string.Empty ? Default : En;
+            if (Svc.Data.Language == ClientLanguage.Japanese) return Jp == string.Empty ? Default : Jp;
+            if (Svc.Data.Language == ClientLanguage.German) return De == string.Empty ? Default : De;
+            if (Svc.Data.Language == ClientLanguage.French) return Fr == string.Empty ? Default : Fr;
+            return Other == string.Empty ? Default : Other;
         }
 
         internal ref string CurrentLangString
@@ -37,15 +33,15 @@ namespace Splatoon
                 {
                     return ref En;
                 }
-                else if(Svc.Data.Language == ClientLanguage.Japanese)
+                else if (Svc.Data.Language == ClientLanguage.Japanese)
                 {
                     return ref Jp;
                 }
-                else if(Svc.Data.Language == ClientLanguage.German)
+                else if (Svc.Data.Language == ClientLanguage.German)
                 {
                     return ref De;
                 }
-                else if(Svc.Data.Language == ClientLanguage.French)
+                else if (Svc.Data.Language == ClientLanguage.French)
                 {
                     return ref Fr;
                 }
@@ -58,28 +54,28 @@ namespace Splatoon
 
         public void ImGuiEdit(ref string DefaultValue, string helpMessage = null)
         {
-            if (ImGui.BeginCombo($"##{guid}", this.Get(DefaultValue)))
+            if (ImGui.BeginCombo($"##{guid}", Get(DefaultValue)))
             {
                 ImGuiEx.ImGuiLineCentered($"line{guid}", delegate
                 {
                     ImGuiEx.Text("International string");
                 });
-                EditLangSpecificString(ClientLanguage.English, ref this.En);
-                EditLangSpecificString(ClientLanguage.Japanese, ref this.Jp);
-                EditLangSpecificString(ClientLanguage.French, ref this.Fr);
-                EditLangSpecificString(ClientLanguage.German, ref this.De);
-                if(!Svc.Data.Language.EqualsAny(ClientLanguage.English, ClientLanguage.Japanese, ClientLanguage.German, ClientLanguage.French))
+                EditLangSpecificString(ClientLanguage.English, ref En);
+                EditLangSpecificString(ClientLanguage.Japanese, ref Jp);
+                EditLangSpecificString(ClientLanguage.French, ref Fr);
+                EditLangSpecificString(ClientLanguage.German, ref De);
+                if (!Svc.Data.Language.EqualsAny(ClientLanguage.English, ClientLanguage.Japanese, ClientLanguage.German, ClientLanguage.French))
                 {
-                    EditLangSpecificString(Svc.Data.Language, ref this.Other);
+                    EditLangSpecificString(Svc.Data.Language, ref Other);
                 }
                 else
                 {
-                    if(this.Other != "")
+                    if (Other != "")
                     {
-                        EditLangSpecificString((ClientLanguage)(-1), ref this.Other);
+                        EditLangSpecificString((ClientLanguage)(-1), ref Other);
                     }
                 }
-                
+
                 SImGuiEx.SizedText("Default:", 100);
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(300f);
@@ -95,7 +91,7 @@ namespace Splatoon
                     ImGuiEx.Text(helpMessage + "\n");
                 }
                 ImGuiEx.Text(ImGuiColors.DalamudGrey, "International string\nFor your current language value is:");
-                ImGuiEx.Text(this.Get(DefaultValue));
+                ImGuiEx.Text(Get(DefaultValue));
                 ImGui.EndTooltip();
 
             }
@@ -103,7 +99,7 @@ namespace Splatoon
 
         public bool IsEmpty()
         {
-            return this.En.IsNullOrEmpty() && this.Jp.IsNullOrEmpty() && this.De.IsNullOrEmpty() && this.Fr.IsNullOrEmpty() && this.Other.IsNullOrEmpty();
+            return En.IsNullOrEmpty() && Jp.IsNullOrEmpty() && De.IsNullOrEmpty() && Fr.IsNullOrEmpty() && Other.IsNullOrEmpty();
         }
 
         void EditLangSpecificString(ClientLanguage language, ref string str)

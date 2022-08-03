@@ -85,4 +85,8 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Modules\" />
+	</ItemGroup>
 </Project>

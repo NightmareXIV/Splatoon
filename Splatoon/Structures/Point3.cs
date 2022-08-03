@@ -1,4 +1,4 @@
-﻿namespace Splatoon;
+﻿namespace Splatoon.Structures;
 
 [Serializable]
 public class Point3

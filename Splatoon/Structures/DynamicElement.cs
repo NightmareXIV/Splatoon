@@ -1,4 +1,6 @@
-﻿namespace Splatoon;
+﻿
+
+namespace Splatoon.Structures;
 
 class DynamicElement
 {

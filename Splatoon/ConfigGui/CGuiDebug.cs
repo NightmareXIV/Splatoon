@@ -1,5 +1,5 @@
-﻿using Dalamud.Interface.Internal.Notifications;
-using ECommons.GameFunctions;
+﻿using ECommons.GameFunctions;
+using Splatoon.Utils;
 
 namespace Splatoon
 {

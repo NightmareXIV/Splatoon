@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel;
+using Splatoon.Structures;
 
 namespace Splatoon;
 
 [Serializable]
 public class Layout
 {
-    [NonSerialized] public static readonly string[] DisplayConditions = 
+    [NonSerialized]
+    public static readonly string[] DisplayConditions = 
         //0               1                 2                   3                              4
-        { "Always shown", "Only in combat", "Only in instance", "Only in combat AND instance", "Only in combat OR instance", "On trigger only" }; 
+        { "Always shown", "Only in combat", "Only in instance", "Only in combat AND instance", "Only in combat OR instance", "On trigger only" };
     [DefaultValue(true)] public bool Enabled = true;
     public string Name = "";
     public string Group = "";
@@ -56,47 +58,47 @@ public class Layout
 
     public bool ShouldSerializeIntervalBetweenFreezes()
     {
-        return this.Freezing;
+        return Freezing;
     }
 
     public bool ShouldSerializeFreezeResetCombat()
     {
-        return this.Freezing;
+        return Freezing;
     }
 
     public bool ShouldSerializeFreezeResetTerr()
     {
-        return this.Freezing;
+        return Freezing;
     }
 
     public bool ShouldSerializeFreezeFor()
     {
-        return this.Freezing;
+        return Freezing;
     }
 
     public bool ShouldSerializeMinDistance()
     {
-        return this.UseDistanceLimit;
+        return UseDistanceLimit;
     }
 
     public bool ShouldSerializeMaxDistance()
     {
-        return this.UseDistanceLimit;
+        return UseDistanceLimit;
     }
 
     public bool ShouldSerializeDistanceLimitMyHitbox()
     {
-        return this.UseDistanceLimit;
+        return UseDistanceLimit;
     }
 
     public bool ShouldSerializeDistanceLimitTargetHitbox()
     {
-        return this.UseDistanceLimit;
+        return UseDistanceLimit;
     }
 
     public bool ShouldSerializeDistanceLimitType()
     {
-        return this.UseDistanceLimit;
+        return UseDistanceLimit;
     }
 
     public bool ShouldSerializeZoneLockH()

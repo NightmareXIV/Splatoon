@@ -3,9 +3,10 @@ using Dalamud.Game.ClientState.Statuses;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
 using Newtonsoft.Json;
+using Splatoon.Structures;
 using System.Diagnostics;
 
-namespace Splatoon;
+namespace Splatoon.Utils;
 
 static unsafe class Static
 {
@@ -20,7 +21,7 @@ static unsafe class Static
 
     internal static bool IsInRange(this Status buff, float min, float max)
     {
-        if(buff.RemainingTime.InRange(min, max))
+        if (buff.RemainingTime.InRange(min, max))
         {
             return true;
         }
@@ -42,7 +43,7 @@ static unsafe class Static
                 l = JsonConvert.DeserializeObject<Layout>(s);
                 l.Name = l.Name.SanitizeName();
                 var lname = l.Name;
-                if(P.Config.LayoutsL.Any(x => x.Name == lname) && !ImGui.GetIO().KeyCtrl)
+                if (P.Config.LayoutsL.Any(x => x.Name == lname) && !ImGui.GetIO().KeyCtrl)
                 {
                     throw new Exception("Error: this name already exists.\nTo override, hold CTRL.");
                 }
@@ -208,16 +209,16 @@ static unsafe class Static
     internal static PlayerCharacter GetRolePlaceholder(CombatRole role, int num)
     {
         int curIndex = 1;
-        for(var i = 1; i <= 8; i++)
+        for (var i = 1; i <= 8; i++)
         {
             var result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder($"<{i}>", 0, 0);
             if (result == IntPtr.Zero) return null;
             var go = Svc.Objects.CreateObjectReference(result);
-            if(go is PlayerCharacter pc)
+            if (go is PlayerCharacter pc)
             {
-                if(pc.GetRole() == role)
+                if (pc.GetRole() == role)
                 {
-                    if(num == curIndex)
+                    if (num == curIndex)
                     {
                         return pc;
                     }
@@ -309,14 +310,14 @@ static unsafe class Static
     {
         if (Svc.ClientState.LocalPlayer != null)
         {
-            if (Splatoon.PlayerPosCache == null)
+            if (PlayerPosCache == null)
             {
-                Splatoon.PlayerPosCache = new Vector3(
+                PlayerPosCache = new Vector3(
                     Svc.ClientState.LocalPlayer.Position.X,
                  Svc.ClientState.LocalPlayer.Position.Z,
                  Svc.ClientState.LocalPlayer.Position.Y);
             }
-            return Splatoon.PlayerPosCache.Value;
+            return PlayerPosCache.Value;
         }
         return Vector3.Zero;
     }
@@ -326,11 +327,6 @@ static unsafe class Static
         return new Vector3(a.Position.X,
                 a.Position.Z,
                 a.Position.Y);
-    }
-
-    public static Vector4 ToVector4(this uint col)
-    {
-        return ImGui.ColorConvertU32ToFloat4(col);
     }
 
     public static void ProcessStart(string s)
@@ -369,8 +365,8 @@ static unsafe class Static
             var angleB = MathF.Atan2(b.Y, b.X);
             if (angleA == angleB)
             {
-                var radiusA = MathF.Sqrt((a.X * a.X) + (a.Y * a.Y));
-                var radiusB = MathF.Sqrt((b.X * b.X) + (b.Y * b.Y));
+                var radiusA = MathF.Sqrt(a.X * a.X + a.Y * a.Y);
+                var radiusB = MathF.Sqrt(b.X * b.X + b.Y * b.Y);
                 return radiusA > radiusB ? 1 : -1;
             }
             return angleA > angleB ? 1 : -1;
@@ -385,7 +381,7 @@ static unsafe class Static
 
     public static float RadToDeg(float radian)
     {
-        return (radian * (180 / MathF.PI));
+        return radian * (180 / MathF.PI);
     }
 
     public static Vector3 RotatePoint(float cx, float cy, float angle, Vector3 p)
@@ -418,11 +414,11 @@ static unsafe class Static
     }
     public static float DegreesToRadians(this float val)
     {
-        return (float)((Math.PI / 180) * val);
+        return (float)(Math.PI / 180 * val);
     }
     public static float RadiansToDegrees(this float radians)
     {
-        return (float)((180 / Math.PI) * radians);
+        return (float)(180 / Math.PI * radians);
     }
 
     public static string RemoveSymbols(this string s, IEnumerable<string> deletions)
@@ -470,7 +466,7 @@ static unsafe class Static
     static internal void PerpOffset(Vector2 a, Vector2 b, float position, float offset, out Vector2 c, out Vector2 d)
     {
         //p3 is located at the x or y delta * position + p1x or p1y original.
-        var p3 = new Vector2(((b.X - a.X) * position) + a.X, ((b.Y - a.Y) * position) + a.Y);
+        var p3 = new Vector2((b.X - a.X) * position + a.X, (b.Y - a.Y) * position + a.Y);
 
         //returns an angle in radians between p1 and p2 + 1.5708 (90degress).
         var angleRadians = MathF.Atan2(a.Y - b.Y, a.X - b.X) + 1.5708f;

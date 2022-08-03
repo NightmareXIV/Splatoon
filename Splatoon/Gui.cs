@@ -1,5 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
-using ECommons.MathHelpers;
+using Splatoon.Structures;
 
 namespace Splatoon;
 

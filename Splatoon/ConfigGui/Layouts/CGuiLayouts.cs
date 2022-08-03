@@ -1,12 +1,5 @@
 ﻿using Dalamud.Interface.Colors;
-using Dalamud.Interface.Internal.Notifications;
-using ImGuiNET;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Splatoon.Utils;
 using static Splatoon.ConfigGui.CGuiLayouts.LayoutDrawSelector;
 
 namespace Splatoon
