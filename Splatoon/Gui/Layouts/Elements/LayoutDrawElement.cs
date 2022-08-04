@@ -298,6 +298,9 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(50f);
                             ImGui.DragFloat("##casttime2", ref el.refActorCastTimeMax, 0.1f, 0f, 99999f, $"{el.refActorCastTimeMax:F1}");
+                            ImGui.SameLine();
+                            ImGui.Checkbox("Overcast", ref el.refActorUseOvercast);
+                            ImGuiComponents.HelpMarker("Enable use of cast values that exceed cast time, effectively behaving like cast bar would continue to be displayed after cast already happened");
                         }
                     }
 

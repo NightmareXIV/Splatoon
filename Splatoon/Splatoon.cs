@@ -11,8 +11,10 @@ using ECommons.GameFunctions;
 using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
+using Newtonsoft.Json.Linq;
 using PInvoke;
 using Splatoon.Gui;
+using Splatoon.Memory;
 using Splatoon.Modules;
 using Splatoon.Structures;
 using Splatoon.Utils;
@@ -147,6 +149,7 @@ public unsafe class Splatoon : IDalamudPlugin
         }
         NameNpcIDs = NameNpcIDs.Where(x => x.Value != 0).ToDictionary(x => x.Key, x => x.Value);
         StreamDetector.Start();
+        AttachedInfo.Init();
         Init = true;
     }
 
@@ -176,6 +179,7 @@ public unsafe class Splatoon : IDalamudPlugin
             Svc.Framework.Update -= Tick;
             Svc.Chat.ChatMessage -= OnChatMessage;
         });
+        AttachedInfo.Dispose();
         ECommons.ECommons.Dispose();
         P = null;
         //Svc.Chat.Print("Disposing");
@@ -582,22 +586,6 @@ public unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    internal bool IsNameContainsValue(GameObject a, string value)
-    {
-        //if (Config.DirectNameComparison)
-        {
-            return a.Name.ToString().ContainsIgnoreCase(value);
-        }
-        /*var hash = value.GetHashCode();
-        var objectID = MemoryManager.GameObject_GetObjectID(a.Address);
-        if (!LookupResultCache.ContainsKey((a.Address, objectID, hash)))
-        {
-            LookupResultCache.Add((a.Address, objectID, hash), a.Name.ToString().ContainsIgnoreCase(value));
-        }
-        return LookupResultCache[(a.Address, objectID, hash)];*/
-    }
-
-
     internal S2WInfo s2wInfo;
 
     internal void BeginS2W(object cls, string x, string y, string z)
@@ -869,13 +857,46 @@ public unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    private bool CheckCharacterAttributes(Element e, GameObject a, bool ignoreVisibility = false)
+    static bool CheckCharacterAttributes(Element e, GameObject a, bool ignoreVisibility = false)
     {
         return
             (ignoreVisibility || !e.onlyVisible || (a is Character chr && chr.IsCharacterVisible()))
-            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is BattleChara chr2 && chr2.IsCasting(e.refActorCastId) && (!e.refActorUseCastTime || chr2.IsCastInRange(e.refActorCastTimeMin, e.refActorCastTimeMax))))
+            && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is BattleChara chr2 && IsCastingMatches(e, chr2)))
             && (!e.refActorRequireBuff || (e.refActorBuffId.Count > 0 && a is BattleChara chr3 && CheckEffect(e, chr3))
             );
+    }
+
+    static bool IsCastingMatches(Element e, BattleChara chr)
+    {
+        if (chr.IsCasting(e.refActorCastId))
+        {
+            if (e.refActorUseCastTime)
+            {
+                return chr.IsCastInRange(e.refActorCastTimeMin, e.refActorCastTimeMax);
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (e.refActorUseOvercast)
+            {
+                if(AttachedInfo.TryGetCastTime(chr.Address, e.refActorCastId, out var castTime))
+                {
+                    return castTime.InRange(e.refActorCastTimeMin, e.refActorCastTimeMax);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     static bool CheckEffect(Element e, BattleChara c)
@@ -906,7 +927,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
     bool IsAttributeMatches(Element e, GameObject o)
     {
-        if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || IsNameContainsValue(o, e.refActorNameIntl.Get(e.refActorName)))) return true;
+        if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || Name.ToString().ContainsIgnoreCase(e.refActorNameIntl.Get(e.refActorName)))) return true;
         if (e.refActorComparisonType == 1 && o is Character c && c.Struct()->ModelCharaId == e.refActorModelID) return true;
         if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
         if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;

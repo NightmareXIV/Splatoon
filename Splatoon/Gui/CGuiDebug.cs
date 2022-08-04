@@ -1,4 +1,5 @@
 ﻿using ECommons.GameFunctions;
+using Splatoon.Memory;
 using Splatoon.Utils;
 
 namespace Splatoon
@@ -121,6 +122,13 @@ namespace Splatoon
                 foreach(var x in p.NameNpcIDs)
                 {
                     ImGuiEx.Text($"{x.Key} = {x.Value}");
+                }
+            }
+            if (ImGui.CollapsingHeader("CastInfos"))
+            {
+                foreach(var x in AttachedInfo.CastInfos)
+                {
+                    ImGuiEx.Text($"{x.Key} = {x.Value.ID}, {x.Value.StartTime}");
                 }
             }
             ImGui.EndChild();
