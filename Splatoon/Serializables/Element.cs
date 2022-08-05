@@ -54,6 +54,7 @@ public class Element
     [DefaultValue(0)] public uint refActorNPCID = 0;
     [DefaultValue("")] public List<string> refActorPlaceholder = new();
     [DefaultValue(0)] public uint refActorNPCNameID = 0;
+    [DefaultValue(false)] public bool refActorComparisonAnd = false;
     [DefaultValue(false)] public bool refActorRequireCast = false;
     public List<uint> refActorCastId = new();
     [DefaultValue(false)] public bool refActorUseCastTime = false;
@@ -147,37 +148,37 @@ public class Element
 
     public bool ShouldSerializerefActorName()
     {
-        return refActorComparisonType == 0;
+        return refActorComparisonType == 0 || refActorComparisonAnd;
     }
 
     public bool ShouldSerializerefActorModelID()
     {
-        return refActorComparisonType == 1;
+        return refActorComparisonType == 1 || refActorComparisonAnd;
     }
 
     public bool ShouldSerializerefActorObjectID()
     {
-        return refActorComparisonType == 2;
+        return refActorComparisonType == 2 || refActorComparisonAnd;
     }
 
     public bool ShouldSerializerefActorDataID()
     {
-        return refActorComparisonType == 3;
+        return refActorComparisonType == 3 || refActorComparisonAnd;
     }
 
     public bool ShouldSerializerefActorNPCID()
     {
-        return refActorComparisonType == 4;
+        return refActorComparisonType == 4 || refActorComparisonAnd;
     }
 
     public bool ShouldSerializerefActorPlaceholder()
     {
-        return refActorComparisonType == 5;
+        return refActorComparisonType == 5 || refActorComparisonAnd;
     }
 
     public bool ShouldSerializerefActorNPCNameID()
     {
-        return refActorComparisonType == 6;
+        return refActorComparisonType == 6 || refActorComparisonAnd;
     }
 
     public bool ShouldSerializerefX()

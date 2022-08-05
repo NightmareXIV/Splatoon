@@ -73,9 +73,9 @@ public unsafe class Splatoon : IDalamudPlugin
     public bool Loaded = false;
     public bool Disposed = false;
     internal static (Vector2 X, Vector2 Y) Transform = default;
-    internal Dictionary<string, IntPtr> PlaceholderCache = new();
-    internal Dictionary<string, uint> NameNpcIDsAll = new();
-    internal Dictionary<string, uint> NameNpcIDs = new();
+    internal static Dictionary<string, IntPtr> PlaceholderCache = new();
+    internal static Dictionary<string, uint> NameNpcIDsAll = new();
+    internal static Dictionary<string, uint> NameNpcIDs = new();
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
@@ -925,19 +925,37 @@ public unsafe class Splatoon : IDalamudPlugin
         }
     }
 
-    bool IsAttributeMatches(Element e, GameObject o)
+    static bool IsAttributeMatches(Element e, GameObject o)
     {
-        if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || o.Name.ToString().ContainsIgnoreCase(e.refActorNameIntl.Get(e.refActorName)))) return true;
-        if (e.refActorComparisonType == 1 && o is Character c && c.Struct()->ModelCharaId == e.refActorModelID) return true;
-        if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
-        if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
-        if (e.refActorComparisonType == 4 && o.Struct()->GetNpcID() == e.refActorNPCID) return true;
-        if (e.refActorComparisonType == 5 && e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) return true;
-        if (e.refActorComparisonType == 6 && o is Character c2 && c2.NameId == e.refActorNPCNameID) return true;
-        return false;
+        if (e.refActorComparisonAnd)
+        {
+            return (e.refActorNameIntl.Get(e.refActorName) == String.Empty || IsNameMatches(e, o)) &&
+             (e.refActorModelID == 0 || (o is Character c && c.Struct()->ModelCharaId == e.refActorModelID)) &&
+             (e.refActorObjectID == 0 || o.ObjectId == e.refActorObjectID) &&
+             (e.refActorDataID == 0 || o.DataId == e.refActorDataID) &&
+             (e.refActorNPCID == 0 || o.Struct()->GetNpcID() == e.refActorNPCID) &&
+             (e.refActorPlaceholder.Count == 0 || e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) &&
+             (e.refActorNPCNameID == 0 || (o is Character c2 && c2.NameId == e.refActorNPCNameID));
+        }
+        else
+        {
+            if (e.refActorComparisonType == 0 && IsNameMatches(e, o)) return true;
+            if (e.refActorComparisonType == 1 && o is Character c && c.Struct()->ModelCharaId == e.refActorModelID) return true;
+            if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
+            if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
+            if (e.refActorComparisonType == 4 && o.Struct()->GetNpcID() == e.refActorNPCID) return true;
+            if (e.refActorComparisonType == 5 && e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) return true;
+            if (e.refActorComparisonType == 6 && o is Character c2 && c2.NameId == e.refActorNPCNameID) return true;
+            return false;
+        }
     }
 
-    IntPtr ResolvePlaceholder(string ph)
+    static bool IsNameMatches(Element e, GameObject o)
+    {
+        return !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || o.Name.ToString().ContainsIgnoreCase(e.refActorNameIntl.Get(e.refActorName)));
+    }
+
+    static IntPtr ResolvePlaceholder(string ph)
     {
         if(PlaceholderCache.TryGetValue(ph, out var val))
         {

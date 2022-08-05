@@ -156,15 +156,15 @@ namespace Splatoon
                         }
                         SImGuiEx.SizedText("Compare attribute: ", WidthElement);
                         ImGui.SameLine();
-                        ImGui.SetNextItemWidth(100f);
+                        ImGui.SetNextItemWidth(75f);
                         ImGui.Combo($"##attrSelect{i + k}", ref el.refActorComparisonType, Element.ComparisonTypes, Element.ComparisonTypes.Length);
                         ImGui.SameLine();
                         if (el.refActorComparisonType == 0)
                         {
-                            ImGui.SetNextItemWidth(200f);
+                            ImGui.SetNextItemWidth(150f);
                             //ImGui.InputText("##actorname" + i + k, ref el.refActorName, 100);
                             el.refActorNameIntl.ImGuiEdit(ref el.refActorName);
-                            if (p.NameNpcIDs.TryGetValue(el.refActorNameIntl.Get(el.refActorName).ToLower(), out var nameid))
+                            if (NameNpcIDs.TryGetValue(el.refActorNameIntl.Get(el.refActorName).ToLower(), out var nameid))
                             {
                                 ImGui.SameLine();
                                 if (ImGui.Button($"Name ID: {nameid.Format()}, convert?##{i + k}"))
@@ -208,12 +208,13 @@ namespace Splatoon
                         else if (el.refActorComparisonType == 6)
                         {
                             SImGuiEx.InputUintDynamic("##nameID" + i + k, ref el.refActorNPCNameID);
-                            var npcnames = p.NameNpcIDsAll.FindKeysByValue(el.refActorNPCNameID);
+                            var npcnames = NameNpcIDsAll.FindKeysByValue(el.refActorNPCNameID);
                             if (npcnames.Any())
                             {
                                 ImGuiComponents.HelpMarker($"NPC: \n{npcnames.Join("\n")}");
                             }
                         }
+                        ImGui.Checkbox("Multi", ref el.refActorComparisonAnd);
                         if (Svc.Targets.Target != null)
                         {
                             ImGui.SameLine();

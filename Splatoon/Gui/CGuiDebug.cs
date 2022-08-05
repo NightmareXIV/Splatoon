@@ -122,7 +122,7 @@ namespace Splatoon
             }
             if (ImGui.CollapsingHeader("NameNpcID"))
             {
-                foreach(var x in p.NameNpcIDs)
+                foreach(var x in NameNpcIDs)
                 {
                     ImGuiEx.Text($"{x.Key} = {x.Value}");
                 }
