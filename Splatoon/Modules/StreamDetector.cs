@@ -21,7 +21,7 @@ namespace Splatoon.Modules
                         if (!Svc.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat])
                         {
                             var processes = Process.GetProcesses();
-                            if (processes.Any(x => x.ProcessName.EqualsIgnoreCaseAny("obs32", "obs64")))
+                            if (processes.Any(x => x.ProcessName.EqualsIgnoreCaseAny("obs32", "obs64") || x.ProcessName.StartsWithIgnoreCase("XSplit")))
                             {
                                 Svc.PluginInterface.UiBuilder.Draw += Draw;
                                 break;
@@ -39,16 +39,16 @@ namespace Splatoon.Modules
 
         static void Draw()
         {
-            if (ImGui.Begin("Hold on!", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
+            if (ImGui.Begin("Splatoon - Hold on!", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
             {
                 ImGui.SetWindowFontScale(2f);
                 ImGuiEx.Text(Environment.TickCount % 1000 > 500 ? ImGuiColors.DalamudRed : ImGuiColors.DalamudYellow, "Please do not stream with third party tools visible.");
                 ImGui.SetWindowFontScale(1f);
-                ImGuiEx.Text("Normally, most of plugins are completely safe to use. Square Enix will not be able to detect their usage, including Splatoon.");
+                ImGuiEx.Text("Normally, most of plugins are completely safe to use. Square Enix will not be able to detect their usage.");
                 ImGuiEx.Text(ImGuiColors.DalamudOrange, "However, streaming with third party tools visible may result in consequences.");
                 ImGuiEx.Text("Regardless of how innocent a plugin or modification might be, it IS a violation of FFXIV's terms of service.");
                 ImGuiEx.Text("This includes not only third party tools, but also official Dalamud plugins, Advanced Combat Tracker and visual mods as well.");
-                ImGuiEx.Text(" ");
+                ImGui.Separator();
                 ImGui.SetWindowFontScale(1.5f);
                 ImGuiEx.Text(ImGuiColors.DalamudYellow, "If you intended to stream your game, absolutely make sure that your plugins\nand other third party tools are NOT VISIBLE ON STREAM.");
                 ImGui.SetWindowFontScale(1f);
@@ -58,7 +58,6 @@ namespace Splatoon.Modules
                     Svc.PluginInterface.UiBuilder.Draw -= Draw;
                 }
                 ImGuiEx.Text(ImGuiColors.DalamudGrey, "You are seeing this message because a streaming software has been detected.\nYou will not see it again in your current game session.");
-                ImGuiEx.Text(ImGuiColors.DalamudGrey, "If you believe this is an error, please");
                 ImGui.SameLine();
                 if (ImGui.SmallButton("contact the developer."))
                 {
@@ -66,7 +65,6 @@ namespace Splatoon.Modules
                 }
 
                 ImGui.Checkbox("Never show this message again", ref P.Config.NoStreamWarning);
-                ImGuiEx.Tooltip("Be reasonable, okay?");
             }
             ImGui.End();
         }

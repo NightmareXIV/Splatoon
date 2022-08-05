@@ -927,7 +927,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
     bool IsAttributeMatches(Element e, GameObject o)
     {
-        if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || Name.ToString().ContainsIgnoreCase(e.refActorNameIntl.Get(e.refActorName)))) return true;
+        if (e.refActorComparisonType == 0 && !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || o.Name.ToString().ContainsIgnoreCase(e.refActorNameIntl.Get(e.refActorName)))) return true;
         if (e.refActorComparisonType == 1 && o is Character c && c.Struct()->ModelCharaId == e.refActorModelID) return true;
         if (e.refActorComparisonType == 2 && o.ObjectId == e.refActorObjectID) return true;
         if (e.refActorComparisonType == 3 && o.DataId == e.refActorDataID) return true;
@@ -946,21 +946,28 @@ public unsafe class Splatoon : IDalamudPlugin
         else
         {
             var result = IntPtr.Zero;
-            if (ph.StartsWith("<t") && int.TryParse(ph[2..3], out var n))
+            if (Svc.Condition[ConditionFlag.DutyRecorderPlayback])
             {
-                result = Static.GetRolePlaceholder(CombatRole.Tank, n)?.Address ?? IntPtr.Zero;
-            }
-            else if (ph.StartsWith("<h") && int.TryParse(ph[2..3], out n))
-            {
-                result = Static.GetRolePlaceholder(CombatRole.Healer, n)?.Address ?? IntPtr.Zero;
-            }
-            else if (ph.StartsWith("<d") && int.TryParse(ph[2..3], out n))
-            {
-                result = Static.GetRolePlaceholder(CombatRole.DPS, n)?.Address ?? IntPtr.Zero;
+                result = (IntPtr)FakePronoun.Resolve(ph);
             }
             else
             {
-                result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder(ph, 0, 0);
+                if (ph.StartsWithIgnoreCase("<t") && int.TryParse(ph[2..3], out var n))
+                {
+                    result = Static.GetRolePlaceholder(CombatRole.Tank, n)?.Address ?? IntPtr.Zero;
+                }
+                else if (ph.StartsWithIgnoreCase("<h") && int.TryParse(ph[2..3], out n))
+                {
+                    result = Static.GetRolePlaceholder(CombatRole.Healer, n)?.Address ?? IntPtr.Zero;
+                }
+                else if (ph.StartsWithIgnoreCase("<d") && int.TryParse(ph[2..3], out n))
+                {
+                    result = Static.GetRolePlaceholder(CombatRole.DPS, n)?.Address ?? IntPtr.Zero;
+                }
+                else
+                {
+                    result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder(ph, 0, 0);
+                }
             }
             PlaceholderCache[ph] = result;
             //PluginLog.Information($"Phaceholder {ph} result {result}");

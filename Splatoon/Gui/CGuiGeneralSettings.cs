@@ -177,6 +177,7 @@ namespace Splatoon
                 Svc.Chat.Print("[Splatoon] Server invite link: "+ Splatoon.DiscordURL);
                 ProcessStart(Splatoon.DiscordURL);
             }
+            ImGui.Checkbox("Disable stream notice (effective only after restart)", ref P.Config.NoStreamWarning);
         }
     }
 }
