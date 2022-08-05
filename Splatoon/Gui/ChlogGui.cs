@@ -5,7 +5,7 @@ namespace Splatoon.Gui;
 
 class ChlogGui
 {
-    public const int ChlogVersion = 58;
+    public const int ChlogVersion = 59;
     readonly Splatoon p;
     bool open = true;
     internal bool openLoggedOut = false;
@@ -26,49 +26,26 @@ class ChlogGui
         if (!open) return;
         if (!Svc.ClientState.IsLoggedIn && !openLoggedOut) return;
         ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
-        ImGuiEx.Text(ImGuiColors.DalamudRed, "This is important update. ");
         ImGuiEx.Text(
-@"Splatoon 2.0 is a big update of the plugin and includes UI rework which allows to:
-- Group your layouts and elements
-- Sort them
-- Rename them
-- Name no longer has to be unique
-- Name is no longer required at all
-
-If you are updating from version 1.x, your configuration will be converted to new format. 
-Nothing should be lost, and backup of your old configuration will be made and stored at %appdata%\XIVLauncher\pluginConfigs\Splatoon\configV1.json,
-but please make sure to backup your configuration file manually if you have valuable presets there.
-");
-        if (ImGui.Button("Open folder with my configuration file"))
+@"- Added possibility to limit cast and buff time to certain values.
+- Casts can now support time after cast has been finished.
+- Experimental feature: freezing layout.
+  - Once it becomes visible, it's elements will be fixed on screen for specified time, and snapshots will repeat at specified time.
+  - This feature is in beta test and may work unexpectedly/may change in future.
+  - When used not carefully, it may become the cause of FPS drop.
+- Added a detection of popular streaming software executing. 
+   Plugin will remind you that you shouldn't stream while running third party software.
+      I don't know how it was not obvious. 
+      Reminding you that ALL third party tools are against FFXIV's terms of service. 
+       - This includes Dalamud plugins both official and 3rd party, mods, ACT, latency mitigation tools.
+       - Game will not attempt to detect use of such tools but if you talk about them in game or STREAM them, you may face consequences.
+   Plugin will not stop functioning while you're streaming and will not attempt to prevent you from streaming in any way.
+   You may disable this function in settings as well.
+- Implemented internal optimizations and performance improvements.");
+        ImGui.SameLine();
+        if (ImGui.Button("Close this window"))
         {
-            Safe(delegate
-            {
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = "explorer.exe",
-                    UseShellExecute = true,
-                    Arguments = $"/select,\"{Svc.PluginInterface.ConfigFile.FullName}\""
-                });
-            });
-        }
-        ImGuiEx.Text(
-@"Don't forget to test that the plugin functions correctly before you go into your raid.
-If you will encounter any problems, feel free to join the discord for help: ");
-        if (ImGui.Button("Join discord"))
-        {
-            ShellStart("https://discord.gg/m8NRt4X8Gf");
-        }
-        ImGuiEx.Text(
-@"Additionally, all the details about plugin updates are always posted there.");
-        ImGui.Checkbox("I have read and understood the update.", ref understood);
-        if (understood)
-        {
-            ImGui.SameLine();
-            if (ImGui.Button("Close this window"))
-            {
-                open = false;
-            }
-
+            open = false;
         }
         ImGui.End();
         if (!open) Close();
