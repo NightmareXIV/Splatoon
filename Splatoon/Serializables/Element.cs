@@ -110,6 +110,13 @@ public class Element
     [DefaultValue(false)] public bool LineAddPlayerHitboxLengthZA = false;
     [DefaultValue(false)] public bool Filled = false;
     [DefaultValue(false)] public bool FaceMe = false;
+    [DefaultValue(false)] public bool LimitDistance = false;
+    [DefaultValue(false)] public bool LimitDistanceInvert = false;
+    [DefaultValue(0f)] public float DistanceSourceX = 0f;
+    [DefaultValue(0f)] public float DistanceSourceY = 0f;
+    [DefaultValue(0f)] public float DistanceSourceZ = 0f;
+    [DefaultValue(0f)] public float DistanceMin = 0f;
+    [DefaultValue(0f)] public float DistanceMax = 0f;
 
     public bool ShouldSerializerefActorNameIntl()
     {

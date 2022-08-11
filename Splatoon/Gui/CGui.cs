@@ -133,6 +133,11 @@ namespace Splatoon
                             DisplayLogger();
                             ImGui.EndTabItem();
                         }
+                        if (ImGui.BeginTabItem("Explorer"))
+                        {
+                            Explorer.Draw();
+                            ImGui.EndTabItem();
+                        }
                         if (ImGui.BeginTabItem("Debug"))
                         {
                             DisplayDebug();

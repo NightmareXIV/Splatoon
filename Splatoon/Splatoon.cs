@@ -295,6 +295,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 l.freezeInfo = new();
             }
         }
+        AttachedInfo.VFXInfos.Clear();
     }
 
     
@@ -392,6 +393,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     {
                         CombatStarted = 0;
                         Log("Combat ended event");
+                        AttachedInfo.VFXInfos.Clear();
                         foreach (var l in Config.LayoutsL)
                         {
                             if (l.UseTriggers)
@@ -716,7 +718,8 @@ public unsafe class Splatoon : IDalamudPlugin
                             && (!e.onlyTargetable || targetable)
                             && (!e.onlyUnTargetable || !targetable)
                             && CheckCharacterAttributes(e, a)
-                            && (!e.refActorObjectLife || a.GetLifeTimeSeconds().InRange(e.refActorLifetimeMin, e.refActorLifetimeMax)))
+                            && (!e.refActorObjectLife || a.GetLifeTimeSeconds().InRange(e.refActorLifetimeMin, e.refActorLifetimeMax))
+                            && (!e.LimitDistance || Vector3.Distance(a.GetPositionXZY(), new(e.DistanceSourceX, e.DistanceSourceY, e.DistanceSourceZ)).InRange(e.DistanceMin, e.DistanceMax).Invert(e.LimitDistanceInvert)))
                     {
                         if (i == null || !i.UseDistanceLimit || CheckDistanceCondition(i, a.GetPositionXZY()))
                         {

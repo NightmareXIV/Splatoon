@@ -360,6 +360,69 @@ namespace Splatoon
                         ImGui.Checkbox("Invert behavior##" + i + k, ref el.refActorRequireBuffsInvert);
                     }
 
+                    SImGuiEx.SizedText("Distance limit", WidthElement);
+                    ImGui.SameLine();
+                    ImGui.Checkbox("##dstLim", ref el.LimitDistance);
+                    if (el.LimitDistance)
+                    {
+                        ImGui.SameLine();
+                        ImGuiEx.Text("X:");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##distX", ref el.DistanceSourceX, 0.02f, float.MinValue, float.MaxValue);
+                        ImGui.SameLine();
+                        ImGuiEx.Text("Y:");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##distY", ref el.DistanceSourceY, 0.02f, float.MinValue, float.MaxValue);
+                        ImGui.SameLine();
+                        ImGuiEx.Text("Z:");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(60f);
+                        ImGui.DragFloat("##distZ", ref el.DistanceSourceZ, 0.02f, float.MinValue, float.MaxValue);
+                        ImGui.SameLine();
+                        if (ImGuiEx.IconButton(FontAwesomeIcon.Circle, "0 0 0##dist"))
+                        {
+                            el.DistanceSourceX = 0;
+                            el.DistanceSourceY = 0;
+                            el.DistanceSourceZ = 0;
+                        }
+                        ImGuiEx.Tooltip("0 0 0");
+                        ImGui.SameLine();
+                        if (ImGuiEx.IconButton(FontAwesomeIcon.MapMarked, "My position##dist"))
+                        {
+                            el.DistanceSourceX = GetPlayerPositionXZY().X;
+                            el.DistanceSourceY = GetPlayerPositionXZY().Y;
+                            el.DistanceSourceZ = GetPlayerPositionXZY().Z;
+                        }
+                        ImGuiEx.Tooltip("My position");
+                        ImGui.SameLine();
+                        if (ImGuiEx.IconButton(FontAwesomeIcon.MousePointer, "Screen2World##dist"))
+                        {
+                            if (p.IsLayoutVisible(l) && el.Enabled)
+                            {
+                                SetCursorTo(el.DistanceSourceX, el.DistanceSourceY, el.DistanceSourceZ);
+                                p.BeginS2W(el, "DistanceSourceX", "DistanceSourceY", "DistanceSourceZ");
+                            }
+                            else
+                            {
+                                Notify.Error("Unable to use for hidden element");
+                            }
+                        }
+                        ImGuiEx.Tooltip("Select on screen");
+                        SImGuiEx.SizedText("", WidthElement);
+                        ImGui.SameLine(); 
+                        ImGui.SetNextItemWidth(50f);
+                        ImGui.DragFloat("##dstmin", ref el.DistanceMin, 0.1f, 0f, 99999f, $"{el.DistanceMin:F1}");
+                        ImGui.SameLine();
+                        ImGuiEx.Text("-");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(50f);
+                        ImGui.DragFloat("##dstmax", ref el.DistanceMax, 0.1f, 0f, 99999f, $"{el.DistanceMax:F1}");
+                        ImGui.SameLine();
+                        ImGui.Checkbox("Invert##dist", ref el.LimitDistanceInvert);
+                    }
+
                     if (el.refActorType == 0)
                     {
                         SImGuiEx.SizedText("Object life time:", WidthElement);
