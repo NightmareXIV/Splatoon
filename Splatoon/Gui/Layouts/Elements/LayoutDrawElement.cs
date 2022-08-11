@@ -1,6 +1,7 @@
 ﻿using Dalamud;
 using Dalamud.Interface.Components;
 using ECommons.GameFunctions;
+using FFXIVClientStructs.Attributes;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 using Splatoon.Utils;
@@ -154,7 +155,19 @@ namespace Splatoon
                                 "search attributes to your active target's name.\n" +
                                 "You can use it with macro.");
                         }
-                        SImGuiEx.SizedText("Compare attribute: ", WidthElement);
+                        ImGui.SetNextItemWidth(WidthElement + ImGui.GetStyle().ItemSpacing.X);
+                        if (ImGui.BeginCombo("##compare", el.refActorComparisonAnd?"Multiple attributes": "Single attribute"))
+                        {
+                            if(ImGui.Selectable("Match one attribute"))
+                            {
+                                el.refActorComparisonAnd = false;
+                            }
+                            if(ImGui.Selectable("Match multiple attributes (AND logic)"))
+                            {
+                                el.refActorComparisonAnd = true;
+                            }
+                            ImGui.EndCombo();
+                        }
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(75f);
                         ImGui.Combo($"##attrSelect{i + k}", ref el.refActorComparisonType, Element.ComparisonTypes, Element.ComparisonTypes.Length);
@@ -214,8 +227,32 @@ namespace Splatoon
                                 ImGuiComponents.HelpMarker($"NPC: \n{npcnames.Join("\n")}");
                             }
                         }
-                        ImGui.Checkbox("Multi", ref el.refActorComparisonAnd);
-                        if (Svc.Targets.Target != null)
+                        else if (el.refActorComparisonType == 7)
+                        {
+                            ImGui.SetNextItemWidth(150f);
+                            ImGui.InputText("##vfx", ref el.refActorVFXPath, 500);
+                            ImGui.SameLine();
+                            ImGuiEx.Text("Age:");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            var a1 = (float)el.refActorVFXMin / 1000f;
+                            if(ImGui.DragFloat("##age1", ref a1, 0.1f, 0, 99999, $"{a1:F1}"))
+                            {
+                                el.refActorVFXMin = (int)(a1 * 1000);
+                            }
+                            ImGui.SameLine();
+                            ImGuiEx.Text("-");
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+
+                            var a2 = (float)el.refActorVFXMax / 1000f;
+                            if (ImGui.DragFloat("##age2", ref a2, 0.1f, 0, 99999, $"{a2:F1}"))
+                            {
+                                el.refActorVFXMax = (int)(a2 * 1000);
+                            }
+                        }
+                        
+                        if (Svc.Targets.Target != null && !el.refActorComparisonType.EqualsAny(7))
                         {
                             ImGui.SameLine();
                             if (ImGui.Button("Target##btarget" + i + k))

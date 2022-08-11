@@ -1,4 +1,5 @@
-﻿using Dalamud.Memory;
+﻿using Dalamud.Interface.Colors;
+using Dalamud.Memory;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
 using Splatoon.Memory;
@@ -12,12 +13,42 @@ namespace Splatoon.Gui
 {
     internal unsafe static class Explorer
     {
+        internal static IntPtr Ptr = IntPtr.Zero;
         internal static void Draw()
         {
-            if(Svc.Targets.Target != null && Svc.ClientState.LocalPlayer != null)
+            ImGui.BeginChild("##exch");
+            var x = Svc.Objects.FirstOrDefault(x => x.Address == Ptr);
+            ImGuiEx.Text(ImGuiColors.DalamudOrange, "Beta");
+            if(ImGui.BeginCombo("##selector", $"{(Ptr == IntPtr.Zero?"Target":$"{(x == null?$"{Ptr:X16} - invalid ptr" : $"{x}")}")}"))
             {
-                DrawGameObject(Svc.Targets.Target);
+                if (ImGui.Selectable("Target"))
+                {
+                    Ptr = IntPtr.Zero;
+                }
+                foreach(var o in Svc.Objects)
+                {
+                    if (ImGui.Selectable($"{o}"))
+                    {
+                        Ptr = o.Address;
+                    }
+                }
+                ImGui.EndCombo();
             }
+            if (Ptr == IntPtr.Zero)
+            {
+                if (Svc.Targets.Target != null && Svc.ClientState.LocalPlayer != null)
+                {
+                    DrawGameObject(Svc.Targets.Target);
+                }
+            }
+            else
+            {
+                if(x != null)
+                {
+                    DrawGameObject(x);
+                }
+            }
+            ImGui.EndChild();
         }
 
         internal static void DrawGameObject(GameObject obj)
@@ -35,55 +66,39 @@ namespace Splatoon.Gui
             ImGuiEx.TextCopy($"NPC ID: {obj.Struct()->GetNpcID()}");
             ImGuiEx.TextCopy($"Dead: {obj.Struct()->IsDead()}");
             ImGuiEx.TextCopy($"Hitbox radius: {obj.HitboxRadius}");
-            if(obj is Character c)
+            ImGuiEx.TextCopy($"Targetable: {obj.Struct()->GetIsTargetable()}");
+            ImGuiEx.TextCopy($"Nameplate: {ObjectFunctions.GetNameplateColor(obj.Address)}");
+            ImGuiEx.TextCopy($"Is hostile: {ObjectFunctions.IsHostile(obj)}");
+            if (obj is Character c)
             {
-                ImGuiEx.TextCopy("- Character -");
+                ImGuiEx.TextCopy("---------- Character ----------");
                 ImGuiEx.TextCopy($"HP: {c.CurrentHp} / {c.MaxHp}");
                 ImGuiEx.TextCopy($"Name NPC ID: {c.NameId}");
                 ImGuiEx.TextWrappedCopy($"Customize: {c.Customize.Select(x => $"{x:X2}").Join(" ")}");
                 ImGuiEx.TextCopy($"ModelCharaId: {c.Struct()->ModelCharaId}");
                 ImGuiEx.TextCopy($"ModelCharaId_2: {c.Struct()->ModelCharaId_2}");
-                /*ImGuiEx.TextCopy($"VfxData: {CharacterFunctions.GetVFXId(c.Struct()->VfxData)}");
-                ImGuiEx.TextCopy($"VfxData2: {CharacterFunctions.GetVFXId(c.Struct()->VfxData2)}");
-                if (c.Struct()->VfxData != null)
-                {
-                    var d = MemoryHelper.ReadRaw((IntPtr)c.Struct()->VfxData, 464);
-                    ImGuiEx.TextWrappedCopy($"VFXdata: {(IntPtr)c.Struct()->VfxData:X16} \n{d.Select(x => $"{x:X2}").Join(" ")}");
-                    var data = Separate(d, new byte[] { 0 }).ToList();
-                    data.RemoveAll(x => x.Length == 0);
-                    for (var i = 0; i < data.Count; i++)
-                    {
-                        ImGuiEx.TextCopy($"   {Encoding.UTF8.GetString(data[i])}");
-                    }
-                }
-                if (c.Struct()->VfxData2 != null)
-                {
-                    var d = MemoryHelper.ReadRaw((IntPtr)c.Struct()->VfxData2, 464);
-                    ImGuiEx.TextWrappedCopy($"VFXdata2 {(IntPtr)c.Struct()->VfxData2:X16}: \n{d.Select(x => $"{x:X2}").Join(" ")}");
-                    var data = Separate(d, new byte[] { 0 }).ToList();
-                    data.RemoveAll(x => x.Length == 0);
-                    for (var i = 0; i < data.Count; i++)
-                    {
-                        ImGuiEx.TextCopy($"   {Encoding.UTF8.GetString(data[i])}");
-                    }
-                }*/
-                ImGuiEx.Text("VFX (>60 sec)");
+                ImGuiEx.TextCopy($"Visible: {c.IsCharacterVisible()}");
+                ImGuiEx.Text("VFX");
                 if(c.TryGetVfx(out var fx))
                 {
                     foreach(var x in fx)
                     {
-                        ImGuiEx.TextCopy($"{x.Key}, Age = {x.Value.Age}");
+                        ImGuiEx.TextCopy($"{x.Key}, Age = {x.Value.AgeF:F1}");
                     }
                 }
             }
             if(obj is BattleChara b)
             {
-                ImGuiEx.TextCopy("- Battle chara -");
-                ImGuiEx.TextCopy($"Casting: {b.IsCasting}, Action ID = {b.CastActionId.Format()}, Type = {b.CastActionType}, Cast time: {b.CurrentCastTime}/{b.TotalCastTime}");
+                ImGuiEx.TextCopy("---------- Battle chara ----------");
+                ImGuiEx.TextCopy($"Casting: {b.IsCasting}, Action ID = {b.CastActionId.Format()}, Type = {b.CastActionType}, Cast time: {b.CurrentCastTime:F1}/{b.TotalCastTime:F1}");
+                if (AttachedInfo.CastInfos.TryGetValue(b.Address, out var info)) 
+                {
+                    ImGuiEx.TextCopy($"Overcast: ID={info.ID}, StartTime={info.StartTime}, Age={info.AgeF:F1}");
+                }
                 ImGuiEx.TextCopy($"Status:");
                 foreach(var x in b.StatusList)
                 {
-                    ImGuiEx.TextCopy($"  {x.GameData.Name} ({x.StatusId}), Remains = {x.RemainingTime}, Param = {x.Param}, Count = {x.StackCount}");
+                    ImGuiEx.TextCopy($"  {x.GameData.Name} ({x.StatusId.Format()}), Remains = {x.RemainingTime:F1}, Param = {x.Param}, Count = {x.StackCount}");
                 }
             }
         }

@@ -17,5 +17,13 @@ namespace Splatoon.Structures
                 return Environment.TickCount64 - SpawnTime;
             }
         }
+
+        internal float AgeF
+        {
+            get
+            {
+                return (float)Age / 1000f;
+            }
+        }
     }
 }

@@ -16,5 +16,29 @@ namespace Splatoon.Structures
             ID = iD;
             StartTime = startTime;
         }
+
+        internal float StartTimeF
+        {
+            get
+            {
+                return (float)StartTime / 1000f;
+            }
+        }
+
+        internal long Age
+        {
+            get
+            {
+                return Environment.TickCount64 - StartTime;
+            }
+        }
+
+        internal float AgeF
+        {
+            get
+            {
+                return (float)Age / 1000f;
+            }
+        }
     }
 }

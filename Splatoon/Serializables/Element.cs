@@ -9,7 +9,7 @@ public class Element
     public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
     "Line between two fixed coordinates", "Line relative to object position", "Cone relative to object position (beta)"};
     [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
-    [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "Placeholder", "NPC Name ID" };
+    [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "Placeholder", "NPC Name ID", "VFX Path" };
 
 
     public string Name = "";
@@ -79,7 +79,8 @@ public class Element
     /// 3: Data ID | 
     /// 4: NPC ID |
     /// 5: Placeholder |
-    /// 6: Name ID
+    /// 6: Name ID | 
+    /// 7: VFX Path
     /// </summary>
     [DefaultValue(0)] public int refActorComparisonType = 0;
     /// <summary>
@@ -117,6 +118,25 @@ public class Element
     [DefaultValue(0f)] public float DistanceSourceZ = 0f;
     [DefaultValue(0f)] public float DistanceMin = 0f;
     [DefaultValue(0f)] public float DistanceMax = 0f;
+    [DefaultValue("")] public string refActorVFXPath = "";
+    [DefaultValue(0)] public int refActorVFXMin = 0;
+    [DefaultValue(0)] public int refActorVFXMax = 0;
+
+
+    public bool ShouldSerializerefActorVFXPath()
+    {
+        return refActorComparisonType == 7 || refActorComparisonAnd;
+    }
+
+    public bool ShouldSerializerefActorVFXMin()
+    {
+        return refActorComparisonType == 7 || refActorComparisonAnd;
+    }
+
+    public bool ShouldSerializerefActorVFXMax()
+    {
+        return refActorComparisonType == 7 || refActorComparisonAnd;
+    }
 
     public bool ShouldSerializerefActorNameIntl()
     {

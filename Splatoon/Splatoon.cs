@@ -557,13 +557,16 @@ public unsafe class Splatoon : IDalamudPlugin
                     {
                         ProcessElement(l.ElementsL[i], l);
                     }
-                    l.freezeInfo.States.Add(new()
+                    if (displayObjects.Count > 0)
                     {
-                        Objects = displayObjects,
-                        ShowUntil = Environment.TickCount64 + (int)(l.FreezeFor * 1000f),
-                    });
+                        l.freezeInfo.States.Add(new()
+                        {
+                            Objects = displayObjects,
+                            ShowUntil = Environment.TickCount64 + (int)(l.FreezeFor * 1000f),
+                        });
+                        l.freezeInfo.AllowRefreezeAt = Environment.TickCount64 + (int)(l.IntervalBetweenFreezes * 1000f);
+                    }
                     displayObjects = a;
-                    l.freezeInfo.AllowRefreezeAt = Environment.TickCount64 + (int)(l.IntervalBetweenFreezes * 1000f);
                 }
             }
             else
@@ -938,7 +941,8 @@ public unsafe class Splatoon : IDalamudPlugin
              (e.refActorDataID == 0 || o.DataId == e.refActorDataID) &&
              (e.refActorNPCID == 0 || o.Struct()->GetNpcID() == e.refActorNPCID) &&
              (e.refActorPlaceholder.Count == 0 || e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) &&
-             (e.refActorNPCNameID == 0 || (o is Character c2 && c2.NameId == e.refActorNPCNameID));
+             (e.refActorNPCNameID == 0 || (o is Character c2 && c2.NameId == e.refActorNPCNameID)) &&
+             (e.refActorVFXPath == "" || (AttachedInfo.TryGetSpecificVfxInfo(o, e.refActorVFXPath, out var info) && info.Age.InRange(e.refActorVFXMin, e.refActorVFXMax)));
         }
         else
         {
@@ -949,6 +953,7 @@ public unsafe class Splatoon : IDalamudPlugin
             if (e.refActorComparisonType == 4 && o.Struct()->GetNpcID() == e.refActorNPCID) return true;
             if (e.refActorComparisonType == 5 && e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) return true;
             if (e.refActorComparisonType == 6 && o is Character c2 && c2.NameId == e.refActorNPCNameID) return true;
+            if (e.refActorComparisonType == 7 && AttachedInfo.TryGetSpecificVfxInfo(o, e.refActorVFXPath, out var info) && info.Age.InRange(e.refActorVFXMin, e.refActorVFXMax)) return true;
             return false;
         }
     }
