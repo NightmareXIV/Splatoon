@@ -44,7 +44,7 @@ unsafe class OverlayGui : IDisposable
                     ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                     ImGuiHelpers.SetNextWindowPosRelativeMainViewport(Vector2.Zero);
                     ImGui.SetNextWindowSize(ImGuiHelpers.MainViewport.Size);
-                    ImGui.Begin("Splatoon ring", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
+                    ImGui.Begin("Splatoon scene", ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar
                         | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.AlwaysUseWindowPadding);
                     foreach (var element in p.displayObjects)
                     {

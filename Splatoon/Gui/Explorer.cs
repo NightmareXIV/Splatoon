@@ -2,6 +2,7 @@
 using Dalamud.Memory;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
+using Lumina.Excel.GeneratedSheets;
 using Splatoon.Memory;
 using System;
 using System.Collections.Generic;
