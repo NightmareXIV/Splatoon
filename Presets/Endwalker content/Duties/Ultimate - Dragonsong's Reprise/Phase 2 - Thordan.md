@@ -59,3 +59,8 @@ DSR P2 Sanctity PLD Arrows~{"ZoneLockH":[968],"DCond":5,"Elements":{"Adelphel":{
 ```
 ~Lv2~{"Name":"DSR P2 DPS meteors","Group":"DSR","ZoneLockH":[968],"ElementsL":[{"Name":"","type":3,"offZ":8.0,"radius":0.0,"color":3372154896,"thicc":50.0,"refActorPlaceholder":["<d2>","<d3>","<d4>"],"refActorRequireBuff":true,"refActorBuffId":[562],"refActorUseBuffTime":true,"refActorBuffTimeMin":18.0,"refActorBuffTimeMax":50.0,"refActorComparisonType":5}],"Phase":2}
 ```
+
+[EN] [Beta] DSR P2 Sanctity - display opposite towers when meteor is on YOU. 
+```
+~Lv2~{"Name":"DSR P2 Opposite towers","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":3,"refZ":10.0,"radius":0.0,"thicc":27.0,"refActorModelID":480,"refActorPlaceholder":[],"refActorNPCNameID":3640,"refActorComparisonAnd":true,"refActorComparisonType":6}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"You suffer the effect of Prey"}}],"MinDistance":26.5,"MaxDistance":100.0,"UseDistanceLimit":true,"DistanceLimitType":1,"Phase":2}
+```
