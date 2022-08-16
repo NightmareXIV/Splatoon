@@ -15,7 +15,7 @@ Detailed instructions available here: https://github.com/Eternita-S/MyDalamudPlu
 #### Is Splatoon safe to use?
 - Splatoon is as safe to use as other tools like ACT, official Dalamud plugins, texture mods. Splatoon does not modifies any data in game in any way - it only reads it and displays additional overlay on top of the game.
 #### Is there risk of ban while using Splatoon?
-- The risk level is the same as using any official Dalamud plugins, ACT, TexTools, which is: currently safe if you do not acknowledge use of it in game. Splatoon does not include any automation, does not modify any in-game data and does not modify any network data.
+- The risk level is the same as using any official Dalamud plugins, ACT, TexTools, which is: currently safe if you do not acknowledge use of it in game. Splatoon does not include any automation, does not modify any in-game data and does not modify any network data. It is not possible for other players or game masters to figure out whether you are using Splatoon or not.
 #### Can Splatoon automatically detect and display hidden AOEs?
 - No. It is on you to configure Splatoon to display something at specific place and/or at specific time, or import presets that have been made by other users.
 #### Is it safe to stream, record or take screenshots while using Splatoon?
