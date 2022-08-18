@@ -1,12 +1,12 @@
 ## Wrath of the heavens
-[EN] Display tethers (make tethers same as red line) and safe spot as blue marker
+[EN, JP] Display tethers (make tethers same as red line) and safe spot as blue marker
 ```
-~Lv2~{"Name":"DSR P5 Wrath of the Heavens resolve","Group":"DSR","ZoneLockH":[903,968],"DCond":5,"ElementsL":[{"Name":"Right tether","type":3,"refY":43.0,"radius":0.0,"refActorNPCNameID":3638,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":6.2308254},{"Name":"Left tether","type":3,"refY":43.0,"radius":0.0,"refActorNPCNameID":3636,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":0.05235988},{"Name":"Blue marker safe spot","type":1,"offX":17.42,"offY":12.22,"radius":0.6,"color":4294901787,"thicc":7.6,"refActorNPCNameID":3984,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"King Thordan readies Wrath of the Heavens"},"MatchDelay":8.0}],"Phase":2}
+~Lv2~{"Name":"DSR P5 Wrath of the Heavens resolve","Group":"DSR","ZoneLockH":[903,968],"DCond":5,"ElementsL":[{"Name":"Right tether","type":3,"refY":43.0,"radius":0.0,"refActorNPCNameID":3638,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":6.2308254},{"Name":"Left tether","type":3,"refY":43.0,"radius":0.0,"refActorNPCNameID":3636,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":0.05235988},{"Name":"Blue marker safe spot","type":1,"offX":17.42,"offY":12.22,"radius":0.6,"color":4294901787,"thicc":7.6,"refActorNPCNameID":3984,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"King Thordan readies Wrath of the Heavens","Jp":"騎神トールダンは「至天の陣：風槍」の構え。"},"MatchDelay":8.0}],"Phase":2}
 ```
 
-[EN] Display safespot under Ser Grinnaux
+[EN, JP] Display safespot under Ser Grinnaux
 ```
-~Lv2~{"Name":"DSR Ser Grinnaux Empty dimension","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"1","type":1,"radius":2.0,"thicc":5.0,"refActorName":"Ser Grinnaux","FillStep":1.0,"includeHitbox":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":"King Thordan readies Wrath of the Heavens","MatchDelay":10.0}]}
+~Lv2~{"Name":"DSR P5 Wrath safe spot","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"1","type":1,"radius":2.0,"thicc":5.0,"refActorName":"Ser Grinnaux","FillStep":1.0,"includeHitbox":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"MatchIntl":{"En":"King Thordan readies Wrath of the Heavens","Jp":"騎神トールダンは「至天の陣：風槍」の構え。"},"MatchDelay":10.0}]}
 ```
 
 [International] Display chain lightning radius around people.
