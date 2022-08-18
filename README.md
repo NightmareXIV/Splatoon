@@ -19,7 +19,7 @@ Detailed instructions available here: https://github.com/Eternita-S/MyDalamudPlu
 #### Can Splatoon automatically detect and display hidden AOEs?
 - No. It is on you to configure Splatoon to display something at specific place and/or at specific time, or import presets that have been made by other users.
 #### Is it safe to stream, record or take screenshots while using Splatoon?
-- No. If you are using Splatoon, you must refrain from streaming, recording and taking screenshots. 
+- No. If you are using Splatoon, you must refrain from streaming, recording and taking screenshots while any layouts or plugin menu is visible.
 #### Is it safe to talk about Splatoon and exchange presets in game?
 - No. You must keep discussion and presets sharing strictly outside of the game, including DMs and party chat. 
 
