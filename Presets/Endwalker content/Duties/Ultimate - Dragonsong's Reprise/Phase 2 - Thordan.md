@@ -7,7 +7,7 @@
 
 Thordan Jump Tether: Tethers Thordan when he jumps to make it easier to locate him during Strength and Sanctity
 ```
-DSR P2 Thordan Jump Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"color":3372158464,"overlayBGColor":4294911744,"overlayVOffset":3.0,"thicc":19.9,"refActorName":"King Thordan","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":49.5,"Duration":3.0},{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
+[International] DSR P2 Thordan Jump Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"color":3372158464,"overlayBGColor":4294911744,"overlayVOffset":3.0,"thicc":19.9,"refActorName":"King Thordan","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":49.5,"Duration":3.0},{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
 ```
 
 ### Strength of the Ward
