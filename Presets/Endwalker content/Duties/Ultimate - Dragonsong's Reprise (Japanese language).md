@@ -1,6 +1,9 @@
 |This page contains triggers localized for Japanese game client|
 |---|
 
+|WARNING, this page is obsolete, Japanese triggers can be found in https://github.com/Eternita-S/Splatoon/tree/master/Presets/Endwalker%20content/Duties/Ultimate%20-%20Dragonsong's%20Reprise as well. This page ONLY contains triggers for mechanics that are not yet translated.|
+|---|
+
 # Phase 1 - Knights triggers
 Empty/Full Dimension Ring: Places a ring around Ser Grinnaux that displays the edge of Empty/Full Dimension when it is being cast.
 ```
