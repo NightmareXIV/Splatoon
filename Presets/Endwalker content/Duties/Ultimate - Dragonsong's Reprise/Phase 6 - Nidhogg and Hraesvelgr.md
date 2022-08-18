@@ -38,6 +38,7 @@ Helps with keeping melee uptime when Nidhogg dives one half of the arena in addi
 ```
 ~Lv2~{"Name":"DSR P6 Hraesvelgr's Cauterize","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"1","type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":4954,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"Nidhogg readies Akh Morn."}],"Phase":2}
 ```
+
 [International] Nidhogg's Hot tail/Hot wings:
 ```
 ~Lv2~{"Name":"DSR P6 Hot tail / Hot wings","Group":"DSR","ZoneLockH":[968],"ElementsL":[{"Name":"Hot tail","type":3,"refY":44.0,"radius":8.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27949,27950],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true},{"Name":"Hot wing 1","type":3,"refX":-13.0,"refY":44.0,"offX":-13.0,"radius":9.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27947,27948],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true},{"Name":"Hot wing 2","type":3,"refX":13.0,"refY":44.0,"offX":13.0,"radius":9.0,"color":1510006527,"refActorNPCNameID":3458,"refActorRequireCast":true,"refActorCastId":[27947,27948],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}],"Phase":2}
