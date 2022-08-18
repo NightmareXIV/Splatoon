@@ -16,7 +16,7 @@
 
 [International] Display Ascalon's Mercy Revealed on you. Might be not precise.
 ```
-~Lv2~{"Name":"DSR p5 thordan cleave","Group":"DSR","ZoneLockH":[968],"ElementsL":[{"Name":"Thordan cleave","type":4,"radius":20.0,"coneAngleMin":-20,"coneAngleMax":20,"color":2885746175,"refActorNPCNameID":3632,"refActorRequireCast":true,"refActorCastId":[25546,25547],"FillStep":1.0,"refActorComparisonType":6,"includeRotation":true,"Filled":true,"FaceMe":true}],"Phase":2}
+~Lv2~{"Name":"DSR p5 thordan cleave","Group":"DSR","ZoneLockH":[968],"ElementsL":[{"Name":"Thordan cleave","type":4,"radius":20.0,"coneAngleMin":-15,"coneAngleMax":15,"color":2885746175,"refActorNPCNameID":3632,"refActorRequireCast":true,"refActorCastId":[25546,25547],"FillStep":1.0,"refActorComparisonType":6,"includeRotation":true,"Filled":true,"FaceMe":true}],"Phase":2}
 ```
 
 ## Death of the Heavens
