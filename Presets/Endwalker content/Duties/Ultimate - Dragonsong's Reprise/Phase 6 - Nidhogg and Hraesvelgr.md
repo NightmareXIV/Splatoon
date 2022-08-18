@@ -4,9 +4,14 @@ Helps with keeping melee uptime when Nidhogg dives one half of the arena in addi
 ~Lv2~{"Name":"DSR P6 Arena Quarter","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"P6 Quarter","type":2,"refX":100.0,"refY":80.0,"offX":100.0,"offY":120.0,"radius":0.0,"color":1677721855,"FillStep":1.0},{"Name":"P6 Quarter 2","type":2,"refX":80.0,"refY":100.0,"offX":120.0,"offY":100.0,"radius":0.0,"color":1677721855,"FillStep":1.0}],"UseTriggers":true,"Triggers":[{"TimeBegin":660.0,"Duration":240.0}],"Phase":2}
 ```
 
-[EN] Tether to your healer during Akh Afah. Don't forget to actually put your healer's name here.
+[EN, JP] Tether to your healer during Akh Afah. Don't forget to actually put your healer's name here.
 ```
-~Lv2~{"Name":"P6 Healer Group tether","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":3356425984,"thicc":10.0,"refActorName":"YOUR HEALER'S NAME HERE","tether":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Akh Afah."}}]}
+~Lv2~{"Name":"P6 Healer Group tether","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":3356425984,"thicc":10.0,"refActorName":"YOUR HEALER'S NAME HERE","tether":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Akh Afah.","Jp":"フレースヴェルグは「アク・アファー」の構え。"}}]}
+```
+
+[EN, JP] [Untested] Akh Afah north and south spots. Tip: enable tether to your designated spot.
+```
+~Lv2~{"Name":"◆絶竜詩【P6】Akh Afah spots / アク・アファー","Group":"◆絶竜詩【P6】","DCond":5,"ElementsL":[{"Name":"北側","refX":100.0,"refY":95.3,"radius":1.0,"thicc":5.0},{"Name":"南側","refX":100.0,"refY":104.6,"refZ":-1.9073486E-06,"radius":1.0,"color":3372213760,"thicc":5.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Akh Afah.","Jp":"フレースヴェルグは「アク・アファー」の構え。"}}],"Phase":2}
 ```
 
 [International] P6 Hallowed Wings
