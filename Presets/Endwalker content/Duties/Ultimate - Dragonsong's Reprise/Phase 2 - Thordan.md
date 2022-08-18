@@ -10,7 +10,7 @@
 ~Lv2~{"Name":"DSR P2 Thordan Jump Tether","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":3372158464,"overlayBGColor":4294911744,"overlayVOffset":3.0,"thicc":19.9,"refActorNPCNameID":3632,"refActorComparisonType":6,"onlyVisible":true,"tether":true}],"UseTriggers":true,"Triggers":[{"TimeBegin":49.5,"Duration":3.0},{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
 ```
 
-### Strength of the Ward
+## Strength of the Ward
 [EN, JP] Divebomb Helper: Shows both divebomb safespots
 ```
 ~Lv2~{"Name":"DSR P2 Strength Divebombs","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"Ser Vellguine","type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3636,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true},{"Name":"Ser Ignasse","type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3638,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true},{"Name":"Ser Paulecrain","type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3637,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":7.0,"MatchIntl":{"En":"King Thordan readies Strength of the Ward.","Jp":"騎神トールダンは「蒼天の陣：雷槍」の構え。"},"MatchDelay":8.0}],"Phase":2}
@@ -45,7 +45,7 @@ DSR P2 Strength Quake 1~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"
 DSR P2 Strength Positions~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"offX":6.3,"offY":3.25,"radius":0.3,"color":3372154880,"thicc":4.0,"refActorDataID":12604,"refActorComparisonType":3,"includeRotation":true},"2":{"type":1,"offX":-6.3,"offY":3.25,"radius":0.3,"color":3372154880,"thicc":4.0,"refActorDataID":12604,"refActorComparisonType":3,"includeRotation":true},"3":{"type":1,"offY":2.5,"radius":0.3,"color":3372154880,"thicc":4.0,"refActorDataID":12604,"refActorComparisonType":3,"includeRotation":true},"4":{"type":1,"offY":43.0,"radius":0.3,"color":3372154880,"thicc":4.0,"refActorDataID":12604,"refActorComparisonType":3,"includeRotation":true},"5":{"type":1,"offX":20.0,"offY":26.0,"radius":0.3,"color":3372154880,"thicc":4.0,"refActorDataID":12604,"refActorComparisonType":3,"includeRotation":true},"6":{"type":1,"offX":-20.0,"offY":26.0,"radius":0.3,"color":3372154880,"thicc":4.0,"refActorDataID":12604,"refActorComparisonType":3,"includeRotation":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":52.0,"Duration":8.0}]}
 ```
 
-### Sanctity of the Ward
+## Sanctity of the Ward
 [International] DRK Tether: Locates the DRK (Ser Zephirin) with a tether during Sanctity of the Ward for use with the DRK Relative strat
 ```
 ~Lv2~{"Name":"DSR P2 Sanctity DRK Tether","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorNPCNameID":3633,"refActorComparisonType":6,"onlyVisible":true,"tether":true}],"UseTriggers":true,"Triggers":[{"TimeBegin":100.8,"Duration":9.2}],"Phase":2}
@@ -76,7 +76,7 @@ DSR P2 Strength Positions~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1
 ~Lv2~{"Name":"DSR P2 Opposite towers","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":3,"refZ":10.0,"radius":0.0,"thicc":27.0,"refActorModelID":480,"refActorPlaceholder":[],"refActorNPCNameID":3640,"refActorComparisonAnd":true,"refActorComparisonType":6}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"You suffer the effect of Prey"}}],"MinDistance":26.5,"MaxDistance":100.0,"UseDistanceLimit":true,"DistanceLimitType":1,"Phase":2}
 ```
 
-### Final phase
+## Final phase
 [International] [Untested] Ultimate End pizza slices
 ```
 ~Lv2~{"Name":"◆絶竜詩【P2】ULTIMATE-END-PIZZA","Group":"◆絶竜詩【P2】","DCond":1,"ElementsL":[{"Name":"001","type":3,"refY":5.0,"radius":0.01,"thicc":1.0,"refActorNPCNameID":3632,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true},{"Name":"002","type":3,"refY":5.0,"radius":0.01,"color":3372155032,"refActorNPCNameID":3632,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true,"AdditionalRotation":2.0943952},{"Name":"003","type":3,"refY":5.0,"radius":0.01,"color":3372155032,"refActorNPCNameID":3632,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true,"AdditionalRotation":4.1887903},{"Name":"大振り→","type":1,"offX":2.0,"overlayBGColor":592141,"overlayTextColor":3355443200,"overlayText":"→","refActorNPCNameID":3632,"refActorRequireCast":true,"refActorCastId":[25536],"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true},{"Name":"大振り←","type":1,"offX":-2.0,"color":3372171264,"overlayBGColor":592141,"overlayTextColor":3355443200,"overlayText":"←","refActorNPCNameID":3632,"refActorRequireCast":true,"refActorCastId":[25537],"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true},{"Name":"騎竜神トールダン","type":1,"radius":8.0,"refActorNPCNameID":3632,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true}]}
