@@ -1,8 +1,8 @@
-Ascalon's Mercy Move Reminder: Flashes "MOVE" on the screen when Ascalon's Mercy is fully cast to remind you to move. 
+[EN, JP] Ascalon's Mercy Move Reminder: Flashes "MOVE" on the screen when Ascalon's Mercy is fully cast to remind you to move. 
 
 (While Splatoon isn't really designed for being general-purpose trigger system, it can be used as such)
 ```
-DSR P2 Move Trigger~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"overlayBGColor":4278190335,"overlayVOffset":3.0,"overlayFScale":8.0,"thicc":0.0,"overlayText":"MOVE","refActorType":1}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":1.0,"Match":"King Thordan readies Ascalon's Mercy Concealed.","MatchDelay":2.6}],"Phase":2}
+~Lv2~{"Name":"DSR P2 Move Trigger","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"overlayBGColor":4278190335,"overlayVOffset":3.0,"overlayFScale":8.0,"thicc":0.0,"overlayText":"MOVE","refActorType":1}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":1.0,"MatchIntl":{"En":"King Thordan readies Ascalon's Mercy Concealed.","Jp":"騎神トールダンは「インビジブル・アスカロンメルシー」の構え。"},"MatchDelay":2.6}],"Phase":2}
 ```
 
 Thordan Jump Tether: Tethers Thordan when he jumps to make it easier to locate him during Strength and Sanctity
