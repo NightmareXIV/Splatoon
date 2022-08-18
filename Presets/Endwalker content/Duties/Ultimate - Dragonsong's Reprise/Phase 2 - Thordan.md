@@ -11,9 +11,9 @@
 ```
 
 ### Strength of the Ward
-[EN] Divebomb Helper: Shows both divebomb safespots [Translation required: trigger]
+[EN, JP] Divebomb Helper: Shows both divebomb safespots
 ```
-DSR P2 Strength Divebombs~{"ZoneLockH":[968],"DCond":5,"Elements":{"Ser Vellguine":{"type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3636,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true},"Ser Ignasse":{"type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3638,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true},"Ser Paulecrain":{"type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3637,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":7.0,"MatchIntl":{"En":"King Thordan readies Strength of the Ward."},"MatchDelay":8.0}],"Phase":2}
+~Lv2~{"Name":"DSR P2 Strength Divebombs","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"Ser Vellguine","type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3636,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true},{"Name":"Ser Ignasse","type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3638,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true},{"Name":"Ser Paulecrain","type":3,"refY":50.0,"radius":4.0,"color":1677721855,"refActorNPCNameID":3637,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":7.0,"MatchIntl":{"En":"King Thordan readies Strength of the Ward.","Jp":"騎神トールダンは「蒼天の陣：雷槍」の構え。"},"MatchDelay":8.0}],"Phase":2}
 ```
 
 [EN] Heavy Impact Rings: Places rings around Ser Guerrique indicating the size of the quake rings from Heavy Impact [Translation required: trigger]
