@@ -5,9 +5,9 @@
 ~Lv2~{"Name":"DSR P2 Move Trigger","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"overlayBGColor":4278190335,"overlayVOffset":3.0,"overlayFScale":8.0,"thicc":0.0,"overlayText":"MOVE","refActorType":1}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":1.0,"MatchIntl":{"En":"King Thordan readies Ascalon's Mercy Concealed.","Jp":"騎神トールダンは「インビジブル・アスカロンメルシー」の構え。"},"MatchDelay":2.6}],"Phase":2}
 ```
 
-Thordan Jump Tether: Tethers Thordan when he jumps to make it easier to locate him during Strength and Sanctity
+[International] Thordan Jump Tether: Tethers Thordan when he jumps to make it easier to locate him during Strength and Sanctity
 ```
-[International] DSR P2 Thordan Jump Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"color":3372158464,"overlayBGColor":4294911744,"overlayVOffset":3.0,"thicc":19.9,"refActorName":"King Thordan","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":49.5,"Duration":3.0},{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
+~Lv2~{"Name":"DSR P2 Thordan Jump Tether","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":3372158464,"overlayBGColor":4294911744,"overlayVOffset":3.0,"thicc":19.9,"refActorNPCNameID":3632,"refActorComparisonType":6,"onlyVisible":true,"tether":true}],"UseTriggers":true,"Triggers":[{"TimeBegin":49.5,"Duration":3.0},{"TimeBegin":102.0,"Duration":10.0}],"Phase":2}
 ```
 
 ### Strength of the Ward
@@ -21,18 +21,18 @@ DSR P2 Strength Divebombs~{"ZoneLockH":[968],"DCond":5,"Elements":{"Ser Vellguin
 DSR P2 Quake markers~{"ZoneLockH":[968],"DCond":5,"Elements":{"Quake marker":{"type":1,"radius":6.0,"Donut":0.0,"color":4293721856,"refActorNPCNameID":3641,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":12.0,"Donut":0.0,"color":4293721856,"refActorNPCNameID":3641,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true},"3":{"type":1,"radius":18.0,"Donut":0.0,"color":4293721856,"refActorNPCNameID":3641,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true},"4":{"type":1,"radius":24.0,"Donut":0.0,"color":4293721856,"refActorNPCNameID":3641,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"Duration":12.0,"MatchIntl":{"En":"Ser Paulecrain readies Spiral Thrust"}}],"Phase":2}
 ```
 
-Sequential Heavy Impact Rings: Displays the quake markers sequentially instead of all at once.
+[EN] Sequential Heavy Impact Rings: Displays the quake markers sequentially instead of all at once.
 ```
 DSR P2 Strength Quake 1~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":6.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true},"2":{"type":1,"radius":0.0,"thicc":5.0,"refActorName":"Ser Guerrique","tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":35.0,"Duration":10.0},{"Type":3,"Match":"Ser Guerrique uses Heavy Impact.","MatchDelay":1.9}],"Phase":2}
 ```
 ```
-DSR P2 Strength Quake 2~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":12.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"TimeBegin":41.0,"Duration":3.8,"Match":"Ser Guerrique readies Heavy Impact.","MatchDelay":6.0}],"Phase":2}
+[EN] DSR P2 Strength Quake 2~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":12.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"TimeBegin":41.0,"Duration":3.8,"Match":"Ser Guerrique readies Heavy Impact.","MatchDelay":6.0}],"Phase":2}
 ```
 ```
-DSR P2 Strength Quake 3~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":18.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"TimeBegin":43.5,"Duration":3.8,"Match":"Ser Guerrique readies Heavy Impact.","MatchDelay":7.9}],"Phase":2}
+[EN] DSR P2 Strength Quake 3~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":18.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"TimeBegin":43.5,"Duration":3.8,"Match":"Ser Guerrique readies Heavy Impact.","MatchDelay":7.9}],"Phase":2}
 ```
 ```
-DSR P2 Strength Quake 4~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":24.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"TimeBegin":45.5,"Duration":1.9,"Match":"Ser Guerrique readies Heavy Impact.","MatchDelay":9.8}],"Phase":2}
+[EN] DSR P2 Strength Quake 4~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":24.0,"color":4278190335,"thicc":4.0,"refActorName":"Ser Guerrique","includeRotation":true,"onlyUnTargetable":true}},"UseTriggers":true,"Triggers":[{"Type":2,"TimeBegin":45.5,"Duration":1.9,"Match":"Ser Guerrique readies Heavy Impact.","MatchDelay":9.8}],"Phase":2}
 ```
 
 [International] Party Positions: Places blue circles on the spots where the party stack, two tankbusters and 3 defam dives should be.
@@ -46,9 +46,9 @@ DSR P2 Strength Positions~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1
 ```
 
 ### Sanctity of the Ward
-[EN] DRK Tether: Locates the DRK (Ser Zephirin) with a tether during Sanctity of the Ward for use with the DRK Relative strat
+[International] DRK Tether: Locates the DRK (Ser Zephirin) with a tether during Sanctity of the Ward for use with the DRK Relative strat
 ```
-DSR P2 Sanctity DRK Tether~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorName":"Ser Zephirin","onlyVisible":true,"tether":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":100.8,"Duration":9.2}],"Phase":2}
+~Lv2~{"Name":"DSR P2 Sanctity DRK Tether","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorNPCNameID":3633,"refActorComparisonType":6,"onlyVisible":true,"tether":true}],"UseTriggers":true,"Triggers":[{"TimeBegin":100.8,"Duration":9.2}],"Phase":2}
 ```
 
 [EN] DRK Safespots: Indicates the two possible safespots for the DRK Relative strat on both sides of the arena.
