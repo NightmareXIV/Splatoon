@@ -11,7 +11,7 @@ Helps with keeping melee uptime when Nidhogg dives one half of the arena in addi
 
 [EN, JP] [Untested] Akh Afah north and south spots. Tip: enable tether to your designated spot.
 ```
-~Lv2~{"Name":"◆絶竜詩【P6】Akh Afah spots / アク・アファー","Group":"◆絶竜詩【P6】","DCond":5,"ElementsL":[{"Name":"北側","refX":100.0,"refY":95.3,"radius":1.0,"thicc":5.0},{"Name":"南側","refX":100.0,"refY":104.6,"refZ":-1.9073486E-06,"radius":1.0,"color":3372213760,"thicc":5.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Akh Afah.","Jp":"フレースヴェルグは「アク・アファー」の構え。"}}],"Phase":2}
+~Lv2~{"Name":"DSR P6 Akh Afah spots / アク・アファー","Group":"DSR","DCond":5,"ElementsL":[{"Name":"北側","refX":100.0,"refY":95.3,"radius":1.0,"thicc":5.0},{"Name":"南側","refX":100.0,"refY":104.6,"refZ":-1.9073486E-06,"radius":1.0,"color":3372213760,"thicc":5.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Akh Afah.","Jp":"フレースヴェルグは「アク・アファー」の構え。"}}],"Phase":2}
 ```
 
 [International] P6 Hallowed Wings
