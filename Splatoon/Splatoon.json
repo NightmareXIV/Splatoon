@@ -17,7 +17,7 @@
 	"IsTestingExclusive": false,
 	"RepoUrl": "https://github.com/Eternita-S/Splatoon",
 	"ApplicableVersion": "any",
-	"DalamudApiLevel": 6,
+	"DalamudApiLevel": 7,
 	"DownloadCount": 0,
 	"LastUpdate": 0,
 	"DownloadLinkInstall": null,

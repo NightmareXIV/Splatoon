@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
+using Splatoon.Gui;
 using Splatoon.Utils;
 
 namespace Splatoon
@@ -64,6 +65,13 @@ namespace Splatoon
                 ImGuiEx.Text($"{x.Key.type}");
                 ImGui.TableNextColumn();
                 ImGuiEx.TextCopy(oid);
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                {
+                    if(Svc.Objects.TryGetFirst(z => z.ObjectId == x.Key.ObjectID, out var go))
+                    {
+                        Explorer.Ptr = go.Address;
+                    }
+                }
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Find##"+i))
                 {

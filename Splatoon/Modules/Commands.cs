@@ -15,6 +15,17 @@ class Commands : IDisposable
             {
                 p.ConfigGui.Open = true;
             }
+            else if(arguments == "r" || arguments == "reset")
+            {
+                var phase = P.Phase;
+                P.TerritoryChangedEvent(null, 0);
+                Notify.Success("Reset");
+                if (P.Phase != phase)
+                {
+                    P.Phase = phase;
+                    Notify.Info($"Returned to phase {phase}");
+                }
+            }
             else if (arguments.StartsWith("enable "))
             {
                 try
