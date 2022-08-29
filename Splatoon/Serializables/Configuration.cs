@@ -45,6 +45,7 @@ class Configuration : IPluginConfiguration
 
     public bool FocusMode = false;
     public bool NoStreamWarning = false;
+    public bool Logging = false;
 
     public bool ShouldSerializeLayouts()
     {

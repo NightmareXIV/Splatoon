@@ -150,6 +150,7 @@ public unsafe class Splatoon : IDalamudPlugin
         NameNpcIDs = NameNpcIDs.Where(x => x.Value != 0).ToDictionary(x => x.Key, x => x.Value);
         StreamDetector.Start();
         AttachedInfo.Init();
+        Logger.OnTerritoryChanged();
         Init = true;
     }
 
@@ -202,11 +203,16 @@ public unsafe class Splatoon : IDalamudPlugin
             CombatStarted = Environment.TickCount64;
             Svc.PluginInterface.UiBuilder.AddNotification($"Phase transition to Phase {Phase}", this.Name, NotificationType.Info, 10000);
         }
-        if(!type.EqualsAny(XivChatType.Party, XivChatType.Alliance, XivChatType.FreeCompany, XivChatType.Yell, XivChatType.Say, XivChatType.Shout))
+        if(!type.EqualsAny(ECommons.Constants.NormalChatTypes))
         {
-            ChatMessageQueue.Enqueue(message.Payloads.Where(p => p is ITextProvider)
+            var m = message.Payloads.Where(p => p is ITextProvider)
                     .Cast<ITextProvider>()
-                    .Aggregate(new StringBuilder(), (sb, tp) => sb.Append(tp.Text.RemoveSymbols(InvalidSymbols)), sb => sb.ToString()));
+                    .Aggregate(new StringBuilder(), (sb, tp) => sb.Append(tp.Text.RemoveSymbols(InvalidSymbols)), sb => sb.ToString());
+            ChatMessageQueue.Enqueue(m);
+            if (P.Config.Logging)
+            {
+                Logger.Log(m);
+            }
         }
         if (Profiler.Enabled) Profiler.MainTickChat.StopTick();
     }
@@ -296,6 +302,7 @@ public unsafe class Splatoon : IDalamudPlugin
             }
         }
         AttachedInfo.VFXInfos.Clear();
+        Logger.OnTerritoryChanged();
     }
 
     

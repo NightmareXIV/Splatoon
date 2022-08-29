@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
+using Splatoon.Modules;
 using Splatoon.Utils;
 
 namespace Splatoon
@@ -54,6 +55,12 @@ namespace Splatoon
             {
                 ProcessStart("https://github.com/Eternita-S/Splatoon#web-api-beta");
             }
+
+            if(ImGui.Checkbox("Enable logging", ref P.Config.Logging))
+            {
+                Logger.OnTerritoryChanged();
+            }
+            ImGuiComponents.HelpMarker("Enable logging, which will log chat messages, casts and VFX info into log files. ");
 
             SImGuiEx.SizedText("Circle smoothness:", WidthLayout);
             ImGui.SameLine();

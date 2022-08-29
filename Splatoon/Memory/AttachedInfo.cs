@@ -1,6 +1,8 @@
 ﻿using Dalamud.Game.Network;
 using Dalamud.Hooking;
+using ECommons.GameFunctions;
 using Reloaded.Hooks.Definitions.X64;
+using Splatoon.Modules;
 using Splatoon.Structures;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -65,6 +67,18 @@ namespace Splatoon.Memory
                 {
                     SpawnTime = Environment.TickCount64
                 };
+                if (P.Config.Logging)
+                {
+                    var obj = Svc.Objects.CreateObjectReference(a2);
+                    if (obj is Character c)
+                    {
+                        Logger.Log($"VFX {vfxPath} spawned on {obj.ToString()} npc id={obj.Struct()->GetNpcID()}, model id={c.Struct()->ModelCharaId}, name npc id={c.NameId}, position={obj.Position.ToString()}");
+                    }
+                    else
+                    {
+                        Logger.Log($"VFX {vfxPath} spawned on {obj.ToString()} npc id={obj.Struct()->GetNpcID()}, position={obj.Position.ToString()}");
+                    }
+                }
             }
             catch(Exception e)
             {
@@ -115,14 +129,16 @@ namespace Splatoon.Memory
                         {
                             CastInfos[b.Address] = new(b.CastActionId, Environment.TickCount64 - (long)(b.CurrentCastTime * 1000));
                             Casters.Add(b.Address);
-                            PluginLog.Debug($"{b.Name} starts casting {b.CastActionId}");
+                            if (P.Config.Logging)
+                            {
+                                Logger.Log($"{b.Name} starts casting {b.CastActionId}");
+                            }
                         }
                     }
                     else
                     {
                         if (Casters.Contains(b.Address))
                         {
-                            PluginLog.Debug($"{b.Name} stops casting");
                             Casters.Remove(b.Address);
                         }
                     }

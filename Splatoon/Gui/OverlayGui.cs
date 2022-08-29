@@ -18,7 +18,6 @@ unsafe class OverlayGui : IDisposable
         Svc.PluginInterface.UiBuilder.Draw -= Draw;
     }
 
-    [HandleProcessCorruptedStateExceptions]
     void Draw()
     {
         if (p.Profiler.Enabled) p.Profiler.Gui.StartTick();
