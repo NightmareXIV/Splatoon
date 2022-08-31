@@ -11,6 +11,10 @@ Dalamud repository:
 
 Detailed instructions available here: https://github.com/Eternita-S/MyDalamudPlugins
 
+# CHINESE PLAYERS - ATTENTION!
+Chinese fork of Dalamud currently intentionally prevents usage of Splatoon by adding it into banned plugins list. Banned plugin list was originally created to prevent unstable plugins from loading on updates. However, Chinese forkers of Dalamud decided to abuse it to attempt to prevent you from using the plugin for their personal reasons. Worry not - fix is coming as soon as possible!
+# I urge you to use Chinese Dalamud fork with EXTREME CARE. Developers who tend to abuse system functions like that ARE KNOWN TO EVENTUALLY INCLUDE MALICIOUS CODE INTO THEIR PRODUCTS. 
+
 # FAQ
 #### Is Splatoon safe to use?
 - Splatoon is as safe to use as other tools like ACT, official Dalamud plugins, texture mods. Splatoon does not modifies any data in game in any way - it only reads it and displays additional overlay on top of the game.
