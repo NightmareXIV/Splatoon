@@ -12,8 +12,15 @@ Dalamud repository:
 Detailed instructions available here: https://github.com/Eternita-S/MyDalamudPlugins
 
 # CHINESE PLAYERS - ATTENTION!
-Chinese fork of Dalamud currently intentionally prevents usage of Splatoon by adding it into banned plugins list. Banned plugin list was originally created to prevent unstable plugins from loading on updates. However, Chinese forkers of Dalamud decided to abuse it to attempt to prevent you from using the plugin for their personal reasons. Worry not - fix is coming as soon as possible!
-# I urge you to use Chinese Dalamud fork with EXTREME CARE. Developers who tend to abuse system functions like that ARE KNOWN TO EVENTUALLY INCLUDE MALICIOUS CODE INTO THEIR PRODUCTS. 
+Chinese fork of Dalamud currently intentionally prevents usage of Splatoon by adding it into banned plugins list. Banned plugin list was originally created to prevent unstable plugins from loading on updates. However, Chinese forkers of Dalamud decided to abuse it to attempt to prevent you from using the plugin for their personal reasons. 
+## I urge you to use Chinese Dalamud fork with EXTREME CARE. Developers who tend to abuse system functions like that ARE KNOWN TO EVENTUALLY INCLUDE MALICIOUS CODE INTO THEIR PRODUCTS. 
+## Temporary patch to unblock and run Splatoon:
+- Download [unbanPlugins.bat](https://github.com/NightmareXIV/MyDalamudPlugins/raw/main/cn/unbanPlugins.bat) file (right click - save link as...)
+- Place it next to `Dalamud.Updater.exe`
+- Launch `Dalamud.Updater.exe` and wait until all pending updates are completed
+- Launch `unbanPlugins.bat`
+- Start Dalamud
+## More convenient way to deal with it will come in just a few days!
 
 # FAQ
 #### Is Splatoon safe to use?
