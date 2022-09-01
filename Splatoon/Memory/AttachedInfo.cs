@@ -67,7 +67,7 @@ namespace Splatoon.Memory
                 {
                     SpawnTime = Environment.TickCount64
                 };
-                if (P.Config.Logging)
+                if (P.Config.Logging && !BlacklistedVFX.Contains(vfxPath))
                 {
                     var obj = Svc.Objects.CreateObjectReference(a2);
                     if (obj is Character c)

@@ -11,6 +11,24 @@ namespace Splatoon.Utils;
 static unsafe class Static
 {
 
+    internal static uint[] BlacklistedMessages = new uint[] { 4777, 4139, 4398, 2091, 2218, 2350, 4397, 2224, 4270, 4269, 2729, 4400, 10537, 10409, 10543, 2222, 4401 };
+
+    internal static string[] BlacklistedVFX = new string[]
+    {
+        "vfx/common/eff/dk04ht_canc0h.avfx",
+        "vfx/common/eff/dk02ht_totu0y.avfx",
+        "vfx/common/eff/dk05th_stup0t.avfx",
+        "vfx/common/eff/dk10ht_wra0c.avfx",
+        "vfx/common/eff/cmat_ligct0c.avfx",
+        "vfx/common/eff/dk07ht_da00c.avfx",
+        "vfx/common/eff/cmat_icect0c.avfx",
+        "vfx/common/eff/dk10ht_ice2c.avfx",
+        "vfx/common/eff/combo_001f.avfx",
+        "vfx/common/eff/dk02ht_da00c.avfx",
+        "vfx/common/eff/dk06gd_par0h.avfx",
+        "",
+    };
+
     public static byte[][] Separate(byte[] source, byte[] separator)
     {
         var Parts = new List<byte[]>();
