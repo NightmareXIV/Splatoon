@@ -120,12 +120,12 @@ namespace Splatoon
                         el.radius = 0;
                     }
                 }
-                if (el.type == 4)
+                if (el.type.EqualsAny(4, 5))
                 {
                     el.Filled = true;
                     el.includeRotation = true;
                 }
-                if (el.type == 1 || el.type == 3 || el.type == 4)
+                if (el.type.EqualsAny(1, 3, 4, 5))
                 {
                     SImGuiEx.SizedText("Account for rotation:", WidthElement);
                     ImGui.SameLine();
@@ -135,7 +135,7 @@ namespace Splatoon
                         DrawRotationSelector(el, i, k);
                     }
                 }
-                if (el.type == 1 || el.type == 3 || el.type == 4)
+                if (el.type.EqualsAny(1, 3, 4))
                 {
 
                     SImGuiEx.SizedText("Targeted object: ", WidthElement);
@@ -481,7 +481,7 @@ namespace Splatoon
                     }
                 }
 
-                if (el.type == 0 || el.type == 2 || el.type == 3)
+                if (el.type.EqualsAny(0, 2, 3, 5))
                 {
                     SImGuiEx.SizedText((el.type == 2 || el.type == 3) ? "Point A" : "Reference position: ", WidthElement);
                     ImGui.SameLine();
@@ -533,7 +533,7 @@ namespace Splatoon
                         ImGuiEx.Tooltip("Select on screen");
                     }
 
-                    if ((el.type == 1 || el.type == 3) && el.includeRotation)
+                    if (el.type.EqualsAny(1, 3) && el.includeRotation)
                     {
                         ImGui.SameLine();
                         ImGuiEx.Text("Angle: " + RadToDeg(AngleBetweenVectors(0, 0, 10, 0, el.type == 1 ? 0 : el.refX, el.type == 1 ? 0 : el.refY, el.offX, el.offY)));
@@ -621,7 +621,7 @@ namespace Splatoon
                     }
                 }
 
-                if (el.type == 4)
+                if (el.type.EqualsAny(4, 5))
                 {
                     SImGuiEx.SizedText("Angle:", WidthElement);
                     ImGui.SameLine();

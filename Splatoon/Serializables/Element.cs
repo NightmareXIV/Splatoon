@@ -7,7 +7,7 @@ public class Element
 {
     [NonSerialized]
     public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
-    "Line between two fixed coordinates", "Line relative to object position", "Cone relative to object position (beta)"};
+    "Line between two fixed coordinates", "Line relative to object position", "Cone relative to object position", "Cone at fixed coordinates"};
     [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
     [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "Placeholder", "NPC Name ID", "VFX Path" };
 
@@ -20,7 +20,8 @@ public class Element
     /// 1: Object relative to actor position | 
     /// 2: Line between two fixed coordinates | 
     /// 3: Line relative to object pos | 
-    /// 4: Cone relative to object position
+    /// 4: Cone relative to object position |
+    /// 5: Cone at fixed coordinates
     /// </summary>
     public int type;
     public Element(int t)

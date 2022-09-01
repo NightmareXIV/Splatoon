@@ -570,7 +570,8 @@ public unsafe class Splatoon : IDalamudPlugin
                         {
                             Objects = displayObjects,
                             ShowUntil = Environment.TickCount64 + (int)(l.FreezeFor * 1000f),
-                        });
+                            ShowAt = Environment.TickCount64 + (int)(l.FreezeDisplayDelay * 1000f)
+                        }) ;
                         l.freezeInfo.AllowRefreezeAt = Environment.TickCount64 + (int)(l.IntervalBetweenFreezes * 1000f);
                     }
                     displayObjects = a;
@@ -593,7 +594,10 @@ public unsafe class Splatoon : IDalamudPlugin
             }
             else
             {
-                l.freezeInfo.States.RemoveAt(i);
+                if (x.IsExpired())
+                {
+                    l.freezeInfo.States.RemoveAt(i);
+                }
             }
         }
     }
@@ -815,13 +819,26 @@ public unsafe class Splatoon : IDalamudPlugin
                     displayObjects.Add(new DisplayObjectLine(e.refX, e.refY, e.refZ, e.offX, e.offY, e.offZ, e.thicc, e.color));
             }
         }
-        /*else if(e.type == 4)
+        else if(e.type == 5)
         {
-            if (e.Polygon.Count > 2)
+            if (e.coneAngleMax > e.coneAngleMin)
             {
-                displayObjects.Add(new DisplayObjectPolygon(e));
+                var pos = new Vector3(e.refX + e.offX, e.refY + e.offY, e.refZ + e.offZ);
+                for (var x = e.coneAngleMin; x < e.coneAngleMax; x += GetFillStepCone(e.FillStep))
+                {
+                    var angle = e.FaceMe ?
+                        (180 - (MathHelper.GetRelativeAngle(new Vector2(e.refX + e.offX, e.refY + e.offY), Svc.ClientState.LocalPlayer.Position.ToVector2()) - x.Float())).DegreesToRadians()
+                        : (-x.Float()).DegreesToRadians();
+                    AddConeLine(pos, angle, e, e.radius);
+                }
+                {
+                    var angle = e.FaceMe ?
+                        (180 - (MathHelper.GetRelativeAngle(new Vector2(e.refX + e.offX, e.refY + e.offY), Svc.ClientState.LocalPlayer.Position.ToVector2()) - e.coneAngleMax.Float())).DegreesToRadians()
+                        : (-e.coneAngleMax.Float()).DegreesToRadians();
+                    AddConeLine(pos, angle, e, e.radius);
+                }
             }
-        }*/
+        }
     }
 
     void AddAlternativeFillingRect(DisplayObjectRect rect, float step)

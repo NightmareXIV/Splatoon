@@ -15,10 +15,16 @@
     {
         internal HashSet<DisplayObject> Objects;
         internal long ShowUntil;
+        internal long ShowAt = 0;
 
         internal bool IsActive()
         {
-            return ShowUntil > Environment.TickCount64;
+            return ShowUntil > Environment.TickCount64 && Environment.TickCount64 >= ShowAt;
+        }
+
+        internal bool IsExpired()
+        {
+            return ShowUntil < Environment.TickCount64;
         }
     }
 
