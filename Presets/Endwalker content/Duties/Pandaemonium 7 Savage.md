@@ -1,4 +1,3 @@
-## All of these presets are not much tested, not precisely tweaked and not final
 [EN] Stack tankbuster:
 ```
 ~Lv2~{"Name":"P7S Stack Tankbuster","Group":"P7S","ZoneLockH":[1086],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":9.0,"color":1342242601,"refActorPlaceholder":["<t1>","<t2>"],"refActorComparisonType":5,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"Agdistis begins casting Condensed Aero II."}}]}
