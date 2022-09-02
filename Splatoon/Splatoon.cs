@@ -341,7 +341,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 }
             }
             if (Profiler.Enabled) Profiler.MainTickDequeue.StartTick();
-            if (tickScheduler.TryDequeue(out var action))
+            while (tickScheduler.TryDequeue(out var action))
             {
                 action.Invoke();
             }

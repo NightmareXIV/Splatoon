@@ -110,65 +110,18 @@ namespace Splatoon
                         });
                         ImGui.SetCursorPos(curCursor);
 
-                        ImGui.BeginTabBar("SplatoonSettings");
-                        if (ImGui.BeginTabItem("General settings"))
-                        {
-                            DisplayGeneralSettings();
-                            ImGui.EndTabItem();
-                        }
-                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.Green);
-                        if (ImGui.BeginTabItem("Layouts"))
-                        {
-                            ImGui.PopStyleColor();
-                            DislayLayouts();
-                            ImGui.EndTabItem();
-                        }
-                        else
-                        {
-                            ImGui.PopStyleColor();
-                        }
+                        ImGuiEx.EzTabBar("SplatoonSettings",
+                            ("General", DisplayGeneralSettings, null, true),
+                            ("Layouts", DislayLayouts, Colors.Green.ToVector4(), true),
+                            ("Logger", DisplayLogger, null, true),
+                            ("Explorer", Explorer.Draw, null, true),
+                            ("Debug", DisplayDebug, null, true),
+                            ("Log", DisplayLog, null, true),
+                            ("Dynamic", DisplayDynamicElements, null, true),
+                            ("Profiling", DisplayProfiling, null, true),
+                            ("Contribute", Contribute.Draw, ImGuiColors.ParsedGold, true)
 
-                        if (ImGui.BeginTabItem("Logger"))
-                        {
-                            DisplayLogger();
-                            ImGui.EndTabItem();
-                        }
-                        if (ImGui.BeginTabItem("Explorer"))
-                        {
-                            Explorer.Draw();
-                            ImGui.EndTabItem();
-                        }
-                        if (ImGui.BeginTabItem("Debug"))
-                        {
-                            DisplayDebug();
-                            ImGui.EndTabItem();
-                        }
-                        if (ImGui.BeginTabItem("Log"))
-                        {
-                            DisplayLog();
-                            ImGui.EndTabItem();
-                        }
-                        if (ImGui.BeginTabItem("Dynamic"))
-                        {
-                            DisplayDynamicElements();
-                            ImGui.EndTabItem();
-                        }
-                        if (ImGui.BeginTabItem("Profiling"))
-                        {
-                            DisplayProfiling();
-                            ImGui.EndTabItem();
-                        }
-                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedGold);
-                        if (ImGui.BeginTabItem("Contribute"))
-                        {
-                            ImGui.PopStyleColor();
-                            Contribute.Draw();
-                            ImGui.EndTabItem();
-                        }
-                        else
-                        {
-                            ImGui.PopStyleColor();
-                        }
+                            );
                     }
                 }
                 catch(Exception ex)
