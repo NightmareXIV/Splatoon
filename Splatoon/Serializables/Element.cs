@@ -122,6 +122,9 @@ public class Element
     [DefaultValue("")] public string refActorVFXPath = "";
     [DefaultValue(0)] public int refActorVFXMin = 0;
     [DefaultValue(0)] public int refActorVFXMax = 0;
+    [DefaultValue(false)] public bool LimitRotation = false;
+    [DefaultValue(0)] public float RotationMax = 0;
+    [DefaultValue(0)] public float RotationMin = 0;
 
 
     public bool ShouldSerializerefActorVFXPath()

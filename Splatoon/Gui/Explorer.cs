@@ -57,7 +57,7 @@ namespace Splatoon.Gui
             ImGuiEx.TextCopy($"GameObject {obj}");
             ImGuiEx.TextCopy($"ObjectKind: {obj.ObjectKind}");
             ImGuiEx.TextCopy($"Position: {obj.Position.X} {obj.Position.Y} {obj.Position.Z}");
-            ImGuiEx.TextCopy($"Rotation: {obj.Rotation}");
+            ImGuiEx.TextCopy($"Rotation: {obj.Rotation}/{360 - (obj.Rotation.RadiansToDegrees() + 180)}");
             ImGuiEx.TextCopy($"Vector3 distance: {Vector3.Distance(obj.Position, Svc.ClientState.LocalPlayer.Position)}");
             ImGuiEx.TextCopy($"Vector2 distance: {Vector2.Distance(obj.Position.ToVector2(), Svc.ClientState.LocalPlayer.Position.ToVector2())}");
             ImGuiEx.TextCopy($"Object ID long: {((long)obj.Struct()->GetObjectID()).Format()}");
@@ -79,6 +79,9 @@ namespace Splatoon.Gui
                 ImGuiEx.TextCopy($"ModelCharaId: {c.Struct()->ModelCharaId}");
                 ImGuiEx.TextCopy($"ModelCharaId_2: {c.Struct()->ModelCharaId_2}");
                 ImGuiEx.TextCopy($"Visible: {c.IsCharacterVisible()}");
+                ImGuiEx.TextCopy($"VfxData: {(IntPtr)c.Struct()->VfxData:X16}");
+                ImGuiEx.TextCopy($"VfxData2: {(IntPtr)c.Struct()->VfxData2:X16}");
+                ImGuiEx.TextCopy($"Omen: {(IntPtr)c.Struct()->Omen:X16}");
                 ImGuiEx.Text("VFX");
                 if(c.TryGetVfx(out var fx))
                 {

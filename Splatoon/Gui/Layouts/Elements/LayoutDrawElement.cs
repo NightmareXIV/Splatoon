@@ -460,6 +460,33 @@ namespace Splatoon
                         ImGui.Checkbox("Invert##dist", ref el.LimitDistanceInvert);
                     }
 
+
+                    SImGuiEx.SizedText("Rotation limit", WidthElement);
+                    ImGui.SameLine();
+                    ImGui.Checkbox("##rotaLimit", ref el.LimitRotation);
+                    if (el.LimitRotation)
+                    {
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(50f);
+                        var rot1 = 180 - el.RotationMin.RadiansToDegrees();
+                        if (ImGui.DragFloat("##rotamax", ref rot1, 0.1f, -360f, 360f, $"{rot1:F1}"))
+                        {
+                            el.RotationMin = (180 - rot1).DegreesToRadians();
+                        }
+
+                        ImGui.SameLine();
+                        ImGuiEx.Text("-");
+                        ImGui.SameLine();
+
+
+                        ImGui.SetNextItemWidth(50f);
+                        var rot2 = 180 - el.RotationMax.RadiansToDegrees();
+                        if (ImGui.DragFloat("##rotamin", ref rot2, 0.1f, -360f, 360f, $"{rot2:F1}"))
+                        {
+                            el.RotationMax = (180 - rot2).DegreesToRadians();
+                        }
+                    }
+
                     if (el.refActorType == 0)
                     {
                         SImGuiEx.SizedText("Object life time:", WidthElement);
