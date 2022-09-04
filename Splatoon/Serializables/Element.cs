@@ -126,6 +126,15 @@ public class Element
     [DefaultValue(0)] public float RotationMax = 0;
     [DefaultValue(0)] public float RotationMin = 0;
 
+    public bool ShouldSerializeRotationMax()
+    {
+        return this.ShouldSerializeRotationMin();
+    }
+
+    public bool ShouldSerializeRotationMin()
+    {
+        return this.LimitRotation;
+    }
 
     public bool ShouldSerializerefActorVFXPath()
     {

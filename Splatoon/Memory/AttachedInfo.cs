@@ -129,9 +129,11 @@ namespace Splatoon.Memory
                         {
                             CastInfos[b.Address] = new(b.CastActionId, Environment.TickCount64 - (long)(b.CurrentCastTime * 1000));
                             Casters.Add(b.Address);
+                            var text = $"{b.Name} starts casting {b.CastActionId} ({b.NameId}>{b.CastActionId})";
+                            P.ChatMessageQueue.Enqueue(text);
                             if (P.Config.Logging)
                             {
-                                Logger.Log($"{b.Name} starts casting {b.CastActionId}");
+                                Logger.Log(text);
                             }
                         }
                     }
