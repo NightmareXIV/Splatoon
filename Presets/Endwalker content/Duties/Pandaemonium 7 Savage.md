@@ -1,4 +1,3 @@
-## All of these presets are not much tested, not precisely tweaked and not final
 [EN] Stack tankbuster:
 ```
 ~Lv2~{"Name":"P7S Stack Tankbuster","Group":"P7S","ZoneLockH":[1086],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":9.0,"color":1342242601,"refActorPlaceholder":["<t1>","<t2>"],"refActorComparisonType":5,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"Agdistis begins casting Condensed Aero II."}}]}
@@ -24,9 +23,19 @@
 ~Lv2~{"Name":"P7S Immature Io Circle AOE","Group":"P7S","ZoneLockH":[1086],"ElementsL":[{"Name":"","type":1,"radius":10.0,"color":1006633215,"refActorNPCNameID":11378,"refActorComparisonType":6,"onlyVisible":true,"Filled":true}]}
 ```
 
-[International] Reminder of first debuff mechanic
+[International] Spread: first preset displays AOE circle around you when debuff is about to expire. 
 ```
-~Lv2~{"Name":"P7S First Debuff Mechanic - Resolve","Group":"P7S","ZoneLockH":[1086],"ElementsL":[{"Name":"3309 - stack","type":1,"radius":6.0,"color":1358952704,"overlayBGColor":4278190080,"overlayTextColor":4294952704,"overlayVOffset":2.0,"overlayFScale":2.0,"overlayText":">>> Stack <<<","refActorNameIntl":{"En":"*"},"refActorRequireBuff":true,"refActorBuffId":[3309],"refActorUseBuffTime":true,"refActorBuffTimeMax":7.0,"refActorType":1,"Filled":true},{"Name":"3397 - spread","type":1,"radius":6.0,"color":1343618816,"overlayBGColor":4278190080,"overlayTextColor":4280024832,"overlayVOffset":2.0,"overlayFScale":2.0,"overlayText":"<<< SPREAD >>>","refActorNameIntl":{"En":"*"},"refActorRequireBuff":true,"refActorBuffId":[3397],"refActorUseBuffTime":true,"refActorBuffTimeMax":7.0,"refActorType":1,"Filled":true}]}
+~Lv2~{"Name":"P7S Spreads","Group":"P7S","ZoneLockH":[1086],"ElementsL":[{"Name":"3397 - spread","type":1,"radius":6.2,"color":1175846656,"overlayBGColor":4278190080,"overlayTextColor":4280024832,"overlayVOffset":2.0,"overlayFScale":2.0,"overlayText":"<<< SPREAD >>>","refActorNameIntl":{"En":"*"},"refActorRequireBuff":true,"refActorBuffId":[3397,3308,3310,3391,3392,3393],"refActorUseBuffTime":true,"refActorBuffTimeMax":8.0,"refActorType":1,"Filled":true}]}
+```
+
+[International] Spread: highlights players with debuff if you're standing too close to them. **This is preset for DPS, if you are tank, replace placeholders to `<t2>`, `<h1>` and `<h2>`, if you're healer, replace them to `<t1>`, `<t2>`, `<h2>`**.
+```
+~Lv2~{"Name":"P7S Other Players Spreads","Group":"P7S","ZoneLockH":[1086],"ElementsL":[{"Name":"3397 - spread","type":1,"radius":6.2,"color":3355508706,"overlayBGColor":4278190080,"overlayTextColor":4280024832,"overlayVOffset":2.0,"overlayFScale":2.0,"thicc":4.0,"overlayText":"<<< SPREAD >>>","refActorPlaceholder":["<d2>","<d3>","<d4>"],"refActorRequireBuff":true,"refActorBuffId":[3397,3308,3310,3391,3392,3393],"refActorUseBuffTime":true,"refActorBuffTimeMax":6.0,"refActorComparisonType":5}],"MaxDistance":6.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+```
+
+[International] Purgation stack safe spot. Remembers when first stack was dropped and highlights that spot.
+```
+~Lv2~{"Name":"P7S Purgation safe spot drop","Group":"P7S","ZoneLockH":[1086],"ElementsL":[{"Name":"","type":1,"radius":3.0,"color":4294573824,"thicc":5.0,"overlayText":"Stacks here","refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3311],"refActorUseBuffTime":true,"refActorBuffTimeMax":0.5,"onlyTargetable":true}],"Freezing":true,"FreezeFor":65.0,"IntervalBetweenFreezes":65.0}
 ```
 
 [International] Bought of Attis - OUT
