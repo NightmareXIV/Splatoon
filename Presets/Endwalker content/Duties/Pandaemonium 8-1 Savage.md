@@ -34,6 +34,11 @@
 ~Lv2~{"Name":"P8S Nest of flamevipers Self","Group":"P8S-1","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":3,"refY":20.0,"radius":2.5,"color":1677766143,"refActorNPCNameID":11399,"refActorRequireCast":true,"refActorCastId":[31007],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true,"FaceMe":true}]}
 ```
 
+[International] Rearing Rampage spread. Displays your AOE and AOE of players who are too close to you.
+```
+~Lv2~{"Name":"P8S Rearing Rampage Spread","Group":"P8S-1","ZoneLockH":[1088],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":6.2,"color":3355508223,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5},{"Name":"","type":1,"radius":6.2,"color":1342177535,"thicc":5.0,"refActorPlaceholder":["<1>","<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5,"refActorType":1,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":13.0,"Match":"(11399>31027)"}],"MaxDistance":6.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+```
+
 [International] Gorgons (both): see where gorgons will end up early
 ```
 ~Lv2~{"Name":"P8S Early see Gorgons","Group":"P8S-1","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":1,"radius":3.0,"color":3372155125,"thicc":5.0,"refActorNPCNameID":11517,"refActorRequireCast":true,"refActorCastId":[31019],"refActorComparisonType":6,"tether":true,"Filled":true}]}
