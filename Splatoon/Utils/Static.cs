@@ -11,7 +11,7 @@ namespace Splatoon.Utils;
 static unsafe class Static
 {
 
-    internal static uint[] BlacklistedMessages = new uint[] { 4777, 4139, 4398, 2091, 2218, 2350, 4397, 2224, 4270, 4269, 2729, 4400, 10537, 10409, 10543, 2222, 4401 };
+    internal static uint[] BlacklistedMessages = new uint[] { 4777, 4139, 4398, 2091, 2218, 2350, 4397, 2224, 4270, 4269, 2729, 4400, 10537, 10409, 10543, 2222, 4401, 2874, 4905, 12585, 4783, 4140 };
 
     internal static string[] BlacklistedVFX = new string[]
     {
@@ -26,6 +26,18 @@ static unsafe class Static
         "vfx/common/eff/combo_001f.avfx",
         "vfx/common/eff/dk02ht_da00c.avfx",
         "vfx/common/eff/dk06gd_par0h.avfx",
+        "vfx/common/eff/dk04ht_fir0h.avfx",
+        "vfx/common/eff/dk05th_stdn0t.avfx",
+        "vfx/common/eff/dk06mg_mab0h.avfx",
+        "vfx/common/eff/mgc_2kt001c1t.avfx",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
         "",
     };
 

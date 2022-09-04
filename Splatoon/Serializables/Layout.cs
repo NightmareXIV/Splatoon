@@ -109,7 +109,7 @@ public class Layout
 
     public bool ShouldSerializeTriggers()
     {
-        return Triggers.Count > 0;
+        return this.UseTriggers && Triggers.Count > 0;
     }
 
     public bool ShouldSerializeElements()
