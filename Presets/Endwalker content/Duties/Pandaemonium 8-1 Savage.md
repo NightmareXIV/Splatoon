@@ -21,7 +21,7 @@
 
 [International] Octaflare (casted only): displays your AOE and highlights players that are too close
 ```
-~Lv2~{"Name":"P8S Octaflare spread (cast only)","Group":"P8S-1","ZoneLockH":[1088],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":6.2,"color":3355508223,"thicc":5.0,"refActorPlaceholder":["<1>","<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5},{"Name":"","type":1,"radius":6.2,"color":1342177535,"thicc":5.0,"refActorPlaceholder":["<1>","<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5,"refActorType":1,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.5,"Match":"(11399>31005)"}],"MaxDistance":6.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+~Lv2~{"Name":"P8S Octaflare spread (cast only)","Group":"P8S-1","ZoneLockH":[1088],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":6.2,"color":3355508223,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5},{"Name":"","type":1,"radius":6.2,"color":1342177535,"thicc":5.0,"refActorPlaceholder":["<1>","<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5,"refActorType":1,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.5,"Match":"(11399>31005)"}],"MaxDistance":6.2,"UseDistanceLimit":true,"DistanceLimitType":1}
 ```
 
 [International] Tetraflare (casted only): displays tether to your designated partner if you have a static one (**you are required to modify name to be your partner's in Static partner: tether element** or disable it if your group is plagued by melee uptime strats and you have to constantly adjust) and just a reminder above your head if you do not have one.
