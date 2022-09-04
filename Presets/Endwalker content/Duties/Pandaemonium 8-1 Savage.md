@@ -1,3 +1,4 @@
+**If you have imported presets before 05.09, reimport at least multipreset and storages**
 [International] Display danger zone on Gorgons mechanic cast.
 ```
 ~Lv2~{"Name":"P8S Out/Gorgons","Group":"P8S-1","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":1,"radius":0.2,"color":2348810495,"refActorNPCNameID":11399,"refActorRequireCast":true,"refActorCastId":[31052],"refActorUseCastTime":true,"refActorCastTimeMax":12.0,"refActorUseOvercast":true,"refActorComparisonType":6,"includeHitbox":true,"onlyTargetable":true,"Filled":true}]}
