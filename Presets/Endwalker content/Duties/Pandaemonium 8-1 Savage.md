@@ -31,7 +31,7 @@
 
 [International] Nest of Flamevipers. Displays line AOE from boss targeting you.
 ```
-~Lv2~{"Name":"P8S Nest of flamevipers Self","Group":"P8S-1","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":3,"refY":20.0,"radius":2.5,"color":1677766143,"refActorNPCNameID":11399,"refActorRequireCast":true,"refActorCastId":[31007],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true,"FaceMe":true}]}
+~Lv2~{"Name":"P8S Nest of flamevipers Self","Group":"P8S-1","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":3,"refY":30.0,"radius":2.5,"color":1677766143,"refActorNPCNameID":11399,"refActorRequireCast":true,"refActorCastId":[31007],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true,"FaceMe":true}]}
 ```
 
 [International] Rearing Rampage spread. Displays your AOE and AOE of players who are too close to you.
