@@ -19,6 +19,21 @@
 ~Lv2~{"Name":"P8S Diflare reminder","Group":"P8S-1","ZoneLockH":[1088],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"overlayBGColor":3355443200,"overlayTextColor":4278190335,"overlayFScale":1.5,"thicc":0.0,"overlayText":">>> Stored: 4 STACK <<<","refActorNPCNameID":11399,"refActorUseCastTime":true,"refActorCastTimeMax":60.0,"refActorUseOvercast":true,"refActorRequireBuff":true,"refActorBuffId":[2552],"refActorComparisonType":6,"onlyTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":60.0,"Match":"(11399>30999)"}]}
 ```
 
+[International] Octaflare (casted only): displays your AOE and highlights players that are too close
+```
+~Lv2~{"Name":"P8S Octaflare spread (cast only)","Group":"P8S-1","ZoneLockH":[1088],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":6.2,"color":3355508223,"thicc":5.0,"refActorPlaceholder":["<1>","<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5},{"Name":"","type":1,"radius":6.2,"color":1342177535,"thicc":5.0,"refActorPlaceholder":["<1>","<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5,"refActorType":1,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.5,"Match":"(11399>31005)"}],"MaxDistance":6.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+```
+
+[International] Tetraflare (casted only): displays tether to your designated partner if you have a static one (**you are required to modify name to be your partner's in Static partner: tether element** or disable it if your group is plagued by melee uptime strats and you have to constantly adjust) and just a reminder above your head if you do not have one.
+```
+~Lv2~{"Name":"P8S Tetraflare 2 stack (cast only)","Group":"P8S-1","ZoneLockH":[1088],"DCond":5,"ElementsL":[{"Name":"Static partner: tether","type":1,"radius":0.0,"color":3372217088,"thicc":5.0,"refActorName":"YOUR PARTNER'S NAME HERE","onlyTargetable":true,"tether":true},{"Name":"Reminder","type":1,"radius":0.0,"overlayBGColor":4278190080,"overlayTextColor":4294959104,"overlayVOffset":2.0,"overlayFScale":2.0,"thicc":0.0,"overlayText":"> 2 STACK <","refActorType":1}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.5,"Match":"(11399>31006)"}],"MaxDistance":6.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+```
+
+[International] Nest of Flamevipers. Displays line AOE from boss targeting you.
+```
+~Lv2~{"Name":"P8S Nest of flamevipers Self","Group":"P8S-1","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":3,"refY":20.0,"radius":2.5,"color":1677766143,"refActorNPCNameID":11399,"refActorRequireCast":true,"refActorCastId":[31007],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true,"FaceMe":true}]}
+```
+
 [International] Gorgons (both): see where gorgons will end up early
 ```
 ~Lv2~{"Name":"P8S Early see Gorgons","Group":"P8S-1","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":1,"radius":3.0,"color":3372155125,"thicc":5.0,"refActorNPCNameID":11517,"refActorRequireCast":true,"refActorCastId":[31019],"refActorComparisonType":6,"tether":true,"Filled":true}]}
