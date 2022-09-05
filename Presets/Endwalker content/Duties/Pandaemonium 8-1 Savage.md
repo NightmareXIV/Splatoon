@@ -41,7 +41,7 @@
 
 [International] Rearing Rampage spread. Displays your AOE and AOE of players who are too close to you.
 ```
-~Lv2~{"Name":"P8S Rearing Rampage Spread","Group":"P8S-1","ZoneLockH":[1088],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":6.2,"color":3355508223,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5},{"Name":"","type":1,"radius":6.2,"color":1342177535,"thicc":5.0,"refActorPlaceholder":["<1>","<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5,"refActorType":1,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":12.0,"Match":"(11399>31027)"}],"MaxDistance":6.2,"UseDistanceLimit":true,"DistanceLimitType":1,"Phase":1}
+~Lv2~{"Name":"P8S Rearing Rampage Spread","Group":"P8S-1","ZoneLockH":[1088],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":6.2,"color":3355508223,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5},{"Name":"","type":1,"radius":6.2,"color":1342177535,"thicc":5.0,"refActorPlaceholder":["<1>","<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5,"refActorType":1,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":12.5,"Match":"(11399>31027)"}],"MaxDistance":6.2,"UseDistanceLimit":true,"DistanceLimitType":1,"Phase":1}
 ```
 
 [International] Gorgons (both): see where gorgons will end up early
