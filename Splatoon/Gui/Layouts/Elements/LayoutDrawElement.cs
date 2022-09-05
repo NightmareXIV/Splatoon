@@ -701,7 +701,7 @@ namespace Splatoon
                     ImGui.SameLine();
                     ImGui.Checkbox($"Filled##{i + k}", ref el.Filled);
                 }
-                if ((el.type != 2 && el.type != 3) || el.includeRotation)
+                if ((el.type != 3) || el.includeRotation)
                 {
                     if (!(el.type == 3 && !el.includeRotation))
                     {

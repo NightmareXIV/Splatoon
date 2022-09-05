@@ -152,6 +152,7 @@ public unsafe class Splatoon : IDalamudPlugin
         AttachedInfo.Init();
         Logger.OnTerritoryChanged();
         Init = true;
+        SplatoonIPC.Init();
     }
 
     public void Dispose()
@@ -167,6 +168,7 @@ public unsafe class Splatoon : IDalamudPlugin
             P = null;
             return;
         }
+        Safe(SplatoonIPC.Dispose);
         Loaded = false;
         Init = false;
         Safe(delegate { Config.Save(); });
@@ -1081,6 +1083,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     .Replace("$NPCID", $"{go.Struct()->GetNpcID().Format()}")
                     .Replace("$LIFE", $"{go.GetLifeTimeSeconds():F1}")
                     .Replace("$DISTANCE", $"{Vector3.Distance((Svc.ClientState.LocalPlayer?.Position ?? Vector3.Zero), go.Position):F1}")
+                    .Replace("$CAST", go is BattleChara chr3?$"[{chr3.CastActionId.Format()}] {chr3.CurrentCastTime}/{chr3.TotalCastTime}":"")
                     .Replace("\\n", "\n");
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
