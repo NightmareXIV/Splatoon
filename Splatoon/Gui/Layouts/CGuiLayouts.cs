@@ -50,14 +50,7 @@ namespace Splatoon
                     ImGui.SameLine(0, 1);
                     if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport))
                     {
-                        if(Static.TryImportLayout(ImGui.GetClipboardText(), out var l))
-                        {
-                            CurrentLayout = l;
-                            if(l.Group != "")
-                            {
-                                OpenedGroup.Add(l.Group);
-                            }
-                        }
+                        ImportFromClipboard();
                     }
                     ImGuiEx.Tooltip("Import from clipboard");
                     ImGui.SameLine(0, 1);
@@ -298,6 +291,20 @@ namespace Splatoon
                 ImGui.EndTable();
             }
             ImGui.EndChild();
+        }
+
+        internal static bool ImportFromClipboard()
+        {
+            if (Static.TryImportLayout(ImGui.GetClipboardText(), out var l))
+            {
+                CurrentLayout = l;
+                if (l.Group != "")
+                {
+                    OpenedGroup.Add(l.Group);
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

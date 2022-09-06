@@ -90,6 +90,10 @@ namespace Splatoon
                             p.ChangelogGui.openLoggedOut = true;
                         }
                     }
+                    else if (RapidImport.RapidImportEnabled)
+                    {
+                        RapidImport.Draw();
+                    }
                     else
                     {
                         var curCursor = ImGui.GetCursorPos();
@@ -113,6 +117,7 @@ namespace Splatoon
                         ImGuiEx.EzTabBar("SplatoonSettings",
                             ("General", DisplayGeneralSettings, null, true),
                             ("Layouts", DislayLayouts, Colors.Green.ToVector4(), true),
+                            ("Import", RapidImport.Draw, null, true),
                             ("Logger", DisplayLogger, null, true),
                             ("Explorer", Explorer.Draw, null, true),
                             ("Debug", DisplayDebug, null, true),

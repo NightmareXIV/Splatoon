@@ -33,7 +33,8 @@ namespace Splatoon.Modules
             EndLogging();
             if (P.Config.Logging)
             {
-                if (Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Svc.ClientState.TerritoryType).ContentFinderCondition.Value.Name.ToString() != String.Empty)
+                var name = Svc.Data.GetExcelSheet<TerritoryType>().GetRow(Svc.ClientState.TerritoryType)?.ContentFinderCondition.Value?.Name.ToString();
+                if (name != String.Empty && name != null)
                 {
                     BeginLogging();
                 }
@@ -57,5 +58,5 @@ namespace Splatoon.Modules
                 currentLogger = null;
             }
         }
-        }
+    }
 }

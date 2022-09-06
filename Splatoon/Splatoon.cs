@@ -85,7 +85,7 @@ public unsafe class Splatoon : IDalamudPlugin
             return;
         }
         Loaded = true;
-        ECommons.ECommons.Init(pluginInterface, Module.ObjectLife, Module.ObjectFunctions);
+        ECommons.ECommons.Init(pluginInterface, Module.ObjectLife, Module.ObjectFunctions, Module.DalamudReflector);
         Svc.Commands.RemoveHandler("/loadsplatoon");
         var configRaw = Svc.PluginInterface.GetPluginConfig();
         Config = configRaw as Configuration ?? new Configuration();
@@ -200,7 +200,7 @@ public unsafe class Splatoon : IDalamudPlugin
         {
             Name = name,
             Elements = elements,
-            DestroyTime = destroyConditions.Select(x => x + Environment.TickCount64).ToArray(),
+            DestroyTime = destroyConditions,
             Layouts = Array.Empty<Layout>()
         }) ;
     }
