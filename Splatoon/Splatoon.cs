@@ -194,6 +194,22 @@ public unsafe class Splatoon : IDalamudPlugin
         loader = new Loader(this, pluginInterface, framework, commands);
     }
 
+    public void AddDynamicElements(string name, Element[] elements, long[] destroyConditions)
+    {
+        dynamicElements.Add(new()
+        {
+            Name = name,
+            Elements = elements,
+            DestroyTime = destroyConditions.Select(x => x + Environment.TickCount64).ToArray(),
+            Layouts = Array.Empty<Layout>()
+        }) ;
+    }
+
+    public void RemoveDynamicElements(string name)
+    {
+        dynamicElements.RemoveAll(x => x.Name == name);
+    }
+
     internal static readonly string[] InvalidSymbols = { "", "", "", "“", "”", "" };
     internal void OnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {
