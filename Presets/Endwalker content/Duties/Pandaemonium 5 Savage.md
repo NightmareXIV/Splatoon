@@ -32,7 +32,8 @@
 ```
 ~Lv2~{"Name":"P5S Venom Squall - spread","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":5.2,"color":1342239231,"refActorType":1,"Filled":true},{"Name":"Other","type":1,"radius":5.2,"color":4278252031,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.9,"Match":"(11440>30486)"}],"MaxDistance":5.2,"UseDistanceLimit":true,"DistanceLimitType":1}
 ```
-```~Lv2~{"Name":"P5S Venom Squall - drop","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":0.0,"color":1342239231,"overlayBGColor":4278190080,"overlayTextColor":4278190335,"overlayVOffset":2.0,"thicc":0.0,"overlayText":"DROP PUDDLE MIDDLE","refActorType":1}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":2.9,"Match":"(11440>30486)","MatchDelay":8.9}]}
+```
+~Lv2~{"Name":"P5S Venom Squall - drop","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":0.0,"color":1342239231,"overlayBGColor":4278190080,"overlayTextColor":4278190335,"overlayVOffset":2.0,"thicc":0.0,"overlayText":"DROP PUDDLE MIDDLE","refActorType":1}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":2.9,"Match":"(11440>30486)","MatchDelay":8.9}]}
 ```
 ```
 ~Lv2~{"Name":"P5S Venom Squall - stack","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":4.8,"Donut":10.0,"color":1358167808,"overlayBGColor":4278190080,"overlayTextColor":3371433728,"overlayVOffset":2.0,"thicc":3.0,"overlayText":"STACK","FillStep":1.0,"refActorType":1},{"Name":"Designated healer (WRITE NAME)","type":1,"radius":0.0,"color":4278255376,"thicc":5.0,"refActorName":"NAME HERE","onlyTargetable":true,"tether":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.0,"Match":"(11440>30486)","MatchDelay":11.9}]}
