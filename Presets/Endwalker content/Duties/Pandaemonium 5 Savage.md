@@ -12,3 +12,39 @@
 ```
 ~Lv2~{"Name":"P5S Hunt - extra waymarks","Group":"P5S","DCond":5,"ElementsL":[{"Name":"ななめ01","type":2,"refX":120.0,"refY":80.0,"refZ":-300.0,"offX":80.0,"offY":120.0,"offZ":-300.0,"radius":0.0,"color":3372220415},{"Name":"ななめ02","type":2,"refX":80.0,"refY":80.0,"refZ":-300.0,"offX":120.0,"offY":120.0,"offZ":-300.0,"radius":0.0,"color":3372220415},{"Name":"【FMK】04","type":2,"refX":94.0,"refY":93.0,"refZ":-300.0,"offX":92.0,"offY":93.0,"offZ":-300.0,"radius":1.1,"color":16711882},{"Name":"【FMK】01","type":2,"refX":108.0,"refY":93.0,"refZ":-300.0,"offX":106.0,"offY":93.0,"offZ":-300.0,"radius":1.1,"color":255},{"Name":"【FMK】02","type":2,"refX":108.0,"refY":107.0,"refZ":-300.0,"offX":106.0,"offY":107.0,"offZ":-300.0,"radius":1.1,"color":65494},{"Name":"【FMK】03","type":2,"refX":92.0,"refY":107.0,"refZ":-300.0,"offX":94.0,"offY":107.0,"offZ":-300.0,"radius":1.1,"color":16718592}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":22.0,"Match":"飢えた","MatchIntl":{"En":"The hungry proto-Carbuncle begins its hunt!"}}]}
 ```
+
+[International] Diagonal knockback dash
+```
+~Lv2~{"Name":"P5S Diagonal knockback dash","Group":"P5S","ZoneLockH":[1082],"ElementsL":[{"Name":"","type":3,"refY":21.0,"radius":21.0,"color":1358951168,"refActorNPCNameID":11440,"refActorRequireCast":true,"refActorCastId":[30491],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}]}
+```
+
+[International] Tail to Claw/Claw to Tail
+```
+~Lv2~{"Name":"P5S Tail to Claw/Claw to Tail","Group":"P5S","ZoneLockH":[1082],"ElementsL":[{"Name":"Tail (cast)","type":3,"refY":-30.0,"radius":30.0,"color":1677721855,"refActorNPCNameID":11440,"refActorRequireCast":true,"refActorCastId":[31244],"refActorUseCastTime":true,"refActorCastTimeMax":6.3,"refActorUseOvercast":true,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true},{"Name":"Claw (cast)","type":3,"refY":30.0,"radius":30.0,"color":1677721855,"refActorNPCNameID":11440,"refActorRequireCast":true,"refActorCastId":[30479],"refActorUseCastTime":true,"refActorCastTimeMax":9.0,"refActorUseOvercast":true,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true},{"Name":"Tail (post-cast)","type":3,"refY":30.0,"radius":30.0,"color":1677721855,"refActorNPCNameID":11440,"refActorRequireCast":true,"refActorCastId":[31244],"refActorUseCastTime":true,"refActorCastTimeMin":6.3,"refActorCastTimeMax":11.0,"refActorUseOvercast":true,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true},{"Name":"Claw (post-cast)","type":3,"refY":-30.0,"radius":30.0,"color":1677721855,"refActorNPCNameID":11440,"refActorRequireCast":true,"refActorCastId":[30479],"refActorUseCastTime":true,"refActorCastTimeMin":9.0,"refActorCastTimeMax":11.0,"refActorUseOvercast":true,"refActorComparisonType":6,"includeRotation":true,"onlyUnTargetable":true}]}
+```
+
+[International] Raging claw cast
+```
+~Lv2~{"Name":"P5S Raging Claw cast","Group":"P5S","ZoneLockH":[1082],"ElementsL":[{"Name":"","type":3,"refY":40.0,"radius":30.0,"color":1358951168,"refActorNPCNameID":11440,"refActorRequireCast":true,"refActorCastId":[30458],"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}]}
+```
+
+[International] Venom Squall
+```
+~Lv2~{"Name":"P5S Venom Squall - spread","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":5.2,"color":1342239231,"refActorType":1,"Filled":true},{"Name":"Other","type":1,"radius":5.2,"color":4278252031,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.9,"Match":"(11440>30486)"}],"MaxDistance":5.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+```
+```~Lv2~{"Name":"P5S Venom Squall - drop","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":0.0,"color":1342239231,"overlayBGColor":4278190080,"overlayTextColor":4278190335,"overlayVOffset":2.0,"thicc":0.0,"overlayText":"DROP PUDDLE MIDDLE","refActorType":1}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":2.9,"Match":"(11440>30486)","MatchDelay":8.9}]}
+```
+```
+~Lv2~{"Name":"P5S Venom Squall - stack","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":4.8,"Donut":10.0,"color":1358167808,"overlayBGColor":4278190080,"overlayTextColor":3371433728,"overlayVOffset":2.0,"thicc":3.0,"overlayText":"STACK","FillStep":1.0,"refActorType":1},{"Name":"Designated healer (WRITE NAME)","type":1,"radius":0.0,"color":4278255376,"thicc":5.0,"refActorName":"NAME HERE","onlyTargetable":true,"tether":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.0,"Match":"(11440>30486)","MatchDelay":11.9}]}
+```
+
+[International] Venom Surge
+```
+~Lv2~{"Name":"P5S Venom Surge - stack","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":4.8,"Donut":10.0,"color":1358167808,"overlayBGColor":4278190080,"overlayTextColor":3371433728,"overlayVOffset":2.0,"thicc":3.0,"overlayText":"STACK","FillStep":1.0,"refActorType":1},{"Name":"Designated healer (WRITE NAME)","type":1,"radius":0.0,"color":4278255376,"thicc":5.0,"refActorName":"NAME HERE","onlyTargetable":true,"tether":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.9,"Match":"(11440>30487)"}]}
+```
+```
+~Lv2~{"Name":"P5S Venom Surge - drop","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":0.0,"color":1342239231,"overlayBGColor":4278190080,"overlayTextColor":4278190335,"overlayVOffset":2.0,"thicc":0.0,"overlayText":"DROP PUDDLE MIDDLE","refActorType":1}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":2.9,"Match":"(11440>30487)","MatchDelay":8.9}]}
+```
+```
+~Lv2~{"Name":"P5S Venom Surge - spread","Group":"P5S","ZoneLockH":[1082],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":5.2,"color":1342239231,"refActorType":1,"Filled":true},{"Name":"Other","type":1,"radius":5.2,"color":4278252031,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":6.0,"Match":"(11440>30487)","MatchDelay":11.9}],"MaxDistance":5.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+```
