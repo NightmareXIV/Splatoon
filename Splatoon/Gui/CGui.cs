@@ -121,7 +121,7 @@ namespace Splatoon
                             ("Logger", DisplayLogger, null, true),
                             ("Explorer", Explorer.Draw, null, true),
                             ("Debug", DisplayDebug, null, true),
-                            ("Log", DisplayLog, null, true),
+                            ("Log", InternalLog.PrintImgui, null, false),
                             ("Dynamic", DisplayDynamicElements, null, true),
                             ("Profiling", DisplayProfiling, null, true),
                             ("Contribute", Contribute.Draw, ImGuiColors.ParsedGold, true)

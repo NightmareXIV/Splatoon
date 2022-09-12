@@ -1,6 +1,6 @@
 ﻿global using Dalamud.Game.ClientState.Objects.Types;
 global using Dalamud.Interface;
-global using Dalamud.Logging;
+global using ECommons.Logging;
 global using Dalamud.Plugin;
 global using ECommons.DalamudServices;
 global using ECommons.ImGuiMethods;

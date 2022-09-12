@@ -31,7 +31,6 @@ public unsafe class Splatoon : IDalamudPlugin
     internal ChlogGui ChangelogGui = null;
     internal Configuration Config;
     internal Dictionary<ushort, TerritoryType> Zones;
-    internal string[] LogStorage = new string[100];
     internal long CombatStarted = 0;
     internal HashSet<DisplayObject> displayObjects = new();
     internal HashSet<Element> injectedElements = new();
@@ -85,7 +84,7 @@ public unsafe class Splatoon : IDalamudPlugin
             return;
         }
         Loaded = true;
-        ECommons.ECommons.Init(pluginInterface, Module.ObjectLife, Module.ObjectFunctions, Module.DalamudReflector);
+        ECommons.ECommons.Init(pluginInterface, this, Module.ObjectLife, Module.ObjectFunctions, Module.DalamudReflector);
         Svc.Commands.RemoveHandler("/loadsplatoon");
         var configRaw = Svc.PluginInterface.GetPluginConfig();
         Config = configRaw as Configuration ?? new Configuration();
@@ -1356,25 +1355,8 @@ public unsafe class Splatoon : IDalamudPlugin
     {
         if (tochat)
         {
-            Svc.Chat.Print("[Splatoon]" + s);
+            Svc.Chat.Print("[Splatoon] " + s);
         }
-        if (Config.dumplog)
-        {
-            try { PluginLog.Log(s); } catch (Exception) { }
-        }
-        var line = DateTimeOffset.Now.ToString() + ": " + s;
-        for (var i = 0; i < LogStorage.Length; i++)
-        {
-            if (LogStorage[i] == null)
-            {
-                LogStorage[i] = line;
-                return;
-            }
-        }
-        for (var i = 1; i < LogStorage.Length; i++)
-        {
-            LogStorage[i - 1] = LogStorage[i];
-        }
-        LogStorage[LogStorage.Length - 1] = line;
+        InternalLog.Information(s);
     }
 }
