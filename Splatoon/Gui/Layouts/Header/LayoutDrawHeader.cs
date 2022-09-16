@@ -121,7 +121,19 @@ partial class CGui
             ImGui.Combo("##dcn", ref layout.DCond, Layout.DisplayConditions, Layout.DisplayConditions.Length);
 
             ImGui.TableNextColumn();
-            ImGuiEx.TextV("Zone lock: ");
+            ImGuiEx.SetNextItemFullWidth();
+            if(ImGui.BeginCombo("##zlock", layout.IsZoneBlacklist?"Zone Blacklist":"Zone Whitelist"))
+            {
+                if (ImGui.Selectable("Whitelist mode"))
+                {
+                    layout.IsZoneBlacklist = false;
+                }
+                if (ImGui.Selectable("Blacklist mode"))
+                {
+                    layout.IsZoneBlacklist = true;
+                }
+                ImGui.EndCombo();
+            }
             ImGui.TableNextColumn();
             layout.DrawZlockSelector();
 

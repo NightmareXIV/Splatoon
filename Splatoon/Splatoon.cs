@@ -1232,7 +1232,7 @@ public unsafe class Splatoon : IDalamudPlugin
     {
         if (!i.Enabled) return false;
         if (i.DisableInDuty && Svc.Condition[ConditionFlag.BoundByDuty]) return false;
-        if (i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(Svc.ClientState.TerritoryType)) return false;
+        if ((i.ZoneLockH.Count > 0 && !i.ZoneLockH.Contains(Svc.ClientState.TerritoryType)).Invert(i.IsZoneBlacklist)) return false;
         if (i.Phase != 0 && i.Phase != this.Phase) return false;
         if (i.JobLock != 0 && !Bitmask.IsBitSet(i.JobLock, (int)Svc.ClientState.LocalPlayer.ClassJob.Id)) return false;
         if ((i.DCond == 1 || i.DCond == 3) && !Svc.Condition[ConditionFlag.InCombat]) return false;

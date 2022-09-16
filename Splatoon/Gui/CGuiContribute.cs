@@ -43,10 +43,10 @@
                 ProcessStart(url);
             }
             ImGui.SameLine();
-            if (ImGui.Button("Open Eternita's plugins repo"))
+            if (ImGui.Button("Open NightmareXIV plugins repo"))
             {
                 var url = "https://github.com/NightmareXIV/MyDalamudPlugins";
-                Svc.Chat.Print("[Splatoon] Eternita's plugin repo: " + url);
+                Svc.Chat.Print("[Splatoon] NightmareXIV plugin repo: " + url);
                 ProcessStart(url);
             }
             ImGui.Separator();
