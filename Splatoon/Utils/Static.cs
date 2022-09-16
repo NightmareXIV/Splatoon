@@ -200,6 +200,7 @@ static unsafe class Static
                 Layout l = new()
                 {
                     ZoneLockH = new HashSet<ushort>() { Svc.ClientState.TerritoryType },
+                    ZoneBlacklistH = new HashSet<ushort>() { Svc.ClientState.TerritoryType },
                     Name = "Legacy preset: " + lp.Name
                 };
                 if (lp.A != null && lp.A.Active) AddLegacyElement(l, "A", lp.A.ToElement("A", 0xff00ff00));

@@ -16,6 +16,7 @@ public class Layout
     [NonSerialized] internal string GUID = Guid.NewGuid().ToString();
     [NonSerialized] internal bool Delete = false;
     public HashSet<ushort> ZoneLockH = new();
+    public HashSet<ushort> ZoneBlacklistH = new ();
 
     /// <summary>
     /// 0: Always shown |
@@ -105,6 +106,11 @@ public class Layout
     public bool ShouldSerializeZoneLockH()
     {
         return ZoneLockH.Count > 0;
+    }
+
+    public bool ShouldSerializeZoneBlacklistH()
+    {
+        return ZoneBlacklistH.Count > 0;
     }
 
     public bool ShouldSerializeTriggers()

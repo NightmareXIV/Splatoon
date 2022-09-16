@@ -126,6 +126,11 @@ partial class CGui
             layout.DrawZlockSelector();
 
             ImGui.TableNextColumn();
+            ImGuiEx.Text("Zone blacklist: ");
+            ImGui.TableNextColumn();
+            layout.DrawZblacklistSelector();
+
+            ImGui.TableNextColumn();
             ImGuiEx.TextV("Job lock");
             ImGui.TableNextColumn();
             layout.DrawJlockSelector();
