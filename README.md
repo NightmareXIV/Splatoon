@@ -22,7 +22,7 @@ Chinese fork of Dalamud currently intentionally prevents usage of Splatoon by ad
 - Launch `Dalamud.Updater.exe` and wait until all pending updates are completed
 - Launch `unbanPlugins.bat`
 - Start Dalamud
-## More convenient way to deal with it will come in just a few days!
+## More convenient way to deal with it will come soon!
 
 # FAQ
 #### Is Splatoon safe to use?
