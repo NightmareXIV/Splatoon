@@ -8,7 +8,7 @@
 ~Lv2~{"Name":"P8S2 End of Days","Group":"P8S-2","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":3,"refY":40.0,"radius":5.0,"color":1677787131,"refActorNPCNameID":11406,"refActorRequireCast":true,"refActorCastId":[31371],"refActorCastTimeMax":7.0,"refActorUseOvercast":true,"refActorComparisonType":6,"includeRotation":true}],"Phase":2}
 ```
 
-[International] Early see towers (mechanic after revive)
+[International] Early see Dominion towers (mechanic after high concept 2)
 ```
-~Lv2~{"Name":"P8S2 Towers","Group":"P8S-2","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":1,"radius":3.0,"color":4278190335,"thicc":5.0,"refActorNPCNameID":11402,"refActorRequireCast":true,"refActorCastId":[31196],"refActorUseCastTime":true,"refActorCastTimeMin":3.0,"refActorCastTimeMax":7.0,"refActorComparisonType":6},{"Name":"","type":1,"radius":3.0,"color":4278255611,"thicc":5.0,"refActorNPCNameID":11402,"refActorRequireCast":true,"refActorCastId":[31196],"refActorUseCastTime":true,"refActorCastTimeMax":3.0,"refActorComparisonType":6}],"Phase":2}
+~Lv2~{"Name":"P8S2 Dominion Towers","Group":"P8S-2","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":1,"radius":3.0,"color":4278190335,"thicc":5.0,"refActorNPCNameID":11402,"refActorRequireCast":true,"refActorCastId":[31196],"refActorUseCastTime":true,"refActorCastTimeMin":3.0,"refActorCastTimeMax":7.0,"refActorComparisonType":6},{"Name":"","type":1,"radius":3.0,"color":4278255611,"thicc":5.0,"refActorNPCNameID":11402,"refActorRequireCast":true,"refActorCastId":[31196],"refActorUseCastTime":true,"refActorCastTimeMax":3.0,"refActorComparisonType":6}],"Phase":2}
 ```
