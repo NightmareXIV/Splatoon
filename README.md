@@ -16,13 +16,14 @@ Detailed instructions available here: https://github.com/NightmareXIV/MyDalamudP
 
 # CHINESE PLAYERS - ATTENTION!
 Chinese fork of Dalamud currently intentionally prevents usage of Splatoon by adding it into banned plugins list. Banned plugin list was originally created to prevent unstable plugins from loading on updates. However, Chinese forkers of Dalamud decided to abuse it to attempt to prevent you from using the plugin for their personal reasons. 
-## Temporary patch to unblock and run Splatoon:
+## Easy way to unblock Splatoon and all other plugins:
+Simply download this program https://github.com/NightmareXIV/UnbanPluginsCN/releases/latest and run it before you run the game/inject Dalamud. Just keep this program running and you should be good.
+## Old, manual way:
 - Download [unbanPlugins.bat](https://github.com/NightmareXIV/MyDalamudPlugins/raw/main/cn/unbanPlugins.bat) file (right click - save link as...)
 - Place it next to `Dalamud.Updater.exe`
 - Launch `Dalamud.Updater.exe` and wait until all pending updates are completed
 - Launch `unbanPlugins.bat`
 - Start Dalamud
-## More convenient way to deal with it will come in just a few days!
 
 # FAQ
 #### Is Splatoon safe to use?
