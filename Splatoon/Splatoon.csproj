@@ -38,7 +38,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\ECommons\ECommons\ECommons.csproj" />
+	  <ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -80,6 +80,10 @@
 		</Reference>
 		<Reference Include="PInvoke.Windows.Core.dll">
 			<HintPath>$(DalamudLibPath)PInvoke.Windows.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ImGuiScene.dll">
+			<HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 	</ItemGroup>
