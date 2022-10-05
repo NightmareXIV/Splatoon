@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ECommons.LanguageHelpers;
+using System.ComponentModel;
 
 namespace Splatoon;
 
@@ -6,10 +7,36 @@ namespace Splatoon;
 public class Element
 {
     [NonSerialized]
-    public static string[] ElementTypes = { "Circle at fixed coordinates", "Circle relative to object position",
-    "Line between two fixed coordinates", "Line relative to object position", "Cone relative to object position", "Cone at fixed coordinates"};
-    [NonSerialized] public static string[] ActorTypes = { "Game object with specific data", "Self", "Targeted enemy" };
-    [NonSerialized] public static string[] ComparisonTypes = { "Name (case-insensitive, partial)", "Model ID", "Object ID", "Data ID", "NPC ID", "Placeholder", "NPC Name ID", "VFX Path" };
+    public static string[] ElementTypes = Array.Empty<string>();
+    [NonSerialized] public static string[] ActorTypes = Array.Empty<string>();
+    [NonSerialized] public static string[] ComparisonTypes = Array.Empty<string>();
+
+    public static void Init()
+    {
+        ElementTypes = new string[]{
+            "Circle at fixed coordinates".Loc(),
+        "Circle relative to object position".Loc(),
+        "Line between two fixed coordinates".Loc(),
+        "Line relative to object position".Loc(),
+        "Cone relative to object position".Loc(),
+        "Cone at fixed coordinates".Loc()
+        }; 
+        ActorTypes = new string[] {
+            "Game object with specific data".Loc(), 
+        "Self".Loc(), 
+        "Targeted enemy".Loc()
+        };
+        ComparisonTypes = new string[]{
+        "Name (case-insensitive, partial)".Loc(),
+        "Model ID".Loc(),
+        "Object ID".Loc(),
+        "Data ID".Loc(),
+        "NPC ID".Loc(),
+        "Placeholder".Loc(),
+        "NPC Name ID".Loc(),
+        "VFX Path".Loc()
+    };
+    }
 
 
     public string Name = "";

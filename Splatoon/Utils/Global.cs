@@ -19,4 +19,4 @@ global using static Splatoon.Utils.Static;
 global using ECommons.Schedulers;
 global using static ECommons.GenericHelpers;
 global using static Splatoon.Splatoon;
-
+global using static ECommons.LanguageHelpers.Localization;

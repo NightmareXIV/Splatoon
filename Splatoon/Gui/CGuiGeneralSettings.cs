@@ -1,7 +1,10 @@
-﻿using Dalamud.Interface.Colors;
+﻿using Dalamud;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
+using ECommons.LanguageHelpers;
 using Splatoon.Modules;
 using Splatoon.Utils;
+using Localization = ECommons.LanguageHelpers.Localization;
 
 namespace Splatoon
 {
@@ -9,10 +12,10 @@ namespace Splatoon
     {
         void DisplayGeneralSettings()
         {
-            ImGuiEx.Text("Game version: ");
+            ImGuiEx.Text("Game version: ".Loc());
             ImGui.SameLine(0, 0);
             ImGuiEx.TextCopy(p.loader.gVersion);
-            SImGuiEx.SizedText("Use web API", WidthLayout);
+            SImGuiEx.SizedText("Use web API".Loc(), WidthLayout);
             ImGui.SameLine();
             if (ImGui.Checkbox("##usewebapi", ref p.Config.UseHttpServer))
             {
@@ -33,72 +36,97 @@ namespace Splatoon
             }
             else
             {
-                ImGuiEx.Text("Port: ");
+                ImGuiEx.Text("Port: ".Loc());
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(100f);
                 ImGui.DragInt("##webapiport", ref p.Config.port, float.Epsilon, 1, 65535);
                 if (ImGui.IsItemHovered())
                 {
-                    ImGui.SetTooltip("Please only change if you have really good reason");
+                    ImGui.SetTooltip("Please only change if you have really good reason".Loc());
                 }
                 if (p.Config.port < 1 || p.Config.port > 65535) p.Config.port = 47774;
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(100f);
-                if (ImGui.Button("Default"))
+                if (ImGui.Button("Default".Loc()))
                 {
                     p.Config.port = 47774;
                 }
             }
             ImGui.SameLine();
             ImGui.SetNextItemWidth(250f);
-            if (ImGui.Button("Open web API guide"))
+            if (ImGui.Button("Open web API guide".Loc()))
             {
                 ProcessStart("https://github.com/NightmareXIV/Splatoon#web-api-beta");
             }
 
-            if(ImGui.Checkbox("Enable logging", ref P.Config.Logging))
+            if(ImGui.Checkbox("Enable logging".Loc(), ref P.Config.Logging))
             {
                 Logger.OnTerritoryChanged();
             }
-            ImGuiComponents.HelpMarker("Enable logging, which will log chat messages, casts and VFX info into log files. ");
+            ImGuiComponents.HelpMarker("Enable logging, which will log chat messages, casts and VFX info into log files. ".Loc());
 
-            SImGuiEx.SizedText("Circle smoothness:", WidthLayout);
+            ImGui.Separator();
+            ImGuiEx.TextV("Splatoon language: ".Loc());
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(150f.Scale());
+            if(ImGui.BeginCombo("##langsel", P.Config.PluginLanguage == null?"Game language".Loc() : P.Config.PluginLanguage.ToString().Loc()))
+            {
+                if (ImGui.Selectable("Game language".Loc()))
+                {
+                    P.Config.PluginLanguage = null;
+                    Localization.Init();
+                }
+                foreach (var x in Enum.GetValues<ClientLanguage>())
+                {
+                    if (ImGui.Selectable(x.ToString().Loc()))
+                    {
+                        P.Config.PluginLanguage = x;
+                        Localization.Init(P.Config.PluginLanguage);
+                    }
+                }
+                ImGui.EndCombo();
+            }
+            ImGui.SameLine();
+            ImGui.Checkbox("Localization logging", ref Localization.Logging);
+            ImGui.SameLine();
+            if(ImGui.Button("Save entries"))
+            {
+                Localization.Save();
+            }
+            ImGui.Separator();
+
+            SImGuiEx.SizedText("Circle smoothness:".Loc(), WidthLayout);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             ImGui.DragInt("##circlesmoothness", ref p.Config.segments, 0.1f, 10, 150);
             ImGui.SameLine();
             ImGuiEx.Text("(?)");
             if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Higher - smoother circle, higher cpu usage");
+                ImGui.SetTooltip("Higher - smoother circle, higher cpu usage".Loc());
 
-            SImGuiEx.SizedText("Drawing distance:", WidthLayout);
+            SImGuiEx.SizedText("Drawing distance:".Loc(), WidthLayout);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             ImGui.DragFloat("##maxdistance", ref p.Config.maxdistance, 0.25f, 10f, 200f);
             ImGui.SameLine();
             ImGuiEx.Text("(?)");
             if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Only try to draw objects that are not \n" +
-                    "further away from you than this value");
+                ImGui.SetTooltip("Only try to draw objects that are not further away from you than this value".Loc());
 
-            SImGuiEx.SizedText("Line segments:", WidthLayout);
+            SImGuiEx.SizedText("Line segments:".Loc(), WidthLayout);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             ImGui.DragInt("##linesegments", ref p.Config.lineSegments, 0.1f, 10, 50);
             p.Config.lineSegments.ValidateRange(10, 100);
-            ImGuiComponents.HelpMarker("Increase this if your lines stop drawing too far from the screen edges or if line disappears when " +
-                "you are zoomed in and near it's edge. Increasing this setting hurts performance EXTRAORDINARILY.");
+            ImGuiComponents.HelpMarker("Increase this if your lines stop drawing too far from the screen edges or if line disappears when you are zoomed in and near it's edge. Increasing this setting hurts performance EXTRAORDINARILY.".Loc());
             if(p.Config.lineSegments > 10)
             {
-                ImGuiEx.TextWrapped(ImGuiColors.DalamudOrange, "Non-standard line segment setting. Performance of your game may be impacted. " +
-                    "Please CAREFULLY increase this setting until everything works as intended and do not increase it further. \n" +
-                    "Consider increasing minimal rectangle fill line thickness to mitigate performance loss, if you will experience it.");
+                ImGuiEx.TextWrapped(ImGuiColors.DalamudOrange, "Non-standard line segment setting. Performance of your game may be impacted. Please CAREFULLY increase this setting until everything works as intended and do not increase it further. \nConsider increasing minimal rectangle fill line thickness to mitigate performance loss, if you will experience it.".Loc());
             }
             if (p.Config.lineSegments > 25)
             {
                 ImGuiEx.TextWrapped(Environment.TickCount % 1000 > 500 ? ImGuiColors.DalamudRed : ImGuiColors.DalamudYellow,
-                    "Your line segment setting IS EXTREMELY HIGH AND MAY SIGNIFICANTLY IMPACT PERFORMANCE.\n" +
-                    "If you really have to set it to this value to make it work, please contact developer and provide details.");
+                    "Your line segment setting IS EXTREMELY HIGH AND MAY SIGNIFICANTLY IMPACT PERFORMANCE.\nIf you really have to set it to this value to make it work, please contact developer and provide details.".Loc());
             }
             /*ImGuiEx.SizedText("Draw only when Y camera rotation is lower than:", WidthLayout * 2);
             ImGui.SameLine();
@@ -115,11 +143,11 @@ namespace Splatoon
                 p.Config.maxcamY = 0.05f;
             }*/
             ImGui.Separator();
-            ImGuiEx.Text("Fill settings:");
+            ImGuiEx.Text("Fill settings:".Loc());
             ImGui.SameLine();
-            ImGuiEx.Text("            Screwed up?");
+            ImGuiEx.Text("            Screwed up?".Loc());
             ImGui.SameLine();
-            if(ImGui.SmallButton("Reset this section"))
+            if(ImGui.SmallButton("Reset this section".Loc()))
             {
                 var def = new Configuration();
                 P.Config.AltConeStep = def.AltConeStep;
@@ -133,58 +161,58 @@ namespace Splatoon
                 P.Config.AltRectStep = def.AltRectStep;
                 P.Config.AltRectStepOverride = def.AltRectStepOverride;
             }
-            ImGui.Checkbox("Use line rectangle filling", ref p.Config.AltRectFill);
-            ImGuiComponents.HelpMarker("Fill rectangles with stroke instead of full color. This will remove clipping issues, but may feel more disturbing.");
+            ImGui.Checkbox("Use line rectangle filling".Loc(), ref p.Config.AltRectFill);
+            ImGuiComponents.HelpMarker("Fill rectangles with stroke instead of full color. This will remove clipping issues, but may feel more disturbing.".Loc());
             
 
             ImGui.SetNextItemWidth(60f);
-            ImGui.DragFloat("Minimal rectangle fill line interval", ref p.Config.AltRectStep, 0.001f, 0, float.MaxValue);
+            ImGui.DragFloat("Minimal rectangle fill line interval".Loc(), ref p.Config.AltRectStep, 0.001f, 0, float.MaxValue);
             ImGui.SameLine();
-            ImGui.Checkbox("Always force this value##1", ref P.Config.AltRectStepOverride);
+            ImGui.Checkbox($"{Loc("Always force this value")}##1", ref P.Config.AltRectStepOverride);
 
             ImGui.SetNextItemWidth(60f);
-            ImGui.DragFloat("Minimal rectangle fill line thickness", ref p.Config.AltRectMinLineThickness, 0.001f, 0.01f, float.MaxValue);
-            ImGuiComponents.HelpMarker("Problems with performance while rectangles are visible? Increase this value.");
+            ImGui.DragFloat("Minimal rectangle fill line thickness".Loc(), ref p.Config.AltRectMinLineThickness, 0.001f, 0.01f, float.MaxValue);
+            ImGuiComponents.HelpMarker("Problems with performance while rectangles are visible? Increase this value.".Loc());
             ImGui.SameLine();
-            ImGui.Checkbox("Always force this value##2", ref P.Config.AltRectForceMinLineThickness);
-            ImGui.Checkbox("Additionally highlight rectangle outline", ref p.Config.AltRectHighlightOutline);
+            ImGui.Checkbox($"{Loc("Always force this value")}##2", ref P.Config.AltRectForceMinLineThickness);
+            ImGui.Checkbox("Additionally highlight rectangle outline".Loc(), ref p.Config.AltRectHighlightOutline);
 
             ImGui.SetNextItemWidth(60f);
-            ImGui.DragFloat("Minimal donut fill line interval", ref p.Config.AltDonutStep, 0.001f, 0.01f, float.MaxValue);
-            ImGuiComponents.HelpMarker("Problems with performance while rectangles are visible? Increase this value.");
+            ImGui.DragFloat("Minimal donut fill line interval".Loc(), ref p.Config.AltDonutStep, 0.001f, 0.01f, float.MaxValue);
+            ImGuiComponents.HelpMarker("Problems with performance while rectangles are visible? Increase this value.".Loc());
             ImGui.SameLine();
-            ImGui.Checkbox("Always force this value##3", ref P.Config.AltDonutStepOverride);
+            ImGui.Checkbox("Always force this value".Loc()+"##3", ref P.Config.AltDonutStepOverride);
 
             ImGui.SetNextItemWidth(60f);
-            ImGui.DragInt("Minimal cone fill line interval", ref p.Config.AltConeStep, 0.1f, 1, int.MaxValue);
+            ImGui.DragInt("Minimal cone fill line interval".Loc(), ref p.Config.AltConeStep, 0.1f, 1, int.MaxValue);
             ImGui.SameLine();
-            ImGui.Checkbox("Always force this value##4", ref P.Config.AltConeStepOverride);
+            ImGui.Checkbox("Always force this value".Loc()+"##4", ref P.Config.AltConeStepOverride);
 
             ImGui.Separator();
-            ImGui.Checkbox("Use hexadecimal numbers", ref p.Config.Hexadecimal);
-            ImGui.Checkbox("Enable tether on Splatoon find command", ref p.Config.TetherOnFind);
-            ImGui.Checkbox("Force show Splatoon's UI when game UI is hidden", ref p.Config.ShowOnUiHide);
+            ImGui.Checkbox("Use hexadecimal numbers".Loc(), ref p.Config.Hexadecimal);
+            ImGui.Checkbox("Enable tether on Splatoon find command".Loc(), ref p.Config.TetherOnFind);
+            ImGui.Checkbox("Force show Splatoon's UI when game UI is hidden".Loc(), ref p.Config.ShowOnUiHide);
             Svc.PluginInterface.UiBuilder.DisableUserUiHide = p.Config.ShowOnUiHide;
             //ImGui.Checkbox("Always compare names directly (debug option, ~4x performance loss)", ref p.Config.DirectNameComparison);
-            if(ImGui.Button("Open backup directory"))
+            if(ImGui.Button("Open backup directory".Loc()))
             {
                 ProcessStart(Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Backups"));
             }
             ImGui.Separator();
-            ImGuiEx.Text("Contact developer:");
+            ImGuiEx.Text("Contact developer:".Loc());
             ImGui.SameLine();
-            if (ImGui.Button("Github"))
+            if (ImGui.Button("Github".Loc()))
             {
                 ProcessStart("https://github.com/NightmareXIV/Splatoon/issues");
             }
             ImGui.SameLine();
-            if (ImGui.Button("Discord"))
+            if (ImGui.Button("Discord".Loc()))
             {
                 ImGui.SetClipboardText(Splatoon.DiscordURL);
-                Svc.Chat.Print("[Splatoon] Server invite link: "+ Splatoon.DiscordURL);
+                Svc.Chat.Print("[Splatoon] Server invite link: ".Loc() + Splatoon.DiscordURL);
                 ProcessStart(Splatoon.DiscordURL);
             }
-            ImGui.Checkbox("Disable stream notice (effective only after restart)", ref P.Config.NoStreamWarning);
+            ImGui.Checkbox("Disable stream notice (effective only after restart)".Loc(), ref P.Config.NoStreamWarning);
         }
     }
 }

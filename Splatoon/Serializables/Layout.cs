@@ -7,9 +7,7 @@ namespace Splatoon;
 public class Layout
 {
     [NonSerialized]
-    public static readonly string[] DisplayConditions = 
-        //0               1                 2                   3                              4
-        { "Always shown", "Only in combat", "Only in instance", "Only in combat AND instance", "Only in combat OR instance", "On trigger only" };
+    public static string[] DisplayConditions = {};
     [DefaultValue(true)] public bool Enabled = true;
     public string Name = "";
     public string Group = "";

@@ -1,4 +1,5 @@
-﻿using Dalamud.Configuration;
+﻿using Dalamud;
+using Dalamud.Configuration;
 using Dalamud.Interface.Internal.Notifications;
 using Splatoon.Gui;
 using System.Threading;
@@ -46,6 +47,8 @@ class Configuration : IPluginConfiguration
     public bool FocusMode = false;
     public bool NoStreamWarning = false;
     public bool Logging = false;
+
+    public ClientLanguage? PluginLanguage = null;
 
     public bool ShouldSerializeLayouts()
     {

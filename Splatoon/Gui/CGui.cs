@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
 using ECommons;
+using ECommons.LanguageHelpers;
 using Newtonsoft.Json;
 using PInvoke;
 using Splatoon.ConfigGui;
@@ -57,7 +58,7 @@ namespace Splatoon
                 {
                     p.Config.Save();
                     WasOpen = false;
-                    Notify.Success("Configuration saved");
+                    Notify.Success("Configuration saved".Loc());
                     if(p.Config.verboselog) p.Log("Configuration saved");
                 }
                 return;
@@ -78,15 +79,15 @@ namespace Splatoon
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(700, 200));
             var titleColored = false;
             var ctspan = TimeSpan.FromMilliseconds(Environment.TickCount64 - p.CombatStarted);
-            var title = $"Splatoon v{p.loader.splatoonVersion} | {GenericHelpers.GetTerritoryName(Svc.ClientState.TerritoryType).Replace("| ", "")} | {(p.CombatStarted == 0?"Not in combat":$"Combat: {ctspan.Minutes:D2}{(ctspan.Milliseconds < 500?":":" ")}{ctspan.Seconds:D2} ({(int)ctspan.TotalSeconds}.{(ctspan.Milliseconds / 100):D1}s)")} | Phase: {p.Phase} | Layouts: {p.LayoutAmount} | Elements: {p.ElementAmount} | {GetPlayerPositionXZY().X:F1}, {GetPlayerPositionXZY().Y:F1}###Splatoon";
+            var title = $"Splatoon v{p.loader.splatoonVersion} | {GenericHelpers.GetTerritoryName(Svc.ClientState.TerritoryType).Replace("| ", "")} | {(p.CombatStarted == 0?"Not in combat".Loc(): $"{Loc("Combat")}: {ctspan.Minutes:D2}{(ctspan.Milliseconds < 500?":":" ")}{ctspan.Seconds:D2} ({(int)ctspan.TotalSeconds}.{(ctspan.Milliseconds / 100):D1}s)")} | {Loc("Phase")}: {p.Phase} | {Loc("Layouts")}: {p.LayoutAmount} | {Loc("Elements")}: {p.ElementAmount} | {GetPlayerPositionXZY().X:F1}, {GetPlayerPositionXZY().Y:F1}###Splatoon";
             if (ImGui.Begin(title, ref Open))
             {
                 try
                 {
                     if (ChlogGui.ChlogVersion > p.Config.ChlogReadVer)
                     {
-                        ImGuiEx.Text("You may not change configuration until you have read changelog and closed window.");
-                        if (ImGui.Button("Open changelog now"))
+                        ImGuiEx.Text("You may not change configuration until you have read changelog and closed window.".Loc());
+                        if (ImGui.Button("Open changelog now".Loc()))
                         {
                             p.ChangelogGui.openLoggedOut = true;
                         }
@@ -102,11 +103,11 @@ namespace Splatoon
                         RightWidth = ImGuiEx.Measure(delegate
                         {
                             ImGui.SetNextItemWidth(100f);
-                            if (ImGui.BeginCombo("##phaseSelector", $"Phase {p.Phase}"))
+                            if (ImGui.BeginCombo("##phaseSelector", $"Phase ??".Loc(p.Phase)))
                             {
-                                if (ImGui.Selectable("Phase 1 (doorboss)")) p.Phase = 1;
-                                if (ImGui.Selectable("Phase 2 (post-doorboss)")) p.Phase = 2;
-                                ImGuiEx.Text("Manual phase selection:");
+                                if (ImGui.Selectable("Phase 1 (doorboss)".Loc())) p.Phase = 1;
+                                if (ImGui.Selectable("Phase 2 (post-doorboss)".Loc())) p.Phase = 2;
+                                ImGuiEx.Text("Manual phase selection:".Loc());
                                 ImGui.SameLine();
                                 ImGui.SetNextItemWidth(30f);
                                 ImGui.DragInt("##mPSel", ref p.Phase, 0.1f, 1, 9);
@@ -116,16 +117,16 @@ namespace Splatoon
                         ImGui.SetCursorPos(curCursor);
 
                         ImGuiEx.EzTabBar("SplatoonSettings",
-                            ("General", DisplayGeneralSettings, null, true),
-                            ("Layouts", DislayLayouts, Colors.Green.ToVector4(), true),
-                            ("Import", RapidImport.Draw, null, true),
-                            ("Logger", DisplayLogger, null, true),
-                            ("Explorer", Explorer.Draw, null, true),
-                            ("Debug", DisplayDebug, null, true),
-                            ("Log", InternalLog.PrintImgui, null, false),
-                            ("Dynamic", DisplayDynamicElements, null, true),
-                            ("Profiling", DisplayProfiling, null, true),
-                            ("Contribute", Contribute.Draw, ImGuiColors.ParsedGold, true)
+                            ("General".Loc()+"###tab1", DisplayGeneralSettings, null, true),
+                            ("Layouts".Loc(), DislayLayouts, Colors.Green.ToVector4(), true),
+                            ("Import".Loc(), RapidImport.Draw, null, true),
+                            ("Logger".Loc(), DisplayLogger, null, true),
+                            ("Explorer".Loc(), Explorer.Draw, null, true),
+                            ("Debug".Loc(), DisplayDebug, null, true),
+                            ("Log".Loc(), InternalLog.PrintImgui, null, false),
+                            ("Dynamic".Loc(), DisplayDynamicElements, null, true),
+                            ("Profiling".Loc(), DisplayProfiling, null, true),
+                            ("Contribute".Loc(), Contribute.Draw, ImGuiColors.ParsedGold, true)
 
                             );
                     }

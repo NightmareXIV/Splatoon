@@ -8,6 +8,7 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal.Notifications;
 using ECommons;
 using ECommons.GameFunctions;
+using ECommons.LanguageHelpers;
 using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
@@ -90,9 +91,10 @@ public unsafe class Splatoon : IDalamudPlugin
         Config = configRaw as Configuration ?? new Configuration();
         Config.Initialize(this);
         ConfigurationMigrator1to2.Migrate(Config); //never delete this
+        ECommons.LanguageHelpers.Localization.Init(Config.PluginLanguage);
         if (configRaw == null)
         {
-            Notify.Info("New configuration file has been created");
+            Notify.Info("New configuration file has been created".Loc());
             Config.Save();
         }
         ChatMessageQueue = new Queue<string>();
@@ -150,6 +152,14 @@ public unsafe class Splatoon : IDalamudPlugin
         StreamDetector.Start();
         AttachedInfo.Init();
         Logger.OnTerritoryChanged();
+        Layout.DisplayConditions = new string[] { 
+            "Always shown".Loc(),
+            "Only in combat".Loc(), 
+            "Only in instance".Loc(), 
+            "Only in combat AND instance".Loc(), 
+            "Only in combat OR instance".Loc(), 
+            "On trigger only".Loc() };
+        Element.Init();
         Init = true;
         SplatoonIPC.Init();
     }
@@ -218,7 +228,7 @@ public unsafe class Splatoon : IDalamudPlugin
         {
             Phase++;
             CombatStarted = Environment.TickCount64;
-            Svc.PluginInterface.UiBuilder.AddNotification($"Phase transition to Phase {Phase}", this.Name, NotificationType.Info, 10000);
+            Svc.PluginInterface.UiBuilder.AddNotification($"Phase transition to Phase ??".Loc(Phase), this.Name, NotificationType.Info, 10000);
         }
         if(!type.EqualsAny(ECommons.Constants.NormalChatTypes))
         {
@@ -246,7 +256,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 }
                 catch(Exception e)
                 {
-                    Log("Critical error occurred while starting HTTP server.", true);
+                    Log("Critical error occurred while starting HTTP server.".Loc(), true);
                     Log(e.Message, true);
                     Log(e.StackTrace);
                     HttpServer = null;
@@ -269,7 +279,7 @@ public unsafe class Splatoon : IDalamudPlugin
         if (SFind != null)
         {
             SFind = null;
-            Notify.Info("Search stopped");
+            Notify.Info("Search stopped".Loc());
         }
         for (var i = dynamicElements.Count - 1; i >= 0; i--)
         {
