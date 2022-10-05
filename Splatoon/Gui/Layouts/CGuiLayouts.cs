@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface.Colors;
+using ECommons.LanguageHelpers;
 using Splatoon.Utils;
 using static Dalamud.Interface.GameFonts.GameFontLayoutPlan;
 using static Splatoon.ConfigGui.CGuiLayouts.LayoutDrawSelector;
@@ -20,7 +21,7 @@ namespace Splatoon
                 var deleted = P.Config.LayoutsL.RemoveAll(x => x.Delete);
                 if (deleted > 0)
                 {
-                    Notify.Info($"Removed {deleted} layouts");
+                    Notify.Info($"Removed ?? layouts".Loc(deleted));
                     if (!P.Config.LayoutsL.Contains(CurrentLayout))
                     {
                         CurrentLayout = null;
@@ -31,7 +32,7 @@ namespace Splatoon
             ImGui.BeginChild("TableWrapper", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             if (ImGui.BeginTable("LayoutsTable", 2, ImGuiTableFlags.Resizable))
             {
-                ImGui.TableSetupColumn("Layout list###Layout id", ImGuiTableColumnFlags.None, 200);
+                ImGui.TableSetupColumn("Layout list".Loc()+"###Layout id", ImGuiTableColumnFlags.None, 200);
                 ImGui.TableSetupColumn($"{(CurrentLayout == null ? "" : $"{CurrentLayout.GetName()}") + (CurrentElement == null ? "" : $" | {CurrentElement.GetName()}")}###Layout edit", ImGuiTableColumnFlags.None, 600);
 
                 ImGui.TableHeadersRow();
@@ -39,37 +40,37 @@ namespace Splatoon
                 ImGui.TableNextColumn();
                 ImGuiEx.InputWithRightButtonsArea("Search layouts", delegate
                 {
-                    ImGui.InputTextWithHint("##layoutFilter", "Search layouts...", ref layoutFilter, 100);
+                    ImGui.InputTextWithHint("##layoutFilter", "Search layouts...".Loc(), ref layoutFilter, 100);
                 }, delegate
                 {
                     if (ImGuiEx.IconButton(FontAwesomeIcon.Plus))
                     {
                         ImGui.OpenPopup("Add layout");
                     }
-                    ImGuiEx.Tooltip("Add new layout...");
+                    ImGuiEx.Tooltip("Add new layout...".Loc());
                     ImGui.SameLine(0, 1);
                     if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport))
                     {
                         ImportFromClipboard();
                     }
-                    ImGuiEx.Tooltip("Import from clipboard");
+                    ImGuiEx.Tooltip("Import from clipboard".Loc());
                     ImGui.SameLine(0, 1);
                     if(ImGuiEx.IconButton(P.Config.FocusMode? FontAwesomeIcon.SearchMinus: FontAwesomeIcon.SearchPlus))
                     {
                         P.Config.FocusMode = !P.Config.FocusMode;
                     }
-                    ImGuiEx.Tooltip("Toggle focus mode.\nFocus mode: when layout is selected, hide all other layouts.");
+                    ImGuiEx.Tooltip("Toggle focus mode.\nFocus mode: when layout is selected, hide all other layouts.".Loc());
                 });
                 if(ImGui.BeginPopup("Add layout"))
                 {
-                    ImGui.InputTextWithHint("", "Layout name", ref NewLayoytName, 100);
+                    ImGui.InputTextWithHint("", "Layout name".Loc(), ref NewLayoytName, 100);
                     ImGui.SameLine();
-                    if (ImGui.Button("Add"))
+                    if (ImGui.Button("Add".Loc()))
                     {
                         if (CGui.AddEmptyLayout(out var newLayout))
                         {
                             ImGui.CloseCurrentPopup();
-                            Notify.Success($"Layout created: {newLayout.GetName()}");
+                            Notify.Success($"Layout created: ??".Loc(newLayout.GetName()));
                             ScrollTo = newLayout;
                             CurrentLayout = newLayout;
                         }
@@ -83,7 +84,7 @@ namespace Splatoon
                     var deleted = x.ElementsL.RemoveAll(k => k.Delete);
                     if(deleted > 0)
                     {
-                        Notify.Info($"Deleted {deleted} elements");
+                        Notify.Info($"Deleted ?? elements".Loc(deleted));
                         if(!P.Config.LayoutsL.Any(l => l.ElementsL.Contains(CurrentElement)))
                         {
                             CurrentElement = null;
@@ -137,7 +138,7 @@ namespace Splatoon
                         if (ImGui.BeginDragDropSource())
                         {
                             ImGuiDragDrop.SetDragDropPayload("MoveGroup", i);
-                            ImGuiEx.Text($"Moving group\n[{g}]");
+                            ImGuiEx.Text($"Moving group\n[??]".Loc(g));
                             ImGui.EndDragDropSource();
                         }
                         if (ImGui.BeginDragDropTarget())
@@ -173,18 +174,18 @@ namespace Splatoon
                         {
                             ImGuiEx.Text($"[{g}]");
                             ImGui.SetNextItemWidth(200f);
-                            var result = ImGui.InputTextWithHint("##GroupRename", "Enter new name...", ref PopupRename, 100, ImGuiInputTextFlags.EnterReturnsTrue);
+                            var result = ImGui.InputTextWithHint("##GroupRename", "Enter new name...".Loc(), ref PopupRename, 100, ImGuiInputTextFlags.EnterReturnsTrue);
                             PopupRename = PopupRename.SanitizeName();
                             ImGui.SameLine();
-                            if (ImGui.Button("OK") || result)
+                            if (ImGui.Button("OK".Loc()) || result)
                             {
                                 if (P.Config.GroupOrder.Contains(PopupRename))
                                 {
-                                    Notify.Error("Error: this name is already exists");
+                                    Notify.Error("Error: this name is already exists".Loc());
                                 }
                                 else if (PopupRename.Length == 0)
                                 {
-                                    Notify.Error("Error: empty names are not allowed");
+                                    Notify.Error("Error: empty names are not allowed".Loc());
                                 }
                                 else
                                 {
@@ -204,7 +205,7 @@ namespace Splatoon
                                     PopupRename = "";
                                 }
                             }
-                            if (ImGui.Selectable("Remove group and disband layouts") && ImGui.GetIO().KeyCtrl)
+                            if (ImGui.Selectable("Remove group and disband layouts".Loc()) && ImGui.GetIO().KeyCtrl)
                             {
                                 foreach (var l in P.Config.LayoutsL)
                                 {
@@ -215,8 +216,8 @@ namespace Splatoon
                                 }
                                 groupToRemove = i;
                             }
-                            ImGuiEx.Tooltip("Hold CTRL+click");
-                            if (ImGui.Selectable("Remove group and it's layouts") && ImGui.GetIO().KeyCtrl && ImGui.GetIO().KeyShift)
+                            ImGuiEx.Tooltip("Hold CTRL+click".Loc());
+                            if (ImGui.Selectable("Remove group and it's layouts".Loc()) && ImGui.GetIO().KeyCtrl && ImGui.GetIO().KeyShift)
                             {
                                 foreach (var l in P.Config.LayoutsL)
                                 {
@@ -228,7 +229,7 @@ namespace Splatoon
                                 }
                                 groupToRemove = i;
                             }
-                            ImGuiEx.Tooltip("Hold CTRL+SHIFT+click");
+                            ImGuiEx.Tooltip("Hold CTRL+SHIFT+click".Loc());
                             ImGui.EndPopup();
                         }
                         for (var n = 0; n < takenLayouts.Length; n++)
@@ -279,12 +280,7 @@ namespace Splatoon
                 }
                 else
                 {
-                    ImGuiEx.Text("UI Help:");
-                    ImGuiEx.Text("- Left panel contains groups, layouts and elements.");
-                    ImGuiEx.Text("- You can drag and drop layouts, elements and groups to reorder them.");
-                    ImGuiEx.Text("- Right click on a group to rename or delete it.");
-                    ImGuiEx.Text("- Right click on a layout/element to delete it.");
-                    ImGuiEx.Text("- Middle click on layout/element for quick enable/disable");
+                    ImGuiEx.Text("UI Help:\n- Left panel contains groups, layouts and elements.\n- You can drag and drop layouts, elements and groups to reorder them.\n- Right click on a group to rename or delete it.\n- Right click on a layout/element to delete it.\n- Middle click on layout/element for quick enable/disable".Loc());
                 }
                 ImGui.EndChild();
 

@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
+using ECommons.LanguageHelpers;
 using Splatoon.Gui;
 using Splatoon.Utils;
 
@@ -11,34 +12,34 @@ namespace Splatoon
         bool IsViewer = false;
         void DisplayLogger()
         {
-            ImGui.Checkbox("Enable logger", ref p.LogObjects);
+            ImGui.Checkbox("Enable logger".Loc(), ref p.LogObjects);
             ImGui.SameLine();
-            ImGui.Checkbox("Viewer mode", ref IsViewer);
-            ImGuiComponents.HelpMarker("When enabled, only currently present objects are displayed");
+            ImGui.Checkbox("Viewer mode".Loc(), ref IsViewer);
+            ImGuiComponents.HelpMarker("When enabled, only currently present objects are displayed".Loc());
             ImGui.SameLine();
-            if(ImGui.Button("Clear list"))
+            if(ImGui.Button("Clear list".Loc()))
             {
                 p.loggedObjectList.Clear();
             }
             ImGui.SameLine();
-            ImGuiEx.Text("Filter:");
+            ImGuiEx.Text("Filter:".Loc());
             ImGui.SameLine();
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
             ImGui.InputText("##filterLog", ref LoggerSearch, 100);
             ImGui.BeginTable("##logObjects", 13, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
-            ImGui.TableSetupColumn("Object name", ImGuiTableColumnFlags.WidthStretch);
-            ImGui.TableSetupColumn("Type");
-            ImGui.TableSetupColumn("Object ID");
-            ImGui.TableSetupColumn("Data ID");
-            ImGui.TableSetupColumn("Model ID");
-            ImGui.TableSetupColumn("NPC ID");
-            ImGui.TableSetupColumn("Name ID");
-            ImGui.TableSetupColumn("Tar. %");
-            ImGui.TableSetupColumn("Vis. %");
-            ImGui.TableSetupColumn("Exist");
-            ImGui.TableSetupColumn("Dist.");
-            ImGui.TableSetupColumn("Hibox");
-            ImGui.TableSetupColumn("Life");
+            ImGui.TableSetupColumn("Object name".Loc(), ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableSetupColumn("Type".Loc());
+            ImGui.TableSetupColumn("Object ID".Loc());
+            ImGui.TableSetupColumn("Data ID".Loc());
+            ImGui.TableSetupColumn("Model ID".Loc());
+            ImGui.TableSetupColumn("NPC ID".Loc());
+            ImGui.TableSetupColumn("Name ID".Loc());
+            ImGui.TableSetupColumn("Tar. %".Loc());
+            ImGui.TableSetupColumn("Vis. %".Loc());
+            ImGui.TableSetupColumn("Exist".Loc());
+            ImGui.TableSetupColumn("Dist.".Loc());
+            ImGui.TableSetupColumn("Hibox".Loc());
+            ImGui.TableSetupColumn("Life".Loc());
             ImGui.TableHeadersRow();
             var i = 0;
             foreach (var x in p.loggedObjectList)
@@ -73,7 +74,7 @@ namespace Splatoon
                     }
                 }
                 ImGui.SameLine();
-                if (ImGui.SmallButton("Find##"+i))
+                if (ImGui.SmallButton("Find".Loc()+"##"+i))
                 {
                     p.SFind = new()
                     {

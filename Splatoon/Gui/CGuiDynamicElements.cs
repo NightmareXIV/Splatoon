@@ -1,10 +1,12 @@
-﻿namespace Splatoon
+﻿using ECommons.LanguageHelpers;
+
+namespace Splatoon
 {
     partial class CGui
     {
         void DisplayDynamicElements()
         {
-            if (ImGui.Button("Destroy all"))
+            if (ImGui.Button("Destroy all".Loc()))
             {
                 p.dynamicElements.Clear();
             }
@@ -20,7 +22,7 @@
                     p.dynamicElements.RemoveAt(i);
                 }
                 ImGui.SameLine();
-                if (ImGui.SmallButton("Destroy namespace##" + i))
+                if (ImGui.SmallButton("Destroy namespace".Loc()+"##" + i))
                 {
                     p.dynamicElements.RemoveAll(e => e.Name == dynElem.Name);
                     break;

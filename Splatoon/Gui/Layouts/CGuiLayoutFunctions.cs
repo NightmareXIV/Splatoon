@@ -1,4 +1,5 @@
-﻿using Splatoon.Utils;
+﻿using ECommons.LanguageHelpers;
+using Splatoon.Utils;
 
 namespace Splatoon
 {
@@ -8,11 +9,11 @@ namespace Splatoon
         {
             if (NewLayoytName.Contains("~"))
             {
-                Notify.Error("Name can't contain reserved characters: ~");
+                Notify.Error("Name can't contain reserved characters: ~".Loc());
             }
             else if (NewLayoytName.Contains(","))
             {
-                Notify.Error("Name can't contain reserved characters: ,");
+                Notify.Error("Name can't contain reserved characters: ,".Loc());
             }
             else
             {
@@ -32,13 +33,13 @@ namespace Splatoon
         static void DrawRotationSelector(Element el, string i, string k)
         {
             ImGui.SameLine();
-            ImGuiEx.Text("Add angle:");
+            ImGuiEx.Text("Add angle:".Loc());
             ImGui.SameLine();
             var angleDegrees = el.AdditionalRotation.RadiansToDegrees();
             ImGui.SameLine();
             ImGui.SetNextItemWidth(50f);
             ImGui.DragFloat("##ExtraAngle" + i + k, ref angleDegrees, 0.1f, 0f, 360f);
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold shift for faster changing;\ndouble-click to enter manually.");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold shift for faster changing;\ndouble-click to enter manually.".Loc());
             if (angleDegrees < 0f || angleDegrees > 360f) angleDegrees = 0f;
             el.AdditionalRotation = angleDegrees.DegreesToRadians();
             if (el.type != 1)

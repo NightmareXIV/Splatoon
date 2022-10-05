@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface.Colors;
+using ECommons.LanguageHelpers;
 using Newtonsoft.Json;
 using Splatoon.Utils;
 
@@ -68,7 +69,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     if (ImGui.BeginDragDropSource())
                     {
                         ImGuiDragDrop.SetDragDropPayload("MoveLayout", index);
-                        ImGuiEx.Text($"Moving layout\n{x.GetName()}");
+                        ImGuiEx.Text($"Moving layout\n??".Loc(x.GetName()));
                         ImGui.EndDragDropSource();
                     }
                     if (ImGui.BeginDragDropTarget())
@@ -91,8 +92,8 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                 });
                 if (ImGui.BeginPopup("LayoutContext"))
                 {
-                    ImGuiEx.Text($"Layout {x.GetName()}");
-                    if (ImGui.Selectable("Delete layout"))
+                    ImGuiEx.Text($"Layout ??".Loc(x.GetName()));
+                    if (ImGui.Selectable("Delete layout".Loc()))
                     {
                         x.Delete = true;
                     }
@@ -146,7 +147,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     if (ImGui.BeginDragDropSource())
                     {
                         ImGuiDragDrop.SetDragDropPayload($"MoveElement{index}", i);
-                        ImGuiEx.Text($"Moving element\n{x.GetName()}");
+                        ImGuiEx.Text($"Moving element\n??".Loc(x.GetName()));
                         ImGui.EndDragDropSource();
                     }
                     if (ImGui.BeginDragDropTarget())
@@ -167,8 +168,8 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                     }
                     if (ImGui.BeginPopup("ElementContext"))
                     {
-                        ImGuiEx.Text($"Layout {x.GetName()}\nElement {e.GetName()}");
-                        if (ImGui.Selectable("Delete element"))
+                        ImGuiEx.Text($"{"Layout".Loc()} {x.GetName()}\n{"Element".Loc()} {e.GetName()}");
+                        if (ImGui.Selectable("Delete element".Loc()))
                         {
                             e.Delete = true;
                         }
@@ -178,12 +179,12 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                 }
                 ImGuiEx.ImGuiLineCentered("AddElement", delegate
                 {
-                    if(ImGui.SmallButton("Add element"))
+                    if(ImGui.SmallButton("Add element".Loc()))
                     {
                         x.ElementsL.Add(new(0));
                     }
                     ImGui.SameLine(); 
-                    if (ImGui.SmallButton("Paste"))
+                    if (ImGui.SmallButton("Paste".Loc()))
                     {
                         try
                         {

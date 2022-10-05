@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface.Colors;
+using ECommons.LanguageHelpers;
 using System.Diagnostics;
 
 namespace Splatoon.Gui;
@@ -25,7 +26,7 @@ class ChlogGui
     {
         if (!open) return;
         if (!Svc.ClientState.IsLoggedIn && !openLoggedOut) return;
-        ImGui.Begin("Splatoon has been updated", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
+        ImGui.Begin("Splatoon has been updated".Loc(), ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
         ImGuiEx.Text(
 @"Attention!
 Please make sure that you have Dynamic resolution option - disabled.
@@ -34,7 +35,7 @@ It's not compatible with Splatoon.");
         {
             ImGui.Image(t.ImGuiHandle, new Vector2(t.Width, t.Height) / 2);
         }
-        if (ImGui.Button("Close this window"))
+        if (ImGui.Button("Close this window".Loc()))
         {
             open = false;
         }
