@@ -1,4 +1,5 @@
 ﻿using ECommons;
+using ECommons.LanguageHelpers;
 using Splatoon.Utils;
 
 namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
@@ -15,16 +16,16 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
             if (colorZLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
             layout.ZoneLockH.RemoveWhere(el => !P.Zones.ContainsKey(el));
             ImGuiEx.SetNextItemFullWidth();
-            if (ImGui.BeginCombo("##zlk", layout.ZoneLockH.Count == 0 ? "All zones" :
+            if (ImGui.BeginCombo("##zlk", layout.ZoneLockH.Count == 0 ? "All zones".Loc() :
                 layout.ZoneLockH.Count == 1 ? GenericHelpers.GetTerritoryName(layout.ZoneLockH.First()) :
-                layout.ZoneLockH.Count + " zones"
+                "?? zones".Loc(layout.ZoneLockH.Count)
                 ))
             {
                 if (colorZLock) ImGui.PopStyleColor();
                 ImGui.SetNextItemWidth(100f);
-                ImGui.InputTextWithHint("##zfltr", "Filter", ref zlockf, 100);
+                ImGui.InputTextWithHint("##zfltr", "Filter".Loc(), ref zlockf, 100);
                 ImGui.SameLine();
-                ImGui.Checkbox("Only selected", ref zlockcur);
+                ImGui.Checkbox("Only selected".Loc(), ref zlockcur);
                 if (P.Zones.ContainsKey(Svc.ClientState.TerritoryType))
                 {
                     ImGui.PushStyleColor(ImGuiCol.Text, Colors.Yellow);
@@ -33,7 +34,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
                         SImGuiEx.ColorButton(Colors.Red);
                     }
                     string zcfc = P.Zones[Svc.ClientState.TerritoryType].ContentFinderCondition?.Value.Name?.ToString();
-                    if (P.Zones.ContainsKey(Svc.ClientState.TerritoryType) && ImGui.SmallButton($"Current zone: {GenericHelpers.GetTerritoryName(Svc.ClientState.TerritoryType)}"))
+                    if (P.Zones.ContainsKey(Svc.ClientState.TerritoryType) && ImGui.SmallButton($"Current zone: ??".Loc(GenericHelpers.GetTerritoryName(Svc.ClientState.TerritoryType))))
                     {
                         layout.ZoneLockH.Toggle(Svc.ClientState.TerritoryType);
                     }

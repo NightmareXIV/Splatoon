@@ -1,4 +1,5 @@
-﻿using ECommons.MathHelpers;
+﻿using ECommons.LanguageHelpers;
+using ECommons.MathHelpers;
 using Splatoon.Utils;
 
 namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
@@ -11,7 +12,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
             var jprev = new List<string>();
             if (layout.JobLock == 0)
             {
-                jprev.Add("All jobs");
+                jprev.Add("All jobs".Loc());
             }
             else
             {
@@ -29,10 +30,10 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
                 && Environment.TickCount64 % 1000 < 500;
             if (colorJLock) ImGui.PushStyleColor(ImGuiCol.Text, Colors.Red);
             ImGuiEx.SetNextItemFullWidth();
-            if (ImGui.BeginCombo("##joblock", jprev.Count < 3 ? string.Join(", ", jprev) : jprev.Count + " jobs"))
+            if (ImGui.BeginCombo("##joblock", jprev.Count < 3 ? string.Join(", ", jprev) : "?? jobs".Loc(jprev.Count)))
             {
                 if (colorJLock) ImGui.PopStyleColor();
-                ImGui.InputTextWithHint("##joblockfltr", "Filter", ref jobFilter, 100);
+                ImGui.InputTextWithHint("##joblockfltr", "Filter".Loc(), ref jobFilter, 100);
                 foreach (var k in P.Jobs)
                 {
                     if (!k.Key.ToString().Contains(jobFilter) && !k.Value.Contains(jobFilter)) continue;

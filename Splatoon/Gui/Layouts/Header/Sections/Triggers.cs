@@ -1,4 +1,5 @@
-﻿using Splatoon.Utils;
+﻿using ECommons.LanguageHelpers;
+using Splatoon.Utils;
 
 namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
 {
@@ -18,22 +19,22 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
                     }
                     if (ImGui.IsItemHovered())
                     {
-                        ImGui.SetTooltip("Hold CTRL + left click to delete");
+                        ImGui.SetTooltip("Hold CTRL + left click to delete".Loc());
                     }
                     ImGui.SameLine();
                     ImGuiEx.SetNextItemFullWidth();
                     ImGui.Combo("##trigger", ref layout.Triggers[n].Type, Trigger.Types, Trigger.Types.Length);
 
-                    ImGuiEx.TextV("Reset on:");
+                    ImGuiEx.TextV("Reset on:".Loc());
                     ImGui.SameLine();
-                    ImGui.Checkbox("Combat exit", ref layout.Triggers[n].ResetOnCombatExit);
+                    ImGui.Checkbox("Combat exit".Loc(), ref layout.Triggers[n].ResetOnCombatExit);
                     ImGui.SameLine();
-                    ImGui.Checkbox("Territory change", ref layout.Triggers[n].ResetOnTChange);
+                    ImGui.Checkbox("Territory change".Loc(), ref layout.Triggers[n].ResetOnTChange);
                     ImGui.SameLine();
-                    ImGuiEx.Text("State: " + layout.Triggers[n].FiredState);
+                    ImGuiEx.Text("State: ".Loc() + layout.Triggers[n].FiredState);
                     if (layout.Triggers[n].Type == 0 || layout.Triggers[n].Type == 1)
                     {
-                        ImGuiEx.TextV("Time: ");
+                        ImGuiEx.TextV("Time: ".Loc());
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(50f);
                         ImGui.DragFloat("##triggertime1", ref layout.Triggers[n].TimeBegin, 0.1f, 0, 3599, "%.1f");
@@ -47,7 +48,7 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
                         //ImGui.InputTextWithHint("##textinput1", "Case-insensitive message", ref layout.Triggers[n].Match, 1000);
 
                         //ImGui.SameLine();
-                        ImGuiEx.TextV("Delay: ");
+                        ImGuiEx.TextV("Delay: ".Loc());
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(50f);
                         ImGui.DragFloat("##triggertime1", ref layout.Triggers[n].MatchDelay, 0.1f, 0, 3599, "%.1f");
@@ -56,12 +57,12 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
                         layout.Triggers[n].Match = layout.Triggers[n].Match.RemoveSymbols(InvalidSymbols);
                     }
                     ImGui.SameLine();
-                    ImGuiEx.TextV("Duration: ");
+                    ImGuiEx.TextV("Duration: ".Loc());
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(50f);
                     ImGui.DragFloat("##triggertime2", ref layout.Triggers[n].Duration, 0.1f, 0, 3599, "%.1f");
                     ImGui.SameLine();
-                    ImGuiEx.Text(layout.Triggers[n].Duration == 0 ? "Infinite" : DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].Duration * 1000)).ToString("mm:ss.f"));
+                    ImGuiEx.Text(layout.Triggers[n].Duration == 0 ? "Infinite".Loc() : DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].Duration * 1000)).ToString("mm:ss.f"));
                     ImGui.Separator();
                     ImGui.PopID();
                 }
