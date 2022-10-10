@@ -74,7 +74,7 @@ namespace Splatoon
                 if (ImGui.Selectable("Game language".Loc()))
                 {
                     P.Config.PluginLanguage = null;
-                    Localization.Init();
+                    Localization.Init(GameLanguageString);
                 }
                 foreach (var x in GetAvaliableLanguages())
                 {
@@ -88,9 +88,9 @@ namespace Splatoon
             }
             ImGui.Checkbox("Localization logging".Loc(), ref Localization.Logging);
             ImGui.SameLine();
-            if(ImGui.Button("Save entries: ??".Loc(CurrentLanguage ?? GameLanguageString)))
+            if(ImGui.Button("Save entries: ??".Loc(P.Config.PluginLanguage ?? GameLanguageString)))
             {
-                Localization.Save(CurrentLanguage ?? GameLanguageString);
+                Localization.Save(P.Config.PluginLanguage ?? GameLanguageString);
             }
             ImGui.SameLine();
             if(ImGui.Button("Rescan language files".Loc()))
