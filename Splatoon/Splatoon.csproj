@@ -2,18 +2,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Authors>NightmareXIV</Authors>
-		<Version>2.2.0.0</Version>
+		<Version>1002.2.0.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>net5.0-windows</TargetFramework>
 		<Platforms>x64</Platforms>
 		<LangVersion>latest</LangVersion>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<OutputPath>bin\$(Configuration)\</OutputPath>
+		<OutputPath>C:\DalamudCN\SplatoonBIN\$(Configuration)\</OutputPath>
 		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
@@ -24,7 +24,7 @@
 			powershell "(Get-Content .\$(MSBuildProjectName).json) -Replace '9.0.0.0', '$(Version)' | Set-Content .\$(MSBuildProjectName).json"
 			powershell Compress-Archive .\* ..\$(MSBuildProjectName)-$(Version).zip
 			mkdir .\Release
-			move ..\$(MSBuildProjectName)-$(Version).zip .\release\$(MSBuildProjectName).zip
+			move ..\$(MSBuildProjectName)-$(Version).zip .\release\$(MSBuildProjectName)-CN.zip
 		</PostBuildEvent>
 	</PropertyGroup>
 
@@ -34,7 +34,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+		<DalamudLibPath>C:\DalamudCN\addon\Hooks\dev\</DalamudLibPath>
 	</PropertyGroup>
 
 	<ItemGroup>
