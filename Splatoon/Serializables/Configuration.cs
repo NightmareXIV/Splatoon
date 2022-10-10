@@ -48,7 +48,7 @@ class Configuration : IPluginConfiguration
     public bool NoStreamWarning = false;
     public bool Logging = false;
 
-    public ClientLanguage? PluginLanguage = null;
+    public string PluginLanguage = null;
 
     public bool ShouldSerializeLayouts()
     {

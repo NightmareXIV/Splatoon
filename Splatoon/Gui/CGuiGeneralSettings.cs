@@ -69,16 +69,16 @@ namespace Splatoon
             ImGuiEx.TextV("Splatoon language: ".Loc());
             ImGui.SameLine();
             ImGui.SetNextItemWidth(150f.Scale());
-            if(ImGui.BeginCombo("##langsel", P.Config.PluginLanguage == null?"Game language".Loc() : P.Config.PluginLanguage.ToString().Loc()))
+            if(ImGui.BeginCombo("##langsel", P.Config.PluginLanguage == null?"Game language".Loc() : P.Config.PluginLanguage.Loc()))
             {
                 if (ImGui.Selectable("Game language".Loc()))
                 {
                     P.Config.PluginLanguage = null;
                     Localization.Init();
                 }
-                foreach (var x in Enum.GetValues<ClientLanguage>())
+                foreach (var x in GetAvaliableLanguages())
                 {
-                    if (ImGui.Selectable(x.ToString().Loc()))
+                    if (ImGui.Selectable(x.Loc()))
                     {
                         P.Config.PluginLanguage = x;
                         Localization.Init(P.Config.PluginLanguage);
@@ -86,12 +86,16 @@ namespace Splatoon
                 }
                 ImGui.EndCombo();
             }
+            ImGui.Checkbox("Localization logging".Loc(), ref Localization.Logging);
             ImGui.SameLine();
-            ImGui.Checkbox("Localization logging", ref Localization.Logging);
-            ImGui.SameLine();
-            if(ImGui.Button("Save entries"))
+            if(ImGui.Button("Save entries: ??".Loc(CurrentLanguage ?? GameLanguageString)))
             {
-                Localization.Save();
+                Localization.Save(CurrentLanguage ?? GameLanguageString);
+            }
+            ImGui.SameLine();
+            if(ImGui.Button("Rescan language files".Loc()))
+            {
+                GetAvaliableLanguages(true);
             }
             ImGui.Separator();
 

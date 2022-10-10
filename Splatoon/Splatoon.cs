@@ -19,6 +19,7 @@ using Splatoon.Memory;
 using Splatoon.Modules;
 using Splatoon.Structures;
 using Splatoon.Utils;
+using Localization = ECommons.LanguageHelpers.Localization;
 
 namespace Splatoon;
 public unsafe class Splatoon : IDalamudPlugin
@@ -91,7 +92,7 @@ public unsafe class Splatoon : IDalamudPlugin
         Config = configRaw as Configuration ?? new Configuration();
         Config.Initialize(this);
         ConfigurationMigrator1to2.Migrate(Config); //never delete this
-        ECommons.LanguageHelpers.Localization.Init(Config.PluginLanguage);
+        ECommons.LanguageHelpers.Localization.Init(Config.PluginLanguage ?? Localization.GameLanguageString);
         if (configRaw == null)
         {
             Notify.Info("New configuration file has been created".Loc());
