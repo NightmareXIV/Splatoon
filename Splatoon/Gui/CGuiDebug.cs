@@ -1,4 +1,5 @@
-﻿using ECommons.GameFunctions;
+﻿using Dalamud;
+using ECommons.GameFunctions;
 using Splatoon.Memory;
 using Splatoon.Utils;
 
