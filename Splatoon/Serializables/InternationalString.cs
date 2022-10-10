@@ -1,6 +1,7 @@
 ﻿using Dalamud;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
+using ECommons.LanguageHelpers;
 using Splatoon.Utils;
 using System.ComponentModel;
 
@@ -58,7 +59,7 @@ namespace Splatoon
             {
                 ImGuiEx.ImGuiLineCentered($"line{guid}", delegate
                 {
-                    ImGuiEx.Text("International string");
+                    ImGuiEx.Text("International string".Loc());
                 });
                 EditLangSpecificString(ClientLanguage.English, ref En);
                 EditLangSpecificString(ClientLanguage.Japanese, ref Jp);
@@ -76,11 +77,11 @@ namespace Splatoon
                     }
                 }
 
-                SImGuiEx.SizedText("Default:", 100);
+                SImGuiEx.SizedText("Default:".Loc(), 100);
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(300f);
                 ImGui.InputText($"##{guid}default", ref DefaultValue, 1000);
-                ImGuiComponents.HelpMarker("Default value will be applied when language-specific is missing.");
+                ImGuiComponents.HelpMarker("Default value will be applied when language-specific is missing.".Loc());
                 ImGui.EndCombo();
             }
             if (ImGui.IsItemHovered())
@@ -90,7 +91,7 @@ namespace Splatoon
                 {
                     ImGuiEx.Text(helpMessage + "\n");
                 }
-                ImGuiEx.Text(ImGuiColors.DalamudGrey, "International string\nFor your current language value is:");
+                ImGuiEx.Text(ImGuiColors.DalamudGrey, "International string\nFor your current language value is:".Loc());
                 ImGuiEx.Text(Get(DefaultValue));
                 ImGui.EndTooltip();
 
@@ -115,7 +116,7 @@ namespace Splatoon
                 col = true;
                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedGreen);
             }
-            SImGuiEx.SizedText($"{language}:", 100);
+            SImGuiEx.SizedText($"{language.ToString().Loc()}:", 100);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(300f);
             ImGui.InputText($"##{guid}{language}", ref str, 1000);

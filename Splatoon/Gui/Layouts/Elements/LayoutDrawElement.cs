@@ -339,7 +339,7 @@ namespace Splatoon
                     }
 
 
-                    SImGuiEx.SizedText("Status requirement:.Loc()", WidthElement);
+                    SImGuiEx.SizedText("Status requirement:".Loc(), WidthElement);
                     ImGui.SameLine();
                     ImGui.Checkbox("##buffreq" + i + k, ref el.refActorRequireBuff);
                     if (el.refActorRequireBuff)
