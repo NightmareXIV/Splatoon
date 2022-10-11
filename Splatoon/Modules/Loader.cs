@@ -54,7 +54,7 @@ namespace Splatoon.Modules
                                 return;
                             }
                         }
-                        var res = client.GetAsync("https://raw.githubusercontent.com/NightmareXIV/Splatoon/master/versions.txt").Result;
+                        var res = client.GetAsync("https://raw.githubusercontent.com/NightmareXIV/Splatoon/cn/versions.txt").Result;
                         res.EnsureSuccessStatusCode();
                         foreach (var x in res.Content.ReadAsStringAsync().Result.Split("\n"))
                         {
