@@ -11,9 +11,6 @@ namespace Splatoon.Modules
     {
         const string url = "";
         Splatoon p;
-        internal DalamudPluginInterface pi;
-        internal CommandManager cmd;
-        Framework f;
         HttpClient client;
         internal volatile Verdict verdict = Verdict.Unknown;
         internal volatile Version maxVersion = new("0.0.0.0");
@@ -21,7 +18,7 @@ namespace Splatoon.Modules
         internal Version splatoonVersion;
         string file;
 
-        internal Loader(Splatoon p, DalamudPluginInterface pi, Framework f, CommandManager cmd)
+        internal Loader(Splatoon p)
         {
             PluginLog.Information("Splatoon loader started");
             client = new()
@@ -29,13 +26,10 @@ namespace Splatoon.Modules
                 Timeout = TimeSpan.FromSeconds(10)
             };
             this.p = p;
-            this.pi = pi;
-            this.f = f;
-            this.cmd = cmd;
-            cmd.AddHandler("/loadsplatoon", new(delegate { Load(f); }) { HelpMessage = "Manually load Splatoon" });
+            Svc.Commands.AddHandler("/loadsplatoon", new(delegate { Load(Svc.Framework); }) { HelpMessage = "Manually load Splatoon" });
             splatoonVersion = p.GetType().Assembly.GetName().Version;
-            file = Path.Combine(pi.GetPluginConfigDirectory(), "safeVersion.nfo");
-            if (DalamudReflector.TryGetDalamudStartInfo(out var startInfo, pi))
+            file = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "safeVersion.nfo");
+            if (DalamudReflector.TryGetDalamudStartInfo(out var startInfo, Svc.PluginInterface))
             {
                 gVersion = startInfo.GameVersion.ToString();
                 PluginLog.Information($"Game version: {gVersion}, Splatoon version: {splatoonVersion}");
@@ -50,7 +44,7 @@ namespace Splatoon.Modules
                             if (File.ReadAllText(file) == gVersion)
                             {
                                 PluginLog.Information("Loading is allowed via file, skipping checking GitHub...");
-                                f.Update += Load;
+                                Svc.Framework.Update += Load;
                                 return;
                             }
                         }
@@ -85,13 +79,13 @@ namespace Splatoon.Modules
                         if (verdict == Verdict.Confirmed)
                         {
                             PluginLog.Information("Splatoon loading allowed, continuing");
-                            f.Update += Load;
+                            Svc.Framework.Update += Load;
                             File.WriteAllText(file, gVersion);
                         }
                         else
                         {
                             PluginLog.Warning("Splatoon loading disallowed. Displaying confirmation window.");
-                            pi.UiBuilder.Draw += Draw;
+                            Svc.PluginInterface.UiBuilder.Draw += Draw;
                         }
                     });
                 }).Start();
@@ -106,7 +100,7 @@ namespace Splatoon.Modules
         {
             PluginLog.Information("Splatoon begins loading process");
             fr.Update -= Load;
-            p.Load(pi);
+            p.Load(Svc.PluginInterface);
             PluginLog.Information("Splatoon has been loaded");
         }
 
@@ -139,24 +133,24 @@ namespace Splatoon.Modules
                         "Please open plugin installer and update Splatoon plugin.");
                     if (ImGui.Button("Open plugin installer"))
                     {
-                        cmd.ProcessCommand("/xlplugins");
+                        Svc.Commands.ProcessCommand("/xlplugins");
                     }
                 }
                 if (ImGui.Button("Load Splatoon anyway"))
                 {
-                    pi.UiBuilder.Draw -= Draw;
+                    Svc.PluginInterface.UiBuilder.Draw -= Draw;
                     PluginLog.Warning("Received confirmation to load Splatoon with unverified game version");
-                    f.Update += Load;
+                    Svc.Framework.Update += Load;
                 }
                 if (ImGui.Button("Close this window"))
                 {
-                    pi.UiBuilder.Draw -= Draw;
+                    Svc.PluginInterface.UiBuilder.Draw -= Draw;
                 }
                 if (ImGui.Button("Load Splatoon and never display this window until next game update"))
                 {
-                    pi.UiBuilder.Draw -= Draw;
+                    Svc.PluginInterface.UiBuilder.Draw -= Draw;
                     PluginLog.Warning("Received confirmation to load Splatoon with unverified game version and override game version");
-                    f.Update += Load;
+                    Svc.Framework.Update += Load;
                     Safe(delegate
                     {
                         File.WriteAllText(file, gVersion);
