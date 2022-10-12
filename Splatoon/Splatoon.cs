@@ -92,7 +92,6 @@ public unsafe class Splatoon : IDalamudPlugin
         Config = configRaw as Configuration ?? new Configuration();
         Config.Initialize(this);
         ConfigurationMigrator1to2.Migrate(Config); //never delete this
-        ECommons.LanguageHelpers.Localization.Init(Config.PluginLanguage ?? Localization.GameLanguageString);
         if (configRaw == null)
         {
             Notify.Info("New configuration file has been created".Loc());
@@ -170,8 +169,8 @@ public unsafe class Splatoon : IDalamudPlugin
         Disposed = true;
         Safe(delegate
         {
-            loader.cmd.RemoveHandler("/loadsplatoon");
-            loader.pi.UiBuilder.Draw -= loader.Draw;
+            Svc.Commands.RemoveHandler("/loadsplatoon");
+            Svc.PluginInterface.UiBuilder.Draw -= loader.Draw;
         });
         if (!Loaded)
         {
@@ -198,10 +197,12 @@ public unsafe class Splatoon : IDalamudPlugin
         //Svc.Chat.Print("Disposing");
     }
 
-    public Splatoon(DalamudPluginInterface pluginInterface, Framework framework, CommandManager commands)
+    public Splatoon(DalamudPluginInterface pluginInterface)
     {
         P = this;
-        loader = new Loader(this, pluginInterface, framework, commands);
+        Svc.Init(pluginInterface);
+        Localization.Init((Svc.PluginInterface.GetPluginConfig() is Configuration cfg)?cfg.PluginLanguage : Localization.GameLanguageString);
+        loader = new Loader(this);
     }
 
     public void AddDynamicElements(string name, Element[] elements, long[] destroyConditions)
