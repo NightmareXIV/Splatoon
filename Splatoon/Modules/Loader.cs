@@ -1,6 +1,7 @@
 ﻿using Dalamud.Game;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Colors;
+using ECommons.LanguageHelpers;
 using ECommons.Reflection;
 using System.Net.Http;
 using System.Threading;
@@ -109,44 +110,37 @@ namespace Splatoon.Modules
         {
             ImGuiHelpers.ForceNextWindowMainViewport();
             ImGuiHelpers.SetNextWindowPosRelativeMainViewport(ImGuiHelpers.MainViewport.Size / 2 - size / 2);
-            if (ImGui.Begin("Splatoon - Can not confirm compatibility with current game version", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
+            if (ImGui.Begin("Splatoon - Can not confirm compatibility with current game version".Loc(), ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
             {
                 if (verdict == Verdict.Error)
                 {
-                    ImGuiEx.Text(ImGuiColors.DalamudRed, "Splatoon could not connect to the GitHub to verify\n" +
-                        "if it could be running on current game version.");
-                    ImGuiEx.Text("If the game has just updated, please test if the plugin works fine and if it does,\n" +
-                        "press \"Load Splatoon and never display this window until next game update\" " +
-                        "\nbutton in this window next time you start the game.");
+                    ImGuiEx.Text(ImGuiColors.DalamudRed, "Splatoon could not connect to the GitHub to verify\nif it could be running on current game version.".Loc());
+                    ImGuiEx.Text("If the game has just updated, please test if the plugin works fine and if it does,\npress \"Load Splatoon and never display this window until next game update\" \nbutton in this window next time you start the game.".Loc());
                 }
                 else
                 {
-                    ImGuiEx.Text(ImGuiColors.DalamudOrange, "There is no information about compatibility of current version of\n" +
-                        "Splatoon with current version of the game.");
-                    ImGuiEx.Text("You may try to load plugin and continue using it. \n" +
-                    "On a smaller patches it will usually work, but it may crash your game\n" +
-                    "in which case please wait for an update.");
+                    ImGuiEx.Text(ImGuiColors.DalamudOrange, "There is no information about compatibility of current version of\nSplatoon with current version of the game.".Loc());
+                    ImGuiEx.Text("You may try to load plugin and continue using it. \nOn a smaller patches it will usually work, but it may crash your game\nin which case please wait for an update.".Loc());
                 }
                 if (maxVersion > splatoonVersion)
                 {
-                    ImGuiEx.TextWrapped(ImGuiColors.DalamudViolet, "An update for Splatoon is available. \n" +
-                        "Please open plugin installer and update Splatoon plugin.");
-                    if (ImGui.Button("Open plugin installer"))
+                    ImGuiEx.TextWrapped(ImGuiColors.DalamudViolet, "An update for Splatoon is available. \nPlease open plugin installer and update Splatoon plugin.".Loc());
+                    if (ImGui.Button("Open plugin installer".Loc()))
                     {
                         Svc.Commands.ProcessCommand("/xlplugins");
                     }
                 }
-                if (ImGui.Button("Load Splatoon anyway"))
+                if (ImGui.Button("Load Splatoon anyway".Loc()))
                 {
                     Svc.PluginInterface.UiBuilder.Draw -= Draw;
                     PluginLog.Warning("Received confirmation to load Splatoon with unverified game version");
                     Svc.Framework.Update += Load;
                 }
-                if (ImGui.Button("Close this window"))
+                if (ImGui.Button("Close this window".Loc()))
                 {
                     Svc.PluginInterface.UiBuilder.Draw -= Draw;
                 }
-                if (ImGui.Button("Load Splatoon and never display this window until next game update"))
+                if (ImGui.Button("Load Splatoon and never display this window until next game update".Loc()))
                 {
                     Svc.PluginInterface.UiBuilder.Draw -= Draw;
                     PluginLog.Warning("Received confirmation to load Splatoon with unverified game version and override game version");
