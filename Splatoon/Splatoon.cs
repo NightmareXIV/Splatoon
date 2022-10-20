@@ -19,6 +19,7 @@ using Splatoon.Memory;
 using Splatoon.Modules;
 using Splatoon.Structures;
 using Splatoon.Utils;
+using System.Text.RegularExpressions;
 using Localization = ECommons.LanguageHelpers.Localization;
 
 namespace Splatoon;
@@ -1273,7 +1274,9 @@ public unsafe class Splatoon : IDalamudPlugin
                     foreach (var CurrentChatMessage in CurrentChatMessages)
                     {
                         var trg = t.MatchIntl.Get(t.Match);
-                        if (trg != string.Empty && CurrentChatMessage.ContainsIgnoreCase(trg))
+                        if (trg != string.Empty && 
+                            (t.IsRegex ? Regex.IsMatch(CurrentChatMessage, trg) : CurrentChatMessage.ContainsIgnoreCase(trg))
+                            )
                         {
                             if (t.Duration == 0)
                             {

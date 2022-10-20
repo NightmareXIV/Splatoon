@@ -72,11 +72,15 @@ namespace Splatoon.Memory
                     var obj = Svc.Objects.CreateObjectReference(a2);
                     if (obj is Character c)
                     {
-                        Logger.Log($"VFX {vfxPath} spawned on {obj.ToString()} npc id={obj.Struct()->GetNpcID()}, model id={c.Struct()->ModelCharaId}, name npc id={c.NameId}, position={obj.Position.ToString()}");
+                        var text = $"VFX {vfxPath} spawned on {obj.Name.ToString()} npc id={obj.Struct()->GetNpcID()}, model id={c.Struct()->ModelCharaId}, name npc id={c.NameId}, position={obj.Position.ToString()}";
+                        P.ChatMessageQueue.Enqueue(text);
+                        Logger.Log(text);
                     }
                     else
                     {
-                        Logger.Log($"VFX {vfxPath} spawned on {obj.ToString()} npc id={obj.Struct()->GetNpcID()}, position={obj.Position.ToString()}");
+                        var text = $"VFX {vfxPath} spawned on {obj.Name.ToString()} npc id={obj.Struct()->GetNpcID()}, position={obj.Position.ToString()}";
+                        P.ChatMessageQueue.Enqueue(text);
+                        Logger.Log(text);
                     }
                 }
             }

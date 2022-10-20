@@ -1,4 +1,5 @@
-﻿using ECommons.LanguageHelpers;
+﻿using Dalamud.Interface.Colors;
+using ECommons.LanguageHelpers;
 using Splatoon.Utils;
 
 namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
@@ -43,8 +44,16 @@ namespace Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands
                     }
                     else
                     {
-                        ImGuiEx.SetNextItemFullWidth();
-                        layout.Triggers[n].MatchIntl.ImGuiEdit(ref layout.Triggers[n].Match, "Case-insensitive (partial) message");
+                        ImGuiEx.InputWithRightButtonsArea($"trigger{layout.Triggers[n].GUID}", delegate
+                        {
+                            layout.Triggers[n].MatchIntl.ImGuiEdit(ref layout.Triggers[n].Match, "Case-insensitive (partial) message");
+                        }, delegate
+                        {
+                            var col = layout.Triggers[n].IsRegex;
+                            if (col) ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+                            ImGui.Checkbox("Regex", ref layout.Triggers[n].IsRegex);
+                            if (col) ImGui.PopStyleColor();
+                        });
                         //ImGui.InputTextWithHint("##textinput1", "Case-insensitive message", ref layout.Triggers[n].Match, 1000);
 
                         //ImGui.SameLine();

@@ -29,6 +29,7 @@ namespace Splatoon
         [NonSerialized] public int FiredState = 0;
         [NonSerialized] public List<long> EnableAt = new();
         [NonSerialized] public List<long> DisableAt = new();
+        [NonSerialized] public bool IsRegex = false;
 
         public bool ShouldSerializeMatchIntl()
         {
