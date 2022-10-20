@@ -78,6 +78,7 @@ public unsafe class Splatoon : IDalamudPlugin
     internal static Dictionary<string, IntPtr> PlaceholderCache = new();
     internal static Dictionary<string, uint> NameNpcIDsAll = new();
     internal static Dictionary<string, uint> NameNpcIDs = new();
+    internal MapEffectProcessor mapEffectProcessor;
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
@@ -161,6 +162,7 @@ public unsafe class Splatoon : IDalamudPlugin
             "Only in combat OR instance".Loc(), 
             "On trigger only".Loc() };
         Element.Init();
+        mapEffectProcessor = new();
         Init = true;
         SplatoonIPC.Init();
     }
