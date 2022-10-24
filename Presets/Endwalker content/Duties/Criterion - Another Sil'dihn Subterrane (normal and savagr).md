@@ -25,7 +25,7 @@ Forked Lightning:
 
 Rush of Might:
 ```
-~Lv2~{"Name":"Rush of Might","Group":"A.S.S Gladiator","ZoneLockH":[1075,1069],"ElementsL":[{"Name":"","type":3,"refX":-5.0,"refY":-30.0,"offX":-5.0,"offY":30.0,"radius":5.0,"thicc":1.0,"refActorNPCNameID":11387,"refActorRequireCast":true,"refActorCastId":[30266,30267,30268,30269,30270,30296,30297,30298,30299,30300,30618,30619,30620,30621,30622],"refActorUseCastTime":true,"refActorCastTimeMax":15.0,"refActorUseOvercast":true,"FillStep":0.646,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true,"AdditionalRotation":1.5707964}]}
+~Lv2~{"Name":"Rush of Might","Group":"A.S.S Gladiator","ZoneLockH":[1075,1076],"ElementsL":[{"Name":"","type":3,"refX":-5.0,"refY":-30.0,"offX":-5.0,"offY":30.0,"radius":5.0,"thicc":1.0,"refActorNPCNameID":11387,"refActorRequireCast":true,"refActorCastId":[30266,30267,30268,30269,30270,30296,30297,30298,30299,30300,30618,30619,30620,30621,30622],"refActorUseCastTime":true,"refActorCastTimeMax":15.0,"refActorUseOvercast":true,"FillStep":0.646,"refActorComparisonType":6,"includeHitbox":true,"includeRotation":true,"onlyUnTargetable":true,"AdditionalRotation":1.5707964}]}
 ```
 Thunderous Echo:
 ```
