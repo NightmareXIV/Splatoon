@@ -1,5 +1,7 @@
 ﻿using Dalamud;
+using ECommons;
 using ECommons.GameFunctions;
+using ECommons.MathHelpers;
 using Splatoon.Memory;
 using Splatoon.Utils;
 
@@ -17,8 +19,10 @@ namespace Splatoon
             ImGui.BeginChild("##splatoonmaindbg");
             ImGui.Checkbox("Disable line fix", ref p.DisableLineFix);
             ImGuiEx.Text($"Line segments: {P.CurrentLineSegments}");
-            var t = Environment.TickCount64 - p.CombatStarted;
-            ImGuiEx.Text("CombatStarted = " + t);
+            {
+                var t = Environment.TickCount64 - p.CombatStarted;
+                ImGuiEx.Text("CombatStarted = " + t);
+            }
             ImGui.SetNextItemWidth(60f);
             ImGui.DragInt($"Message concurrency", ref p.dequeueConcurrency, float.Epsilon);
             ImGui.Separator();
@@ -152,6 +156,18 @@ namespace Splatoon
                     {
                         ImGuiEx.Text("null");
                     }
+                }
+            }
+            if (ImGui.CollapsingHeader("Distance"))
+            {
+                if (Svc.Targets.Target.NotNull(out var t))
+                {
+                    ImGuiEx.Text($"Distance c2c 3d: {Vector3.Distance(Svc.ClientState.LocalPlayer.Position, t.Position)}");
+                    ImGuiEx.Text($"Distance c2c 2d: {Vector2.Distance(Svc.ClientState.LocalPlayer.Position.ToVector2(), t.Position.ToVector2())}");
+                    ImGuiEx.Text($"Distance h2h 3d: {Vector3.Distance(Svc.ClientState.LocalPlayer.Position, t.Position) - Svc.ClientState.LocalPlayer.HitboxRadius - t.HitboxRadius}");
+                    ImGuiEx.Text($"Distance h2h 2d: {Vector2.Distance(Svc.ClientState.LocalPlayer.Position.ToVector2(), t.Position.ToVector2()) - Svc.ClientState.LocalPlayer.HitboxRadius - t.HitboxRadius}");
+                    ImGuiEx.Text($"Distance c2h 3d: {Vector3.Distance(Svc.ClientState.LocalPlayer.Position, t.Position) - Svc.ClientState.LocalPlayer.HitboxRadius}");
+                    ImGuiEx.Text($"Distance c2h 2d: {Vector2.Distance(Svc.ClientState.LocalPlayer.Position.ToVector2(), t.Position.ToVector2()) - Svc.ClientState.LocalPlayer.HitboxRadius}");
                 }
             }
             ImGui.EndChild();

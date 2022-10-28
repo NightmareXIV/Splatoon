@@ -67,20 +67,20 @@ namespace Splatoon.Memory
                 {
                     SpawnTime = Environment.TickCount64
                 };
-                if (P.Config.Logging && !BlacklistedVFX.Contains(vfxPath))
+                if (!BlacklistedVFX.Contains(vfxPath))
                 {
                     var obj = Svc.Objects.CreateObjectReference(a2);
                     if (obj is Character c)
                     {
                         var text = $"VFX {vfxPath} spawned on {obj.Name.ToString()} npc id={obj.Struct()->GetNpcID()}, model id={c.Struct()->ModelCharaId}, name npc id={c.NameId}, position={obj.Position.ToString()}";
                         P.ChatMessageQueue.Enqueue(text);
-                        Logger.Log(text);
+                        if(P.Config.Logging) Logger.Log(text);
                     }
                     else
                     {
                         var text = $"VFX {vfxPath} spawned on {obj.Name.ToString()} npc id={obj.Struct()->GetNpcID()}, position={obj.Position.ToString()}";
                         P.ChatMessageQueue.Enqueue(text);
-                        Logger.Log(text);
+                        if (P.Config.Logging) Logger.Log(text);
                     }
                 }
             }

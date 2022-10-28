@@ -88,7 +88,7 @@ public unsafe class Splatoon : IDalamudPlugin
             return;
         }
         Loaded = true;
-        ECommons.ECommons.Init(pluginInterface, this, Module.ObjectLife, Module.ObjectFunctions, Module.DalamudReflector);
+        ECommonsMain.Init(pluginInterface, this, Module.ObjectLife, Module.ObjectFunctions, Module.DalamudReflector);
         Svc.Commands.RemoveHandler("/loadsplatoon");
         var configRaw = Svc.PluginInterface.GetPluginConfig();
         Config = configRaw as Configuration ?? new Configuration();
@@ -163,6 +163,7 @@ public unsafe class Splatoon : IDalamudPlugin
             "On trigger only".Loc() };
         Element.Init();
         mapEffectProcessor = new();
+        mapEffectProcessor.Enable();
         Init = true;
         SplatoonIPC.Init();
     }
@@ -194,8 +195,9 @@ public unsafe class Splatoon : IDalamudPlugin
             Svc.Framework.Update -= Tick;
             Svc.Chat.ChatMessage -= OnChatMessage;
         });
+        Safe(mapEffectProcessor.Disable);
         AttachedInfo.Dispose();
-        ECommons.ECommons.Dispose();
+        ECommonsMain.Dispose();
         P = null;
         //Svc.Chat.Print("Disposing");
     }

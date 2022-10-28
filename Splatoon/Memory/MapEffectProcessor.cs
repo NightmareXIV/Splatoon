@@ -30,6 +30,11 @@ namespace Splatoon.Memory
             return ProcessMapEffectHook.Original(a1, a2, a3, a4);
         }
 
+        internal MapEffectProcessor()
+        {
+            SignatureHelper.Initialise(this);
+        }
+
         internal void Enable()
         {
             if (!ProcessMapEffectHook.IsEnabled) ProcessMapEffectHook.Enable();
