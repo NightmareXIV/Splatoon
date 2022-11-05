@@ -1,3 +1,16 @@
+QMT Divebombs: 
+```
+~Lv2~{"Name":"QMT Divebombs","Group":"UCOB","ZoneLockH":[733],"DCond":5,"ElementsL":[{"Name":"Twin Dive","type":3,"offY":67.52,"radius":1.0,"color":1160062402,"thicc":1.0,"refActorNPCNameID":1482,"refActorRequireCast":true,"refActorCastId":[9906,27531],"refActorComparisonType":6,"includeHitbox":true,"includeOwnHitbox":true,"includeRotation":true,"onlyVisible":true,"Filled":true},{"Name":"Bahamut Dive","type":3,"offY":67.52,"radius":1.0,"color":1160062402,"thicc":1.0,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[3008,9953,23378,24676],"refActorComparisonType":6,"includeHitbox":true,"includeOwnHitbox":true,"includeRotation":true,"onlyVisible":true,"Filled":true},{"Name":"Nael Dive","type":3,"offY":67.52,"radius":1.0,"color":1160062402,"thicc":1.0,"refActorNPCNameID":2612,"refActorRequireCast":true,"refActorCastId":[9923],"refActorComparisonType":6,"includeHitbox":true,"includeOwnHitbox":true,"includeRotation":true,"onlyVisible":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"MatchIntl":{"En":"Bahamut Prime uses Quickmarch Trio"}}]}
+```
+BFT Nael Finder: 
+```
+~Lv2~{"Name":"BFT/FRT Nael Location","Group":"UCOB","ZoneLockH":[733],"DCond":5,"ElementsL":[{"Name":"Nael Tether","type":1,"radius":0.0,"color":4290828558,"thicc":5.0,"overlayText":"Nael","refActorModelID":647,"refActorComparisonType":1,"onlyVisible":true,"tether":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"MatchIntl":{"En":"Bahamut Prime readies Blackfire Trio"},"MatchDelay":6.0}]}
+```
+HFT Divebombs: 
+```
+~Lv2~{"Name":"HFT Divebombs","Group":"UCOB","ZoneLockH":[733],"DCond":5,"ElementsL":[{"Name":"Twin Dive","type":3,"offY":67.52,"radius":1.0,"color":1160062402,"thicc":1.0,"refActorNPCNameID":1482,"refActorRequireCast":true,"refActorCastId":[9906,27531],"refActorComparisonType":6,"includeHitbox":true,"includeOwnHitbox":true,"includeRotation":true,"onlyVisible":true,"Filled":true},{"Name":"Bahamut Dive","type":3,"offY":67.52,"radius":1.0,"color":1160062402,"thicc":1.0,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[3008,9953,23378,24676],"refActorComparisonType":6,"includeHitbox":true,"includeOwnHitbox":true,"includeRotation":true,"onlyVisible":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"MatchIntl":{"En":"Bahamut Prime readies Heavensfall Trio"}}]}
+```
+
 # Untested section
 [International] Unknown mechanic
 ```
