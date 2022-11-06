@@ -36,7 +36,7 @@ Helps with keeping melee uptime when Nidhogg dives one half of the arena in addi
 
 [EN, JP] Nidhogg's Cauterize:
 ```
-~Lv2~{"Name":"DSR P6 Nidhogg's Cauterize","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"1","type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":3458,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"I swore to Shiva─swore that I would not take the lives of men... Stop me, I prithee!","MatchIntl":{"Jp":"我はシヴァに誓ったのだ…… 決して人を殺めはしないと……頼む……！"},"MatchDelay":14.0}],"Phase":2}
+~Lv2~{"Name":"DSR P6 Nidhogg's Cauterize","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"1","type":3,"refY":12.0,"offY":56.0,"radius":11.0,"color":1509968639,"refActorNPCNameID":3458,"refActorComparisonType":6,"includeRotation":true,"onlyTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"Match":"I swore to Shiva─swore that I would not take the lives of men... Stop me, I prithee!","MatchIntl":{"Jp":"我はシヴァに誓ったのだ"},"MatchDelay":14.0}],"Phase":2}
 ```
 
 [EN, JP] Hraesvelgr's Cauterize:
