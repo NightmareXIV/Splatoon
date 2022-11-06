@@ -12,150 +12,15 @@ namespace Splatoon.SplatoonScripting
 {
     public abstract class SplatoonScript
     {
-        protected Dictionary<string, Layout> Layouts = new();
-        protected Dictionary<string, Element> Elements = new();
+        /// <summary>
+        /// Controller provides easy access to various helper functions that may be helpful for your script.
+        /// </summary>
+        public Controller Controller { get; } = new();
 
         /// <summary>
-        /// Attempts to register previously exported from plugin layout for further usage. End user will be able to edit this layout as they wish and results of the edit will be saved. Enabled layouts are subject for immediate processing when the script is enabled.
+        /// Metadata of a script that contains name and, optionally, author, description, version and script's origin website. This data will be displayed in Splatoon's interface.
         /// </summary>
-        /// <param name="UniqueName">Internal unique (within current script) name of the layout.</param>
-        /// <param name="ExportString">An exported layout string.</param>
-        /// <param name="layout">Decoded layout object.</param>
-        /// <param name="overwrite">Whether to overwrite existing layout with same name if it's present.</param>
-        /// <returns>Whether layout was successfully registered.</returns>
-        public bool TryRegisterLayoutFromCode(string UniqueName, string ExportString, [NotNullWhen(true)] out Layout? layout, bool overwrite = false)
-        {
-            return ScriptingEngine.TryDecodeLayout(ExportString, out layout) && TryRegisterLayout(UniqueName, layout, overwrite);
-        }
-
-        /// <summary>
-        /// Attempts to register previously constructed layout for further usage. End user will be able to edit this layout as they wish and results of the edit will be saved. Enabled layouts are subject for immediate processing when the script is enabled.
-        /// </summary>
-        /// <param name="UniqueName">Internal unique (within current script) name of the layout.</param>
-        /// <param name="layout">Layout object.</param>
-        /// <param name="overwrite">Whether to overwrite existing layout with same name if it's present.</param>
-        /// <returns>Whether layout was successfully registered.</returns>
-        public bool TryRegisterLayout(string UniqueName, Layout layout, bool overwrite = false)
-        {
-            if(!overwrite && Layouts.ContainsKey(UniqueName))
-            {
-                PluginLog.Warning($"There is a layout named {UniqueName} already.");
-                return false;
-            }
-            Layouts[UniqueName] = layout;
-            return true;
-        }
-
-        /// <summary>
-        /// Attempts to register previously constructed element for further usage. End user will be able to edit this element as they wish and results of the edit will be saved. Enabled elements are subject for immediate processing when the script is enabled.
-        /// </summary>
-        /// <param name="UniqueName">Internal unique (within current script) name of the element.</param>
-        /// <param name="element">Element object.</param>
-        /// <param name="overwrite">Whether to overwrite existing element with same name if it's present.</param>
-        /// <returns>Whether element was successfully registered.</returns>
-        public bool TryRegisterElement(string UniqueName, Element element, bool overwrite = false)
-        {
-            if (!overwrite && Layouts.ContainsKey(UniqueName))
-            {
-                PluginLog.Warning($"There is an element named {UniqueName} already.");
-                return false;
-            }
-            Elements[UniqueName] = element;
-            return true;
-        }
-
-        /// <summary>
-        /// Attempts to register previously exported from plugin element for further usage. End user will be able to edit this element as they wish and results of the edit will be saved. Enabled elements are subject for immediate processing when the script is enabled.
-        /// </summary>
-        /// <param name="UniqueName">Internal unique (within current script) name of the element</param>
-        /// <param name="ExportString">An exported element string.</param>
-        /// <param name="element">Decoded element object.</param>
-        /// <param name="overwrite">Whether to overwrite existing element with same name if it's present.</param>
-        /// <returns>Whether element was successfully registered.</returns>
-        public bool TryRegisterElementFromCode(string UniqueName, string ExportString, [NotNullWhen(true)] out Element? element, bool overwrite = false)
-        {
-            return ScriptingEngine.TryDecodeElement(ExportString, out element) && TryRegisterElement(UniqueName, element, overwrite);
-        }
-
-        /// <summary>
-        /// Tries to get previously registered layout by name.
-        /// </summary>
-        /// <param name="name">Layout's internal name.</param>
-        /// <param name="layout">Result.</param>
-        /// <returns>Whether operation succeeded.</returns>
-        public bool TryGetLayoutByName(string name, [NotNullWhen(true)] out Layout? layout)
-        {
-            return Layouts.TryGetValue(name, out layout);
-        }
-
-        /// <summary>
-        /// Tries to get previously registered element by name.
-        /// </summary>
-        /// <param name="name">Element's internal name.</param>
-        /// <param name="element">Result.</param>
-        /// <returns>Whether operation succeeded.</returns>
-        public bool TryGetElementByName(string name, [NotNullWhen(true)] out Element? element)
-        {
-            return Elements.TryGetValue(name, out element);
-        }
-
-        /// <summary>
-        /// Unregisters previously registered layout.
-        /// </summary>
-        /// <param name="name">Layout name.</param>
-        /// <returns>Whether operation succeeded.</returns>
-        public bool TryUnregisterLayout(string name)
-        {
-            return Layouts.Remove(name);
-        }
-
-        /// <summary>
-        /// Unregisters previously registered element.
-        /// </summary>
-        /// <param name="name">Element name.</param>
-        /// <returns>Whether operation succeeded.</returns>
-        public bool TryUnregisterElement(string name)
-        {
-            return Elements.Remove(name);
-        }
-
-        /// <summary>
-        /// Returns a dictionary of currently registered layouts.
-        /// </summary>
-        /// <returns>Read only dictionary of currently registered layouts.</returns>
-        public ReadOnlyDictionary<string, Layout> RegisteredLayouts()
-        {
-            return new ReadOnlyDictionary<string, Layout>(Layouts);
-        }
-
-        /// <summary>
-        /// Returns a dictionary of currently registered elements.
-        /// </summary>
-        /// <returns>Read only dictionary of currently registered elements.</returns>
-        public ReadOnlyDictionary<string, Element> RegisteredElements()
-        {
-            return new ReadOnlyDictionary<string, Element>(Elements);
-        }
-
-        /// <summary>
-        /// Name of a script
-        /// </summary>
-        public abstract string Name { get; }
-
-        /// <summary>
-        /// Optional author of a script, will be displayed in the list of scripts.
-        /// </summary>
-        public virtual string? Author { get; }
-
-        /// <summary>
-        /// Optional description of a script, will be displayed in the list of scripts.
-        /// </summary>
-        public virtual string? Description { get; }
-
-        /// <summary>
-        /// Optional single digit version of a script, will be displayed in the list of scripts.
-        /// </summary>
-        public virtual uint Version { get; }
+        public abstract Metadata Metadata { get; }
 
         /// <summary>
         /// Valid territories where script will be executed. Specify an empty array if you want it to work in all territories. 
@@ -209,22 +74,22 @@ namespace Splatoon.SplatoonScripting
         /// <summary>
         /// Will be called when a tether created between two game objects. This method will only be called if a script is enabled.
         /// </summary>
-        /// <param name="source">Source object of pair.</param>
-        /// <param name="target">Target object of pair.</param>
-        public virtual void OnTetherCreate(GameObject source, GameObject target) { }
+        /// <param name="source">Source object ID of pair.</param>
+        /// <param name="target">Target object ID of pair.</param>
+        public virtual void OnTetherCreate(uint source, uint target) { }
 
         /// <summary>
         /// Will be called when a previously created tether between two game objects removed. This method will only be called if a script is enabled.
         /// </summary>
-        /// <param name="source">Source object of pair.</param>
-        public virtual void OnTetherRemoval(GameObject source) { }
+        /// <param name="source">Source object ID of pair.</param>
+        public virtual void OnTetherRemoval(uint source) { }
 
         /// <summary>
         /// Will be called when a VFX spawns on a certain game object. This method will only be called if a script is enabled.
         /// </summary>
-        /// <param name="target">Object that is targeted by VFX</param>
+        /// <param name="target">Object ID that is targeted by VFX.</param>
         /// <param name="vfxPath">VFX game path</param>
-        public virtual void OnVFXSpawn(GameObject target, string vfxPath) { }
+        public virtual void OnVFXSpawn(uint target, string vfxPath) { }
 
         /// <summary>
         /// Will be called whenever plugin processes a message. These are the same messages which layout trigger system receives. This method will only be called if a script is enabled.
