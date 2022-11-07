@@ -7,6 +7,7 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal.Notifications;
 using ECommons;
+using ECommons.Events;
 using ECommons.GameFunctions;
 using ECommons.LanguageHelpers;
 using ECommons.MathHelpers;
@@ -17,6 +18,7 @@ using PInvoke;
 using Splatoon.Gui;
 using Splatoon.Memory;
 using Splatoon.Modules;
+using Splatoon.SplatoonScripting;
 using Splatoon.Structures;
 using Splatoon.Utils;
 using System.Text.RegularExpressions;
@@ -58,7 +60,8 @@ public unsafe class Splatoon : IDalamudPlugin
     internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, uint NPCID, uint NameID, ObjectKind type), ObjectInfo> loggedObjectList = new();
     internal bool LogObjects = false;
     internal bool DisableLineFix = false;
-    internal int Phase = 1;
+    private int phase = 1;
+    internal int Phase { get => phase; set { phase = value; ScriptingProcessor.OnPhaseChange(value); } }
     internal int LayoutAmount = 0;
     internal int ElementAmount = 0;
     /*internal static readonly string[] LimitGaugeResets = new string[] 
@@ -164,6 +167,12 @@ public unsafe class Splatoon : IDalamudPlugin
         Element.Init();
         mapEffectProcessor = new();
         mapEffectProcessor.Enable();
+        ProperOnLogin.Register(delegate
+        {
+            ScriptingProcessor.TerritoryChanged(Svc.ClientState.TerritoryType);
+        });
+        Svc.ClientState.Logout += OnLogout;
+        ScriptingProcessor.TerritoryChanged(Svc.ClientState.IsLoggedIn ? Svc.ClientState.TerritoryType : 0u);
         Init = true;
         SplatoonIPC.Init();
     }
@@ -194,9 +203,11 @@ public unsafe class Splatoon : IDalamudPlugin
             Svc.ClientState.TerritoryChanged -= TerritoryChangedEvent;
             Svc.Framework.Update -= Tick;
             Svc.Chat.ChatMessage -= OnChatMessage;
+            Svc.ClientState.Logout -= OnLogout;
         });
         Safe(mapEffectProcessor.Disable);
         AttachedInfo.Dispose();
+        ScriptingProcessor.Dispose();
         ECommonsMain.Dispose();
         P = null;
         //Svc.Chat.Print("Disposing");
@@ -208,6 +219,11 @@ public unsafe class Splatoon : IDalamudPlugin
         Svc.Init(pluginInterface);
         Localization.Init((Svc.PluginInterface.GetPluginConfig() is Configuration cfg)?cfg.PluginLanguage : Localization.GameLanguageString);
         loader = new Loader(this);
+    }
+
+    internal static void OnLogout(object _, object __)
+    {
+        ScriptingProcessor.TerritoryChanged(0);
     }
 
     public void AddDynamicElements(string name, Element[] elements, long[] destroyConditions)
@@ -337,6 +353,7 @@ public unsafe class Splatoon : IDalamudPlugin
         }
         AttachedInfo.VFXInfos.Clear();
         Logger.OnTerritoryChanged();
+        ScriptingProcessor.TerritoryChanged(Svc.ClientState.IsLoggedIn ? e : 0u);
     }
 
     
@@ -399,6 +416,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     {
                         PluginLog.Verbose("Dequeued message: " + ccm);
                         CurrentChatMessages.Add(ccm);
+                        ScriptingProcessor.OnMessage(ccm);
                     }
                     else
                     {
@@ -426,6 +444,8 @@ public unsafe class Splatoon : IDalamudPlugin
                     if (CombatStarted == 0)
                     {
                         CombatStarted = Environment.TickCount64;
+                        Log("Combat started event");
+                        ScriptingProcessor.OnCombatStart();
                     }
                 }
                 else
@@ -434,6 +454,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     {
                         CombatStarted = 0;
                         Log("Combat ended event");
+                        ScriptingProcessor.OnCombatEnd();
                         AttachedInfo.VFXInfos.Clear();
                         foreach (var l in Config.LayoutsL)
                         {

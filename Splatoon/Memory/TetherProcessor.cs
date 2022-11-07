@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Splatoon.SplatoonScripting
+namespace Splatoon.Memory
 {
-    public static class Script
+    internal class TetherProcessor
     {
-        
     }
 }

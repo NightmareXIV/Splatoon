@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Bson;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
@@ -30,7 +31,7 @@ namespace Splatoon.SplatoonScripting
         /// <summary>
         /// Indicates whether script is currently enabled and should be executed or not.
         /// </summary>
-        public bool IsEnabled => ValidTerritories.Contains(Svc.ClientState.TerritoryType);
+        public bool IsEnabled { get; private set; } = false;
 
         /// <summary>
         /// Executed once after script is compiled and loaded into memory. Setup your layouts, elements and other static data that is not supposed to change within a game session. You should not setup any hooks or direct Dalamud events here, as method to cleanup is not provided (by design). Such things are to be done in OnEnable method.
@@ -108,5 +109,43 @@ namespace Splatoon.SplatoonScripting
         public virtual void OnSettingsDraw() { }
 
         public bool DoSettingsDraw => this.GetType().GetMethod(nameof(OnSettingsDraw))?.DeclaringType != typeof(SplatoonScript);
+
+        internal bool Enable()
+        {
+            if (IsEnabled)
+            {
+                return false;
+            }
+            try
+            {
+                PluginLog.Information($"Enabling script {this.Metadata.Name}");
+                this.OnEnable();
+            }
+            catch (Exception ex)
+            {
+                ex.Log();
+            }
+            this.IsEnabled = true;
+            return true;
+        }
+
+        internal bool Disable()
+        {
+            if (!IsEnabled)
+            {
+                return false;
+            }
+            try
+            {
+                PluginLog.Information($"Disabling script {this.Metadata.Name}");
+                this.OnDisable();
+            }
+            catch (Exception ex)
+            {
+                ex.Log();
+            }
+            this.IsEnabled = false;
+            return true;
+        }
     }
 }

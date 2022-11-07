@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using ECommons.GameFunctions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -172,6 +174,15 @@ namespace Splatoon.SplatoonScripting
         {
             ClearRegisteredElements();
             ClearRegisteredLayouts();
+        }
+
+        /// <summary>
+        /// Retrieve valid and visible party members. Non cross-world parties only. Duty recorder supported.
+        /// </summary>
+        /// <returns>Enumberator of PlayerCharacter objects.</returns>
+        public static IEnumerator<PlayerCharacter> GetPartyMembers()
+        {
+            return FakeParty.Get();
         }
     }
 }

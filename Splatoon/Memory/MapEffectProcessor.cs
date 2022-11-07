@@ -2,6 +2,7 @@
 using Dalamud.Hooking;
 using Dalamud.Utility.Signatures;
 using Splatoon.Modules;
+using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace Splatoon.Memory
                 var text = $"MapEffect: {a2}, {a3}, {a4}";
                 P.ChatMessageQueue.Enqueue(text);
                 Logger.Log(text);
+                ScriptingProcessor.OnMapEffect(a2, a3, a4);
             }
             catch (Exception e)
             {
