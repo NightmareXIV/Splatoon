@@ -35,6 +35,7 @@ namespace Splatoon.Memory
         internal MapEffectProcessor()
         {
             SignatureHelper.Initialise(this);
+            this.Enable();
         }
 
         internal void Enable()

@@ -82,6 +82,7 @@ public unsafe class Splatoon : IDalamudPlugin
     internal static Dictionary<string, uint> NameNpcIDsAll = new();
     internal static Dictionary<string, uint> NameNpcIDs = new();
     internal MapEffectProcessor mapEffectProcessor;
+    internal TetherProcessor TetherProcessor;
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
@@ -166,7 +167,7 @@ public unsafe class Splatoon : IDalamudPlugin
             "On trigger only".Loc() };
         Element.Init();
         mapEffectProcessor = new();
-        mapEffectProcessor.Enable();
+        TetherProcessor = new();
         ProperOnLogin.Register(delegate
         {
             ScriptingProcessor.TerritoryChanged(Svc.ClientState.TerritoryType);
@@ -205,7 +206,8 @@ public unsafe class Splatoon : IDalamudPlugin
             Svc.Chat.ChatMessage -= OnChatMessage;
             Svc.ClientState.Logout -= OnLogout;
         });
-        Safe(mapEffectProcessor.Disable);
+        Safe(mapEffectProcessor.Dispose);
+        Safe(TetherProcessor.Dispose);
         AttachedInfo.Dispose();
         ScriptingProcessor.Dispose();
         ECommonsMain.Dispose();

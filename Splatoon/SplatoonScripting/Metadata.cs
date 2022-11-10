@@ -33,6 +33,11 @@ namespace Splatoon.SplatoonScripting
         /// </summary>
         public string? Website { get; }
 
+        /// <summary>
+        /// URL for auto-update. Can be direct to the file or to the folder containing the script.
+        /// </summary>
+        public string? UpdateURL { get; }
+
         public Metadata(string name, uint version, string? author, string? description, string? website)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
