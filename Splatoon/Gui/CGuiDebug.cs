@@ -3,6 +3,7 @@ using ECommons;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
 using Splatoon.Memory;
+using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
 
 namespace Splatoon
@@ -170,7 +171,28 @@ namespace Splatoon
                     ImGuiEx.Text($"Distance c2h 2d: {Vector2.Distance(Svc.ClientState.LocalPlayer.Position.ToVector2(), t.Position.ToVector2()) - Svc.ClientState.LocalPlayer.HitboxRadius}");
                 }
             }
+            if (ImGui.Button("Compile clipboard"))
+            {
+                var txt = ImGui.GetClipboardText();
+                Task.Run(delegate
+                {
+                    try
+                    {
+                        File.WriteAllBytes(Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Clipboard.dll"), Compiler.Compile(txt));
+                    }
+                    catch (Exception e)
+                    {
+                        e.LogDuo();
+                    }
+                });
+            }
+            if(ImGui.Button("Get assemblies"))
+            {
+                var main = AppDomain.CurrentDomain.GetAssemblies();
+                PluginLog.Information($"{main.Select(x => x.FullName).Join("\n")}");
+            }
             ImGui.EndChild();
+            
         }
     }
 }

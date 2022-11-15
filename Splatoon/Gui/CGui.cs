@@ -110,7 +110,11 @@ namespace Splatoon
                                 ImGuiEx.Text("Manual phase selection:".Loc());
                                 ImGui.SameLine();
                                 ImGui.SetNextItemWidth(30f);
-                                ImGui.DragInt("##mPSel", ref p.Phase, 0.1f, 1, 9);
+                                var ph = p.Phase;
+                                if(ImGui.DragInt("##mPSel", ref ph, 0.1f, 1, 9))
+                                {
+                                    p.Phase = ph;
+                                }
                                 ImGui.EndCombo();
                             }
                         });

@@ -9,11 +9,6 @@ namespace Splatoon.SplatoonScripting
     public class Metadata
     {
         /// <summary>
-        /// Name of a script
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
         /// Optional single digit version of a script, will be displayed in the list of scripts.
         /// </summary>
         public uint Version { get; }
@@ -34,43 +29,38 @@ namespace Splatoon.SplatoonScripting
         public string? Website { get; }
 
         /// <summary>
-        /// URL for auto-update. Can be direct to the file or to the folder containing the script.
+        /// URL for auto-update. Can be direct to the file or to the folder containing the script. Remote file name is ignored.
         /// </summary>
         public string? UpdateURL { get; }
 
-        public Metadata(string name, uint version, string? author, string? description, string? website)
+        public Metadata(uint version, string? author, string? description, string? website)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
             Version = version;
             Author = author;
             Description = description;
             Website = website;
         }
 
-        public Metadata(string name, uint version, string? author, string? description)
+        public Metadata(uint version, string? author, string? description)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
             Version = version;
             Author = author;
             Description = description;
         }
 
-        public Metadata(string name, uint version, string? author)
+        public Metadata(uint version, string? author)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
             Version = version;
             Author = author;
         }
 
-        public Metadata(string name, uint version)
+        public Metadata(uint version)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
             Version = version;
         }
 
-        public Metadata(string name)
+        public Metadata()
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
         }
     }
 }

@@ -19,9 +19,11 @@ namespace Splatoon.SplatoonScripting
         public Controller Controller { get; } = new();
 
         /// <summary>
-        /// Metadata of a script that contains name and, optionally, author, description, version and script's origin website. This data will be displayed in Splatoon's interface.
+        /// Metadata of a script that optionally contains author, description, version and script's origin website. This data will be displayed in Splatoon's interface.
         /// </summary>
-        public abstract Metadata Metadata { get; }
+        public virtual Metadata? Metadata { get; }
+
+        public InternalData InternalData { get; }
 
         /// <summary>
         /// Valid territories where script will be executed. Specify an empty array if you want it to work in all territories. 
@@ -118,7 +120,7 @@ namespace Splatoon.SplatoonScripting
             }
             try
             {
-                PluginLog.Information($"Enabling script {this.Metadata.Name}");
+                PluginLog.Information($"Enabling script {this.InternalData.Name}");
                 this.OnEnable();
             }
             catch (Exception ex)
@@ -137,7 +139,7 @@ namespace Splatoon.SplatoonScripting
             }
             try
             {
-                PluginLog.Information($"Disabling script {this.Metadata.Name}");
+                PluginLog.Information($"Disabling script {this}");
                 this.OnDisable();
             }
             catch (Exception ex)
