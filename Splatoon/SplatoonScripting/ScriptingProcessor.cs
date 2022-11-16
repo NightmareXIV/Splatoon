@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,40 @@ namespace Splatoon.SplatoonScripting
     internal static class ScriptingProcessor
     {
         internal static List<SplatoonScript> Scripts = new();
+
+        internal static void CompileAndLoad(string sourceCode)
+        {
+            Task.Run(delegate
+            {
+                try
+                {
+                    var code = Compiler.Compile(sourceCode);
+                    new TickScheduler(delegate
+                    {
+                        var assembly = Compiler.Load(code);
+                        foreach (var t in assembly.GetTypes())
+                        {
+                            if (t.BaseType?.FullName == "Splatoon.SplatoonScripting.SplatoonScript")
+                            {
+                                var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
+                                Scripts.Add(instance);
+                                instance.InternalData = new("", instance);
+                                instance.OnSetup();
+                                PluginLog.Information($"Load success");
+                                if(instance.ValidTerritories.Count == 0 || instance.ValidTerritories.Contains(Svc.ClientState.IsLoggedIn ? Svc.ClientState.TerritoryType : 0u))
+                                {
+                                    instance.Enable();
+                                }
+                            }
+                        }
+                    });
+                }
+                catch(Exception e)
+                {
+                    e.Log();
+                }
+            });
+        }
 
         internal static void OnUpdate()
         {

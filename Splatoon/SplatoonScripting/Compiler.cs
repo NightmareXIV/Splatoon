@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
+using ECommons.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -11,9 +13,32 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Splatoon.SplatoonScripting
 {
+
+
     internal class Compiler
     {
-        public static byte[] Compile(string sourceCode)
+        internal static Assembly Load(byte[] assembly)
+        {
+            PluginLog.Information($"Beginning assembly load");
+            if(DalamudReflector.TryGetLocalPlugin(out var instance, out var type))
+            {
+                var loader = type.GetField("loader", ReflectionHelper.AllFlags).GetValue(instance);
+                var context = loader.GetFoP<AssemblyLoadContext>("context");
+                using var stream = new MemoryStream(assembly);
+                try
+                {
+                    var a = context.LoadFromStream(stream);
+                    return a;
+                }
+                catch(Exception e)
+                {
+                    e.LogDuo();
+                }
+            }
+            return null;
+        } 
+
+        internal static byte[] Compile(string sourceCode)
         {
             using (var peStream = new MemoryStream())
             {
@@ -41,7 +66,7 @@ namespace Splatoon.SplatoonScripting
             }
         }
 
-        private static CSharpCompilation GenerateCode(string sourceCode)
+        private static CSharpCompilation GenerateCode(string sourceCode, string identity = "Script")
         {
             var codeString = SourceText.From(sourceCode);
             var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp11);
@@ -49,7 +74,11 @@ namespace Splatoon.SplatoonScripting
             var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
 
             var references = new List<MetadataReference>();
-            foreach (var f in Directory.GetFiles(Path.GetDirectoryName(typeof(object).Assembly.Location), "*", SearchOption.AllDirectories))
+            foreach (var f in Directory.GetFiles(Path.GetDirectoryName(typeof(object).Assembly.Location), "*", SearchOption.TopDirectoryOnly))
+            {
+                if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
+            }
+            foreach (var f in Directory.GetFiles(Path.GetDirectoryName(typeof(System.Windows.Forms.Form).Assembly.Location), "*", SearchOption.TopDirectoryOnly))
             {
                 if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
             }
@@ -62,30 +91,26 @@ namespace Splatoon.SplatoonScripting
                 if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
             }
 
-            PluginLog.Information($"References: {references.Select(x => x.Display).Join(", ")}");
+            //PluginLog.Information($"References: {references.Select(x => x.Display).Join(", ")}");
 
 
-            return CSharpCompilation.Create("Hello.dll",
+            return CSharpCompilation.Create($"SplatoonScript-{identity}-{Guid.NewGuid()}",
                 new[] { parsedSyntaxTree },
                 references: references,
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                     optimizationLevel: OptimizationLevel.Release,
                     assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default));
         }
+
         static bool IsValidAssembly(string path)
         {
             try
             {
-                // Attempt to resolve the assembly
                 var assembly = AssemblyName.GetAssemblyName(path);
-                // Nothing blew up, so it's an assembly
                 return true;
             }
             catch (Exception ex)
             {
-                // Something went wrong, it is not an assembly (specifically a 
-                // BadImageFormatException will be thrown if it could be found
-                // but it was NOT a valid assembly
                 return false;
             }
         }

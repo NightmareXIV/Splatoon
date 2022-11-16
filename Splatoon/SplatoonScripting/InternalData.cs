@@ -11,13 +11,14 @@ namespace Splatoon.SplatoonScripting
     {
         public string Path { get; internal set; }
         public string Namespace { get; internal set; }
-        public string Name => System.IO.Path.GetFileName(Path);
+        public string Name { get; internal set; }
 
-        public InternalData(string path)
+        public InternalData(string path, SplatoonScript instance)
         {
             Path = path;
-            var text = File.ReadAllText(path, Encoding.UTF8);
-            
+            Namespace = instance.GetType().Namespace ?? "Default";
+            Name = instance.GetType().Name;
+            PluginLog.Information($"Script {Namespace}/{Name} ready.");
         }
     }
 }

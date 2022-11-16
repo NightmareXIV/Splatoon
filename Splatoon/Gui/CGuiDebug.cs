@@ -2,9 +2,12 @@
 using ECommons;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
+using ECommons.Reflection;
 using Splatoon.Memory;
 using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
+using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Splatoon
 {
@@ -174,22 +177,25 @@ namespace Splatoon
             if (ImGui.Button("Compile clipboard"))
             {
                 var txt = ImGui.GetClipboardText();
-                Task.Run(delegate
-                {
-                    try
-                    {
-                        File.WriteAllBytes(Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Clipboard.dll"), Compiler.Compile(txt));
-                    }
-                    catch (Exception e)
-                    {
-                        e.LogDuo();
-                    }
-                });
+                ScriptingProcessor.CompileAndLoad(txt);
             }
             if(ImGui.Button("Get assemblies"))
             {
                 var main = AppDomain.CurrentDomain.GetAssemblies();
                 PluginLog.Information($"{main.Select(x => x.FullName).Join("\n")}");
+            }
+            if(ImGui.Button("Get local plugin"))
+            {
+                DuoLog.Information($"Success: {DalamudReflector.TryGetLocalPlugin(out var instance, out var type)}");
+                if(type != null)
+                {
+                    DuoLog.Information($"{type.FullName}");
+                    var loader = type.GetField("loader", ReflectionHelper.AllFlags).GetValue(instance);
+                    DuoLog.Information($"{loader.GetType().FullName}");
+                    var context = loader.GetFoP<AssemblyLoadContext>("context");
+                    var txt = ImGui.GetClipboardText();
+                    ScriptingProcessor.CompileAndLoad(txt);
+                }
             }
             ImGui.EndChild();
             

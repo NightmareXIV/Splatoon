@@ -23,7 +23,7 @@ namespace Splatoon.SplatoonScripting
         /// </summary>
         public virtual Metadata? Metadata { get; }
 
-        public InternalData InternalData { get; }
+        public InternalData InternalData { get; internal set; } = null!;
 
         /// <summary>
         /// Valid territories where script will be executed. Specify an empty array if you want it to work in all territories. 
