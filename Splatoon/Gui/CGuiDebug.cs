@@ -174,29 +174,6 @@ namespace Splatoon
                     ImGuiEx.Text($"Distance c2h 2d: {Vector2.Distance(Svc.ClientState.LocalPlayer.Position.ToVector2(), t.Position.ToVector2()) - Svc.ClientState.LocalPlayer.HitboxRadius}");
                 }
             }
-            if (ImGui.Button("Compile clipboard"))
-            {
-                var txt = ImGui.GetClipboardText();
-                ScriptingProcessor.CompileAndLoad(txt);
-            }
-            if(ImGui.Button("Get assemblies"))
-            {
-                var main = AppDomain.CurrentDomain.GetAssemblies();
-                PluginLog.Information($"{main.Select(x => x.FullName).Join("\n")}");
-            }
-            if(ImGui.Button("Get local plugin"))
-            {
-                DuoLog.Information($"Success: {DalamudReflector.TryGetLocalPlugin(out var instance, out var type)}");
-                if(type != null)
-                {
-                    DuoLog.Information($"{type.FullName}");
-                    var loader = type.GetField("loader", ReflectionHelper.AllFlags).GetValue(instance);
-                    DuoLog.Information($"{loader.GetType().FullName}");
-                    var context = loader.GetFoP<AssemblyLoadContext>("context");
-                    var txt = ImGui.GetClipboardText();
-                    ScriptingProcessor.CompileAndLoad(txt);
-                }
-            }
             ImGui.EndChild();
             
         }

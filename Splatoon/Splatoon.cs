@@ -21,6 +21,7 @@ using Splatoon.Modules;
 using Splatoon.SplatoonScripting;
 using Splatoon.Structures;
 using Splatoon.Utils;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using Localization = ECommons.LanguageHelpers.Localization;
 
@@ -83,10 +84,11 @@ public unsafe class Splatoon : IDalamudPlugin
     internal static Dictionary<string, uint> NameNpcIDs = new();
     internal MapEffectProcessor mapEffectProcessor;
     internal TetherProcessor TetherProcessor;
+    internal HttpClient HttpClient;
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
-        if(Loaded)
+        if (Loaded)
         {
             PluginLog.Fatal("Splatoon is already loaded, could not load again...");
             return;
@@ -124,7 +126,7 @@ public unsafe class Splatoon : IDalamudPlugin
         Svc.ClientState.TerritoryChanged += TerritoryChangedEvent;
         Svc.PluginInterface.UiBuilder.DisableUserUiHide = Config.ShowOnUiHide;
         LimitGaugeResets = Svc.Data.GetExcelSheet<LogMessage>().GetRow(2844).Text.ToString();
-        foreach(var x in Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.English)
+        foreach (var x in Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.English)
             .Union(Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.French))
             .Union(Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.Japanese))
             .Union(Svc.Data.GetExcelSheet<BNpcName>(ClientLanguage.German)))
@@ -158,12 +160,12 @@ public unsafe class Splatoon : IDalamudPlugin
         StreamDetector.Start();
         AttachedInfo.Init();
         Logger.OnTerritoryChanged();
-        Layout.DisplayConditions = new string[] { 
+        Layout.DisplayConditions = new string[] {
             "Always shown".Loc(),
-            "Only in combat".Loc(), 
-            "Only in instance".Loc(), 
-            "Only in combat AND instance".Loc(), 
-            "Only in combat OR instance".Loc(), 
+            "Only in combat".Loc(),
+            "Only in instance".Loc(),
+            "Only in combat AND instance".Loc(),
+            "Only in combat OR instance".Loc(),
             "On trigger only".Loc() };
         Element.Init();
         mapEffectProcessor = new();
@@ -174,6 +176,11 @@ public unsafe class Splatoon : IDalamudPlugin
         });
         Svc.ClientState.Logout += OnLogout;
         ScriptingProcessor.TerritoryChanged();
+        ScriptingProcessor.ReloadAll();
+        HttpClient = new()
+        {
+            Timeout = TimeSpan.FromSeconds(20)
+        };
         Init = true;
         SplatoonIPC.Init();
     }

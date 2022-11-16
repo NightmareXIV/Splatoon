@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface.Colors;
+using ECommons;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,35 @@ namespace Splatoon.Gui.Scripting
     {
         internal static void Draw()
         {
-            if(ImGui.Button("Temporarily load from clipboard"))
+            if(ImGui.Button("Rescan directory and reload all scripts"))
             {
-                ScriptingProcessor.CompileAndLoad(ImGui.GetClipboardText());
+                ScriptingProcessor.ReloadAll();
+            }
+            ImGui.SameLine();
+            if(ImGui.Button("Install from clipboard"))
+            {
+                var text = ImGui.GetClipboardText();
+                if (text.StartsWithAny(ScriptingProcessor.TrustedURLs, StringComparison.OrdinalIgnoreCase))
+                {
+                    Task.Run(delegate
+                    {
+                        try
+                        {
+                            var result = P.HttpClient.GetStringAsync(text).Result;
+                            ScriptingProcessor.CompileAndLoad(result, null);
+                        }
+                        catch(Exception e)
+                        {
+                            e.Log();
+                        }
+                    });
+                    
+                    Notify.Info("Downloading script from trusted URL...");
+                }
+                else 
+                {
+                    ScriptingProcessor.CompileAndLoad(text, null);
+                }
             }
             var del = -1;
             for(var i = 0;i<ScriptingProcessor.Scripts.Count;i++)
@@ -24,18 +51,19 @@ namespace Splatoon.Gui.Scripting
                 var e = !P.Config.DisabledScripts.Contains(x.InternalData.FullName);
                 if(ImGui.Checkbox($"##enable", ref e))
                 {
-                    if (e)
+                    if (!e)
                     {
                         P.Config.DisabledScripts.Add(x.InternalData.FullName);
-                        x.Disable();
                     }
                     else
                     {
                         P.Config.DisabledScripts.Remove(x.InternalData.FullName);
-                        x.Enable();
                     }
+                    ScriptingProcessor.Scripts.ForEach(x => x.UpdateState());
                 }
+                ImGui.SameLine();
                 ImGuiEx.Text($"{x.InternalData.Namespace}/{x.InternalData.Name}");
+                ImGuiEx.Tooltip($"{x.InternalData.GUID}");
                 ImGui.SameLine();
                 ImGuiEx.Text(x.IsEnabled?ImGuiColors.ParsedGreen:ImGuiColors.DalamudRed, x.IsEnabled ? "Enabled" : "Disabled");
                 ImGui.SameLine();
@@ -46,7 +74,15 @@ namespace Splatoon.Gui.Scripting
                 ImGui.SameLine();
                 if (ImGui.Button("Delete"))
                 {
-                    del = i;
+                    if (!x.InternalData.Path.IsNullOrEmpty() && x.InternalData.Path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
+                    {
+                        del = i;
+                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(x.InternalData.Path, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                    }
+                    else
+                    {
+                        Notify.Error("Error deleting");
+                    }
                 }
                 ImGui.PopID();
             }

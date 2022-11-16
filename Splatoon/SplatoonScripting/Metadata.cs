@@ -31,7 +31,7 @@ namespace Splatoon.SplatoonScripting
         /// <summary>
         /// URL for auto-update. Can be direct to the file or to the folder containing the script. Remote file name is ignored.
         /// </summary>
-        public string? UpdateURL { get; }
+        public string? UpdateURL { get; set; }
 
         public Metadata(uint version, string? author, string? description, string? website)
         {

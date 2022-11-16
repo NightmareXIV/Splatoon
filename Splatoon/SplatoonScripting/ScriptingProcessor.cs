@@ -14,8 +14,29 @@ namespace Splatoon.SplatoonScripting
         internal static List<SplatoonScript> Scripts = new();
         internal static ConcurrentQueue<string> LoadScriptQueue = new();
         internal static volatile bool ThreadIsRunning = false;
+        internal readonly static string[] TrustedURLs = new string[]
+        {
+            "https://github.com/NightmareXIV/",
+            "https://www.github.com/NightmareXIV/",
+            "https://raw.githubusercontent.com/NightmareXIV/"
+        };
 
-        internal static void CompileAndLoad(string sourceCode)
+        internal static void ReloadAll()
+        {
+            Scripts.ForEach(x => x.Disable());
+            Scripts.Clear();
+            var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts");
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            foreach(var f in Directory.GetFiles(dir, "*.cs", SearchOption.AllDirectories))
+            {
+                CompileAndLoad(File.ReadAllText(f, Encoding.UTF8), f);
+            }
+        }
+
+        internal static void CompileAndLoad(string sourceCode, string path)
         {
             PluginLog.Information($"Requested script loading");
             LoadScriptQueue.Enqueue(sourceCode);
@@ -32,44 +53,79 @@ namespace Splatoon.SplatoonScripting
                     {
                         Directory.CreateDirectory(dir);
                     }
-                    while (idleCount < 10)
+                    while (idleCount < 100)
                     {
                         if (LoadScriptQueue.TryDequeue(out var result))
                         {
                             try
                             {
-                                var md5 = MD5.HashData(Encoding.UTF8.GetBytes(sourceCode));
+                                var md5 = MD5.HashData(Encoding.UTF8.GetBytes(sourceCode)).Select(x=>$"{x:X2}").Join("");
                                 var cacheFile = Path.Combine(dir, $"{md5}-{P.loader.splatoonVersion}.bin");
                                 PluginLog.Information($"Cache path: {cacheFile}");
-                                var code = Array.Empty<byte>();
+                                byte[] code = null;
                                 if (File.Exists(cacheFile))
                                 {
                                     PluginLog.Information($"Loading from cache...");
                                     code = File.ReadAllBytes(cacheFile);
                                 }
                                 else
-                                {
-                                    PluginLog.Information($"Compiling...");
+                                {                                    PluginLog.Information($"Compiling...");
                                     code = Compiler.Compile(sourceCode);
-                                    File.WriteAllBytes(cacheFile, code);
-                                    PluginLog.Information($"Compiled and saved");
-                                }
-                                new TickScheduler(delegate
-                                {
-                                    var assembly = Compiler.Load(code);
-                                    foreach (var t in assembly.GetTypes())
+                                    if (code != null)
                                     {
-                                        if (t.BaseType?.FullName == "Splatoon.SplatoonScripting.SplatoonScript")
-                                        {
-                                            var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
-                                            Scripts.Add(instance);
-                                            instance.InternalData = new("", instance);
-                                            instance.OnSetup();
-                                            PluginLog.Information($"Load success");
-                                            instance.UpdateState();
-                                        }
+                                        File.WriteAllBytes(cacheFile, code);
+                                        PluginLog.Information($"Compiled and saved");
                                     }
-                                });
+                                }
+                                if (code != null)
+                                {
+                                    new TickScheduler(delegate
+                                    {
+                                        if (P != null && !P.Disposed)
+                                        {
+                                            var assembly = Compiler.Load(code);
+                                            foreach (var t in assembly.GetTypes())
+                                            {
+                                                if (t.BaseType?.FullName == "Splatoon.SplatoonScripting.SplatoonScript")
+                                                {
+                                                    var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
+                                                    instance.InternalData = new(path, instance);
+                                                    if (Scripts.Any(z => z.InternalData.FullName == instance.InternalData.FullName))
+                                                    {
+                                                        DuoLog.Error($"Script {instance.InternalData.FullName} already loaded");
+                                                    }
+                                                    else
+                                                    {
+                                                        Scripts.Add(instance);
+                                                        if (path == null)
+                                                        {
+                                                            var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts", instance.InternalData.Namespace);
+                                                            if (!Directory.Exists(dir))
+                                                            {
+                                                                Directory.CreateDirectory(dir);
+                                                            }
+                                                            var newPath = Path.Combine(dir, $"{instance.InternalData.Name}.cs");
+                                                            File.WriteAllText(newPath, sourceCode, Encoding.UTF8);
+                                                            instance.InternalData.Path = newPath;
+                                                            DuoLog.Information($"Script installed to {newPath}");
+                                                        }
+                                                        instance.OnSetup();
+                                                        PluginLog.Information($"Load success");
+                                                        instance.UpdateState();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            PluginLog.Fatal("Plugin was disposed during script loadin");
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    PluginLog.Error("Loading process ended with error");
+                                }
                             }
                             catch(Exception e)
                             {
@@ -81,7 +137,7 @@ namespace Splatoon.SplatoonScripting
                         {
                             PluginLog.Verbose($"Script loading thread is idling, count {idleCount}");
                             idleCount++;
-                            Thread.Sleep(100);
+                            Thread.Sleep(250);
                         }
                     }
                     ThreadIsRunning = false;
@@ -236,12 +292,15 @@ namespace Splatoon.SplatoonScripting
 
         internal static void UpdateState(this SplatoonScript s)
         {
-            var to = Svc.ClientState.IsLoggedIn ? Svc.ClientState.TerritoryType : 0u;
-            if ((s.ValidTerritories.Count == 0 || s.ValidTerritories.Contains(to)) && !s.IsEnabled)
+            var territoryIsValid = Svc.ClientState.IsLoggedIn && (s.ValidTerritories.Count == 0 || s.ValidTerritories.Contains(Svc.ClientState.TerritoryType));
+            if (territoryIsValid && !P.Config.DisabledScripts.Contains(s.InternalData.FullName))
             {
-                s.Enable();
+                if (!s.IsEnabled)
+                {
+                    s.Enable();
+                }
             }
-            else if (!s.ValidTerritories.Contains(to) && s.IsEnabled)
+            else if (s.IsEnabled)
             {
                 s.Disable();
             }
