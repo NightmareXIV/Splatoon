@@ -50,6 +50,8 @@ class Configuration : IPluginConfiguration
 
     public string PluginLanguage = null;
 
+    public HashSet<string> DisabledScripts = new();
+
     public bool ShouldSerializeLayouts()
     {
         return false;

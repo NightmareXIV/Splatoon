@@ -35,6 +35,8 @@ namespace Splatoon.SplatoonScripting
         /// </summary>
         public bool IsEnabled { get; private set; } = false;
 
+        internal bool IsDisabledByUser => P.Config.DisabledScripts.Contains(this.InternalData.FullName);
+
         /// <summary>
         /// Executed once after script is compiled and loaded into memory. Setup your layouts, elements and other static data that is not supposed to change within a game session. You should not setup any hooks or direct Dalamud events here, as method to cleanup is not provided (by design). Such things are to be done in OnEnable method.
         /// </summary>
@@ -114,7 +116,7 @@ namespace Splatoon.SplatoonScripting
 
         internal bool Enable()
         {
-            if (IsEnabled)
+            if (IsEnabled || IsDisabledByUser)
             {
                 return false;
             }

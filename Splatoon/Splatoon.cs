@@ -170,10 +170,10 @@ public unsafe class Splatoon : IDalamudPlugin
         TetherProcessor = new();
         ProperOnLogin.Register(delegate
         {
-            ScriptingProcessor.TerritoryChanged(Svc.ClientState.TerritoryType);
+            ScriptingProcessor.TerritoryChanged();
         });
         Svc.ClientState.Logout += OnLogout;
-        ScriptingProcessor.TerritoryChanged(Svc.ClientState.IsLoggedIn ? Svc.ClientState.TerritoryType : 0u);
+        ScriptingProcessor.TerritoryChanged();
         Init = true;
         SplatoonIPC.Init();
     }
@@ -225,7 +225,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
     internal static void OnLogout(object _, object __)
     {
-        ScriptingProcessor.TerritoryChanged(0);
+        ScriptingProcessor.TerritoryChanged();
     }
 
     public void AddDynamicElements(string name, Element[] elements, long[] destroyConditions)
@@ -355,7 +355,7 @@ public unsafe class Splatoon : IDalamudPlugin
         }
         AttachedInfo.VFXInfos.Clear();
         Logger.OnTerritoryChanged();
-        ScriptingProcessor.TerritoryChanged(Svc.ClientState.IsLoggedIn ? e : 0u);
+        ScriptingProcessor.TerritoryChanged();
     }
 
     

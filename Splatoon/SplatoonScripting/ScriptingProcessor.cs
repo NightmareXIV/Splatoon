@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Splatoon.SplatoonScripting
@@ -10,39 +12,82 @@ namespace Splatoon.SplatoonScripting
     internal static class ScriptingProcessor
     {
         internal static List<SplatoonScript> Scripts = new();
+        internal static ConcurrentQueue<string> LoadScriptQueue = new();
+        internal static volatile bool ThreadIsRunning = false;
 
         internal static void CompileAndLoad(string sourceCode)
         {
-            Task.Run(delegate
+            PluginLog.Information($"Requested script loading");
+            LoadScriptQueue.Enqueue(sourceCode);
+            if (!ThreadIsRunning)
             {
-                try
+                ThreadIsRunning = true;
+                PluginLog.Information($"Beginning new thread");
+                new Thread(() =>
                 {
-                    var code = Compiler.Compile(sourceCode);
-                    new TickScheduler(delegate
+                    PluginLog.Information($"Compiler thread started");
+                    int idleCount = 0;
+                    var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "ScriptCache");
+                    if (!Directory.Exists(dir))
                     {
-                        var assembly = Compiler.Load(code);
-                        foreach (var t in assembly.GetTypes())
+                        Directory.CreateDirectory(dir);
+                    }
+                    while (idleCount < 10)
+                    {
+                        if (LoadScriptQueue.TryDequeue(out var result))
                         {
-                            if (t.BaseType?.FullName == "Splatoon.SplatoonScripting.SplatoonScript")
+                            try
                             {
-                                var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
-                                Scripts.Add(instance);
-                                instance.InternalData = new("", instance);
-                                instance.OnSetup();
-                                PluginLog.Information($"Load success");
-                                if(instance.ValidTerritories.Count == 0 || instance.ValidTerritories.Contains(Svc.ClientState.IsLoggedIn ? Svc.ClientState.TerritoryType : 0u))
+                                var md5 = MD5.HashData(Encoding.UTF8.GetBytes(sourceCode));
+                                var cacheFile = Path.Combine(dir, $"{md5}-{P.loader.splatoonVersion}.bin");
+                                PluginLog.Information($"Cache path: {cacheFile}");
+                                var code = Array.Empty<byte>();
+                                if (File.Exists(cacheFile))
                                 {
-                                    instance.Enable();
+                                    PluginLog.Information($"Loading from cache...");
+                                    code = File.ReadAllBytes(cacheFile);
                                 }
+                                else
+                                {
+                                    PluginLog.Information($"Compiling...");
+                                    code = Compiler.Compile(sourceCode);
+                                    File.WriteAllBytes(cacheFile, code);
+                                    PluginLog.Information($"Compiled and saved");
+                                }
+                                new TickScheduler(delegate
+                                {
+                                    var assembly = Compiler.Load(code);
+                                    foreach (var t in assembly.GetTypes())
+                                    {
+                                        if (t.BaseType?.FullName == "Splatoon.SplatoonScripting.SplatoonScript")
+                                        {
+                                            var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
+                                            Scripts.Add(instance);
+                                            instance.InternalData = new("", instance);
+                                            instance.OnSetup();
+                                            PluginLog.Information($"Load success");
+                                            instance.UpdateState();
+                                        }
+                                    }
+                                });
                             }
+                            catch(Exception e)
+                            {
+                                e.Log();
+                            }
+                            idleCount = 0;
                         }
-                    });
-                }
-                catch(Exception e)
-                {
-                    e.Log();
-                }
-            });
+                        else
+                        {
+                            PluginLog.Verbose($"Script loading thread is idling, count {idleCount}");
+                            idleCount++;
+                            Thread.Sleep(100);
+                        }
+                    }
+                    ThreadIsRunning = false;
+                    PluginLog.Information($"Exited from compiler thread");
+                }).Start();
+            }
         }
 
         internal static void OnUpdate()
@@ -180,19 +225,25 @@ namespace Splatoon.SplatoonScripting
             }
         }
 
-        internal static void TerritoryChanged(uint to)
+        internal static void TerritoryChanged()
         {
             for (var i = 0; i < Scripts.Count; i++)
             {
                 var s = Scripts[i];
-                if(s.ValidTerritories.Contains(to) && !s.IsEnabled)
-                {
-                    s.Enable();
-                }
-                else if (!s.ValidTerritories.Contains(to) && s.IsEnabled)
-                {
-                    s.Disable();
-                }
+                UpdateState(s);
+            }
+        }
+
+        internal static void UpdateState(this SplatoonScript s)
+        {
+            var to = Svc.ClientState.IsLoggedIn ? Svc.ClientState.TerritoryType : 0u;
+            if ((s.ValidTerritories.Count == 0 || s.ValidTerritories.Contains(to)) && !s.IsEnabled)
+            {
+                s.Enable();
+            }
+            else if (!s.ValidTerritories.Contains(to) && s.IsEnabled)
+            {
+                s.Disable();
             }
         }
 

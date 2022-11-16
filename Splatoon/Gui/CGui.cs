@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using PInvoke;
 using Splatoon.ConfigGui;
 using Splatoon.Gui;
+using Splatoon.Gui.Scripting;
 using Splatoon.Utils;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -123,6 +124,7 @@ namespace Splatoon
                         ImGuiEx.EzTabBar("SplatoonSettings",
                             ("General".Loc()+"###tab1", DisplayGeneralSettings, null, true),
                             ("Layouts".Loc(), DislayLayouts, Colors.Green.ToVector4(), true),
+                            ("Scripts".Loc(), TabScripting.Draw, Colors.Yellow.ToVector4(), true),
                             ("Import".Loc(), RapidImport.Draw, null, true),
                             ("Logger".Loc(), DisplayLogger, null, true),
                             ("Explorer".Loc(), Explorer.Draw, null, true),

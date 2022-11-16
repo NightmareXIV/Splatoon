@@ -2,7 +2,7 @@
 using Splatoon.SplatoonScripting;
 using System.Collections.Generic;
 
-namespace NightmareXIVSplatoonScripts
+namespace NightmareXIV
 {
     public class P6STiles : SplatoonScript
     {
