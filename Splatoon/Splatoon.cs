@@ -83,6 +83,7 @@ public unsafe class Splatoon : IDalamudPlugin
     internal static Dictionary<string, uint> NameNpcIDs = new();
     internal MapEffectProcessor mapEffectProcessor;
     internal TetherProcessor TetherProcessor;
+    internal ObjectEffectProcessor ObjectEffectProcessor;
     internal HttpClient HttpClient;
 
     internal void Load(DalamudPluginInterface pluginInterface)
@@ -169,6 +170,7 @@ public unsafe class Splatoon : IDalamudPlugin
         Element.Init();
         mapEffectProcessor = new();
         TetherProcessor = new();
+        ObjectEffectProcessor = new();
         ProperOnLogin.Register(delegate
         {
             ScriptingProcessor.TerritoryChanged();
@@ -214,6 +216,7 @@ public unsafe class Splatoon : IDalamudPlugin
         });
         Safe(mapEffectProcessor.Dispose);
         Safe(TetherProcessor.Dispose);
+        Safe(ObjectEffectProcessor.Dispose);
         AttachedInfo.Dispose();
         ScriptingProcessor.Dispose();
         ECommonsMain.Dispose();
@@ -1018,6 +1021,23 @@ public unsafe class Splatoon : IDalamudPlugin
         }
     }
 
+    static bool IsObjectEffectMatches(Element e, GameObject o, List<CachedObjectEffectInfo> info)
+    {
+        if (e.refActorObjectEffectLastOnly)
+        {
+            if(info.Count > 0)
+            {
+                var last = info[info.Count - 1];
+                return last.data1 == e.refActorObjectEffectData1 && last.data2 == e.refActorObjectEffectData2;
+            }
+            return false;
+        }
+        else
+        {
+            return info.Any(last => last.data1 == e.refActorObjectEffectData1 && last.data2 == e.refActorObjectEffectData2 && last.Age.InRange(e.refActorObjectEffectMin, e.refActorObjectEffectMax));
+        }
+    }
+
     static bool IsAttributeMatches(Element e, GameObject o)
     {
         if (e.refActorComparisonAnd)
@@ -1029,7 +1049,8 @@ public unsafe class Splatoon : IDalamudPlugin
              (e.refActorNPCID == 0 || o.Struct()->GetNpcID() == e.refActorNPCID) &&
              (e.refActorPlaceholder.Count == 0 || e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) &&
              (e.refActorNPCNameID == 0 || (o is Character c2 && c2.NameId == e.refActorNPCNameID)) &&
-             (e.refActorVFXPath == "" || (AttachedInfo.TryGetSpecificVfxInfo(o, e.refActorVFXPath, out var info) && info.Age.InRange(e.refActorVFXMin, e.refActorVFXMax)));
+             (e.refActorVFXPath == "" || (AttachedInfo.TryGetSpecificVfxInfo(o, e.refActorVFXPath, out var info) && info.Age.InRange(e.refActorVFXMin, e.refActorVFXMax))) &&
+             ((e.refActorObjectEffectData1 == 0 && e.refActorObjectEffectData2 == 0) || (AttachedInfo.ObjectEffectInfos.TryGetValue(o.Address, out var einfo) && IsObjectEffectMatches(e, o, einfo) ));
         }
         else
         {
@@ -1041,6 +1062,7 @@ public unsafe class Splatoon : IDalamudPlugin
             if (e.refActorComparisonType == 5 && e.refActorPlaceholder.Any(x => ResolvePlaceholder(x) == o.Address)) return true;
             if (e.refActorComparisonType == 6 && o is Character c2 && c2.NameId == e.refActorNPCNameID) return true;
             if (e.refActorComparisonType == 7 && AttachedInfo.TryGetSpecificVfxInfo(o, e.refActorVFXPath, out var info) && info.Age.InRange(e.refActorVFXMin, e.refActorVFXMax)) return true;
+            if (e.refActorComparisonType == 8 && AttachedInfo.ObjectEffectInfos.TryGetValue(o.Address, out var einfo) && IsObjectEffectMatches(e, o, einfo)) return true;
             return false;
         }
     }

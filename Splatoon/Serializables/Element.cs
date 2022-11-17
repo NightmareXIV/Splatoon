@@ -34,7 +34,8 @@ public class Element
         "NPC ID".Loc(),
         "Placeholder".Loc(),
         "NPC Name ID".Loc(),
-        "VFX Path".Loc()
+        "VFX Path".Loc(),
+        "Object Effect".Loc()
     };
     }
 
@@ -108,7 +109,8 @@ public class Element
     /// 4: NPC ID |
     /// 5: Placeholder |
     /// 6: Name ID | 
-    /// 7: VFX Path
+    /// 7: VFX Path |
+    /// 8: Object Effect
     /// </summary>
     [DefaultValue(0)] public int refActorComparisonType = 0;
     /// <summary>
@@ -152,6 +154,33 @@ public class Element
     [DefaultValue(false)] public bool LimitRotation = false;
     [DefaultValue(0)] public float RotationMax = 0;
     [DefaultValue(0)] public float RotationMin = 0;
+    [DefaultValue(0)] public uint refActorObjectEffectData1 = 0;
+    [DefaultValue(0)] public uint refActorObjectEffectData2 = 0;
+    [DefaultValue(0)] public int refActorObjectEffectMin = 0;
+    [DefaultValue(0)] public int refActorObjectEffectMax = 0;
+    [DefaultValue(false)] public bool refActorObjectEffectLastOnly = false;
+
+    public bool ShouldSerializerefActorObjectEffectLastOnly()
+    {
+        return refActorComparisonType == 8 || refActorComparisonAnd;
+    }
+    public bool ShouldSerializerefActorObjectEffectMax()
+    {
+        return refActorComparisonType == 8 || refActorComparisonAnd;
+    }
+    public bool ShouldSerializerefActorObjectEffectMin()
+    {
+        return refActorComparisonType == 8 || refActorComparisonAnd;
+    }
+    public bool ShouldSerializerefActorObjectEffectData2()
+    {
+        return refActorComparisonType == 8 || refActorComparisonAnd;
+    }
+
+    public bool ShouldSerializerefActorObjectEffectData1()
+    {
+        return refActorComparisonType == 8 || refActorComparisonAnd;
+    }
 
     public bool ShouldSerializeRotationMax()
     {

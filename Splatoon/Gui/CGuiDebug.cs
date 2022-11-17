@@ -179,6 +179,18 @@ namespace Splatoon
                     ImGuiEx.Text($"Distance c2h 2d: {Vector2.Distance(Svc.ClientState.LocalPlayer.Position.ToVector2(), t.Position.ToVector2()) - Svc.ClientState.LocalPlayer.HitboxRadius}");
                 }
             }
+            if(ImGui.CollapsingHeader("Object Effects"))
+            {
+                foreach(var x in AttachedInfo.ObjectEffectInfos)
+                {
+                    ImGuiEx.Text($"{((long)x.Key).Format()}");
+                    foreach(var z in x.Value)
+                    {
+                        ImGuiEx.Text($"    {z.data1}, {z.data2}, {z.AgeF:F1}");
+                    }
+                }
+            }
+            ImGui.SetNextItemWidth(100f);
             ImGuiEx.InputUint("Object 1", ref obj1);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
@@ -187,12 +199,13 @@ namespace Splatoon
             ImGui.SetNextItemWidth(100f);
             ImGuiEx.InputUint("value", ref rep1);
             ImGui.SameLine();
-            if (ImGui.Button("Do"))
+            if (ImGui.Button("Do (dangerous)"))
             {
                 var o1 = Svc.Objects.First(x => x.ObjectId == obj1);
                 var addr = o1.Address + off1;
                 *(byte*)addr = (byte)rep1;
             }
+            ImGui.SetNextItemWidth(100f);
             ImGuiEx.InputUint("Object 2", ref obj2);
             if(ImGui.Button("Copy difference"))
             {

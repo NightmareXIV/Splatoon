@@ -232,7 +232,7 @@ namespace Splatoon
                             ImGui.SameLine();
                             ImGui.SetNextItemWidth(50f);
                             var a1 = (float)el.refActorVFXMin / 1000f;
-                            if(ImGui.DragFloat("##age1", ref a1, 0.1f, 0, 99999, $"{a1:F1}"))
+                            if (ImGui.DragFloat("##age1", ref a1, 0.1f, 0, 99999, $"{a1:F1}"))
                             {
                                 el.refActorVFXMin = (int)(a1 * 1000);
                             }
@@ -247,7 +247,39 @@ namespace Splatoon
                                 el.refActorVFXMax = (int)(a2 * 1000);
                             }
                         }
-                        
+                        if (el.refActorComparisonType == 8)
+                        {
+                            ImGui.SetNextItemWidth(50f);
+                            ImGuiEx.InputUint("##edata1", ref el.refActorObjectEffectData1);
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(50f);
+                            ImGuiEx.InputUint("##edata2", ref el.refActorObjectEffectData2);
+                            ImGui.SameLine();
+                            ImGui.Checkbox($"Last only", ref el.refActorObjectEffectLastOnly);
+                            if (!el.refActorObjectEffectLastOnly)
+                            {
+                                ImGui.SameLine();
+                                ImGuiEx.Text("Age:".Loc());
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(50f);
+                                var a1 = (float)el.refActorObjectEffectMin / 1000f;
+                                if (ImGui.DragFloat("##eage1", ref a1, 0.1f, 0, 99999, $"{a1:F1}"))
+                                {
+                                    el.refActorObjectEffectMin = (int)(a1 * 1000);
+                                }
+                                ImGui.SameLine();
+                                ImGuiEx.Text("-");
+                                ImGui.SameLine();
+                                ImGui.SetNextItemWidth(50f);
+
+                                var a2 = (float)el.refActorObjectEffectMax / 1000f;
+                                if (ImGui.DragFloat("##eage2", ref a2, 0.1f, 0, 99999, $"{a2:F1}"))
+                                {
+                                    el.refActorObjectEffectMax = (int)(a2 * 1000);
+                                }
+                            }
+                        }
+
                         if (Svc.Targets.Target != null && !el.refActorComparisonType.EqualsAny(7))
                         {
                             ImGui.SameLine();

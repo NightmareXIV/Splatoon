@@ -23,7 +23,7 @@ namespace Splatoon.Memory
             {
                 if (P.Config.Logging)
                 {
-                    var text = $"ObjectEffect: on {MemoryHelper.ReadStringNullTerminated((IntPtr)a1->Name)} {a1->ObjectID.Format()}/{a1->DataID.Format()} data {a2}, {a3}}";
+                    var text = $"ObjectEffect: on {MemoryHelper.ReadStringNullTerminated((IntPtr)a1->Name)} {a1->ObjectID.Format()}/{a1->DataID.Format()} data {a2}, {a3}";
                     Logger.Log(text);
                 }
                 var ptr = (IntPtr)a1;
