@@ -290,6 +290,11 @@ static unsafe class Static
         return null;
     }
 
+    public static string Format(this ushort num)
+    {
+        return P.Config.Hexadecimal ? $"0x{num:X}" : $"{num}";
+    }
+
     public static string Format(this uint num)
     {
         return P.Config.Hexadecimal ? $"0x{num:X}" : $"{num}";

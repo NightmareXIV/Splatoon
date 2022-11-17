@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splatoon", "Splatoon\Splato
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECommons", "ECommons\ECommons\ECommons.csproj", "{96A0FFDC-FD27-42D5-855F-E38DCEF76B25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplatoonScripts", "SplatoonScripts\SplatoonScripts.csproj", "{9062849B-30C3-4047-A8BC-2D61EBBCD11E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SplatoonScriptsOfficial", "SplatoonScripts\SplatoonScriptsOfficial.csproj", "{9062849B-30C3-4047-A8BC-2D61EBBCD11E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

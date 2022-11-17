@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -17,6 +18,11 @@ namespace Splatoon.SplatoonScripting
 
     internal class Compiler
     {
+        static volatile uint autoIncrement = 0;
+        internal static uint AutoIncrement
+        {
+            get => ++autoIncrement;
+        }
         internal static Assembly Load(byte[] assembly)
         {
             PluginLog.Information($"Beginning assembly load");
@@ -38,11 +44,11 @@ namespace Splatoon.SplatoonScripting
             return null;
         } 
 
-        internal static byte[] Compile(string sourceCode)
+        internal static byte[] Compile(string sourceCode, string identity)
         {
             using (var peStream = new MemoryStream())
             {
-                var result = GenerateCode(sourceCode).Emit(peStream);
+                var result = GenerateCode(sourceCode, identity).Emit(peStream);
 
                 if (!result.Success)
                 {
@@ -94,7 +100,7 @@ namespace Splatoon.SplatoonScripting
             //PluginLog.Information($"References: {references.Select(x => x.Display).Join(", ")}");
 
 
-            return CSharpCompilation.Create($"SplatoonScript-{identity}-{Guid.NewGuid()}",
+            return CSharpCompilation.Create($"SplatoonScript-{identity}-{AutoIncrement}",
                 new[] { parsedSyntaxTree },
                 references: references,
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,

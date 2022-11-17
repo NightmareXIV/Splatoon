@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Objects;
+using ECommons.GameFunctions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 #nullable enable
 namespace Splatoon.SplatoonScripting
 {
-    public static class Extensions
+    public unsafe static class Extensions
     {
         /// <summary>
         /// Gets object by it's object ID.
@@ -30,6 +31,16 @@ namespace Splatoon.SplatoonScripting
         {
             obj = objectID.GetObject();
             return obj != null;
+        }
+
+        /// <summary>
+        /// Gets Status VFX ID.
+        /// </summary>
+        /// <param name="chara"></param>
+        /// <returns>Status VFX ID</returns>
+        public static short GetStatusVFXId(this Character chara)
+        {
+            return chara.Struct()->StatusEffectVFXId;
         }
     }
 }

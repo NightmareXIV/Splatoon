@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -70,7 +71,7 @@ namespace Splatoon.SplatoonScripting
                                 }
                                 else
                                 {                                    PluginLog.Information($"Compiling...");
-                                    code = Compiler.Compile(sourceCode);
+                                    code = Compiler.Compile(sourceCode, path == null?"":Path.GetFileNameWithoutExtension(path));
                                     if (code != null)
                                     {
                                         File.WriteAllBytes(cacheFile, code);
@@ -135,7 +136,7 @@ namespace Splatoon.SplatoonScripting
                         }
                         else
                         {
-                            PluginLog.Verbose($"Script loading thread is idling, count {idleCount}");
+                            //PluginLog.Verbose($"Script loading thread is idling, count {idleCount}");
                             idleCount++;
                             Thread.Sleep(250);
                         }
@@ -200,6 +201,21 @@ namespace Splatoon.SplatoonScripting
                     try
                     {
                         Scripts[i].OnMapEffect(Position, Param1, Param2);
+                    }
+                    catch (Exception e) { e.Log(); }
+                }
+            }
+        }
+
+        internal static void OnObjectEffect(uint Target, ushort Param1, ushort Param2)
+        {
+            for (var i = 0; i < Scripts.Count; i++)
+            {
+                if (Scripts[i].IsEnabled)
+                {
+                    try
+                    {
+                        Scripts[i].OnObjectEffect(Target, Param1, Param2);
                     }
                     catch (Exception e) { e.Log(); }
                 }

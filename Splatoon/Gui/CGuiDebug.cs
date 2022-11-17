@@ -18,6 +18,11 @@ namespace Splatoon
         bool s2wb = false;
         string[] Placeholders = new string[] { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<d1>", "<d2>", "<d3>", "<d4>", "<t1>", "<t2>", "<h1>", "<h2>", "<me>", "<t>", "<mo>", "<t2t>" };
 
+        uint obj1 = 0;
+        uint obj2 = 0;
+        int off1 = 0;
+        uint rep1 = 0;
+
         void DisplayDebug()
         {
             ImGui.BeginChild("##splatoonmaindbg");
@@ -172,6 +177,44 @@ namespace Splatoon
                     ImGuiEx.Text($"Distance h2h 2d: {Vector2.Distance(Svc.ClientState.LocalPlayer.Position.ToVector2(), t.Position.ToVector2()) - Svc.ClientState.LocalPlayer.HitboxRadius - t.HitboxRadius}");
                     ImGuiEx.Text($"Distance c2h 3d: {Vector3.Distance(Svc.ClientState.LocalPlayer.Position, t.Position) - Svc.ClientState.LocalPlayer.HitboxRadius}");
                     ImGuiEx.Text($"Distance c2h 2d: {Vector2.Distance(Svc.ClientState.LocalPlayer.Position.ToVector2(), t.Position.ToVector2()) - Svc.ClientState.LocalPlayer.HitboxRadius}");
+                }
+            }
+            ImGuiEx.InputUint("Object 1", ref obj1);
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(100f);
+            ImGui.InputInt("offset", ref off1);
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(100f);
+            ImGuiEx.InputUint("value", ref rep1);
+            ImGui.SameLine();
+            if (ImGui.Button("Do"))
+            {
+                var o1 = Svc.Objects.First(x => x.ObjectId == obj1);
+                var addr = o1.Address + off1;
+                *(byte*)addr = (byte)rep1;
+            }
+            ImGuiEx.InputUint("Object 2", ref obj2);
+            if(ImGui.Button("Copy difference"))
+            {
+                try
+                {
+                    var o1 = Svc.Objects.First(x => x.ObjectId == obj1);
+                    var o2 = Svc.Objects.First(x => x.ObjectId == obj2);
+                    var result = new List<string>();
+                    for(var i = 0;i<= 0x1A0; i++)
+                    {
+                        var x1 = *(byte*)(o1.Address + i);
+                        var x2 = *(byte*)(o2.Address + i);
+                        if (x1 != x2)
+                        {
+                            result.Add($"+{i:X}: {x1}, {x2}");
+                        }
+                        ImGui.SetClipboardText(result.Join("\n"));
+                    }
+                }
+                catch(Exception e)
+                {
+                    e.Log();
                 }
             }
             ImGui.EndChild();

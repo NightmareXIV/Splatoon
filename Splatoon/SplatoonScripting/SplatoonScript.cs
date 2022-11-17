@@ -71,10 +71,18 @@ namespace Splatoon.SplatoonScripting
         /// <summary>
         /// Will be called on receiving map effect. This method will only be called if a script is enabled.
         /// </summary>
-        /// <param name="Position">Positional data of map effect. It is not related to actual map coordinates.</param>
-        /// <param name="Param1">First parameter of map effect.</param>
-        /// <param name="Param2">Second parameter of map effect.</param>
-        public virtual void OnMapEffect(uint Position, ushort Param1, ushort Param2) { }
+        /// <param name="position">Positional data of map effect. It is not related to actual map coordinates.</param>
+        /// <param name="data1">First parameter of map effect.</param>
+        /// <param name="data2">Second parameter of map effect.</param>
+        public virtual void OnMapEffect(uint position, ushort data1, ushort data2) { }
+
+        /// <summary>
+        /// Will be called on receiving object effect. This method will only be called if a script is enabled.
+        /// </summary>
+        /// <param name="target">Targeted object's ID</param>
+        /// <param name="data1">First parameter of object effect.</param>
+        /// <param name="data2">Second parameter of object effect.</param>
+        public virtual void OnObjectEffect(uint target, ushort data1, ushort data2) { }
 
         /// <summary>
         /// Will be called when a tether created between two game objects. This method will only be called if a script is enabled.

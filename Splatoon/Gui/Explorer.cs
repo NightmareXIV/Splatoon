@@ -71,6 +71,11 @@ namespace Splatoon.Gui
             ImGuiEx.TextCopy($"{"Targetable".Loc()}: {obj.Struct()->GetIsTargetable()}");
             ImGuiEx.TextCopy($"{"Nameplate".Loc()}: {ObjectFunctions.GetNameplateColor(obj.Address)}");
             ImGuiEx.TextCopy($"{"Is hostile".Loc()}: {ObjectFunctions.IsHostile(obj)}");
+            ImGuiEx.TextCopy($"{"Gender".Loc()}: {obj.Struct()->Gender}");
+            ImGuiEx.TextCopy($"{"VfxScale".Loc()}: {obj.Struct()->VfxScale}");
+            ImGuiEx.TextCopy($"{"RenderFlags".Loc()}: {obj.Struct()->RenderFlags}");
+            ImGuiEx.TextCopy($"{"SubKind".Loc()}: {obj.Struct()->SubKind}");
+            ImGuiEx.TextCopy($"{"TargetStatus".Loc()}: {obj.Struct()->TargetStatus}");
             if (obj is Character c)
             {
                 ImGuiEx.TextCopy("---------- Character ----------");
@@ -83,6 +88,8 @@ namespace Splatoon.Gui
                 ImGuiEx.TextCopy($"VfxData: {(IntPtr)c.Struct()->VfxData:X16}");
                 ImGuiEx.TextCopy($"VfxData2: {(IntPtr)c.Struct()->VfxData2:X16}");
                 ImGuiEx.TextCopy($"Omen: {(IntPtr)c.Struct()->Omen:X16}");
+                ImGuiEx.TextCopy($"ModelSkeletonId: {(IntPtr)c.Struct()->ModelSkeletonId:X16}");
+                ImGuiEx.TextCopy($"ModelSkeletonId2: {(IntPtr)c.Struct()->ModelSkeletonId_2:X16}");
                 ImGuiEx.Text("VFX");
                 if(c.TryGetVfx(out var fx))
                 {

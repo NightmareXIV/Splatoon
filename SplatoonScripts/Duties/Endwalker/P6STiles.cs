@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Splatoon.SplatoonScripting;
 using System.Collections.Generic;
 
-namespace NightmareXIV
+namespace SplatoonScripts.Duties.Endwalker
 {
     public class P6STiles : SplatoonScript
     {

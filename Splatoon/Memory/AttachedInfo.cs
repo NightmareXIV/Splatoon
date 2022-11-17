@@ -15,6 +15,7 @@ namespace Splatoon.Memory
         delegate IntPtr GameObject_ctor(IntPtr obj);
         static Hook<GameObject_ctor> GameObject_ctor_hook = null;
         internal static Dictionary<IntPtr, CachedCastInfo> CastInfos = new();
+        internal static Dictionary<IntPtr, List<CachedObjectEffectInfo>> ObjectEffectInfos = new();
         internal static Dictionary<IntPtr, Dictionary<string, VFXInfo>> VFXInfos = new();
         static HashSet<IntPtr> Casters = new();
 
@@ -52,6 +53,7 @@ namespace Splatoon.Memory
             ActorVfxCreateHook?.Dispose();
             CastInfos = null;
             VFXInfos = null;
+            ObjectEffectInfos = null;
         }
 
         static IntPtr ActorVfxNewHandler(char* a1, IntPtr a2, IntPtr a3, float a4, char a5, ushort a6, char a7)
@@ -118,6 +120,7 @@ namespace Splatoon.Memory
             CastInfos.Remove(ptr);
             Casters.Remove(ptr);
             VFXInfos.Remove(ptr);
+            ObjectEffectInfos.Remove(ptr);
             return GameObject_ctor_hook.Original(ptr);
         }
 

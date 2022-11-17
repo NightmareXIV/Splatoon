@@ -13,7 +13,6 @@ using ECommons.LanguageHelpers;
 using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
 using Lumina.Excel.GeneratedSheets;
-using Newtonsoft.Json.Linq;
 using PInvoke;
 using Splatoon.Gui;
 using Splatoon.Memory;
@@ -1146,7 +1145,8 @@ public unsafe class Splatoon : IDalamudPlugin
                     .Replace("$LIFE", $"{go.GetLifeTimeSeconds():F1}")
                     .Replace("$DISTANCE", $"{Vector3.Distance((Svc.ClientState.LocalPlayer?.Position ?? Vector3.Zero), go.Position):F1}")
                     .Replace("$CAST", go is BattleChara chr3?$"[{chr3.CastActionId.Format()}] {chr3.CurrentCastTime}/{chr3.TotalCastTime}":"")
-                    .Replace("\\n", "\n");
+                    .Replace("\\n", "\n")
+                    .Replace("$VFXID", $"{(go is Character chr4 ? chr4.GetStatusVFXId() : 0).Format()}");
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
         }
