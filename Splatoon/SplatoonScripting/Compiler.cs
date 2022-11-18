@@ -18,11 +18,6 @@ namespace Splatoon.SplatoonScripting
 
     internal class Compiler
     {
-        static volatile uint autoIncrement = 0;
-        internal static uint AutoIncrement
-        {
-            get => ++autoIncrement;
-        }
         internal static Assembly Load(byte[] assembly)
         {
             PluginLog.Information($"Beginning assembly load");
@@ -99,8 +94,9 @@ namespace Splatoon.SplatoonScripting
 
             //PluginLog.Information($"References: {references.Select(x => x.Display).Join(", ")}");
 
-
-            return CSharpCompilation.Create($"SplatoonScript-{identity}-{AutoIncrement}",
+            var id = $"SplatoonScript-{identity}-{Guid.NewGuid()}";
+            PluginLog.Information($"Assembly name: {id}");
+            return CSharpCompilation.Create(id,
                 new[] { parsedSyntaxTree },
                 references: references,
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,

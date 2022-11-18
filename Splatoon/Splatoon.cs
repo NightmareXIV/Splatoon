@@ -320,19 +320,7 @@ public unsafe class Splatoon : IDalamudPlugin
             var de = dynamicElements[i];
             foreach(var l in de.Layouts)
             {
-                if (l.UseTriggers)
-                {
-                    foreach (var t in l.Triggers)
-                    {
-                        if (t.ResetOnTChange)
-                        {
-                            t.FiredState = 0;
-                            l.TriggerCondition = 0;
-                            t.EnableAt.Clear();
-                            t.DisableAt.Clear();
-                        }
-                    }
-                }
+                ResetLayout(l);
             }
             foreach (var dt in de.DestroyTime)
             {
@@ -344,27 +332,33 @@ public unsafe class Splatoon : IDalamudPlugin
         }
         foreach(var l in Config.LayoutsL)
         {
-            if (l.UseTriggers)
-            {
-                foreach(var t in l.Triggers)
-                {
-                    if (t.ResetOnTChange)
-                    {
-                        t.FiredState = 0;
-                        l.TriggerCondition = 0;
-                        t.EnableAt.Clear();
-                        t.DisableAt.Clear();
-                    }
-                }
-            }
-            if(l.Freezing && l.FreezeResetTerr)
-            {
-                l.freezeInfo = new();
-            }
+            ResetLayout(l);
         }
+        ScriptingProcessor.Scripts.ForEach(x => x.Controller.Layouts.Values.Each(ResetLayout));
         AttachedInfo.VFXInfos.Clear();
         Logger.OnTerritoryChanged();
         ScriptingProcessor.TerritoryChanged();
+    }
+
+    static void ResetLayout(Layout l)
+    {
+        if (l.UseTriggers)
+        {
+            foreach (var t in l.Triggers)
+            {
+                if (t.ResetOnTChange)
+                {
+                    t.FiredState = 0;
+                    l.TriggerCondition = 0;
+                    t.EnableAt.Clear();
+                    t.DisableAt.Clear();
+                }
+            }
+        }
+        if (l.Freezing && l.FreezeResetTerr)
+        {
+            l.freezeInfo = new();
+        }
     }
 
     
@@ -469,43 +463,16 @@ public unsafe class Splatoon : IDalamudPlugin
                         AttachedInfo.VFXInfos.Clear();
                         foreach (var l in Config.LayoutsL)
                         {
-                            if (l.UseTriggers)
-                            {
-                                foreach (var t in l.Triggers)
-                                {
-                                    if (t.ResetOnCombatExit)
-                                    {
-                                        t.FiredState = 0;
-                                        l.TriggerCondition = 0;
-                                        t.EnableAt.Clear();
-                                        t.DisableAt.Clear();
-                                    }
-                                }
-                            }
-                            if (l.Freezing && l.FreezeResetCombat)
-                            {
-                                l.freezeInfo = new();
-                            }
+                            ResetLayout(l);
                         }
                         foreach (var de in dynamicElements)
                         {
                             foreach (var l in de.Layouts)
                             {
-                                if (l.UseTriggers)
-                                {
-                                    foreach (var t in l.Triggers)
-                                    {
-                                        if (t.ResetOnCombatExit)
-                                        {
-                                            t.FiredState = 0;
-                                            l.TriggerCondition = 0;
-                                            t.EnableAt.Clear();
-                                            t.DisableAt.Clear();
-                                        }
-                                    }
-                                }
+                                ResetLayout(l);
                             }
                         }
+                        ScriptingProcessor.Scripts.ForEach(x => x.Controller.Layouts.Values.Each(ResetLayout));
                     }
                 }
 
@@ -552,6 +519,8 @@ public unsafe class Splatoon : IDalamudPlugin
                     ProcessLayout(i);
                 }
 
+                ScriptingProcessor.Scripts.ForEach(x => x.Controller.Layouts.Values.Each(ProcessLayout));
+                ScriptingProcessor.Scripts.ForEach(x => x.Controller.Elements.Values.Each(x => ProcessElement(x)));
                 foreach (var e in injectedElements)
                 {
                     ProcessElement(e);
@@ -606,6 +575,7 @@ public unsafe class Splatoon : IDalamudPlugin
             }
             prevCombatState = Svc.Condition[ConditionFlag.InCombat];
             CurrentChatMessages.Clear();
+            ScriptingProcessor.OnUpdate();
         }
         catch(Exception e)
         {

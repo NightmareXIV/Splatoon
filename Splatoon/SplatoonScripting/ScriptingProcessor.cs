@@ -13,7 +13,7 @@ namespace Splatoon.SplatoonScripting
     internal static class ScriptingProcessor
     {
         internal static List<SplatoonScript> Scripts = new();
-        internal static ConcurrentQueue<string> LoadScriptQueue = new();
+        internal static ConcurrentQueue<(string code, string path)> LoadScriptQueue = new();
         internal static volatile bool ThreadIsRunning = false;
         internal readonly static string[] TrustedURLs = new string[]
         {
@@ -37,10 +37,10 @@ namespace Splatoon.SplatoonScripting
             }
         }
 
-        internal static void CompileAndLoad(string sourceCode, string path)
+        internal static void CompileAndLoad(string sourceCode, string fpath)
         {
             PluginLog.Information($"Requested script loading");
-            LoadScriptQueue.Enqueue(sourceCode);
+            LoadScriptQueue.Enqueue((sourceCode, fpath));
             if (!ThreadIsRunning)
             {
                 ThreadIsRunning = true;
@@ -60,7 +60,7 @@ namespace Splatoon.SplatoonScripting
                         {
                             try
                             {
-                                var md5 = MD5.HashData(Encoding.UTF8.GetBytes(sourceCode)).Select(x=>$"{x:X2}").Join("");
+                                var md5 = MD5.HashData(Encoding.UTF8.GetBytes(result.code)).Select(x=>$"{x:X2}").Join("");
                                 var cacheFile = Path.Combine(dir, $"{md5}-{P.loader.splatoonVersion}.bin");
                                 PluginLog.Information($"Cache path: {cacheFile}");
                                 byte[] code = null;
@@ -71,7 +71,7 @@ namespace Splatoon.SplatoonScripting
                                 }
                                 else
                                 {                                    PluginLog.Information($"Compiling...");
-                                    code = Compiler.Compile(sourceCode, path == null?"":Path.GetFileNameWithoutExtension(path));
+                                    code = Compiler.Compile(result.code, result.path == null?"":Path.GetFileNameWithoutExtension(result.path));
                                     if (code != null)
                                     {
                                         File.WriteAllBytes(cacheFile, code);
@@ -90,7 +90,7 @@ namespace Splatoon.SplatoonScripting
                                                 if (t.BaseType?.FullName == "Splatoon.SplatoonScripting.SplatoonScript")
                                                 {
                                                     var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
-                                                    instance.InternalData = new(path, instance);
+                                                    instance.InternalData = new(result.path, instance);
                                                     if (Scripts.Any(z => z.InternalData.FullName == instance.InternalData.FullName))
                                                     {
                                                         DuoLog.Error($"Script {instance.InternalData.FullName} already loaded");
@@ -98,7 +98,7 @@ namespace Splatoon.SplatoonScripting
                                                     else
                                                     {
                                                         Scripts.Add(instance);
-                                                        if (path == null)
+                                                        if (result.path == null)
                                                         {
                                                             var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts", instance.InternalData.Namespace);
                                                             if (!Directory.Exists(dir))
@@ -106,7 +106,7 @@ namespace Splatoon.SplatoonScripting
                                                                 Directory.CreateDirectory(dir);
                                                             }
                                                             var newPath = Path.Combine(dir, $"{instance.InternalData.Name}.cs");
-                                                            File.WriteAllText(newPath, sourceCode, Encoding.UTF8);
+                                                            File.WriteAllText(newPath, result.code, Encoding.UTF8);
                                                             instance.InternalData.Path = newPath;
                                                             DuoLog.Information($"Script installed to {newPath}");
                                                         }

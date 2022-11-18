@@ -1,6 +1,6 @@
 ﻿namespace Splatoon.Utils;
 
-class Colors
+public static class Colors
 { //abgr
     public const uint LightYellow = 0xffaaffff;
     public const uint Red = 0xff0000ff;
