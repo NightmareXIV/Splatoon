@@ -29,9 +29,14 @@ namespace Splatoon.SplatoonScripting
         public string? Website { get; }
 
         /// <summary>
-        /// URL for auto-update. Can be direct to the file or to the folder containing the script. Remote file name is ignored.
+        /// URL that contains information for auto-update in JSON format. If there is a higher version available, script will be automatically updated if it comes from trusted URL, otherwise user will be prompted to install an update.
         /// </summary>
-        public string? UpdateURL { get; set; }
+        public string UpdateURL { get; set; } = "https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/update.json";
+
+        /// <summary>
+        /// Blacklist will be checked before script is loaded; if script's name and it's version are present in it, script will be automatically disabled. An user can still choose to manually reenable it, however. 
+        /// </summary>
+        public string BlacklistURL { get; set; } = "https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/blacklist.json";
 
         public Metadata(uint version, string? author, string? description, string? website)
         {

@@ -17,8 +17,8 @@ namespace Splatoon.Modules
             Safe(delegate
             {
                 EndLogging();
-                var dirName = $"Logs {DateTimeOffset.Now:yyyy-MM-ddzzz}".Replace(":", "_");
-                var directory = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), dirName);
+                var dirName = $"{DateTimeOffset.Now:yyyy-MM-ddzzz}".Replace(":", "_");
+                var directory = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Logs", dirName);
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);

@@ -4,6 +4,7 @@ using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.ImGuiMethods;
 using ECommons.Logging;
+using ECommons.Schedulers;
 using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
 using System;
@@ -17,12 +18,12 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 {
     public class P8S2_Limitless_Desolation : SplatoonScript
     {
-        public override HashSet<uint> ValidTerritories => new() { 1088 };
-        long HideAt = 0;
+        public override HashSet<uint> ValidTerritories => new() { 1088 }; //We need our script to work in P8S only.
+        TickScheduler? Scheduler;
 
         public override void OnSetup()
         {
-            if(!this.Controller.TryRegisterElement("TowerDisplay", new(0)
+            if(!this.Controller.TryRegisterElement("TowerDisplay", new(0) //Let's register our element
             {
                 Enabled = false,
                 thicc = 5,
@@ -30,45 +31,48 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 tether = true
             }))
             {
-                DuoLog.Error("Could not register layout");
+                DuoLog.Error("Could not register layout"); //And display error if we couldn't for some reason.
             }
         }
 
         public override void OnUpdate()
         {
-            if(HideAt != 0 && this.Controller.TryGetElementByName("TowerDisplay", out var e))
+            //just a fancy feature to make element gradually change color. Not necessary at all, just added for demonstration purposes.
+            if (this.Controller.TryGetElementByName("TowerDisplay", out var e) && e.Enabled)
             {
-                if (Environment.TickCount64 > HideAt)
-                {
-                    e.Enabled = false;
-                    HideAt = 0;
-                }
-                e.color = GradientColor.Get(Colors.Red.ToVector4(), Colors.Green.ToVector4()).ToUint();
+                e.color = GradientColor.Get(Colors.Green.ToVector4(), ImGuiColors.DalamudWhite).ToUint(); 
+            }
+        }
+
+        public override void OnCombatEnd()
+        {
+            // Once combat ended, disable element and dispose scheduler so it won't accidentally disable tower in next pull.
+            if(this.Controller.TryGetElementByName("TowerDisplay", out var e))
+            {
+                e.Enabled = false;
+                Scheduler?.Dispose();
             }
         }
 
         public override void OnCombatStart()
         {
-            if(this.Controller.TryGetElementByName("TowerDisplay", out var e))
-            {
-                e.Enabled = false;
-                HideAt = 0;
-            }
+            // We're doubling cleanup on combat start because sometimes game sends you combat data already after removing you out of combat. So just in case our element stuck even after combat has ended, once it starts again it will be cleaned up.
+            this.OnCombatEnd();
         }
 
-        public override void OnMapEffect(uint position, ushort data1, ushort data2)
+        public override void OnMapEffect(uint position, ushort data1, ushort data2) //here is where magic happens
         {
-            if (data1 == 1 && data2 == 2 
-                && Svc.ClientState.LocalPlayer?.StatusList.Any(x => x.StatusId == 2098 && x.RemainingTime > 7.5f) == true 
-                && EffectData.TryGetValue(position, out var x) 
-                && Positions.TryGetValue(x, out var loc) 
-                && (Svc.ClientState.LocalPlayer?.GetRole() == CombatRole.DPS) == IsDpsPosition(loc) 
+            if (data1 == 1 && data2 == 2 //if our map effect has the data we're looking for, in this case it's 1 and 2...
+                && Svc.ClientState.LocalPlayer?.StatusList.Any(x => x.StatusId == 2098 && x.RemainingTime > 7.5f) == true //...and the player has status with ID 2098 (which is Fire Resistance Down II) and remaining time of that debuff is 7.5 seconds or more, which means that player has just been hit...
+                && EffectData.TryGetValue(position, out var x) //...and we have MapEffect's position mapped...
+                && Positions.TryGetValue(x, out var loc) //...and we can get coordinates of mapped position which should always be true...
+                && (Svc.ClientState.LocalPlayer?.GetRole() == CombatRole.DPS) == IsDpsPosition(loc) //
                 && this.Controller.TryGetElementByName("TowerDisplay", out var e))
             {
                 e.Enabled = true;
                 e.refX = loc.X;
                 e.refY = loc.Y;
-                HideAt = Environment.TickCount64 + 11000;
+                Scheduler = new(() => e.Enabled = false, 10000);
                 PluginLog.Information($"Displaying tower...");
             }
         }

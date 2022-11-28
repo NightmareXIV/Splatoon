@@ -101,7 +101,8 @@ namespace Splatoon.SplatoonScripting
                 references: references,
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                     optimizationLevel: OptimizationLevel.Release,
-                    assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default));
+                    assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default,
+                    allowUnsafe: true));
         }
 
         static bool IsValidAssembly(string path)

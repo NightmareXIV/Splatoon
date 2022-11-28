@@ -23,6 +23,11 @@ namespace Splatoon.SplatoonScripting
         /// </summary>
         public virtual Metadata? Metadata { get; }
 
+        /// <summary>
+        /// Indicates whether your script operates strictly within Splatoon, ECommons and Dalamud APIs. 
+        /// </summary>
+        public virtual bool Safe { get; } = false;
+
         public InternalData InternalData { get; internal set; } = null!;
 
         /// <summary>
