@@ -91,11 +91,14 @@ namespace Splatoon.SplatoonScripting
                                                 {
                                                     var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
                                                     instance.InternalData = new(result.path, instance);
-                                                    if (Scripts.Any(z => z.InternalData.FullName == instance.InternalData.FullName))
+                                                    if (Scripts.TryGetFirst(z => z.InternalData.FullName == instance.InternalData.FullName, out var loadedScript))
                                                     {
-                                                        DuoLog.Error($"Script {instance.InternalData.FullName} already loaded");
+                                                        DuoLog.Information($"Script {instance.InternalData.FullName} already loaded, replacing at {loadedScript.InternalData.Path}");
+                                                        result.path = loadedScript.InternalData.Path;
+                                                        loadedScript.Disable();
+                                                        ScriptingProcessor.Scripts.RemoveAll(x => ReferenceEquals(loadedScript, x));
                                                     }
-                                                    else
+                                                    
                                                     {
                                                         Scripts.Add(instance);
                                                         if (result.path == null)
@@ -119,7 +122,7 @@ namespace Splatoon.SplatoonScripting
                                         }
                                         else
                                         {
-                                            PluginLog.Fatal("Plugin was disposed during script loadin");
+                                            PluginLog.Fatal("Plugin was disposed during script loading");
                                         }
                                     });
                                 }
