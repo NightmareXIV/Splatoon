@@ -13,10 +13,15 @@ namespace Splatoon.SplatoonScripting
 {
     public abstract class SplatoonScript
     {
+        protected SplatoonScript()
+        {
+            Controller = new(this);
+        }
+
         /// <summary>
         /// Controller provides easy access to various helper functions that may be helpful for your script.
         /// </summary>
-        public Controller Controller { get; } = new();
+        public Controller Controller { get; }
 
         /// <summary>
         /// Metadata of a script that optionally contains author, description, version and script's origin website. This data will be displayed in Splatoon's interface.

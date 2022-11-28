@@ -15,6 +15,8 @@ namespace Splatoon.SplatoonScripting
         public string GUID { get; } = "Script" + Guid.NewGuid().ToString();
         public string FullName { get; internal set; }
 
+        internal bool ConfigOpen = false;
+
         public InternalData(string path, SplatoonScript instance)
         {
             Path = path;

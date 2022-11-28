@@ -67,24 +67,29 @@ namespace Splatoon.Gui.Scripting
                 ImGui.SameLine();
                 ImGuiEx.Text(x.IsEnabled?ImGuiColors.ParsedGreen:ImGuiColors.DalamudRed, x.IsEnabled ? "Enabled" : "Disabled");
                 ImGui.SameLine();
-                if (ImGui.Button("Unload"))
-                {
-                    del = i;
-                }
-                ImGui.SameLine();
                 if (ImGui.Button("Delete"))
                 {
                     if (!x.InternalData.Path.IsNullOrEmpty() && x.InternalData.Path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
                     {
                         del = i;
-                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(x.InternalData.Path, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                        DeleteFileToRecycleBin(x.InternalData.Path);
                     }
                     else
                     {
                         Notify.Error("Error deleting");
                     }
                 }
+                ImGui.SameLine();
+                if (ImGui.Button("Config"))
+                {
+                    x.InternalData.ConfigOpen = !x.InternalData.ConfigOpen;
+                }
+                if (x.InternalData.ConfigOpen)
+                {
+                    x.OnSettingsDraw();
+                }
                 ImGui.PopID();
+                ImGui.Separator();
             }
             if(del != -1)
             {

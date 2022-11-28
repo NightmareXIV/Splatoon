@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using ECommons.Configuration;
 using ECommons.GameFunctions;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,35 @@ namespace Splatoon.SplatoonScripting
 {
     public class Controller
     {
+        internal SplatoonScript Script;
         internal Dictionary<string, Layout> Layouts = new();
         internal Dictionary<string, Element> Elements = new();
+        internal Configuration? Configuration;
 
         internal int autoIncrement = 0;
         internal int AutoIncrement => ++autoIncrement;
+
+        internal Controller(SplatoonScript s)
+        {
+            Script = s;
+        }
+
+        public T? GetOption<T>(string key)
+        {
+            this.Configuration ??= EzConfig.LoadConfiguration<Configuration>($"{Script.InternalData.Path}.json", false);
+            if(this.Configuration.Objects.TryGetValue(key, out var o))
+            {
+                return (T)o;
+            }
+            return default;
+        }
+
+        public void SetOption<T>(string key, T? value)
+        {
+            this.Configuration ??= EzConfig.LoadConfiguration<Configuration>($"{Script.InternalData.Path}.json", false);
+            this.Configuration.Objects[key] = value;
+            EzConfig.SaveConfiguration(this.Configuration, $"{Script.InternalData.Path}.json", false, false);
+        }
 
         /// <summary>
         /// Attempts to register previously exported from plugin layout for further usage. End user will be able to edit this layout as they wish and results of the edit will be saved. Enabled layouts are subject for immediate processing when the script is enabled.

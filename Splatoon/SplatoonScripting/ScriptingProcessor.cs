@@ -91,32 +91,37 @@ namespace Splatoon.SplatoonScripting
                                                 {
                                                     var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
                                                     instance.InternalData = new(result.path, instance);
+                                                    bool rewrite = false;
                                                     if (Scripts.TryGetFirst(z => z.InternalData.FullName == instance.InternalData.FullName, out var loadedScript))
                                                     {
-                                                        DuoLog.Information($"Script {instance.InternalData.FullName} already loaded, replacing at {loadedScript.InternalData.Path}");
+                                                        DuoLog.Information($"Script {instance.InternalData.FullName} already loaded, replacing.");
                                                         result.path = loadedScript.InternalData.Path;
                                                         loadedScript.Disable();
                                                         ScriptingProcessor.Scripts.RemoveAll(x => ReferenceEquals(loadedScript, x));
+                                                        rewrite = true;
                                                     }
-                                                    
+                                                    Scripts.Add(instance);
+                                                    if (result.path == null)
                                                     {
-                                                        Scripts.Add(instance);
-                                                        if (result.path == null)
+                                                        var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts", instance.InternalData.Namespace);
+                                                        if (!Directory.Exists(dir))
                                                         {
-                                                            var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts", instance.InternalData.Namespace);
-                                                            if (!Directory.Exists(dir))
-                                                            {
-                                                                Directory.CreateDirectory(dir);
-                                                            }
-                                                            var newPath = Path.Combine(dir, $"{instance.InternalData.Name}.cs");
-                                                            File.WriteAllText(newPath, result.code, Encoding.UTF8);
-                                                            instance.InternalData.Path = newPath;
-                                                            DuoLog.Information($"Script installed to {newPath}");
+                                                            Directory.CreateDirectory(dir);
                                                         }
-                                                        instance.OnSetup();
-                                                        PluginLog.Information($"Load success");
-                                                        instance.UpdateState();
+                                                        var newPath = Path.Combine(dir, $"{instance.InternalData.Name}.cs");
+                                                        instance.InternalData.Path = newPath;
+                                                        DuoLog.Information($"Script installed to {newPath}");
                                                     }
+                                                    else if (rewrite)
+                                                    {
+                                                        DeleteFileToRecycleBin(result.path);
+                                                        File.WriteAllText(result.path, result.code, Encoding.UTF8);
+                                                        instance.InternalData.Path = result.path;
+                                                        DuoLog.Information($"Script overwritten at {instance.InternalData.Path}");
+                                                    }
+                                                    instance.OnSetup();
+                                                    PluginLog.Information($"Load success");
+                                                    instance.UpdateState();
                                                 }
                                             }
                                         }
