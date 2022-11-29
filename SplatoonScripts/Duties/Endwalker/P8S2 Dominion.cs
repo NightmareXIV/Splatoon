@@ -118,7 +118,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                     if (prio[0] == Svc.ClientState.LocalPlayer.Name.ToString())
                     {
                         e.Enabled = true;
-                        var pos = Svc.ClientState.LocalPlayer.GetRole() == CombatRole.DPS ? 2 : 0;
+                        var pos = ((Svc.ClientState.LocalPlayer.GetRole() == CombatRole.DPS) != this.Controller.GetConfig<Config>().Reverse) ? 2 : 0;
                         e.refX = towers[pos].Position.X;
                         e.refY = towers[pos].Position.Z;
                         e.refZ = towers[pos].Position.Y;
@@ -127,7 +127,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                     else
                     {
                         e.Enabled = true;
-                        var pos = Svc.ClientState.LocalPlayer.GetRole() == CombatRole.DPS ? 3 : 1;
+                        var pos = ((Svc.ClientState.LocalPlayer.GetRole() == CombatRole.DPS) != this.Controller.GetConfig<Config>().Reverse) ? 3 : 1;
                         e.refX = towers[pos].Position.X;
                         e.refY = towers[pos].Position.Z;
                         e.refZ = towers[pos].Position.Y;
@@ -178,6 +178,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         public override void OnSettingsDraw()
         {
+            ImGui.Checkbox("Reverse (DPS left, H+T right)", ref this.Controller.GetConfig<Config>().Reverse);
             var c = this.Controller.GetConfig<Config>().Priorities;
             int toRem = -1;
             for (int i = 0; i < c.Count; i++)
@@ -224,6 +225,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         public class Config : IEzConfig
         {
+            public bool Reverse = false;
             public List<List<string>> Priorities = new();
         }
     }
