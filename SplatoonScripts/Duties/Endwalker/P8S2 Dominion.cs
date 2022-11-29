@@ -5,6 +5,7 @@ using ECommons;
 using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
+using ECommons.ImGuiMethods;
 using ECommons.Logging;
 using ECommons.MathHelpers;
 using ImGuiNET;
@@ -53,7 +54,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 {
                     FirstPlayers = Svc.Objects.Where(x => x is PlayerCharacter pc && !pc.StatusList.Any(x => x.StatusId == 3372) && IsRoleMatching(pc)).Select(x => x.ObjectId).ToList();
                     SecondPlayers = playersSecondTowers.Where(x => x is PlayerCharacter pc && IsRoleMatching(pc)).Select(x => x.ObjectId).ToList();
-                    DuoLog.Information($"First towers: {FirstPlayers.Print()}\nSecond towers: {SecondPlayers.Print()}");
+                    DuoLog.Information($"First towers: {FirstPlayers.Select(x => x.GetObject()?.Name).Print()}\nSecond towers: {SecondPlayers.Select(x => x.GetObject()?.Name).Print()}");
                     Stage = 2;
                     DuoLog.Information($"Stage 2");
                 }
@@ -63,31 +64,48 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 var towers = GetTowers();
                 if(towers.Count() == 4)
                 {
+                    DuoLog.Information("First towers");
                     if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
                     Process(towers.OrderBy(GetAngle).ToArray(), FirstPlayers);
-                }
-                else if(towers.Count() == 8)
-                {
-                    if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
-                    towers = GetEarliestTowers();
-                    Process(towers.OrderBy(GetAngle).ToArray(), SecondPlayers);
+                    Stage = 3;
+                    DuoLog.Information($"Stage 3");
                 }
                 else if(!towers.Any())
                 {
-                    if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
-                    Stage = 0;
-                    DuoLog.Information($"Reset");
+                    Reset();
                 }
             }
             else if(Stage == 3)
             {
-                if (!GetTowers().Any())
+                var towers = GetTowers();
+                if (towers.Count() == 8)
                 {
+                    DuoLog.Information("Second towers");
                     if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
-                    Stage = 0;
-                    DuoLog.Information($"Reset");
+                    towers = GetEarliestTowers();
+                    Process(towers.OrderBy(GetAngle).ToArray(), SecondPlayers);
+                    Stage = 4;
+                    DuoLog.Information($"Stage 4");
+                }
+                if (!towers.Any())
+                {
+                    Reset();
                 }
             }
+            else if(Stage == 4)
+            {
+                if (!GetTowers().Any())
+                {
+                    Reset();
+                }
+            }
+        }
+
+        void Reset()
+        {
+            if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
+            Stage = 0;
+            DuoLog.Information($"Reset");
         }
 
         void Process(BattleChara[] towers, List<uint> players)
@@ -116,7 +134,6 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                         //second prio
                     }
                 }
-                Stage = 3;
             }
         }
 
@@ -167,7 +184,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             {
                 ImGui.PushID("List" + i);
                 EditList(c[i]);
-                if(ImGui.Button("Delete this priority list"))
+                ImGui.SameLine();
+                if(ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.Trash))
                 {
                     toRem = i;
                 }
@@ -189,10 +207,15 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             for (int i = 0; i < s.Count; i++)
             {
                 var t = s[i];
-                ImGui.SetNextItemWidth(ImGui.GetContentRegionMax().X / 4.5f);
+                ImGui.SetNextItemWidth(ImGui.GetContentRegionMax().X / 6f);
                 if(ImGui.InputText($"##in{i}", ref t, 100))
                 {
                     s[i] = t;
+                }
+                ImGui.SameLine();
+                if (ImGui.Button($"  T  ##{i}") && Svc.Targets.Target is PlayerCharacter pc)
+                {
+                    s[i] = pc.Name.ToString();
                 }
                 ImGui.SameLine();
             }

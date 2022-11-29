@@ -5,9 +5,11 @@ using Dalamud.Hooking;
 using Dalamud.Memory;
 using Dalamud.Plugin;
 using Dalamud.Utility.Signatures;
+using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using Splatoon.SplatoonScripting;
 using System;
@@ -40,10 +42,7 @@ namespace SplatoonScriptsOfficial.Generic
 
         public override void OnSettingsDraw()
         {
-            if(ImGuiNoRef.Checkbox("Display all emotes", this.Controller.GetOption<bool>("DisplayOnOthers"), out var newValue))
-            {
-                this.Controller.SetOption("DisplayOnOthers", newValue);
-            }
+            ImGui.Checkbox("Display emotes on all targets", ref this.Controller.GetConfig<Config>().ShowOnOthers);
         }
 
         long OnEmoteFuncDetour(IntPtr a1, GameObject* source, ushort emoteId, long targetId, long a5)
@@ -55,7 +54,7 @@ namespace SplatoonScriptsOfficial.Generic
                     var emoteName = Svc.Data.GetExcelSheet<Emote>()?.GetRow(emoteId)?.Name;
                     Svc.Chat.Print($">> {MemoryHelper.ReadStringNullTerminated((IntPtr)source->Name)} uses {emoteName} on you.");
                 }
-                else if (this.Controller.GetOption<bool>("DisplayOnOthers"))
+                else if (this.Controller.GetConfig<Config>().ShowOnOthers)
                 {
                     var emoteName = Svc.Data.GetExcelSheet<Emote>()?.GetRow(emoteId)?.Name;
                     var target = Svc.Objects.FirstOrDefault(x => x.ObjectId == targetId);
@@ -67,6 +66,11 @@ namespace SplatoonScriptsOfficial.Generic
                 Svc.Chat.Print($"{e.Message}\n{e.StackTrace}");
             }
             return OnEmoteFuncHook!.Original(a1, source, emoteId, targetId, a5);
+        }
+
+        public class Config : IEzConfig
+        {
+            public bool ShowOnOthers = false;
         }
     }
 }
