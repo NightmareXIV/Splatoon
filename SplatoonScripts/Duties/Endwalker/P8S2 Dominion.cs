@@ -2,6 +2,7 @@
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility;
 using ECommons;
+using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.Logging;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,10 +28,6 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         public override void OnSetup()
         {
-            this.Controller.TryRegisterElement("Tower1", new(0) { Enabled = false, overlayText = "tower 1" });
-            this.Controller.TryRegisterElement("Tower2", new(0) { Enabled = false, overlayText = "tower 2" });
-            this.Controller.TryRegisterElement("Tower3", new(0) { Enabled = false, overlayText = "tower 3" });
-            this.Controller.TryRegisterElement("Tower4", new(0) { Enabled = false, overlayText = "tower 4" });
             this.Controller.TryRegisterElement("MyTower", new(0) { Enabled = false, thicc=10, tether=true, radius = 0 });
         }
 
@@ -37,20 +35,10 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
         {
             if (Message.Contains("(11402>31193)"))
             {
-                ResetMechanic();
                 Stage = 1;
                 DuoLog.Information($"Stage 1");
             }
         }
-
-        void ResetMechanic()
-        {
-            { if (this.Controller.TryGetElementByName($"Tower1", out var e)) e.Enabled = false; }
-            { if (this.Controller.TryGetElementByName($"Tower2", out var e)) e.Enabled = false; }
-            { if (this.Controller.TryGetElementByName($"Tower3", out var e)) e.Enabled = false; }
-            { if (this.Controller.TryGetElementByName($"Tower4", out var e)) e.Enabled = false; }
-        }
-
         public override void OnUpdate()
         {
             //tower cast: 31196
@@ -107,24 +95,26 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             if (players.Contains(Svc.ClientState.LocalPlayer!.ObjectId) && Controller.TryGetElementByName("MyTower", out var e))
             {
                 var prio = GetPriority().Where(x => players.Select(z => z.GetObject()!.Name.ToString()).Contains(x)).ToArray();
-                Svc.Chat.Print($"Priority: {prio.Select(x => x.ToString()).Join(", ")}");
-                if (prio[0] == Svc.ClientState.LocalPlayer.Name.ToString())
+                if (prio.Length == 2)
                 {
-                    e.Enabled = true;
-                    var pos = Svc.ClientState.LocalPlayer.GetRole() == CombatRole.DPS ? 2 : 0;
-                    e.refX = towers[pos].Position.X;
-                    e.refY = towers[pos].Position.Z;
-                    e.refZ = towers[pos].Position.Y;
-                    //first prio
-                }
-                else
-                {
-                    e.Enabled = true;
-                    var pos = Svc.ClientState.LocalPlayer.GetRole() == CombatRole.DPS ? 3 : 1;
-                    e.refX = towers[pos].Position.X;
-                    e.refY = towers[pos].Position.Z;
-                    e.refZ = towers[pos].Position.Y;
-                    //second prio
+                    if (prio[0] == Svc.ClientState.LocalPlayer.Name.ToString())
+                    {
+                        e.Enabled = true;
+                        var pos = Svc.ClientState.LocalPlayer.GetRole() == CombatRole.DPS ? 2 : 0;
+                        e.refX = towers[pos].Position.X;
+                        e.refY = towers[pos].Position.Z;
+                        e.refZ = towers[pos].Position.Y;
+                        //first prio
+                    }
+                    else
+                    {
+                        e.Enabled = true;
+                        var pos = Svc.ClientState.LocalPlayer.GetRole() == CombatRole.DPS ? 3 : 1;
+                        e.refX = towers[pos].Position.X;
+                        e.refY = towers[pos].Position.Z;
+                        e.refZ = towers[pos].Position.Y;
+                        //second prio
+                    }
                 }
                 Stage = 3;
             }
@@ -144,12 +134,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         List<string> GetPriority()
         {
-            var x = this.Controller.GetOption<string>("Priority");
+            var x = this.Controller.GetConfig<Config>().Priorities.FirstOrDefault(z => z.All(n => Svc.Objects.Any(e => e is PlayerCharacter pc && pc.Name.ToString() == n)));
             if(x != null)
             {
-                var strings = x.Split("\n").Select(x => x.Trim()).Where(x => !x.IsNullOrWhitespace());
-                return strings.ToList();
+                DuoLog.Information($"Got priority list: {x.Print()}");
+                return x;
             }
+            DuoLog.Warning("Could not find priority list");
             return new();
         }
 
@@ -170,11 +161,47 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         public override void OnSettingsDraw()
         {
-            var txt = this.Controller.GetOption<string>("Priority") ?? "";
-            if(ImGui.InputTextMultiline("##prio", ref txt, 5000, new(ImGui.GetContentRegionAvail().X, 200)))
+            var c = this.Controller.GetConfig<Config>().Priorities;
+            int toRem = -1;
+            for (int i = 0; i < c.Count; i++)
             {
-                this.Controller.SetOption("Priority", txt);
+                ImGui.PushID("List" + i);
+                EditList(c[i]);
+                if(ImGui.Button("Delete this priority list"))
+                {
+                    toRem = i;
+                }
+                ImGui.Separator();
+                ImGui.PopID();
             }
+            if(toRem > -1)
+            {
+                c.RemoveAt(toRem);
+            }
+            if (ImGui.Button("Add new priority list"))
+            {
+                c.Add(new() { "", "", "", "" });
+            }
+        }
+
+        public void EditList(List<string> s)
+        {
+            for (int i = 0; i < s.Count; i++)
+            {
+                var t = s[i];
+                ImGui.SetNextItemWidth(ImGui.GetContentRegionMax().X / 4.5f);
+                if(ImGui.InputText($"##in{i}", ref t, 100))
+                {
+                    s[i] = t;
+                }
+                ImGui.SameLine();
+            }
+            ImGui.Dummy(Vector2.Zero);
+        }
+
+        public class Config : IEzConfig
+        {
+            public List<List<string>> Priorities = new();
         }
     }
 }

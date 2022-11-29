@@ -153,6 +153,7 @@ namespace Splatoon.SplatoonScripting
 
         internal bool Disable()
         {
+            this.Controller.SaveConfig();
             if (!IsEnabled)
             {
                 return false;

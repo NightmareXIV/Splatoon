@@ -114,7 +114,7 @@ namespace Splatoon.SplatoonScripting
                                                     }
                                                     else if (rewrite)
                                                     {
-                                                        DeleteFileToRecycleBin(result.path);
+                                                        //DeleteFileToRecycleBin(result.path);
                                                         File.WriteAllText(result.path, result.code, Encoding.UTF8);
                                                         instance.InternalData.Path = result.path;
                                                         DuoLog.Information($"Script overwritten at {instance.InternalData.Path}");

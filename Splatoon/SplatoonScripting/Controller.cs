@@ -16,7 +16,7 @@ namespace Splatoon.SplatoonScripting
         internal SplatoonScript Script;
         internal Dictionary<string, Layout> Layouts = new();
         internal Dictionary<string, Element> Elements = new();
-        internal Configuration? Configuration;
+        internal IEzConfig? Configuration;
 
         internal int autoIncrement = 0;
         internal int AutoIncrement => ++autoIncrement;
@@ -26,21 +26,18 @@ namespace Splatoon.SplatoonScripting
             Script = s;
         }
 
-        public T? GetOption<T>(string key)
+        public T GetConfig<T>() where T : IEzConfig, new()
         {
-            this.Configuration ??= EzConfig.LoadConfiguration<Configuration>($"{Script.InternalData.Path}.json", false);
-            if(this.Configuration.Objects.TryGetValue(key, out var o))
-            {
-                return (T)o;
-            }
-            return default;
+            Configuration ??= EzConfig.LoadConfiguration<T>($"{Script.InternalData.Path}.json", false);
+            return (T)Configuration;
         }
 
-        public void SetOption<T>(string key, T? value)
+        public void SaveConfig()
         {
-            this.Configuration ??= EzConfig.LoadConfiguration<Configuration>($"{Script.InternalData.Path}.json", false);
-            this.Configuration.Objects[key] = value;
-            EzConfig.SaveConfiguration(this.Configuration, $"{Script.InternalData.Path}.json", false, false);
+            if (Configuration != null)
+            {
+                EzConfig.SaveConfiguration(Configuration, $"{Script.InternalData.Path}.json", true, false);
+            }
         }
 
         /// <summary>
