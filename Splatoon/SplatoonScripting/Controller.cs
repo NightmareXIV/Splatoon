@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 #nullable enable
 namespace Splatoon.SplatoonScripting
 {
@@ -26,12 +27,20 @@ namespace Splatoon.SplatoonScripting
             Script = s;
         }
 
+        /// <summary>
+        /// Loads if unloaded and returns script configuration file.
+        /// </summary>
+        /// <typeparam name="T">Configuration class, implementing IEzConfig</typeparam>
+        /// <returns>Loaded configuration</returns>
         public T GetConfig<T>() where T : IEzConfig, new()
         {
             Configuration ??= EzConfig.LoadConfiguration<T>($"{Script.InternalData.Path}.json", false);
             return (T)Configuration;
         }
 
+        /// <summary>
+        /// Saves script's configuration, if present.
+        /// </summary>
         public void SaveConfig()
         {
             if (Configuration != null)

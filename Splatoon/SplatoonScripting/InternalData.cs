@@ -17,13 +17,18 @@ namespace Splatoon.SplatoonScripting
 
         internal bool ConfigOpen = false;
 
+        internal SplatoonScript Script;
+
         public InternalData(string path, SplatoonScript instance)
         {
+            Script = instance;
             Path = path;
             Namespace = instance.GetType().Namespace ?? "Default";
             Name = instance.GetType().Name;
             FullName = $"{Namespace}@{Name}";
             PluginLog.Information($"Script {FullName} ready.");
         }
+
+        public bool SettingsPresent => Script.GetType().GetMethod("OnSettingsDraw")!.DeclaringType != typeof(SplatoonScript);
     }
 }

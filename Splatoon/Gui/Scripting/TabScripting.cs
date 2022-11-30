@@ -79,14 +79,24 @@ namespace Splatoon.Gui.Scripting
                         Notify.Error("Error deleting");
                     }
                 }
-                ImGui.SameLine();
-                if (ImGui.Button("Config"))
+                if (x.InternalData.SettingsPresent)
                 {
-                    x.InternalData.ConfigOpen = !x.InternalData.ConfigOpen;
-                }
-                if (x.InternalData.ConfigOpen)
-                {
-                    x.OnSettingsDraw();
+                    ImGui.SameLine();
+                    if (ImGui.Button("Config"))
+                    {
+                        x.InternalData.ConfigOpen = !x.InternalData.ConfigOpen;
+                    }
+                    if (x.InternalData.ConfigOpen)
+                    {
+                        try
+                        {
+                            x.OnSettingsDraw();
+                        }
+                        catch(Exception ex)
+                        {
+                            ex.Log();
+                        }
+                    }
                 }
                 ImGui.PopID();
                 ImGui.Separator();
