@@ -82,6 +82,16 @@ Brands Display - Self only:
 ~Lv2~{"Name":"Brands - Self","Group":"A.S.S Shadowcaster","ZoneLockH":[1075,1076],"ElementsL":[{"Name":"One","type":1,"overlayVOffset":2.0,"overlayFScale":4.0,"thicc":0.0,"overlayText":"1","refActorPlaceholder":["<1>","<2>","<3>","<4>"],"refActorRequireBuff":true,"refActorBuffId":[3268,3272],"refActorComparisonType":5,"refActorType":1},{"Name":"Two","type":1,"overlayVOffset":2.0,"overlayFScale":4.0,"thicc":0.0,"overlayText":"2","refActorPlaceholder":["<1>","<2>","<3>","<4>"],"refActorRequireBuff":true,"refActorBuffId":[3269,3273],"refActorComparisonType":5,"refActorType":1},{"Name":"Three","type":1,"overlayVOffset":2.0,"overlayFScale":4.0,"thicc":0.0,"overlayText":"3","refActorPlaceholder":["<1>","<2>","<3>","<4>"],"refActorRequireBuff":true,"refActorBuffId":[3270,3274],"refActorComparisonType":5,"refActorType":1},{"Name":"Four","type":1,"overlayVOffset":2.0,"overlayFScale":4.0,"thicc":0.0,"overlayText":"4","refActorPlaceholder":["<1>","<2>","<3>","<4>"],"refActorRequireBuff":true,"refActorBuffId":[3271,3275],"refActorComparisonType":5,"refActorType":1}]}
 ```
 
+[International] Cryptic Portal 1 (v 3.0.0.0+ required)
+```
+~Lv2~{"Name":"Cryptic portal 1","Group":"","ZoneLockH":[1075],"DCond":5,"ElementsL":[{"Name":"Right","type":1,"offY":10.0,"radius":12.1,"color":1358954240,"refActorComparisonType":8,"includeRotation":true,"AdditionalRotation":1.5707964,"Filled":true,"refActorObjectEffectData1":64,"refActorObjectEffectData2":128,"refActorObjectEffectMax":12000},{"Name":"Left","type":1,"offY":10.0,"radius":12.1,"color":1358954240,"refActorComparisonType":8,"includeRotation":true,"AdditionalRotation":4.712389,"Filled":true,"refActorObjectEffectData1":256,"refActorObjectEffectData2":512,"refActorObjectEffectMax":12000}],"UseTriggers":true,"Triggers":[{"Duration":60.0}]}
+```
+
+[International] Cryptic Portal 3 (v 3.0.0.0+ required)
+```
+~Lv2~{"Name":"Cryptic portal 3","Group":"","ZoneLockH":[1075],"DCond":5,"ElementsL":[{"Name":"Right","type":3,"refX":10.0,"refY":30.0,"offX":10.0,"offY":-30.0,"radius":5.0,"color":1962147584,"refActorComparisonType":8,"includeRotation":true,"Filled":true,"refActorObjectEffectData1":64,"refActorObjectEffectData2":128,"refActorObjectEffectMax":12000},{"Name":"Left","type":3,"refX":-10.0,"refY":40.0,"offX":-10.0,"offY":-40.0,"radius":5.0,"color":1962930944,"refActorComparisonType":8,"includeRotation":true,"Filled":true,"refActorObjectEffectData1":256,"refActorObjectEffectData2":512,"refActorObjectEffectMax":12000}],"UseTriggers":true,"Triggers":[{"TimeBegin":190.0,"Duration":30.0}]}
+```
+
 # Untested section
 [International] 
 ```
