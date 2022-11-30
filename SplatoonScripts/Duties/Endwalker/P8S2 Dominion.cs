@@ -45,7 +45,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
             if (Stage == 1)
             {
-                var playersSecondTowers = Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(x => x.StatusId == 3372));
+                var playersSecondTowers = Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(x => x.StatusId == 3372 && x.RemainingTime > 6f));
                 if (playersSecondTowers.Count() == 4)
                 {
                     Stage = 2;
