@@ -2,11 +2,13 @@
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Gui;
 using Dalamud.Hooking;
+using Dalamud.Logging;
 using Dalamud.Memory;
 using Dalamud.Plugin;
 using Dalamud.Utility.Signatures;
 using ECommons.Configuration;
 using ECommons.DalamudServices;
+using ECommons.GameFunctions;
 using ECommons.ImGuiMethods;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using ImGuiNET;
@@ -57,7 +59,7 @@ namespace SplatoonScriptsOfficial.Generic
                 else if (this.Controller.GetConfig<Config>().ShowOnOthers)
                 {
                     var emoteName = Svc.Data.GetExcelSheet<Emote>()?.GetRow(emoteId)?.Name;
-                    var target = Svc.Objects.FirstOrDefault(x => x.ObjectId == targetId);
+                    var target = Svc.Objects.FirstOrDefault(x => x.Struct()->GetObjectID() == targetId);
                     Svc.Chat.Print($">> {MemoryHelper.ReadStringNullTerminated((IntPtr)source->Name)} uses {emoteName}" + (target != null ? $" on {target.Name}" : ""));
                 }
             }
