@@ -280,7 +280,7 @@ namespace Splatoon
                             }
                         }
 
-                        if (Svc.Targets.Target != null && !el.refActorComparisonType.EqualsAny(7))
+                        if (Svc.Targets.Target != null && !el.refActorComparisonType.EqualsAny(7, 8))
                         {
                             ImGui.SameLine();
                             if (ImGui.Button("Target".Loc()+"##btarget" + i + k))

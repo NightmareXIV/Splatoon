@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommons.LanguageHelpers;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Splatoon.SplatoonScripting
 {
@@ -21,6 +23,29 @@ namespace Splatoon.SplatoonScripting
             "https://www.github.com/NightmareXIV/",
             "https://raw.githubusercontent.com/NightmareXIV/"
         };
+
+        internal static bool IsUrlTrusted(string url)
+        {
+            return url.StartsWithAny(ScriptingProcessor.TrustedURLs, StringComparison.OrdinalIgnoreCase);
+        }
+
+        internal static void DownloadScript(string url)
+        {
+            Task.Run(delegate
+            {
+                try
+                {
+                    var result = P.HttpClient.GetStringAsync(url).Result;
+                    ScriptingProcessor.CompileAndLoad(result, null);
+                }
+                catch (Exception e)
+                {
+                    e.Log();
+                }
+            });
+
+            Notify.Info("Downloading script from trusted URL...".Loc());
+        }
 
         internal static void ReloadAll()
         {
@@ -54,7 +79,7 @@ namespace Splatoon.SplatoonScripting
                     {
                         Directory.CreateDirectory(dir);
                     }
-                    while (idleCount < 100)
+                    while (idleCount < 10)
                     {
                         if (LoadScriptQueue.TryDequeue(out var result))
                         {

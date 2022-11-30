@@ -1,5 +1,6 @@
 ﻿using ECommons.LanguageHelpers;
 using ECommons.Reflection;
+using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,18 +21,33 @@ namespace Splatoon.Gui
             ImGuiEx.TextWrapped("Import multiple presets with ease by simply copying them. Splatoon will read your clipboard and attempt to import whatever you copy. Your clipboard will be cleared upon enabling.".Loc());
             if (RapidImportEnabled)
             {
-                var text = ImGui.GetClipboardText();
-                if(text != "")
+                try
                 {
-                    if (CGui.ImportFromClipboard())
+                    var text = ImGui.GetClipboardText();
+                    if (text != "")
                     {
-                        TryNotify("Import success".Loc());
+                        if (ScriptingProcessor.IsUrlTrusted(text))
+                        {
+                            TryNotify("Downloading script from trusted URL".Loc());
+                            ScriptingProcessor.DownloadScript(text);
+                        }
+                        else
+                        {
+                            if (CGui.ImportFromClipboard())
+                            {
+                                TryNotify("Import success".Loc());
+                            }
+                            else
+                            {
+                                TryNotify("Import failed".Loc());
+                            }
+                        }
+                        ImGui.SetClipboardText("");
                     }
-                    else
-                    {
-                        TryNotify("Import failed".Loc());
-                    }
-                    ImGui.SetClipboardText("");
+                }
+                catch(Exception e)
+                {
+                    //
                 }
             }
         }

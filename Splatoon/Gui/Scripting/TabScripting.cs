@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
 using ECommons;
+using ECommons.LanguageHelpers;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
@@ -13,30 +14,35 @@ namespace Splatoon.Gui.Scripting
     {
         internal static void Draw()
         {
-            if(ImGui.Button("Rescan directory and reload all scripts"))
+            if (ScriptingProcessor.ThreadIsRunning)
             {
+                ImGuiEx.ImGuiLineCentered("ThreadCompilerRunning", delegate
+                {
+                    ImGuiEx.Text(GradientColor.Get(ImGuiColors.DalamudWhite, ImGuiColors.ParsedPink), "Scripts are being installed, please wait...".Loc());
+                });
+            }
+            ImGuiEx.TextWrapped(ImGuiColors.DPSRed, $"Warning: scripting function is under alpha testing. Changes may come to the scripting system at any moment. Any scripts you write now may require manual updates later. There is no guarantee yet that all currently available methods will be kept. There is no guarantee that scripts which have been made now will keep working through further updates.".Loc());
+            ImGuiEx.TextWrapped(ImGuiColors.DalamudOrange, "Please note that scripts have direct and unrestricted access to your PC and game. Ensure that you know what you're installing.".Loc());
+            if(ImGui.Button("Clear cache, rescan directory and reload all scripts".Loc()))
+            {
+                var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "ScriptCache");
+                foreach(var x in Directory.GetFiles(dir))
+                {
+                    if (x.EndsWith(".bin"))
+                    {
+                        PluginLog.Information($"Deleting {x}");
+                        File.Delete(x);
+                    }
+                }
                 ScriptingProcessor.ReloadAll();
             }
             ImGui.SameLine();
-            if(ImGui.Button("Install from clipboard"))
+            if(ImGui.Button("Install from clipboard (code or trusted URL)".Loc()))
             {
                 var text = ImGui.GetClipboardText();
-                if (text.StartsWithAny(ScriptingProcessor.TrustedURLs, StringComparison.OrdinalIgnoreCase))
+                if (ScriptingProcessor.IsUrlTrusted(text))
                 {
-                    Task.Run(delegate
-                    {
-                        try
-                        {
-                            var result = P.HttpClient.GetStringAsync(text).Result;
-                            ScriptingProcessor.CompileAndLoad(result, null);
-                        }
-                        catch(Exception e)
-                        {
-                            e.Log();
-                        }
-                    });
-                    
-                    Notify.Info("Downloading script from trusted URL...");
+                    ScriptingProcessor.DownloadScript(text);
                 }
                 else 
                 {
@@ -66,8 +72,16 @@ namespace Splatoon.Gui.Scripting
                 ImGuiEx.Tooltip($"{x.InternalData.GUID}");
                 ImGui.SameLine();
                 ImGuiEx.Text(x.IsEnabled?ImGuiColors.ParsedGreen:ImGuiColors.DalamudRed, x.IsEnabled ? "Enabled" : "Disabled");
+                if (x.InternalData.SettingsPresent)
+                {
+                    ImGui.SameLine();
+                    if (ImGui.Button("Config".Loc()))
+                    {
+                        x.InternalData.ConfigOpen = !x.InternalData.ConfigOpen;
+                    }
+                }
                 ImGui.SameLine();
-                if (ImGui.Button("Delete"))
+                if (ImGui.Button("Delete".Loc()) && ImGui.GetIO().KeyCtrl)
                 {
                     if (!x.InternalData.Path.IsNullOrEmpty() && x.InternalData.Path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
                     {
@@ -76,26 +90,19 @@ namespace Splatoon.Gui.Scripting
                     }
                     else
                     {
-                        Notify.Error("Error deleting");
+                        Notify.Error("Error deleting".Loc());
                     }
                 }
-                if (x.InternalData.SettingsPresent)
+                ImGuiEx.Tooltip("Hold CTRL + click".Loc());
+                if (x.InternalData.ConfigOpen)
                 {
-                    ImGui.SameLine();
-                    if (ImGui.Button("Config"))
+                    try
                     {
-                        x.InternalData.ConfigOpen = !x.InternalData.ConfigOpen;
+                        x.OnSettingsDraw();
                     }
-                    if (x.InternalData.ConfigOpen)
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            x.OnSettingsDraw();
-                        }
-                        catch(Exception ex)
-                        {
-                            ex.Log();
-                        }
+                        ex.Log();
                     }
                 }
                 ImGui.PopID();

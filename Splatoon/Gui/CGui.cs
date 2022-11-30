@@ -125,15 +125,20 @@ namespace Splatoon
                             ("General".Loc()+"###tab1", DisplayGeneralSettings, null, true),
                             ("Layouts".Loc(), DislayLayouts, Colors.Green.ToVector4(), true),
                             ("Scripts".Loc(), TabScripting.Draw, Colors.Yellow.ToVector4(), true),
-                            ("Import".Loc(), RapidImport.Draw, null, true),
-                            ("Logger".Loc(), DisplayLogger, null, true),
-                            ("Explorer".Loc(), Explorer.Draw, null, true),
-                            ("Debug".Loc(), DisplayDebug, null, true),
-                            ("Log".Loc(), InternalLog.PrintImgui, null, false),
-                            ("Dynamic".Loc(), DisplayDynamicElements, null, true),
-                            ("Profiling".Loc(), DisplayProfiling, null, true),
-                            ("Contribute".Loc(), Contribute.Draw, ImGuiColors.ParsedGold, true)
-
+                            ("Mass Import".Loc(), RapidImport.Draw, null, true),
+                            ("Tools".Loc(), delegate
+                            {
+                                ImGuiEx.EzTabBar("Tools",
+                                        ("Logger".Loc(), DisplayLogger, null, true),
+                                ("Explorer".Loc(), Explorer.Draw, null, true),
+                                ("Debug".Loc(), DisplayDebug, null, true),
+                                ("Log".Loc(), InternalLog.PrintImgui, null, false),
+                                ("Dynamic".Loc(), DisplayDynamicElements, null, true),
+                                ("Profiling".Loc(), DisplayProfiling, null, true)
+                                );
+                            }, null, true),
+                            ("Contribute".Loc(), Contribute.Draw, ImGuiColors.ParsedGold, true),
+                            ("Contributors".Loc(), TabContributors.Draw, null, true)
                             );
                     }
                 }

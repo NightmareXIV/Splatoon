@@ -1,8 +1,10 @@
 ﻿using Dalamud.Interface.Colors;
 using ECommons.LanguageHelpers;
+using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
 using static Dalamud.Interface.GameFonts.GameFontLayoutPlan;
 using static Splatoon.ConfigGui.CGuiLayouts.LayoutDrawSelector;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Splatoon
 {
@@ -49,17 +51,29 @@ namespace Splatoon
                     }
                     ImGuiEx.Tooltip("Add new layout...".Loc());
                     ImGui.SameLine(0, 1);
-                    if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport))
-                    {
-                        ImportFromClipboard();
-                    }
-                    ImGuiEx.Tooltip("Import from clipboard".Loc());
-                    ImGui.SameLine(0, 1);
                     if(ImGuiEx.IconButton(P.Config.FocusMode? FontAwesomeIcon.SearchMinus: FontAwesomeIcon.SearchPlus))
                     {
                         P.Config.FocusMode = !P.Config.FocusMode;
                     }
                     ImGuiEx.Tooltip("Toggle focus mode.\nFocus mode: when layout is selected, hide all other layouts.".Loc());
+                    ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, Vector2.Zero);
+                    if(ImGui.Button("Import from clipboard", new(ImGui.GetContentRegionAvail().X, ImGui.CalcTextSize("A").Y)))
+                    {
+                        Safe(() =>
+                        {
+                            var text = ImGui.GetClipboardText();
+                            if (ScriptingProcessor.IsUrlTrusted(text))
+                            {
+                                ScriptingProcessor.DownloadScript(text);
+                            }
+                            else
+                            {
+                                ImportFromClipboard();
+                            }
+                        });
+                        
+                    }
+                    ImGui.PopStyleVar();
                 });
                 if(ImGui.BeginPopup("Add layout"))
                 {

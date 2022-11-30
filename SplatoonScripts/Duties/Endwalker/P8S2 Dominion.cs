@@ -1,6 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Utility;
 using ECommons;
 using ECommons.Configuration;
 using ECommons.DalamudServices;
@@ -12,11 +11,8 @@ using ImGuiNET;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SplatoonScriptsOfficial.Duties.Endwalker
 {
@@ -37,7 +33,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             if (Message.Contains("(11402>31193)"))
             {
                 Stage = 1;
-                DuoLog.Information($"Stage 1");
+                DuoLog.Information($"Stage 1: Cast");
             }
         }
         public override void OnUpdate()
@@ -52,11 +48,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 var playersSecondTowers = Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(x => x.StatusId == 3372));
                 if (playersSecondTowers.Count() == 4)
                 {
+                    Stage = 2;
+                    DuoLog.Information($"Stage 2: First towers");
                     FirstPlayers = Svc.Objects.Where(x => x is PlayerCharacter pc && !pc.StatusList.Any(x => x.StatusId == 3372) && IsRoleMatching(pc)).Select(x => x.ObjectId).ToList();
                     SecondPlayers = playersSecondTowers.Where(x => x is PlayerCharacter pc && IsRoleMatching(pc)).Select(x => x.ObjectId).ToList();
                     DuoLog.Information($"First towers: {FirstPlayers.Select(x => x.GetObject()?.Name).Print()}\nSecond towers: {SecondPlayers.Select(x => x.GetObject()?.Name).Print()}");
-                    Stage = 2;
-                    DuoLog.Information($"Stage 2");
                 }
             }
             else if(Stage == 2)
@@ -64,11 +60,10 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 var towers = GetTowers();
                 if(towers.Count() == 4)
                 {
-                    DuoLog.Information("First towers");
+                    Stage = 3;
+                    DuoLog.Information($"Stage 3: Second towers");
                     if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
                     Process(towers.OrderBy(GetAngle).ToArray(), FirstPlayers);
-                    Stage = 3;
-                    DuoLog.Information($"Stage 3");
                 }
                 else if(!towers.Any())
                 {
@@ -80,12 +75,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 var towers = GetTowers();
                 if (towers.Count() == 8)
                 {
-                    DuoLog.Information("Second towers");
+                    Stage = 4;
+                    DuoLog.Information($"Stage 4: Final");
                     if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
                     towers = GetEarliestTowers();
                     Process(towers.OrderBy(GetAngle).ToArray(), SecondPlayers);
-                    Stage = 4;
-                    DuoLog.Information($"Stage 4");
                 }
                 if (!towers.Any())
                 {
@@ -178,7 +172,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         public override void OnSettingsDraw()
         {
-            ImGui.Checkbox("Reverse (DPS left, H+T right)", ref this.Controller.GetConfig<Config>().Reverse);
+            ImGuiEx.TextWrapped("Priority lists. Fill in priority for your role left to right. You may create few lists, one that contains all players in your party will be used.");
             var c = this.Controller.GetConfig<Config>().Priorities;
             int toRem = -1;
             for (int i = 0; i < c.Count; i++)
@@ -186,10 +180,42 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 ImGui.PushID("List" + i);
                 EditList(c[i]);
                 ImGui.SameLine();
-                if(ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.Trash))
+                if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.FastForward))
+                {
+                    var people = GetPriority();
+                    var s = people.Count == 4;
+                    foreach(var x in people)
+                    {
+                        if(Svc.Objects.TryGetFirst(z => z is PlayerCharacter pc && pc.Name.ToString() == x, out var o))
+                        {
+                            if (!IsRoleMatching((PlayerCharacter)o))
+                            {
+                                DuoLog.Warning($"Role mismatch with {o.Name}");
+                                s = false;
+                            }
+                        }
+                        else
+                        {
+                            DuoLog.Warning($"Could not find player {x}");
+                            s = false;
+                        }
+                    }
+                    if (s)
+                    {
+                        DuoLog.Information("Test success!");
+                    }
+                    else
+                    {
+                        DuoLog.Warning("Test failed");
+                    }
+                }
+                ImGuiEx.Tooltip("Check if current party matches this priority list. All players must be within visible range.");
+                ImGui.SameLine();
+                if(ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.Trash) && ImGui.GetIO().KeyCtrl)
                 {
                     toRem = i;
                 }
+                ImGuiEx.Tooltip("Delete list. Hold CTRL+click.");
                 ImGui.Separator();
                 ImGui.PopID();
             }
@@ -197,6 +223,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             {
                 c.RemoveAt(toRem);
             }
+            ImGui.Checkbox("Reverse (DPS left, H+T right)", ref this.Controller.GetConfig<Config>().Reverse);
+            ImGui.SameLine();
             if (ImGui.Button("Add new priority list"))
             {
                 c.Add(new() { "", "", "", "" });
