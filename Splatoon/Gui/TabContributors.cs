@@ -20,7 +20,8 @@ namespace Splatoon.Gui
             ImGuiEx.Text("jojo - presets and presets translation");
             ImGuiEx.Text("FrostEffects - presets"); Link("Carrd", "https://frostffxiv.carrd.co/");
             ImGuiEx.Text("莫灵喵 - presets");
-            ImGuiEx.Text("LAMMY - presets");
+            ImGuiEx.Text("LAMMY - presets"); Link("Github", "https://github.com/LAMMY-33");
+            ImGuiEx.Text($"Ry - presets, battle data");
         }
 
         static void Link(string preview, string Url)

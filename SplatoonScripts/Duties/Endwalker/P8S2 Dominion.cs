@@ -19,6 +19,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
     public class P8S2_Dominion : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1088 };
+        public override Metadata? Metadata => new(1, "NightmareXIV");
         int Stage = 0;
         List<uint> FirstPlayers = new();
         List<uint> SecondPlayers = new();

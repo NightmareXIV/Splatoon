@@ -268,7 +268,7 @@ public unsafe class Splatoon : IDalamudPlugin
         {
             var m = message.Payloads.Where(p => p is ITextProvider)
                     .Cast<ITextProvider>()
-                    .Aggregate(new StringBuilder(), (sb, tp) => sb.Append(tp.Text.RemoveSymbols(InvalidSymbols)), sb => sb.ToString());
+                    .Aggregate(new StringBuilder(), (sb, tp) => sb.Append(tp.Text.RemoveSymbols(InvalidSymbols).Replace("\n", " ")), sb => sb.ToString());
             ChatMessageQueue.Enqueue(m);
             if (P.Config.Logging && !((uint)type).EqualsAny(BlacklistedMessages))
             {
