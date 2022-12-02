@@ -22,6 +22,6 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
 
     IEnumerable<BattleChara> FindTowers()
     {
-        return Svc.Objects.Where(x => x is BattleChara c && c.IsCasting && c.CastActionId == 9951 && c.DataId == 6358).Cast<BattleChara>();
+        return Svc.Objects.Where(x => x is BattleChara c && c.IsCasting && c.CastActionId == 9951).Cast<BattleChara>();
     }
 }

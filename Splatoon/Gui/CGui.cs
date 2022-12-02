@@ -131,6 +131,7 @@ namespace Splatoon
                                 ImGuiEx.EzTabBar("Tools",
                                         ("Logger".Loc(), DisplayLogger, null, true),
                                 ("Explorer".Loc(), Explorer.Draw, null, true),
+                                ("Find".Loc(), TabFind.Draw, null, true),
                                 ("Debug".Loc(), DisplayDebug, null, true),
                                 ("Log".Loc(), InternalLog.PrintImgui, null, false),
                                 ("Dynamic".Loc(), DisplayDynamicElements, null, true),

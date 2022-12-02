@@ -45,7 +45,7 @@ public unsafe class Splatoon : IDalamudPlugin
     internal float CamAngleY;
     internal float CamZoom = 1.5f;
     internal bool prevMouseState = false;
-    internal SearchInfo SFind = null;
+    internal List<SearchInfo> SFind = new();
     internal int CurrentLineSegments;
     internal ConcurrentQueue<System.Action> tickScheduler;
     internal List<DynamicElement> dynamicElements;
@@ -310,9 +310,9 @@ public unsafe class Splatoon : IDalamudPlugin
     internal void TerritoryChangedEvent(object sender, ushort e)
     {
         Phase = 1;
-        if (SFind != null)
+        if (SFind.Count > 0 && !P.Config.NoFindReset)
         {
-            SFind = null;
+            SFind.Clear();
             Notify.Info("Search stopped".Loc());
         }
         for (var i = dynamicElements.Count - 1; i >= 0; i--)
@@ -484,26 +484,29 @@ public unsafe class Splatoon : IDalamudPlugin
                     Profiler.MainTickFind.StartTick();
                 }
 
-                if (SFind != null)
+                if (SFind.Count > 0)
                 {
-                    var col = Environment.TickCount64 % 1000 < 500 ? Colors.Red : Colors.Yellow;
-                    var findEl = new Element(1)
+                    foreach (var obj in SFind)
                     {
-                        thicc = 3f,
-                        radius = 0f,
-                        refActorName = SFind.name,
-                        refActorObjectID = SFind.oid,
-                        refActorComparisonType = SFind.SearchAttribute,
-                        overlayText = "$NAME",
-                        overlayVOffset = 1.7f,
-                        overlayPlaceholders = true,
-                        overlayTextColor = col,
-                        color = col,
-                        includeHitbox = true,
-                        onlyTargetable = !SFind.includeUntargetable,
-                        tether = Config.TetherOnFind,
-                    };
-                    ProcessElement(findEl);
+                        var col = GradientColor.Get(Colors.Red.ToVector4(), Colors.Yellow.ToVector4(), 750);
+                        var findEl = new Element(1)
+                        {
+                            thicc = 3f,
+                            radius = 0f,
+                            refActorName = obj.name,
+                            refActorObjectID = obj.oid,
+                            refActorComparisonType = obj.SearchAttribute,
+                            overlayText = "$NAME",
+                            overlayVOffset = 1.7f,
+                            overlayPlaceholders = true,
+                            overlayTextColor = col.ToUint(),
+                            color = col.ToUint(),
+                            includeHitbox = true,
+                            onlyTargetable = !obj.includeUntargetable,
+                            tether = Config.TetherOnFind,
+                        };
+                        ProcessElement(findEl);
+                    }
                 }
 
                 ProcessS2W();

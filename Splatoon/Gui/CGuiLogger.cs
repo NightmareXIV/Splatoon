@@ -76,12 +76,13 @@ namespace Splatoon
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Find".Loc()+"##"+i))
                 {
-                    p.SFind = new()
+                    p.SFind.Clear();
+                    p.SFind.Add(new()
                     {
                         includeUntargetable = true,
                         oid = x.Key.ObjectID,
                         SearchAttribute = 2
-                    };
+                    });
                 }
                 ImGui.TableNextColumn();
                 ImGuiEx.TextCopy(did);

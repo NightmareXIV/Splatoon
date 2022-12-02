@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game.Command;
 using ECommons.GameFunctions;
+using Splatoon.Structures;
 
 namespace Splatoon.Modules;
 
@@ -91,14 +92,14 @@ class Commands : IDisposable
             "/splatoon enable <PresetName> → enable specified preset"
         });
 
-        Svc.Commands.AddHandler("/sf", new CommandInfo(delegate (string command, string arguments)
+        Svc.Commands.AddHandler("/sf", new CommandInfo(delegate (string command, string args)
         {
-            if (arguments == "")
+            if (args == "")
             {
-                if (p.SFind != null)
+                if (p.SFind.Count > 0)
                 {
                     Notify.Info("Search stopped");
-                    p.SFind = null;
+                    p.SFind.Clear();
                 }
                 else
                 {
@@ -107,16 +108,29 @@ class Commands : IDisposable
             }
             else
             {
-                p.SFind = new()
+                if (args.StartsWith("+"))
                 {
-                    name = arguments.Trim(),
-                    includeUntargetable = arguments.StartsWith("!!")
-                };
-                if (p.SFind.includeUntargetable)
-                {
-                    p.SFind.name = arguments[2..];
+                    args = args[1..];
                 }
-                Notify.Success("Searching for: " + p.SFind.name + (p.SFind.includeUntargetable ? " (+untargetable)" : ""));
+                else
+                {
+                    p.SFind.Clear();
+                }
+                var list = args.Split(",");
+                foreach (var arguments in list)
+                {
+                    var e = new SearchInfo()
+                    {
+                        name = arguments.Trim(),
+                        includeUntargetable = arguments.StartsWith("!!")
+                    };
+                    p.SFind.Add(e);
+                    if (e.includeUntargetable)
+                    {
+                        e.name = arguments[2..];
+                    }
+                    Notify.Success("Searching for: " + e.name + (e.includeUntargetable ? " (+untargetable)" : ""));
+                }
             }
         })
         {

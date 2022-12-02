@@ -49,6 +49,8 @@ class Configuration : IPluginConfiguration
     public bool Logging = false;
 
     public string PluginLanguage = null;
+    public bool NoFindReset = false;
+    public bool NoCircleFix = false;
 
     public HashSet<string> DisabledScripts = new();
 
