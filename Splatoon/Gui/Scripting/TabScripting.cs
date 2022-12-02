@@ -68,7 +68,7 @@ namespace Splatoon.Gui.Scripting
                     ScriptingProcessor.Scripts.ForEach(x => x.UpdateState());
                 }
                 ImGui.SameLine();
-                ImGuiEx.Text($"{x.InternalData.Namespace}/{x.InternalData.Name}");
+                ImGuiEx.Text($"{x.InternalData.Namespace}@{x.InternalData.Name} v{x.Metadata?.Version ?? 0}");
                 ImGuiEx.Tooltip($"{x.InternalData.GUID}");
                 ImGui.SameLine();
                 ImGuiEx.Text(x.IsEnabled?ImGuiColors.ParsedGreen:ImGuiColors.DalamudRed, x.IsEnabled ? "Enabled" : "Disabled");

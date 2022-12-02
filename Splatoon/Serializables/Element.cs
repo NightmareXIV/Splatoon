@@ -95,6 +95,8 @@ public class Element
     [DefaultValue(false)] public bool refActorRequireAllBuffs = false;
     [DefaultValue(false)] public bool refActorRequireBuffsInvert = false;
     [DefaultValue(false)] public bool refActorUseBuffTime = false;
+    [DefaultValue(false)] public bool refActorUseBuffParam = false;
+    [DefaultValue(0)] public int refActorBuffParam = 0;
     [DefaultValue(0f)] public float refActorBuffTimeMin = 0f;
     [DefaultValue(0f)] public float refActorBuffTimeMax = 0f;
     [DefaultValue(false)] public bool refActorObjectLife = false;
@@ -240,6 +242,11 @@ public class Element
     public bool ShouldSerializerefActorBuffId()
     {
         return refActorRequireBuff && refActorBuffId.Count > 0;
+    }
+
+    public bool ShouldSerializerefActorBuffParam()
+    {
+        return refActorRequireBuff && refActorUseBuffParam;
     }
 
     public bool ShouldSerializerefActorName()

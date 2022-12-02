@@ -103,19 +103,16 @@ namespace Splatoon
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             ImGui.DragInt("##circlesmoothness", ref p.Config.segments, 0.1f, 10, 150);
-            ImGui.SameLine();
-            ImGuiEx.Text("(?)");
-            if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Higher - smoother circle, higher cpu usage".Loc());
+            ImGuiComponents.HelpMarker("Higher - smoother circle, higher cpu usage".Loc());
+
+            ImGui.Checkbox("Disable circle fix while enabling drawing circles above your point of view", ref P.Config.NoCircleFix);
+            ImGuiComponents.HelpMarker("Do not enable it unless you actually need it. Large circles may be rendered incorrectly under certain camera angle with this option enabled.");
 
             SImGuiEx.SizedText("Drawing distance:".Loc(), WidthLayout);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(100f);
             ImGui.DragFloat("##maxdistance", ref p.Config.maxdistance, 0.25f, 10f, 200f);
-            ImGui.SameLine();
-            ImGuiEx.Text("(?)");
-            if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Only try to draw objects that are not further away from you than this value".Loc());
+            ImGuiComponents.HelpMarker("Only try to draw objects that are not further away from you than this value".Loc());
 
             SImGuiEx.SizedText("Line segments:".Loc(), WidthLayout);
             ImGui.SameLine();
@@ -132,20 +129,6 @@ namespace Splatoon
                 ImGuiEx.TextWrapped(Environment.TickCount % 1000 > 500 ? ImGuiColors.DalamudRed : ImGuiColors.DalamudYellow,
                     "Your line segment setting IS EXTREMELY HIGH AND MAY SIGNIFICANTLY IMPACT PERFORMANCE.\nIf you really have to set it to this value to make it work, please contact developer and provide details.".Loc());
             }
-            /*ImGuiEx.SizedText("Draw only when Y camera rotation is lower than:", WidthLayout * 2);
-            ImGui.SameLine();
-            ImGui.SetNextItemWidth(150f);
-            ImGui.DragFloat("##camymax", ref p.Config.maxcamY, 0.005f, -1.48353f, 0.78540f, p.Config.maxcamY.ToString("0.#####"));
-            ImGui.SameLine();
-            if (ImGui.Button("Current: " + p.CamAngleY))
-            {
-                p.Config.maxcamY = p.CamAngleY;
-            }
-            ImGui.SameLine();
-            if (ImGui.Button("Default"))
-            {
-                p.Config.maxcamY = 0.05f;
-            }*/
             ImGui.Separator();
             ImGuiEx.Text("Fill settings:".Loc());
             ImGui.SameLine();

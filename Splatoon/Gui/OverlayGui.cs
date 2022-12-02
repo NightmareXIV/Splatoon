@@ -228,7 +228,7 @@ unsafe class OverlayGui : IDisposable
                 ),
                 out Vector2 pos)
                 || visible;
-            if (pos.Y > refpos.Y) elements[i] = new Vector2(pos.X, pos.Y);
+            if (pos.Y > refpos.Y || P.Config.NoCircleFix) elements[i] = new Vector2(pos.X, pos.Y);
         }
         if (visible)
         {
