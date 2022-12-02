@@ -420,6 +420,15 @@ namespace Splatoon
                         }
                         SImGuiEx.SizedText("", WidthElement);
                         ImGui.SameLine();
+                        ImGui.Checkbox("Check for status param".Loc(), ref el.refActorUseBuffParam);
+                        if (el.refActorUseBuffParam)
+                        {
+                            ImGui.SameLine();
+                            ImGui.SetNextItemWidth(150f);
+                            ImGui.InputInt("##btime1", ref el.refActorBuffParam);
+                        }
+                        SImGuiEx.SizedText("", WidthElement);
+                        ImGui.SameLine();
                         ImGui.Checkbox((el.refActorRequireBuffsInvert ? "Require ANY status to be missing".Loc()+"##" : "Require ALL listed statuses to be present".Loc()+"##") + i + k, ref el.refActorRequireAllBuffs);
                         ImGui.SameLine();
                         ImGui.Checkbox("Invert behavior".Loc()+"##" + i + k, ref el.refActorRequireBuffsInvert);
