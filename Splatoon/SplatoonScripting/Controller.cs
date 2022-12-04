@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+﻿using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using ECommons.Configuration;
 using ECommons.GameFunctions;
 using System;
@@ -26,6 +27,21 @@ namespace Splatoon.SplatoonScripting
         {
             Script = s;
         }
+
+        /// <summary>
+        /// Indicates whether player is in combat.
+        /// </summary>
+        public bool InCombat => Svc.Condition[ConditionFlag.InCombat];
+
+        /// <summary>
+        /// Amount of seconds that have passed since combat start. Returns -1 if not in combat.
+        /// </summary>
+        public float CombatSeconds => InCombat ? (float)CombatMiliseconds / 1000f : -1;
+
+        /// <summary>
+        /// Amount of miliseconds that have passed since combat start. Returns -1 if not in combat.
+        /// </summary>
+        public float CombatMiliseconds => InCombat? Environment.TickCount64 - P.CombatStarted : -1;
 
         /// <summary>
         /// Loads if unloaded and returns script configuration file.
@@ -211,7 +227,7 @@ namespace Splatoon.SplatoonScripting
         /// Retrieve valid and visible party members. Non cross-world parties only. Duty recorder supported.
         /// </summary>
         /// <returns>Enumberator of PlayerCharacter objects.</returns>
-        public static IEnumerator<PlayerCharacter> GetPartyMembers()
+        public IEnumerator<PlayerCharacter> GetPartyMembers()
         {
             return FakeParty.Get();
         }
