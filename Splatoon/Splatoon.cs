@@ -522,8 +522,8 @@ public unsafe class Splatoon : IDalamudPlugin
                     ProcessLayout(i);
                 }
 
-                ScriptingProcessor.Scripts.ForEach(x => x.Controller.Layouts.Values.Each(ProcessLayout));
-                ScriptingProcessor.Scripts.ForEach(x => x.Controller.Elements.Values.Each(x => ProcessElement(x)));
+                ScriptingProcessor.Scripts.ForEach(x => { if (x.IsEnabled) x.Controller.Layouts.Values.Each(ProcessLayout); });
+                ScriptingProcessor.Scripts.ForEach(x => { if (x.IsEnabled) x.Controller.Elements.Values.Each(x => ProcessElement(x)); });
                 foreach (var e in injectedElements)
                 {
                     ProcessElement(e);

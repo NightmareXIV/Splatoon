@@ -42,5 +42,29 @@ namespace Splatoon.SplatoonScripting
         {
             return chara.Struct()->StatusEffectVFXId;
         }
+
+        /// <summary>
+        /// Sets reference position for Element from Vector3, accounting for Y and Z swap.
+        /// </summary>
+        /// <param name="e">Element to set position of</param>
+        /// <param name="Position">Position</param>
+        public static void SetRefPosition(this Element e, Vector3 Position)
+        {
+            e.refX = Position.X;
+            e.refY = Position.Z;
+            e.refZ = Position.Y;
+        }
+
+        /// <summary>
+        /// Sets offset position for Element from Vector3, accounting for Y and Z swap.
+        /// </summary>
+        /// <param name="e">Element to set position of</param>
+        /// <param name="Position">Position</param>
+        public static void SetOffPosition(this Element e, Vector3 Position)
+        {
+            e.offX = Position.X;
+            e.offY = Position.Z;
+            e.offZ = Position.Y;
+        }
     }
 }

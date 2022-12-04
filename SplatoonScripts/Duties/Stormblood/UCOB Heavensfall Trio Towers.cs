@@ -1,9 +1,9 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Logging;
 using ECommons;
 using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
+using ECommons.ImGuiMethods;
 using ECommons.MathHelpers;
 using ImGuiNET;
 using Splatoon;
@@ -22,7 +22,7 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
 {
     public override HashSet<uint> ValidTerritories => new() { 733 };
 
-    public override Metadata? Metadata => new(1, "NightmareXIV");
+    public override Metadata? Metadata => new(2, "NightmareXIV");
 
     public override void OnSetup()
     {
@@ -35,18 +35,17 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
     public override void OnUpdate()
     {
         var towers = FindTowers();
-        if (towers.Any() && FindNael().NotNull(out var nael))
+        if (towers.Count() == 8 && FindNael().NotNull(out var nael))
         {
-            var zeroAngle = MathHelper.GetRelativeAngle(Vector2.Zero, nael.Position.ToVector2());
+            var zeroAngle = (int)(MathHelper.GetRelativeAngle(Vector2.Zero, nael.Position.ToVector2()) - (int)this.Controller.GetConfig<Config>().NaelTowerPos + 360) % 360;
             var i = 0;
             foreach(var x in towers.OrderBy(z => (int)(MathHelper.GetRelativeAngle(Vector2.Zero, z.Position.ToVector2()) - zeroAngle + 360) % 360 ))
             {
                 if(this.Controller.TryGetElementByName($"tower{i}", out var e))
                 {
                     SetPos(e, x.Position);
-                    e.overlayText = $"Tower {i + 1}";
-                    i++;
-                    if(i == this.Controller.GetConfig<Config>().TowerNum)
+                    e.overlayText = $"Tower {(TowerPosition)i}";
+                    if(i == (int)this.Controller.GetConfig<Config>().TowerNum)
                     {
                         e.Enabled = true;
                         e.tether = true;
@@ -65,17 +64,28 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
                             e.Enabled = false;
                         }
                     }
+                    i++;
                 }
             }
         }
         else
         {
-            for (var i = 0; i < 8; i++)
+            DisableAllElements();
+        }
+    }
+
+    public override void OnDisable()
+    {
+        DisableAllElements();
+    }
+
+    void DisableAllElements()
+    {
+        for (var i = 0; i < 8; i++)
+        {
+            if (this.Controller.TryGetElementByName($"tower{i}", out var e))
             {
-                if(this.Controller.TryGetElementByName($"tower{i}", out var e))
-                {
-                    e.Enabled = false;
-                }
+                e.Enabled = false;
             }
         }
     }
@@ -100,13 +110,26 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
     public override void OnSettingsDraw()
     {
         ImGui.SetNextItemWidth(100f);
-        ImGui.InputInt("Your designated tower", ref this.Controller.GetConfig<Config>().TowerNum.ValidateRange(1, 8));
+        ImGuiEx.EnumCombo("Your designated tower", ref this.Controller.GetConfig<Config>().TowerNum);
+        ImGui.SetNextItemWidth(100f);
+        ImGuiEx.EnumCombo("Tower directly at Nael", ref this.Controller.GetConfig<Config>().NaelTowerPos);
         ImGui.Checkbox("Display all towers", ref this.Controller.GetConfig<Config>().ShowAll);
     }
 
     public class Config : IEzConfig
     {
-        public int TowerNum = 1;
+        public TowerPosition TowerNum = TowerPosition.Right_1;
         public bool ShowAll = false;
+        public NaelTower NaelTowerPos = NaelTower.Right_1;
+    }
+
+    public enum NaelTower
+    {
+        Left_1 = -1, Right_1 = 1
+    }
+
+    public enum TowerPosition : int
+    {
+        Right_1 = 0, Right_2 = 1, Right_3 = 2, Right_4 = 3, Left_1 = 7, Left_2 = 6, Left_3 = 5, Left_4 = 4
     }
 }
