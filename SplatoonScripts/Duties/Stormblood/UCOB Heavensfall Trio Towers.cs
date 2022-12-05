@@ -21,7 +21,7 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
 {
     public override HashSet<uint> ValidTerritories => new() { 733 };
 
-    public override Metadata? Metadata => new(3, "NightmareXIV");
+    public override Metadata? Metadata => new(4, "NightmareXIV");
 
     Config Conf => this.Controller.GetConfig<Config>();
 
@@ -71,22 +71,12 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
         }
         else
         {
-            DisableAllElements();
-        }
-    }
-
-    public override void OnDisable()
-    {
-        DisableAllElements();
-    }
-
-    void DisableAllElements()
-    {
-        for (var i = 0; i < 8; i++)
-        {
-            if (this.Controller.TryGetElementByName($"tower{i}", out var e))
+            for (var i = 0; i < 8; i++)
             {
-                e.Enabled = false;
+                if (this.Controller.TryGetElementByName($"tower{i}", out var e))
+                {
+                    e.Enabled = false;
+                }
             }
         }
     }

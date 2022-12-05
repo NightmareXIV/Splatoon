@@ -56,26 +56,26 @@ namespace Splatoon
                         P.Config.FocusMode = !P.Config.FocusMode;
                     }
                     ImGuiEx.Tooltip("Toggle focus mode.\nFocus mode: when layout is selected, hide all other layouts.".Loc());
-                    ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, Vector2.Zero);
-                    if(ImGui.Button("Import from clipboard", new(ImGui.GetContentRegionAvail().X, ImGui.CalcTextSize("A").Y)))
-                    {
-                        Safe(() =>
-                        {
-                            var text = ImGui.GetClipboardText();
-                            if (ScriptingProcessor.IsUrlTrusted(text))
-                            {
-                                ScriptingProcessor.DownloadScript(text);
-                            }
-                            else
-                            {
-                                ImportFromClipboard();
-                            }
-                        });
-                        
-                    }
-                    ImGui.PopStyleVar();
                 });
-                if(ImGui.BeginPopup("Add layout"))
+                ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, Vector2.Zero);
+                if (ImGui.Button("Import from clipboard", new(ImGui.GetContentRegionAvail().X, ImGui.CalcTextSize("A").Y)))
+                {
+                    Safe(() =>
+                    {
+                        var text = ImGui.GetClipboardText();
+                        if (ScriptingProcessor.IsUrlTrusted(text))
+                        {
+                            ScriptingProcessor.DownloadScript(text);
+                        }
+                        else
+                        {
+                            ImportFromClipboard();
+                        }
+                    });
+
+                }
+                ImGui.PopStyleVar();
+                if (ImGui.BeginPopup("Add layout"))
                 {
                     ImGui.InputTextWithHint("", "Layout name".Loc(), ref NewLayoytName, 100);
                     ImGui.SameLine();
