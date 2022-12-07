@@ -1,13 +1,8 @@
-﻿using Dalamud;
-using ECommons;
+﻿using ECommons;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
-using ECommons.Reflection;
 using Splatoon.Memory;
-using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
-using System.Reflection;
-using System.Runtime.Loader;
 
 namespace Splatoon;
 

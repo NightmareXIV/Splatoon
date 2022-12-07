@@ -1,22 +1,13 @@
-﻿using Dalamud.Game;
-using ECommons.LanguageHelpers;
-using System;
-using System.Collections.Generic;
+﻿using ECommons.LanguageHelpers;
 using System.Collections.Immutable;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Splatoon.SplatoonScripting;
 
 internal static class ScriptingProcessor
 {
-    internal static List<SplatoonScript> Scripts = new();
+    internal static ImmutableList<SplatoonScript> Scripts = ImmutableList<SplatoonScript>.Empty;
     internal static ConcurrentQueue<(string code, string path)> LoadScriptQueue = new();
     internal static volatile bool ThreadIsRunning = false;
     internal readonly static string[] TrustedURLs = new string[]
@@ -47,7 +38,7 @@ internal static class ScriptingProcessor
                     var data = line.Split(",");
                     if (data.Length == 2 && int.TryParse(data[1], out var ver))
                     {
-                        Blacklist.Add(new(data[0], ver));
+                        Blacklist = Blacklist.Add(new(data[0], ver));
                         PluginLog.Debug($"Found new valid blacklist data: {data[0]} v{ver}");
                     }
                     else
@@ -69,7 +60,7 @@ internal static class ScriptingProcessor
                     x.InternalData.Allowed = true;
                     if (ScriptingProcessor.Blacklist.Any(z => z.FullName == x.InternalData.FullName && z.Version >= (x.Metadata?.Version ?? 0) ))
                     {
-                        PluginLog.Information($"Script {x.InternalData.FullName} is blacklisted and will not be loaded");
+                        PluginLog.Information($"Script {x.InternalData.FullName} is blacklisted and will not be enabled");
                         x.InternalData.Blacklisted = true;
                     }
                     x.UpdateState();
@@ -158,7 +149,7 @@ internal static class ScriptingProcessor
         }
         UpdateCompleted = false;
         Scripts.ForEach(x => x.Disable());
-        Scripts.Clear();
+        Scripts = ImmutableList<SplatoonScript>.Empty;
         var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts");
         if (!Directory.Exists(dir))
         {
@@ -232,10 +223,10 @@ internal static class ScriptingProcessor
                                                     DuoLog.Information($"Script {instance.InternalData.FullName} already loaded, replacing.");
                                                     result.path = loadedScript.InternalData.Path;
                                                     loadedScript.Disable();
-                                                    ScriptingProcessor.Scripts.RemoveAll(x => ReferenceEquals(loadedScript, x));
+                                                    ScriptingProcessor.Scripts = ScriptingProcessor.Scripts.RemoveAll(x => ReferenceEquals(loadedScript, x));
                                                     rewrite = true;
                                                 }
-                                                Scripts.Add(instance);
+                                                Scripts = Scripts.Add(instance);
                                                 if (result.path == null)
                                                 {
                                                     var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts", instance.InternalData.Namespace);
@@ -480,6 +471,6 @@ internal static class ScriptingProcessor
         {
             Scripts[i].Disable();
         }
-        Scripts.Clear();
+        Scripts = ImmutableList<SplatoonScript>.Empty;
     }
 }

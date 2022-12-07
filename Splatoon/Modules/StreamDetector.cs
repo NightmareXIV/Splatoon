@@ -1,6 +1,5 @@
 ﻿using Dalamud.Interface.Colors;
 using ECommons.LanguageHelpers;
-using System;
 using System.Diagnostics;
 using System.Threading;
 

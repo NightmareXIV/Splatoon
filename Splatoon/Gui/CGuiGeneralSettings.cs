@@ -1,5 +1,4 @@
-﻿using Dalamud;
-using Dalamud.Interface.Colors;
+﻿using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using ECommons.LanguageHelpers;
 using Splatoon.Modules;

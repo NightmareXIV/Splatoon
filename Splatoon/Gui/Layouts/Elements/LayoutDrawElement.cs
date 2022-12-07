@@ -2,7 +2,6 @@
 using Dalamud.Interface.Components;
 using ECommons.GameFunctions;
 using ECommons.LanguageHelpers;
-using FFXIVClientStructs.Attributes;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 using Splatoon.Utils;

@@ -2,9 +2,7 @@
 using ECommons.LanguageHelpers;
 using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
-using static Dalamud.Interface.GameFonts.GameFontLayoutPlan;
 using static Splatoon.ConfigGui.CGuiLayouts.LayoutDrawSelector;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Splatoon;
 

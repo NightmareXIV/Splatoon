@@ -1,6 +1,4 @@
-﻿using Dalamud.Interface.Colors;
-using ECommons.LanguageHelpers;
-using System.Diagnostics;
+﻿using ECommons.LanguageHelpers;
 
 namespace Splatoon.Gui;
 

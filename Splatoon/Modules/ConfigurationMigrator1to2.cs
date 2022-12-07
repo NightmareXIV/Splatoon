@@ -1,5 +1,4 @@
-﻿using ECommons;
-#pragma warning disable CS0612
+﻿#pragma warning disable CS0612
 
 namespace Splatoon.Modules;
 

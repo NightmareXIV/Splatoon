@@ -1,11 +1,5 @@
-﻿using Dalamud.Game.ClientState.Objects;
-using ECommons.GameFunctions;
-using System;
-using System.Collections.Generic;
+﻿using ECommons.GameFunctions;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 #nullable enable
 namespace Splatoon.SplatoonScripting;
 

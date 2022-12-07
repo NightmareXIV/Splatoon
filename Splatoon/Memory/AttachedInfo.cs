@@ -1,12 +1,8 @@
-﻿using Dalamud.Game.Network;
-using Dalamud.Hooking;
+﻿using Dalamud.Hooking;
 using ECommons.GameFunctions;
 using Reloaded.Hooks.Definitions.X64;
 using Splatoon.Modules;
 using Splatoon.Structures;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
 
 namespace Splatoon.Memory;
 

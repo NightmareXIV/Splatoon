@@ -3,11 +3,6 @@ using Dalamud.Memory;
 using Dalamud.Utility.Signatures;
 using Splatoon.Modules;
 using Splatoon.SplatoonScripting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 
 namespace Splatoon.Memory;

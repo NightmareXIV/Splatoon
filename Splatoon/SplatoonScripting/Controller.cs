@@ -2,14 +2,8 @@
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using ECommons.Configuration;
 using ECommons.GameFunctions;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 #nullable enable
 namespace Splatoon.SplatoonScripting;
 

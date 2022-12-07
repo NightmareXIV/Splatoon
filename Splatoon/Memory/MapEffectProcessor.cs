@@ -1,13 +1,7 @@
-﻿using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Hooking;
+﻿using Dalamud.Hooking;
 using Dalamud.Utility.Signatures;
 using Splatoon.Modules;
 using Splatoon.SplatoonScripting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Splatoon.Memory;
 

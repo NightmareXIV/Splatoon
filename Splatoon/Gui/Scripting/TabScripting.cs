@@ -3,12 +3,6 @@ using Dalamud.Interface.Components;
 using ECommons;
 using ECommons.LanguageHelpers;
 using Splatoon.SplatoonScripting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Splatoon.Gui.Scripting;
 
@@ -130,6 +124,7 @@ internal static class TabScripting
                     x.UpdateState();
                 }
                 ImGuiEx.Tooltip("Forcefully allow this script to be enabled. Consequences of this action will be unpredictable.");
+                ImGui.SameLine();
             }
 
             var e = P.Config.DisabledScripts.Contains(x.InternalData.FullName);
@@ -160,9 +155,9 @@ internal static class TabScripting
                     x.InternalData.ConfigOpen = !x.InternalData.ConfigOpen;
                 }
                 ImGuiEx.Tooltip("Open script's settings".Loc());
+                ImGui.SameLine();
             }
 
-            ImGui.SameLine();
 
             if (ImGuiEx.IconButton(FontAwesomeIcon.Trash) && ImGui.GetIO().KeyCtrl)
             {
@@ -182,7 +177,7 @@ internal static class TabScripting
         if(del != -1)
         {
             ScriptingProcessor.Scripts[del].Disable();
-            ScriptingProcessor.Scripts.RemoveAt(del);
+            ScriptingProcessor.Scripts = ScriptingProcessor.Scripts.RemoveAt(del);
         }
         ImGui.EndTable();
 

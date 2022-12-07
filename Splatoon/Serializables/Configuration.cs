@@ -1,5 +1,4 @@
-﻿using Dalamud;
-using Dalamud.Configuration;
+﻿using Dalamud.Configuration;
 using Dalamud.Interface.Internal.Notifications;
 using Splatoon.Gui;
 using Splatoon.SplatoonScripting;

@@ -1,12 +1,6 @@
 ﻿using Dalamud.Hooking;
 using Dalamud.Utility.Signatures;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Splatoon.SplatoonScripting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Character = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 namespace Splatoon.Memory;
