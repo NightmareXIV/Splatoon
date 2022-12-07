@@ -1,10 +1,12 @@
 ﻿using Dalamud.Interface.Colors;
+using Dalamud.Interface.Components;
 using ECommons;
 using ECommons.LanguageHelpers;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,38 +52,96 @@ internal static class TabScripting
             }
         }
         var del = -1;
-        for(var i = 0;i<ScriptingProcessor.Scripts.Count;i++)
+        ImGui.BeginTable("##scriptsTable", 3, ImGuiTableFlags.BordersInner | ImGuiTableFlags.BordersOuter | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
+        ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthStretch);
+        ImGui.TableSetupColumn("State");
+        ImGui.TableSetupColumn("Controls");
+        ImGui.TableHeadersRow();
+
+        var openConfig = ScriptingProcessor.Scripts.FirstOrDefault(x => x.InternalData.ConfigOpen);
+
+        for (var i = 0;i<ScriptingProcessor.Scripts.Count;i++)
         {
             var x = ScriptingProcessor.Scripts[i];
+            if (openConfig != null && !ReferenceEquals(x, openConfig)) continue;
+            ImGui.TableNextRow();
+            ImGui.TableNextColumn();
             ImGui.PushID(x.InternalData.GUID);
-            var e = !P.Config.DisabledScripts.Contains(x.InternalData.FullName);
-            if(ImGui.Checkbox($"##enable", ref e))
+            ImGuiEx.TextV($"{x.InternalData.Name.Replace("_", " ")}");
+            if(x.Metadata?.Description == null)
             {
-                if (!e)
+                ImGuiEx.Tooltip($"{x.InternalData.Namespace}");
+            }
+            else
+            {
+                ImGuiEx.Tooltip($"{x.InternalData.Namespace}\n{x.Metadata.Description}");
+            }
+            if (x.Metadata?.Version != null)
+            {
+                ImGui.SameLine();
+                ImGuiEx.Text(ImGuiColors.DalamudGrey2, $"v{x.Metadata.Version}");
+            }
+            if (x.Metadata?.Author != null)
+            {
+                ImGui.SameLine();
+                ImGuiEx.Text(ImGuiColors.DalamudGrey2, $"by {x.Metadata.Author}");
+            }
+
+            ImGui.TableNextColumn();
+
+            if (x.IsDisabledByUser)
+            {
+                ImGuiEx.TextV(ImGuiColors.DalamudRed, "Disabled".Loc());
+                ImGuiComponents.HelpMarker("This script has been disabled by you.".Loc());
+            }
+            else
+            {
+                if (x.IsEnabled)
                 {
-                    P.Config.DisabledScripts.Add(x.InternalData.FullName);
+                    ImGuiEx.TextV(ImGuiColors.ParsedGreen, "Active".Loc());
+                    ImGuiComponents.HelpMarker("This script is currently active and being executed.".Loc());
                 }
                 else
                 {
+                    ImGuiEx.TextV(ImGuiColors.DalamudOrange, "Inactive".Loc());
+                    ImGuiComponents.HelpMarker("This script is currently inactive because you're not in a zone for which it was designed.".Loc());
+                }
+            }
+            ImGui.TableNextColumn();
+
+            var e = P.Config.DisabledScripts.Contains(x.InternalData.FullName);
+            if (ImGuiEx.IconButton(e?FontAwesomeIcon.PlayCircle : FontAwesomeIcon.PauseCircle))
+            {
+                if (e)
+                {
                     P.Config.DisabledScripts.Remove(x.InternalData.FullName);
+                }
+                else
+                {
+                    P.Config.DisabledScripts.Add(x.InternalData.FullName);
                 }
                 ScriptingProcessor.Scripts.ForEach(x => x.UpdateState());
             }
+            ImGuiEx.Tooltip(e?"Enable script".Loc() : "Disable script".Loc());
+
             ImGui.SameLine();
-            ImGuiEx.Text($"{x.InternalData.Namespace}@{x.InternalData.Name} v{x.Metadata?.Version ?? 0}");
-            ImGuiEx.Tooltip($"{x.InternalData.GUID}");
-            ImGui.SameLine();
-            ImGuiEx.Text(x.IsEnabled?ImGuiColors.ParsedGreen:ImGuiColors.DalamudRed, x.IsEnabled ? "Enabled" : "Disabled");
+
             if (x.InternalData.SettingsPresent)
             {
-                ImGui.SameLine();
-                if (ImGui.Button("Config".Loc()))
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Cog))
                 {
+                    if (x.InternalData.ConfigOpen)
+                    {
+                        openConfig.Controller.SaveConfig();
+                    }
                     x.InternalData.ConfigOpen = !x.InternalData.ConfigOpen;
                 }
+                ImGuiEx.Tooltip("Open script's settings".Loc());
             }
+
             ImGui.SameLine();
-            if (ImGui.Button("Delete".Loc()) && ImGui.GetIO().KeyCtrl)
+
+            if (ImGuiEx.IconButton(FontAwesomeIcon.Trash) && ImGui.GetIO().KeyCtrl)
             {
                 if (!x.InternalData.Path.IsNullOrEmpty() && x.InternalData.Path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
                 {
@@ -93,25 +153,39 @@ internal static class TabScripting
                     Notify.Error("Error deleting".Loc());
                 }
             }
-            ImGuiEx.Tooltip("Hold CTRL + click".Loc());
-            if (x.InternalData.ConfigOpen)
-            {
-                try
-                {
-                    x.OnSettingsDraw();
-                }
-                catch (Exception ex)
-                {
-                    ex.Log();
-                }
-            }
+            ImGuiEx.Tooltip("Delete script. Hold CTRL + click".Loc());
             ImGui.PopID();
-            ImGui.Separator();
         }
         if(del != -1)
         {
             ScriptingProcessor.Scripts[del].Disable();
             ScriptingProcessor.Scripts.RemoveAt(del);
+        }
+        ImGui.EndTable();
+
+        if (openConfig != null)
+        {
+            ImGuiEx.ImGuiLineCentered("ScriptConfigTitle", delegate
+            {
+                ImGuiEx.Text(ImGuiColors.DalamudYellow, $"{openConfig.InternalData.FullName} configuration");
+            });
+            ImGui.Separator();
+            try
+            {
+                openConfig.OnSettingsDraw();
+            }
+            catch (Exception ex)
+            {
+                ex.Log();
+            }
+            ImGuiEx.ImGuiLineCentered("ScriptConfig", delegate
+            {
+                if (ImGui.Button("Close and save configuration"))
+                {
+                    openConfig.InternalData.ConfigOpen = false;
+                    openConfig.Controller.SaveConfig();
+                }
+            });
         }
     }
 }

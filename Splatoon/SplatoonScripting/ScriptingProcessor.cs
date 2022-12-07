@@ -95,7 +95,8 @@ internal static class ScriptingProcessor
                                 code = File.ReadAllBytes(cacheFile);
                             }
                             else
-                            {                                    PluginLog.Information($"Compiling...");
+                            {                                    
+                                PluginLog.Information($"Compiling...");
                                 code = Compiler.Compile(result.code, result.path == null?"":Path.GetFileNameWithoutExtension(result.path));
                                 if (code != null)
                                 {

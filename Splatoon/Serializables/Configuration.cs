@@ -2,6 +2,7 @@
 using Dalamud.Configuration;
 using Dalamud.Interface.Internal.Notifications;
 using Splatoon.Gui;
+using Splatoon.SplatoonScripting;
 using System.Threading;
 
 namespace Splatoon;
@@ -82,6 +83,10 @@ class Configuration : IPluginConfiguration
         else
         {
             Svc.PluginInterface.SavePluginConfig(this);
+            foreach(var x in ScriptingProcessor.Scripts)
+            {
+                Safe(x.Controller.SaveConfig);
+            }
         }
     }
 

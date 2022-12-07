@@ -130,7 +130,7 @@ public abstract class SplatoonScript
 
     internal bool Enable()
     {
-        if (IsEnabled || IsDisabledByUser)
+        if (IsEnabled || IsDisabledByUser || !this.InternalData.Allowed || this.InternalData.Blacklisted)
         {
             return false;
         }

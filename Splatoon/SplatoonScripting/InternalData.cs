@@ -17,6 +17,10 @@ public class InternalData
 
     internal bool ConfigOpen = false;
 
+    internal bool Allowed = false;
+
+    internal bool Blacklisted = false;
+
     internal SplatoonScript Script;
 
     public InternalData(string path, SplatoonScript instance)
