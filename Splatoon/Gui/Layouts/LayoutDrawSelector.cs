@@ -3,53 +3,133 @@ using ECommons.LanguageHelpers;
 using Newtonsoft.Json;
 using Splatoon.Utils;
 
-namespace Splatoon.ConfigGui.CGuiLayouts
+namespace Splatoon.ConfigGui.CGuiLayouts;
+
+internal static class LayoutDrawSelector
 {
-    internal static class LayoutDrawSelector
+    internal static Layout CurrentLayout = null;
+    internal static Element CurrentElement = null;
+    internal static void DrawSelector(this Layout x, string group, int index)
     {
-        internal static Layout CurrentLayout = null;
-        internal static Element CurrentElement = null;
-        internal static void DrawSelector(this Layout x, string group, int index)
+        if (CGui.layoutFilter != "" && !x.GetName().Contains(CGui.layoutFilter, StringComparison.OrdinalIgnoreCase))
         {
-            if (CGui.layoutFilter != "" && !x.GetName().Contains(CGui.layoutFilter, StringComparison.OrdinalIgnoreCase))
+            if(CGui.ScrollTo == x)
             {
-                if(CGui.ScrollTo == x)
-                {
-                    CGui.ScrollTo = null;
-                }
-                return;
+                CGui.ScrollTo = null;
             }
-            ImGui.PushID(x.GUID);
+            return;
+        }
+        ImGui.PushID(x.GUID);
+        {
+            var col = false;
+            if (!x.Enabled)
             {
+                col = true;
+                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3);
+            }
+            ImGui.SetCursorPosX(group == null ? 0 : 10);
+            var curpos = ImGui.GetCursorScreenPos();
+            var contRegion = ImGui.GetContentRegionAvail().X;
+            if (CGui.ScrollTo == x)
+            {
+                ImGui.SetScrollHereY();
+                CGui.ScrollTo = null;
+            }
+            if (ImGui.Selectable($"{x.GetName()}", CurrentLayout == x))
+            {
+                if (CurrentLayout == x && CurrentElement == null)
+                {
+                    CurrentLayout = null;
+                    if (P.Config.FocusMode)
+                    {
+                        CGui.ScrollTo = x;
+                    }
+                }
+                else
+                {
+                    CGui.OpenedGroup.Add(group);
+                    CurrentLayout = x;
+                    CurrentElement = null;
+                }
+            }
+            if (col)
+            {
+                ImGui.PopStyleColor();
+            }
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Middle))
+            {
+                x.Enabled = !x.Enabled;
+            }
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+            {
+                ImGui.OpenPopup("LayoutContext");
+            }
+            Safe(delegate
+            {
+                if (ImGui.BeginDragDropSource())
+                {
+                    ImGuiDragDrop.SetDragDropPayload("MoveLayout", index);
+                    ImGuiEx.Text($"Moving layout\n??".Loc(x.GetName()));
+                    ImGui.EndDragDropSource();
+                }
+                if (ImGui.BeginDragDropTarget())
+                {
+                    if (ImGuiDragDrop.AcceptDragDropPayload("MoveLayout", out int indexOfMovedObj, 
+                        ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
+                    {
+                        SImGuiEx.DrawLine(curpos, contRegion);
+                        if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
+                        {
+                            var exch = P.Config.LayoutsL[indexOfMovedObj];
+                            exch.Group = group ?? "";
+                            P.Config.LayoutsL[indexOfMovedObj] = null;
+                            P.Config.LayoutsL.Insert(index, exch);
+                            P.Config.LayoutsL.RemoveAll(x => x == null);
+                        }
+                    }
+                    ImGui.EndDragDropTarget();
+                }
+            });
+            if (ImGui.BeginPopup("LayoutContext"))
+            {
+                ImGuiEx.Text($"Layout ??".Loc(x.GetName()));
+                if (ImGui.Selectable("Delete layout".Loc()))
+                {
+                    x.Delete = true;
+                }
+                ImGui.EndPopup();
+            }
+        }
+        if (CurrentLayout == x)
+        {
+            for (var i = 0;i<CurrentLayout.ElementsL.Count;i++)
+            {
+                var e = CurrentLayout.ElementsL[i];
+                ImGui.PushID(e.GUID);
+                ImGui.SetCursorPosX(group == null? 10 : 20);
                 var col = false;
-                if (!x.Enabled)
+                if (!e.Enabled)
                 {
                     col = true;
                     ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3);
                 }
-                ImGui.SetCursorPosX(group == null ? 0 : 10);
+                else if (!x.Enabled)
+                {
+                    col = true;
+                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
+                }
                 var curpos = ImGui.GetCursorScreenPos();
                 var contRegion = ImGui.GetContentRegionAvail().X;
-                if (CGui.ScrollTo == x)
+                if (ImGui.Selectable($"{e.GetName()}", CurrentElement == e))
                 {
-                    ImGui.SetScrollHereY();
-                    CGui.ScrollTo = null;
-                }
-                if (ImGui.Selectable($"{x.GetName()}", CurrentLayout == x))
-                {
-                    if (CurrentLayout == x && CurrentElement == null)
+                    if (CurrentElement == e)
                     {
-                        CurrentLayout = null;
-                        if (P.Config.FocusMode)
-                        {
-                            CGui.ScrollTo = x;
-                        }
+                        CurrentElement = null;
                     }
                     else
                     {
                         CGui.OpenedGroup.Add(group);
-                        CurrentLayout = x;
-                        CurrentElement = null;
+                        CurrentElement = e;
                     }
                 }
                 if (col)
@@ -58,146 +138,65 @@ namespace Splatoon.ConfigGui.CGuiLayouts
                 }
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Middle))
                 {
-                    x.Enabled = !x.Enabled;
+                    e.Enabled = !e.Enabled;
                 }
                 if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                 {
-                    ImGui.OpenPopup("LayoutContext");
+                    ImGui.OpenPopup("ElementContext");
                 }
-                Safe(delegate
+                if (ImGui.BeginDragDropSource())
                 {
-                    if (ImGui.BeginDragDropSource())
+                    ImGuiDragDrop.SetDragDropPayload($"MoveElement{index}", i);
+                    ImGuiEx.Text($"Moving element\n??".Loc(x.GetName()));
+                    ImGui.EndDragDropSource();
+                }
+                if (ImGui.BeginDragDropTarget())
+                {
+                    if (ImGuiDragDrop.AcceptDragDropPayload($"MoveElement{index}", out int indexOfMovedObj,
+                        ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
                     {
-                        ImGuiDragDrop.SetDragDropPayload("MoveLayout", index);
-                        ImGuiEx.Text($"Moving layout\n??".Loc(x.GetName()));
-                        ImGui.EndDragDropSource();
-                    }
-                    if (ImGui.BeginDragDropTarget())
-                    {
-                        if (ImGuiDragDrop.AcceptDragDropPayload("MoveLayout", out int indexOfMovedObj, 
-                            ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
+                        SImGuiEx.DrawLine(curpos, contRegion);
+                        if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
                         {
-                            SImGuiEx.DrawLine(curpos, contRegion);
-                            if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
-                            {
-                                var exch = P.Config.LayoutsL[indexOfMovedObj];
-                                exch.Group = group ?? "";
-                                P.Config.LayoutsL[indexOfMovedObj] = null;
-                                P.Config.LayoutsL.Insert(index, exch);
-                                P.Config.LayoutsL.RemoveAll(x => x == null);
-                            }
+                            var exch = CurrentLayout.ElementsL[indexOfMovedObj];
+                            CurrentLayout.ElementsL[indexOfMovedObj] = null;
+                            CurrentLayout.ElementsL.Insert(i, exch);
+                            CurrentLayout.ElementsL.RemoveAll(x => x == null);
                         }
-                        ImGui.EndDragDropTarget();
                     }
-                });
-                if (ImGui.BeginPopup("LayoutContext"))
+                    ImGui.EndDragDropTarget();
+                }
+                if (ImGui.BeginPopup("ElementContext"))
                 {
-                    ImGuiEx.Text($"Layout ??".Loc(x.GetName()));
-                    if (ImGui.Selectable("Delete layout".Loc()))
+                    ImGuiEx.Text($"{"Layout".Loc()} {x.GetName()}\n{"Element".Loc()} {e.GetName()}");
+                    if (ImGui.Selectable("Delete element".Loc()))
                     {
-                        x.Delete = true;
+                        e.Delete = true;
                     }
                     ImGui.EndPopup();
                 }
+                ImGui.PopID();
             }
-            if (CurrentLayout == x)
+            ImGuiEx.ImGuiLineCentered("AddElement", delegate
             {
-                for (var i = 0;i<CurrentLayout.ElementsL.Count;i++)
+                if(ImGui.SmallButton("Add element".Loc()))
                 {
-                    var e = CurrentLayout.ElementsL[i];
-                    ImGui.PushID(e.GUID);
-                    ImGui.SetCursorPosX(group == null? 10 : 20);
-                    var col = false;
-                    if (!e.Enabled)
-                    {
-                        col = true;
-                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3);
-                    }
-                    else if (!x.Enabled)
-                    {
-                        col = true;
-                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
-                    }
-                    var curpos = ImGui.GetCursorScreenPos();
-                    var contRegion = ImGui.GetContentRegionAvail().X;
-                    if (ImGui.Selectable($"{e.GetName()}", CurrentElement == e))
-                    {
-                        if (CurrentElement == e)
-                        {
-                            CurrentElement = null;
-                        }
-                        else
-                        {
-                            CGui.OpenedGroup.Add(group);
-                            CurrentElement = e;
-                        }
-                    }
-                    if (col)
-                    {
-                        ImGui.PopStyleColor();
-                    }
-                    if (ImGui.IsItemClicked(ImGuiMouseButton.Middle))
-                    {
-                        e.Enabled = !e.Enabled;
-                    }
-                    if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
-                    {
-                        ImGui.OpenPopup("ElementContext");
-                    }
-                    if (ImGui.BeginDragDropSource())
-                    {
-                        ImGuiDragDrop.SetDragDropPayload($"MoveElement{index}", i);
-                        ImGuiEx.Text($"Moving element\n??".Loc(x.GetName()));
-                        ImGui.EndDragDropSource();
-                    }
-                    if (ImGui.BeginDragDropTarget())
-                    {
-                        if (ImGuiDragDrop.AcceptDragDropPayload($"MoveElement{index}", out int indexOfMovedObj,
-                            ImGuiDragDropFlags.AcceptNoDrawDefaultRect | ImGuiDragDropFlags.AcceptBeforeDelivery))
-                        {
-                            SImGuiEx.DrawLine(curpos, contRegion);
-                            if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
-                            {
-                                var exch = CurrentLayout.ElementsL[indexOfMovedObj];
-                                CurrentLayout.ElementsL[indexOfMovedObj] = null;
-                                CurrentLayout.ElementsL.Insert(i, exch);
-                                CurrentLayout.ElementsL.RemoveAll(x => x == null);
-                            }
-                        }
-                        ImGui.EndDragDropTarget();
-                    }
-                    if (ImGui.BeginPopup("ElementContext"))
-                    {
-                        ImGuiEx.Text($"{"Layout".Loc()} {x.GetName()}\n{"Element".Loc()} {e.GetName()}");
-                        if (ImGui.Selectable("Delete element".Loc()))
-                        {
-                            e.Delete = true;
-                        }
-                        ImGui.EndPopup();
-                    }
-                    ImGui.PopID();
+                    x.ElementsL.Add(new(0));
                 }
-                ImGuiEx.ImGuiLineCentered("AddElement", delegate
+                ImGui.SameLine(); 
+                if (ImGui.SmallButton("Paste".Loc()))
                 {
-                    if(ImGui.SmallButton("Add element".Loc()))
+                    try
                     {
-                        x.ElementsL.Add(new(0));
+                        x.ElementsL.Add(JsonConvert.DeserializeObject<Element>(ImGui.GetClipboardText()));
                     }
-                    ImGui.SameLine(); 
-                    if (ImGui.SmallButton("Paste".Loc()))
+                    catch(Exception e)
                     {
-                        try
-                        {
-                            x.ElementsL.Add(JsonConvert.DeserializeObject<Element>(ImGui.GetClipboardText()));
-                        }
-                        catch(Exception e)
-                        {
-                            Notify.Error($"{e.Message}");
-                        }
+                        Notify.Error($"{e.Message}");
                     }
-                });
-            }
-            ImGui.PopID();
+                }
+            });
         }
+        ImGui.PopID();
     }
 }

@@ -4,26 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Splatoon.Structures
+namespace Splatoon.Structures;
+
+internal record struct VFXInfo
 {
-    internal record struct VFXInfo
+    internal long SpawnTime;
+
+    internal long Age
     {
-        internal long SpawnTime;
-
-        internal long Age
+        get
         {
-            get
-            {
-                return Environment.TickCount64 - SpawnTime;
-            }
+            return Environment.TickCount64 - SpawnTime;
         }
+    }
 
-        internal float AgeF
+    internal float AgeF
+    {
+        get
         {
-            get
-            {
-                return (float)Age / 1000f;
-            }
+            return (float)Age / 1000f;
         }
     }
 }

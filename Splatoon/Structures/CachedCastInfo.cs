@@ -4,41 +4,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Splatoon.Structures
+namespace Splatoon.Structures;
+
+internal record struct CachedCastInfo
 {
-    internal record struct CachedCastInfo
+    internal uint ID;
+    internal long StartTime;
+
+    public CachedCastInfo(uint iD, long startTime)
     {
-        internal uint ID;
-        internal long StartTime;
+        ID = iD;
+        StartTime = startTime;
+    }
 
-        public CachedCastInfo(uint iD, long startTime)
+    internal float StartTimeF
+    {
+        get
         {
-            ID = iD;
-            StartTime = startTime;
+            return (float)StartTime / 1000f;
         }
+    }
 
-        internal float StartTimeF
+    internal long Age
+    {
+        get
         {
-            get
-            {
-                return (float)StartTime / 1000f;
-            }
+            return Environment.TickCount64 - StartTime;
         }
+    }
 
-        internal long Age
+    internal float AgeF
+    {
+        get
         {
-            get
-            {
-                return Environment.TickCount64 - StartTime;
-            }
-        }
-
-        internal float AgeF
-        {
-            get
-            {
-                return (float)Age / 1000f;
-            }
+            return (float)Age / 1000f;
         }
     }
 }

@@ -9,54 +9,53 @@ using System.Text;
 using System.Threading.Tasks;
 using Character = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
-namespace Splatoon.Memory
+namespace Splatoon.Memory;
+
+internal unsafe class TetherProcessor
 {
-    internal unsafe class TetherProcessor
+    delegate long ProcessTether(Character* a1, byte a2, byte a3, long targetOID, byte a5);
+    [Signature("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 54 41 55 41 56 41 57 48 83 EC 20 0F B6 6C 24", DetourName = nameof(ProcessTetherDetour), Fallibility = Fallibility.Fallible)]
+    Hook<ProcessTether> ProcessTetherHook = null;
+
+    internal TetherProcessor()
     {
-        delegate long ProcessTether(Character* a1, byte a2, byte a3, long targetOID, byte a5);
-        [Signature("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 54 41 55 41 56 41 57 48 83 EC 20 0F B6 6C 24", DetourName = nameof(ProcessTetherDetour), Fallibility = Fallibility.Fallible)]
-        Hook<ProcessTether> ProcessTetherHook = null;
+        SignatureHelper.Initialise(this);
+        Enable();
+    }
 
-        internal TetherProcessor()
-        {
-            SignatureHelper.Initialise(this);
-            Enable();
-        }
+    internal void Enable()
+    {
+        if (ProcessTetherHook?.IsEnabled == false) ProcessTetherHook?.Enable();
+    }
 
-        internal void Enable()
-        {
-            if (ProcessTetherHook?.IsEnabled == false) ProcessTetherHook?.Enable();
-        }
+    internal void Disable()
+    {
+        if (ProcessTetherHook?.IsEnabled == true) ProcessTetherHook?.Disable();
+    }
 
-        internal void Disable()
-        {
-            if (ProcessTetherHook?.IsEnabled == true) ProcessTetherHook?.Disable();
-        }
+    internal void Dispose()
+    {
+        Disable();
+        ProcessTetherHook?.Dispose();
+    }
 
-        internal void Dispose()
+    long ProcessTetherDetour(Character* a1, byte a2, byte a3, long targetOID, byte a5)
+    {
+        try
         {
-            Disable();
-            ProcessTetherHook?.Dispose();
-        }
-
-        long ProcessTetherDetour(Character* a1, byte a2, byte a3, long targetOID, byte a5)
-        {
-            try
+            if(targetOID == 0xE0000000)
             {
-                if(targetOID == 0xE0000000)
-                {
-                    ScriptingProcessor.OnTetherRemoval(a1->GameObject.ObjectID, a2, a3, a5);
-                }
-                else
-                {
-                    ScriptingProcessor.OnTetherCreate(a1->GameObject.ObjectID, (uint)targetOID, a2, a3, a5);
-                }
+                ScriptingProcessor.OnTetherRemoval(a1->GameObject.ObjectID, a2, a3, a5);
             }
-            catch (Exception e)
+            else
             {
-                e.Log();
+                ScriptingProcessor.OnTetherCreate(a1->GameObject.ObjectID, (uint)targetOID, a2, a3, a5);
             }
-            return ProcessTetherHook.Original(a1, a2, a3, targetOID, a5);
         }
+        catch (Exception e)
+        {
+            e.Log();
+        }
+        return ProcessTetherHook.Original(a1, a2, a3, targetOID, a5);
     }
 }
