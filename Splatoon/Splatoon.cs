@@ -176,12 +176,12 @@ public unsafe class Splatoon : IDalamudPlugin
             ScriptingProcessor.TerritoryChanged();
         });
         Svc.ClientState.Logout += OnLogout;
-        ScriptingProcessor.TerritoryChanged();
-        ScriptingProcessor.ReloadAll();
         HttpClient = new()
         {
-            Timeout = TimeSpan.FromSeconds(20)
+            Timeout = TimeSpan.FromSeconds(10)
         };
+        ScriptingProcessor.TerritoryChanged();
+        ScriptingProcessor.ReloadAll();
         Init = true;
         SplatoonIPC.Init();
     }

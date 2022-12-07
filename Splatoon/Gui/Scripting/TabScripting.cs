@@ -76,6 +76,11 @@ internal static class TabScripting
             {
                 ImGuiEx.Tooltip($"{x.InternalData.Namespace}\n{x.Metadata.Description}");
             }
+            if(ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+            {
+                ImGui.SetClipboardText($"{x.InternalData.FullName}");
+                Notify.Success("Copied to clipboard");
+            }
             if (x.Metadata?.Version != null)
             {
                 ImGui.SameLine();
@@ -94,18 +99,25 @@ internal static class TabScripting
                 ImGuiEx.TextV(ImGuiColors.DalamudRed, "Disabled".Loc());
                 ImGuiComponents.HelpMarker("This script has been disabled by you.".Loc());
             }
+            else if (!x.InternalData.Allowed)
+            {
+                ImGuiEx.TextV(ImGuiColors.ParsedGold, "Preparing".Loc());
+                ImGuiComponents.HelpMarker("This script is being prepared for enabling and will be available shortly.".Loc());
+            }
+            else if (x.InternalData.Blacklisted)
+            {
+                ImGuiEx.TextV(ImGuiColors.DalamudGrey3, "Blacklisted".Loc());
+                ImGuiComponents.HelpMarker("This script was blacklisted due to compatibility issues. Please wait for it's new version to be released.".Loc());
+            }
+            else if (x.IsEnabled)
+            {
+                ImGuiEx.TextV(ImGuiColors.ParsedGreen, "Active".Loc());
+                ImGuiComponents.HelpMarker("This script is currently active and being executed.".Loc());
+            }
             else
             {
-                if (x.IsEnabled)
-                {
-                    ImGuiEx.TextV(ImGuiColors.ParsedGreen, "Active".Loc());
-                    ImGuiComponents.HelpMarker("This script is currently active and being executed.".Loc());
-                }
-                else
-                {
-                    ImGuiEx.TextV(ImGuiColors.DalamudOrange, "Inactive".Loc());
-                    ImGuiComponents.HelpMarker("This script is currently inactive because you're not in a zone for which it was designed.".Loc());
-                }
+                ImGuiEx.TextV(ImGuiColors.DalamudYellow, "Inactive".Loc());
+                ImGuiComponents.HelpMarker("This script is currently inactive because you're not in a zone for which it was designed.".Loc());
             }
             ImGui.TableNextColumn();
 

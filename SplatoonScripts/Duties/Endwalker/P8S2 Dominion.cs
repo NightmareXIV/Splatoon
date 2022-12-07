@@ -19,7 +19,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
     public class P8S2_Dominion : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1088 };
-        public override Metadata? Metadata => new(1, "NightmareXIV");
+        public override Metadata? Metadata => new(2, "NightmareXIV");
         int Stage = 0;
         List<uint> FirstPlayers = new();
         List<uint> SecondPlayers = new();
@@ -181,35 +181,6 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 ImGui.PushID("List" + i);
                 EditList(c[i]);
                 ImGui.SameLine();
-                if (ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.FastForward))
-                {
-                    var people = GetPriority();
-                    var s = people.Count == 4;
-                    foreach(var x in people)
-                    {
-                        if(Svc.Objects.TryGetFirst(z => z is PlayerCharacter pc && pc.Name.ToString() == x, out var o))
-                        {
-                            if (!IsRoleMatching((PlayerCharacter)o))
-                            {
-                                DuoLog.Warning($"Role mismatch with {o.Name}");
-                                s = false;
-                            }
-                        }
-                        else
-                        {
-                            DuoLog.Warning($"Could not find player {x}");
-                            s = false;
-                        }
-                    }
-                    if (s)
-                    {
-                        DuoLog.Information("Test success!");
-                    }
-                    else
-                    {
-                        DuoLog.Warning("Test failed");
-                    }
-                }
                 ImGuiEx.Tooltip("Check if current party matches this priority list. All players must be within visible range.");
                 ImGui.SameLine();
                 if(ImGuiEx.IconButton(Dalamud.Interface.FontAwesomeIcon.Trash) && ImGui.GetIO().KeyCtrl)
@@ -229,6 +200,41 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             if (ImGui.Button("Add new priority list"))
             {
                 c.Add(new() { "", "", "", "" });
+            }
+            ImGui.SameLine();
+            if(ImGui.Button("Perform test"))
+            {
+                SelfTest();
+            }
+        }
+
+        void SelfTest()
+        {
+            var people = GetPriority();
+            var s = people.Count == 4;
+            foreach (var x in people)
+            {
+                if (Svc.Objects.TryGetFirst(z => z is PlayerCharacter pc && pc.Name.ToString() == x, out var o))
+                {
+                    if (!IsRoleMatching((PlayerCharacter)o))
+                    {
+                        DuoLog.Warning($"Role mismatch with {o.Name}");
+                        s = false;
+                    }
+                }
+                else
+                {
+                    DuoLog.Warning($"Could not find player {x}");
+                    s = false;
+                }
+            }
+            if (s)
+            {
+                DuoLog.Information("Test success!");
+            }
+            else
+            {
+                DuoLog.Warning("Test failed");
             }
         }
 

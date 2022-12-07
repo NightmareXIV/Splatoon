@@ -1,6 +1,8 @@
-﻿using ECommons.LanguageHelpers;
+﻿using Dalamud.Game;
+using ECommons.LanguageHelpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +25,97 @@ internal static class ScriptingProcessor
         "https://www.github.com/NightmareXIV/",
         "https://raw.githubusercontent.com/NightmareXIV/"
     };
+    internal static ImmutableList<BlacklistData> Blacklist = ImmutableList<BlacklistData>.Empty;
+    internal static volatile bool UpdateCompleted = false;
+
+    internal static void BlockingBeginUpdate(bool force = false)
+    {
+        if (UpdateCompleted || force)
+        {
+            Blacklist = ImmutableList<BlacklistData>.Empty;
+
+            try
+            {
+                PluginLog.Debug($"Starting downloading blacklist...");
+                var result = P.HttpClient.GetAsync("https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/blacklist.csv").Result;
+                result.EnsureSuccessStatusCode();
+                PluginLog.Debug($"Blacklist download complete");
+                var blacklist = result.Content.ReadAsStringAsync().Result;
+
+                foreach (var line in blacklist.Replace("\r", "").Split("\n"))
+                {
+                    var data = line.Split(",");
+                    if (data.Length == 2 && int.TryParse(data[1], out var ver))
+                    {
+                        Blacklist.Add(new(data[0], ver));
+                        PluginLog.Debug($"Found new valid blacklist data: {data[0]} v{ver}");
+                    }
+                    else
+                    {
+                        PluginLog.Debug($"Found invalid blacklist data: {line}");
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.Log();
+            }
+
+            Svc.Framework.RunOnFrameworkThread(delegate
+            {
+                PluginLog.Information($"Blacklist: {Blacklist.Select(x => $"{x.FullName} v{x.Version}").Print()}");
+                foreach(var x in ScriptingProcessor.Scripts)
+                {
+                    x.InternalData.Allowed = true;
+                    if (ScriptingProcessor.Blacklist.Any(z => z.FullName == x.InternalData.FullName && z.Version >= (x.Metadata?.Version ?? 0) ))
+                    {
+                        PluginLog.Information($"Script {x.InternalData.FullName} is blacklisted and will not be loaded");
+                        x.InternalData.Blacklisted = true;
+                    }
+                    x.UpdateState();
+                    PluginLog.Debug($"Processed script {x.InternalData.FullName}");
+                }
+            }).Wait();
+
+            try
+            {
+                PluginLog.Debug($"Starting downloading update list...");
+                var result = P.HttpClient.GetAsync("https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/update.csv").Result;
+                result.EnsureSuccessStatusCode();
+                PluginLog.Debug($"Update list downloaded");
+                var updateList = result.Content.ReadAsStringAsync().Result;
+
+                List<String> Updates = new();
+                foreach (var line in updateList.Replace("\r", "").Split("\n"))
+                {
+                    var data = line.Split(",");
+                    if (data.Length == 3 && int.TryParse(data[1], out var ver))
+                    {
+                        Updates.Add(data[2]);
+                        PluginLog.Debug($"Found new valid update data: {data[0]} v{ver} = {data[2]}");
+                    }
+                    else
+                    {
+                        PluginLog.Debug($"Found invalid update data: {line}");
+                    }
+                }
+                foreach (var x in Updates)
+                {
+                    PluginLog.Information($"Downloading script from {x}");
+                    BlockingDownloadScript(x);
+                }
+            }
+            catch(Exception e)
+            {
+                e.Log();
+            }
+            UpdateCompleted = true;
+        }
+        else
+        {
+            PluginLog.Error("Can not start new update before previous has finished");
+        }
+    }
 
     internal static bool IsUrlTrusted(string url)
     {
@@ -33,22 +126,33 @@ internal static class ScriptingProcessor
     {
         Task.Run(delegate
         {
-            try
-            {
-                var result = P.HttpClient.GetStringAsync(url).Result;
-                ScriptingProcessor.CompileAndLoad(result, null);
-            }
-            catch (Exception e)
-            {
-                e.Log();
-            }
+            BlockingDownloadScript(url);
         });
 
         Notify.Info("Downloading script from trusted URL...".Loc());
     }
 
+    static void BlockingDownloadScript(string url)
+    {
+        try
+        {
+            var result = P.HttpClient.GetStringAsync(url).Result;
+            ScriptingProcessor.CompileAndLoad(result, null);
+        }
+        catch (Exception e)
+        {
+            e.Log();
+        }
+    }
+
     internal static void ReloadAll()
     {
+        if (ThreadIsRunning)
+        {
+            DuoLog.Error("Can not reload yet, please wait");
+            return;
+        }
+        
         Scripts.ForEach(x => x.Disable());
         Scripts.Clear();
         var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts");
@@ -106,7 +210,7 @@ internal static class ScriptingProcessor
                             }
                             if (code != null)
                             {
-                                new TickScheduler(delegate
+                                Svc.Framework.RunOnFrameworkThread(delegate
                                 {
                                     if (P != null && !P.Disposed)
                                     {
@@ -117,6 +221,7 @@ internal static class ScriptingProcessor
                                             {
                                                 var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
                                                 instance.InternalData = new(result.path, instance);
+                                                instance.InternalData.Allowed = UpdateCompleted;
                                                 bool rewrite = false;
                                                 if (Scripts.TryGetFirst(z => z.InternalData.FullName == instance.InternalData.FullName, out var loadedScript))
                                                 {
@@ -156,7 +261,7 @@ internal static class ScriptingProcessor
                                     {
                                         PluginLog.Fatal("Plugin was disposed during script loading");
                                     }
-                                });
+                                }).Wait();
                             }
                             else
                             {
@@ -176,6 +281,12 @@ internal static class ScriptingProcessor
                         Thread.Sleep(250);
                     }
                 }
+
+                if (!UpdateCompleted)
+                {
+                    BlockingBeginUpdate(true);
+                }
+
                 ThreadIsRunning = false;
                 PluginLog.Information($"Exited from compiler thread");
             }).Start();
