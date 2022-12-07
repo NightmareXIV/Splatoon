@@ -99,13 +99,19 @@ namespace Splatoon.SplatoonScripting
         /// </summary>
         /// <param name="source">Source object ID of pair.</param>
         /// <param name="target">Target object ID of pair.</param>
-        public virtual void OnTetherCreate(uint source, uint target) { }
+        /// <param name="data2">Second argument of hooked method.</param>
+        /// <param name="data3">Third argument of hooked method.</param>
+        /// <param name="data5">Fifth argument of hooked method.</param>
+        public virtual void OnTetherCreate(uint source, uint target, byte data2, byte data3, byte data5) { }
 
         /// <summary>
         /// Will be called when a previously created tether between two game objects removed. This method will only be called if a script is enabled.
         /// </summary>
         /// <param name="source">Source object ID of pair.</param>
-        public virtual void OnTetherRemoval(uint source) { }
+        /// <param name="data2">Second argument of hooked method.</param>
+        /// <param name="data3">Third argument of hooked method.</param>
+        /// <param name="data5">Fifth argument of hooked method.</param>
+        public virtual void OnTetherRemoval(uint source, byte data2, byte data3, byte data5) { }
 
         /// <summary>
         /// Will be called when a VFX spawns on a certain game object. This method will only be called if a script is enabled.

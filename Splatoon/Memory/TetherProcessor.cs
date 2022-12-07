@@ -45,11 +45,11 @@ namespace Splatoon.Memory
             {
                 if(targetOID == 0xE0000000)
                 {
-                    ScriptingProcessor.OnTetherRemoval(a1->GameObject.ObjectID);
+                    ScriptingProcessor.OnTetherRemoval(a1->GameObject.ObjectID, a2, a3, a5);
                 }
                 else
                 {
-                    ScriptingProcessor.OnTetherCreate(a1->GameObject.ObjectID, (uint)targetOID);
+                    ScriptingProcessor.OnTetherCreate(a1->GameObject.ObjectID, (uint)targetOID, a2, a3, a5);
                 }
             }
             catch (Exception e)

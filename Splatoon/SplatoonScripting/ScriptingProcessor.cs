@@ -286,7 +286,7 @@ namespace Splatoon.SplatoonScripting
             }
         }
 
-        internal static void OnTetherCreate(uint source, uint target)
+        internal static void OnTetherCreate(uint source, uint target, byte data2, byte data3, byte data5)
         {
             for (var i = 0; i < Scripts.Count; i++)
             {
@@ -294,14 +294,14 @@ namespace Splatoon.SplatoonScripting
                 {
                     try
                     {
-                        Scripts[i].OnTetherCreate(source, target);
+                        Scripts[i].OnTetherCreate(source, target, data2, data3, data5);
                     }
                     catch (Exception e) { e.Log(); }
                 }
             }
         }
 
-        internal static void OnTetherRemoval(uint source)
+        internal static void OnTetherRemoval(uint source, byte data2, byte data3, byte data5)
         {
             for (var i = 0; i < Scripts.Count; i++)
             {
@@ -309,7 +309,7 @@ namespace Splatoon.SplatoonScripting
                 {
                     try
                     {
-                        Scripts[i].OnTetherRemoval(source);
+                        Scripts[i].OnTetherRemoval(source, data2, data3, data5);
                     }
                     catch (Exception e) { e.Log(); }
                 }
