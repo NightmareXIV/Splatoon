@@ -425,6 +425,21 @@ internal static class ScriptingProcessor
         }
     }
 
+    internal static void OnDirectorUpdate(DirectorUpdateCategory category)
+    {
+        for (var i = 0; i < Scripts.Count; i++)
+        {
+            if (Scripts[i].IsEnabled)
+            {
+                try
+                {
+                    Scripts[i].OnDirectorUpdate(category);
+                }
+                catch (Exception e) { e.Log(); }
+            }
+        }
+    }
+
     internal static void OnPhaseChange(int phase)
     {
         for (var i = 0; i < Scripts.Count; i++)

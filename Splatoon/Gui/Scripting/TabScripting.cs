@@ -115,7 +115,7 @@ internal static class TabScripting
             }
             ImGui.TableNextColumn();
 
-            if(!x.InternalData.Allowed || x.InternalData.Blacklisted)
+            if (!x.InternalData.Allowed || x.InternalData.Blacklisted)
             {
                 if (ImGuiEx.IconButton(FontAwesomeIcon.Play))
                 {
@@ -124,23 +124,25 @@ internal static class TabScripting
                     x.UpdateState();
                 }
                 ImGuiEx.Tooltip("Forcefully allow this script to be enabled. Consequences of this action will be unpredictable.");
-                ImGui.SameLine();
             }
-
-            var e = P.Config.DisabledScripts.Contains(x.InternalData.FullName);
-            if (ImGuiEx.IconButton(e?FontAwesomeIcon.PlayCircle : FontAwesomeIcon.PauseCircle))
+            else
             {
-                if (e)
+
+                var e = P.Config.DisabledScripts.Contains(x.InternalData.FullName);
+                if (ImGuiEx.IconButton(e ? FontAwesomeIcon.PlayCircle : FontAwesomeIcon.PauseCircle))
                 {
-                    P.Config.DisabledScripts.Remove(x.InternalData.FullName);
+                    if (e)
+                    {
+                        P.Config.DisabledScripts.Remove(x.InternalData.FullName);
+                    }
+                    else
+                    {
+                        P.Config.DisabledScripts.Add(x.InternalData.FullName);
+                    }
+                    ScriptingProcessor.Scripts.ForEach(x => x.UpdateState());
                 }
-                else
-                {
-                    P.Config.DisabledScripts.Add(x.InternalData.FullName);
-                }
-                ScriptingProcessor.Scripts.ForEach(x => x.UpdateState());
+                ImGuiEx.Tooltip(e ? "Enable script".Loc() : "Disable script".Loc());
             }
-            ImGuiEx.Tooltip(e?"Enable script".Loc() : "Disable script".Loc());
 
             ImGui.SameLine();
 
@@ -155,8 +157,15 @@ internal static class TabScripting
                     x.InternalData.ConfigOpen = !x.InternalData.ConfigOpen;
                 }
                 ImGuiEx.Tooltip("Open script's settings".Loc());
-                ImGui.SameLine();
             }
+            else
+            {
+                ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0f);
+                ImGuiEx.IconButton(FontAwesomeIcon.Cog);
+                ImGui.PopStyleVar();
+                //ImGuiEx.Tooltip("This script contains no settings");
+            }
+            ImGui.SameLine();
 
 
             if (ImGuiEx.IconButton(FontAwesomeIcon.Trash) && ImGui.GetIO().KeyCtrl)

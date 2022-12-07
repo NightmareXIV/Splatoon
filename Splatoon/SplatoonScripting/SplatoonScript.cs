@@ -117,6 +117,12 @@ public abstract class SplatoonScript
     public virtual void OnMessage(string Message) { }
 
     /// <summary>
+    /// Will be called when a duty director update is happening, for example, joining, restarting, or wiping in duty. 
+    /// </summary>
+    /// <param name="category">Director update category</param>
+    public virtual void OnDirectorUpdate(DirectorUpdateCategory category) { }
+
+    /// <summary>
     /// Will be called every framework update. You can execute general logic of your script here. 
     /// </summary>
     public virtual void OnUpdate() { }

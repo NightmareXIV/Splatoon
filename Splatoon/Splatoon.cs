@@ -83,6 +83,7 @@ public unsafe class Splatoon : IDalamudPlugin
     internal MapEffectProcessor mapEffectProcessor;
     internal TetherProcessor TetherProcessor;
     internal ObjectEffectProcessor ObjectEffectProcessor;
+    internal DirectorUpdateProcessor DirectorUpdateProcessor;
     internal HttpClient HttpClient;
 
     internal void Load(DalamudPluginInterface pluginInterface)
@@ -170,6 +171,7 @@ public unsafe class Splatoon : IDalamudPlugin
         mapEffectProcessor = new();
         TetherProcessor = new();
         ObjectEffectProcessor = new();
+        DirectorUpdateProcessor = new();
         ProperOnLogin.Register(delegate
         {
             ScriptingProcessor.TerritoryChanged();
@@ -216,6 +218,7 @@ public unsafe class Splatoon : IDalamudPlugin
         Safe(mapEffectProcessor.Dispose);
         Safe(TetherProcessor.Dispose);
         Safe(ObjectEffectProcessor.Dispose);
+        Safe(DirectorUpdateProcessor.Dispose);
         AttachedInfo.Dispose();
         ScriptingProcessor.Dispose();
         ECommonsMain.Dispose();
