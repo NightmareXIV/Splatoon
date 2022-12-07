@@ -94,20 +94,20 @@ internal static class TabScripting
 
             ImGui.TableNextColumn();
 
-            if (x.IsDisabledByUser)
+            if (x.InternalData.Blacklisted)
             {
-                ImGuiEx.TextV(ImGuiColors.DalamudRed, "Disabled".Loc());
-                ImGuiComponents.HelpMarker("This script has been disabled by you.".Loc());
+                ImGuiEx.TextV(ImGuiColors.DalamudGrey3, "Blacklisted".Loc());
+                ImGuiComponents.HelpMarker("This script was blacklisted due to compatibility issues. Please wait for it's new version to be released.".Loc());
             }
             else if (!x.InternalData.Allowed)
             {
                 ImGuiEx.TextV(ImGuiColors.ParsedGold, "Preparing".Loc());
                 ImGuiComponents.HelpMarker("This script is being prepared for enabling and will be available shortly.".Loc());
             }
-            else if (x.InternalData.Blacklisted)
+            else if (x.IsDisabledByUser)
             {
-                ImGuiEx.TextV(ImGuiColors.DalamudGrey3, "Blacklisted".Loc());
-                ImGuiComponents.HelpMarker("This script was blacklisted due to compatibility issues. Please wait for it's new version to be released.".Loc());
+                ImGuiEx.TextV(ImGuiColors.DalamudRed, "Disabled".Loc());
+                ImGuiComponents.HelpMarker("This script has been disabled by you.".Loc());
             }
             else if (x.IsEnabled)
             {
@@ -120,6 +120,17 @@ internal static class TabScripting
                 ImGuiComponents.HelpMarker("This script is currently inactive because you're not in a zone for which it was designed.".Loc());
             }
             ImGui.TableNextColumn();
+
+            if(!x.InternalData.Allowed || x.InternalData.Blacklisted)
+            {
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Play))
+                {
+                    x.InternalData.Allowed = true;
+                    x.InternalData.Blacklisted = false;
+                    x.UpdateState();
+                }
+                ImGuiEx.Tooltip("Forcefully allow this script to be enabled. Consequences of this action will be unpredictable.");
+            }
 
             var e = P.Config.DisabledScripts.Contains(x.InternalData.FullName);
             if (ImGuiEx.IconButton(e?FontAwesomeIcon.PlayCircle : FontAwesomeIcon.PauseCircle))

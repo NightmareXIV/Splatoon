@@ -85,14 +85,18 @@ internal static class ScriptingProcessor
                 PluginLog.Debug($"Update list downloaded");
                 var updateList = result.Content.ReadAsStringAsync().Result;
 
-                List<String> Updates = new();
+                List<string> Updates = new();
                 foreach (var line in updateList.Replace("\r", "").Split("\n"))
                 {
                     var data = line.Split(",");
                     if (data.Length == 3 && int.TryParse(data[1], out var ver))
                     {
-                        Updates.Add(data[2]);
                         PluginLog.Debug($"Found new valid update data: {data[0]} v{ver} = {data[2]}");
+                        if(Scripts.Any(x => x.InternalData.FullName == data[0] && (x.Metadata?.Version ?? 0) < ver)) // possible CME
+                        {
+                            PluginLog.Debug($"Adding  {data[2]} to download list");
+                            Updates.Add(new(data[2]));
+                        }
                     }
                     else
                     {
@@ -152,7 +156,7 @@ internal static class ScriptingProcessor
             DuoLog.Error("Can not reload yet, please wait");
             return;
         }
-        
+        UpdateCompleted = false;
         Scripts.ForEach(x => x.Disable());
         Scripts.Clear();
         var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts");
@@ -281,14 +285,16 @@ internal static class ScriptingProcessor
                         Thread.Sleep(250);
                     }
                 }
+                ThreadIsRunning = false;
+                PluginLog.Information($"Compiler thread is finished");
 
                 if (!UpdateCompleted)
                 {
+                    PluginLog.Information($"Starting updating...");
                     BlockingBeginUpdate(true);
+                    PluginLog.Information($"Update finished");
                 }
 
-                ThreadIsRunning = false;
-                PluginLog.Information($"Exited from compiler thread");
             }).Start();
         }
     }
