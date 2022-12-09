@@ -1,6 +1,8 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.Text.SeStringHandling;
 using ECommons;
+using ECommons.ChatMethods;
 using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
@@ -34,7 +36,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             if (Message.Contains("(11402>31193)"))
             {
                 Stage = 1;
-                DuoLog.Information($"Stage 1: Cast");
+                PluginLog.Information($"Stage 1: Cast");
             }
         }
         public override void OnUpdate()
@@ -50,10 +52,10 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 if (playersSecondTowers.Count() == 4)
                 {
                     Stage = 2;
-                    DuoLog.Information($"Stage 2: First towers");
+                    PluginLog.Information($"Stage 2: First towers");
                     FirstPlayers = Svc.Objects.Where(x => x is PlayerCharacter pc && !pc.StatusList.Any(x => x.StatusId == 3372) && IsRoleMatching(pc)).Select(x => x.ObjectId).ToList();
                     SecondPlayers = playersSecondTowers.Where(x => x is PlayerCharacter pc && IsRoleMatching(pc)).Select(x => x.ObjectId).ToList();
-                    DuoLog.Information($"First towers: {FirstPlayers.Select(x => x.GetObject()?.Name).Print()}\nSecond towers: {SecondPlayers.Select(x => x.GetObject()?.Name).Print()}");
+                    PluginLog.Information($"First towers: {FirstPlayers.Select(x => x.GetObject()?.Name).Print()}\nSecond towers: {SecondPlayers.Select(x => x.GetObject()?.Name).Print()}");
                 }
             }
             else if(Stage == 2)
@@ -62,7 +64,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 if(towers.Count() == 4)
                 {
                     Stage = 3;
-                    DuoLog.Information($"Stage 3: Second towers");
+                    PluginLog.Information($"Stage 3: Second towers");
                     if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
                     Process(towers.OrderBy(GetAngle).ToArray(), FirstPlayers);
                 }
@@ -77,7 +79,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 if (towers.Count() == 8)
                 {
                     Stage = 4;
-                    DuoLog.Information($"Stage 4: Final");
+                    PluginLog.Information($"Stage 4: Final");
                     if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
                     towers = GetEarliestTowers();
                     Process(towers.OrderBy(GetAngle).ToArray(), SecondPlayers);
@@ -100,7 +102,15 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
         {
             if (Controller.TryGetElementByName("MyTower", out var e)) e.Enabled = false;
             Stage = 0;
-            DuoLog.Information($"Reset");
+            PluginLog.Information($"Reset");
+        }
+
+        public override void OnDirectorUpdate(DirectorUpdateCategory category)
+        {
+            if(category == DirectorUpdateCategory.Commence)
+            {
+                SelfTest();
+            }
         }
 
         void Process(BattleChara[] towers, List<uint> players)
@@ -144,15 +154,20 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             }
         }
 
-        List<string> GetPriority()
+        List<string> GetPriority(bool verbose = false)
         {
-            var x = this.Controller.GetConfig<Config>().Priorities.FirstOrDefault(z => z.All(n => Svc.Objects.Any(e => e is PlayerCharacter pc && pc.Name.ToString() == n)));
+            var x = this.Controller.GetConfig<Config>().Priorities.FirstOrDefault(z => z.All(n => Svc.Objects.Any(e => e is PlayerCharacter pc && pc.Name.ToString() == n && (pc.GetRole() == CombatRole.DPS) == (Svc.ClientState.LocalPlayer?.GetRole() == CombatRole.DPS)  )));
             if(x != null)
             {
-                DuoLog.Information($"Got priority list: {x.Print()}");
+                var t = $"Got priority list: {x.Print()}";
+                PluginLog.Information(t);
+                if (verbose)
+                {
+                    Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground(t, (ushort)UIColor.LightBlue).Build() });
+                }
                 return x;
             }
-            DuoLog.Warning("Could not find priority list");
+            Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground("Could not find valid priority list. You must fix this error for Dominion script to work.", (ushort)UIColor.Red).Build() });
             return new();
         }
 
@@ -173,7 +188,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         public override void OnSettingsDraw()
         {
-            ImGuiEx.TextWrapped("Priority lists. Fill in priority for your role left to right. You may create few lists, one that contains all players in your party will be used.");
+            ImGuiEx.TextWrapped("Priority lists. Fill in priority for your role group (Tanks+Healers or DPS) left to right. You may create few lists, one that contains all players with matching roles in your party will be used.");
             var c = this.Controller.GetConfig<Config>().Priorities;
             int toRem = -1;
             for (int i = 0; i < c.Count; i++)
@@ -210,7 +225,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         void SelfTest()
         {
-            var people = GetPriority();
+            Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground("= Dominion self-test =", (ushort)UIColor.LightBlue).Build() });
+            var people = GetPriority(true);
             var s = people.Count == 4;
             foreach (var x in people)
             {
@@ -230,11 +246,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             }
             if (s)
             {
-                DuoLog.Information("Test success!");
+                Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground("Test Success!", (ushort)UIColor.Green).Build() });
             }
             else
             {
-                DuoLog.Warning("Test failed");
+                Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground("!!! Test failed !!!", (ushort)UIColor.Red).Build() });
             }
         }
 
@@ -253,6 +269,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
                 {
                     s[i] = pc.Name.ToString();
                 }
+                ImGuiEx.Tooltip("Fill name from your current target");
                 ImGui.SameLine();
             }
             ImGui.Dummy(Vector2.Zero);

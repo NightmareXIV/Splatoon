@@ -67,6 +67,7 @@ internal static class ScriptingProcessor
                     PluginLog.Debug($"Processed script {x.InternalData.FullName}");
                 }
             }).Wait();
+            UpdateCompleted = true;
 
             try
             {
@@ -104,7 +105,6 @@ internal static class ScriptingProcessor
             {
                 e.Log();
             }
-            UpdateCompleted = true;
         }
         else
         {
@@ -277,7 +277,7 @@ internal static class ScriptingProcessor
                     }
                 }
                 ThreadIsRunning = false;
-                PluginLog.Information($"Compiler thread is finished");
+                PluginLog.Information($"Compiler part of thread is finished");
 
                 if (!UpdateCompleted)
                 {
