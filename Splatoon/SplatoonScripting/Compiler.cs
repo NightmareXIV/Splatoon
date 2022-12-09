@@ -67,48 +67,17 @@ internal class Compiler
         var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp11);
 
         var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
-
-        var references = new List<MetadataReference>();
-        foreach (var f in Directory.GetFiles(Path.GetDirectoryName(typeof(object).Assembly.Location), "*", SearchOption.TopDirectoryOnly))
-        {
-            if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
-        }
-        foreach (var f in Directory.GetFiles(Path.GetDirectoryName(typeof(System.Windows.Forms.Form).Assembly.Location), "*", SearchOption.TopDirectoryOnly))
-        {
-            if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
-        }
-        foreach (var f in Directory.GetFiles(Svc.PluginInterface.AssemblyLocation.DirectoryName, "*", SearchOption.AllDirectories))
-        {
-            if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
-        }
-        foreach (var f in Directory.GetFiles(Path.GetDirectoryName(Svc.PluginInterface.GetType().Assembly.Location), "*", SearchOption.AllDirectories))
-        {
-            if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
-        }
-
+        var refs = ReferenceCache.ReferenceList;
         //PluginLog.Information($"References: {references.Select(x => x.Display).Join(", ")}");
 
         var id = $"SplatoonScript-{identity}-{Guid.NewGuid()}";
         PluginLog.Information($"Assembly name: {id}");
         return CSharpCompilation.Create(id,
             new[] { parsedSyntaxTree },
-            references: references,
+            references: refs,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                 optimizationLevel: OptimizationLevel.Release,
                 assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default,
                 allowUnsafe: true));
-    }
-
-    static bool IsValidAssembly(string path)
-    {
-        try
-        {
-            var assembly = AssemblyName.GetAssemblyName(path);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
     }
 }
