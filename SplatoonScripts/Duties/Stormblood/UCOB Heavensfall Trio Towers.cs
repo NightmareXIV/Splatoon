@@ -21,9 +21,10 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
 {
     public override HashSet<uint> ValidTerritories => new() { 733 };
 
-    public override Metadata? Metadata => new(4, "NightmareXIV");
+    public override Metadata? Metadata => new(5, "NightmareXIV");
 
     Config Conf => this.Controller.GetConfig<Config>();
+    int NaelTowerPosAngleModifier => Conf.NaelTowerPos == NaelTower.Right_1 ? 3 : -3;
 
     public override void OnSetup()
     {
@@ -38,14 +39,24 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
         var towers = FindTowers();
         if (towers.Count() == 8 && FindNael().NotNull(out var nael))
         {
-            var zeroAngle = (int)(MathHelper.GetRelativeAngle(Vector2.Zero, nael.Position.ToVector2()) - (int)Conf.NaelTowerPos + 360) % 360;
+            var zeroAngle = (int)(MathHelper.GetRelativeAngle(Vector2.Zero, nael.Position.ToVector2()) - NaelTowerPosAngleModifier + 360) % 360;
             var i = 0;
             foreach(var x in towers.OrderBy(z => (int)(MathHelper.GetRelativeAngle(Vector2.Zero, z.Position.ToVector2()) - zeroAngle + 360) % 360 ))
             {
                 if(this.Controller.TryGetElementByName($"tower{i}", out var e))
                 {
                     e.SetRefPosition(x.Position);
-                    e.overlayText = $"Tower {(TowerPosition)i}";
+                    if (Conf.Debug)
+                    {
+                        e.overlayText = $"Tower {(TowerPosition)i}\n" +
+                            $"Angle: {(int)(MathHelper.GetRelativeAngle(Vector2.Zero, x.Position.ToVector2()) - zeroAngle + 360) % 360}\n" +
+                            $"Raw angle: {(int)(MathHelper.GetRelativeAngle(Vector2.Zero, x.Position.ToVector2()))}\n" +
+                            $"Zero angle: {zeroAngle}";
+                    }
+                    else
+                    {
+                        e.overlayText = $"Tower {(TowerPosition)i}";
+                    }
                     if(i == (int)Conf.TowerNum)
                     {
                         e.Enabled = true;
@@ -98,6 +109,7 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
         ImGui.SetNextItemWidth(100f);
         ImGuiEx.EnumCombo("Tower directly at Nael", ref Conf.NaelTowerPos);
         ImGui.Checkbox("Display all towers", ref Conf.ShowAll);
+        ImGui.Checkbox("Display debug info", ref Conf.Debug);
     }
 
     public class Config : IEzConfig
@@ -105,6 +117,7 @@ public class UCOB_Heavensfall_Trio_Towers : SplatoonScript
         public TowerPosition TowerNum = TowerPosition.Right_1;
         public bool ShowAll = false;
         public NaelTower NaelTowerPos = NaelTower.Right_1;
+        public bool Debug = false;
     }
 
     public enum NaelTower
