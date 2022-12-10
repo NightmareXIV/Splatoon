@@ -9,7 +9,7 @@ Helps with keeping melee uptime when Nidhogg dives one half of the arena in addi
 ~Lv2~{"Name":"P6 Healer Group tether","Group":"DSR","ZoneLockH":[968],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":3356425984,"thicc":10.0,"refActorName":"YOUR HEALER'S NAME HERE","tether":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Akh Afah.","Jp":"フレースヴェルグは「アク・アファー」の構え。"}}]}
 ```
 
-[EN, JP] [Untested] Akh Afah north and south spots. Tip: enable tether to your designated spot.
+[EN, JP] Akh Afah north and south spots. Tip: enable tether to your designated spot.
 ```
 ~Lv2~{"Name":"DSR P6 Akh Afah spots / アク・アファー","Group":"DSR","DCond":5,"ElementsL":[{"Name":"N / 北側","refX":100.0,"refY":95.3,"radius":1.0,"thicc":5.0},{"Name":"S / 南側","refX":100.0,"refY":104.6,"refZ":-1.9073486E-06,"radius":1.0,"color":3372213760,"thicc":5.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"Nidhogg readies Akh Afah.","Jp":"フレースヴェルグは「アク・アファー」の構え。"}}],"Phase":2}
 ```
