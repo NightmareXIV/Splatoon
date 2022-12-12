@@ -18,26 +18,45 @@
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Stormblood/UCOB%20Heavensfall%20Trio%20Towers.cs
 ```
 
-[International] Exaflare telegraphs. You must import all 6.
+[International] Exaflare telegraphs: **all** upcoming explosions highlighted with yellow color. You must import all 6.
 ```
-~Lv2~{"Name":"UCOB Exaflares - 1","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":4.0,"IntervalBetweenFreezes":0.5}
-```
-```
-~Lv2~{"Name":"UCOB Exaflares - 2","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":8.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":5.7,"IntervalBetweenFreezes":0.5}
+~Lv2~{"Name":"UCOB Exaflares ALL - 1","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"radius":6.0,"color":1342242815,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":4.0,"IntervalBetweenFreezes":0.5}
 ```
 ```
-~Lv2~{"Name":"UCOB Exaflares - 3","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":16.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":7.2,"IntervalBetweenFreezes":0.5}
+~Lv2~{"Name":"UCOB Exaflares ALL - 2","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":8.0,"radius":6.0,"color":1342242815,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":5.7,"IntervalBetweenFreezes":0.5}
 ```
 ```
-~Lv2~{"Name":"UCOB Exaflares - 4","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":24.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":8.7,"IntervalBetweenFreezes":0.5}
+~Lv2~{"Name":"UCOB Exaflares ALL - 3","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":16.0,"radius":6.0,"color":1342242815,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":7.2,"IntervalBetweenFreezes":0.5}
 ```
 ```
-~Lv2~{"Name":"UCOB Exaflares - 5","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":32.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":10.2,"IntervalBetweenFreezes":0.5}
+~Lv2~{"Name":"UCOB Exaflares ALL - 4","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":24.0,"radius":6.0,"color":1342242815,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":8.7,"IntervalBetweenFreezes":0.5}
 ```
 ```
-~Lv2~{"Name":"UCOB Exaflares - 6","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":40.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":11.7,"IntervalBetweenFreezes":0.5}
+~Lv2~{"Name":"UCOB Exaflares ALL - 5","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":32.0,"radius":6.0,"color":1342242815,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":10.2,"IntervalBetweenFreezes":0.5}
+```
+```
+~Lv2~{"Name":"UCOB Exaflares ALL - 6","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":40.0,"radius":6.0,"color":1342242815,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":11.7,"IntervalBetweenFreezes":0.5}
 ```
 
+[International] Exaflare telegraphs: **two upcoming** explosions highlighted with red color. You must import all 6. *Combining with previous presets together, all future exaflares will be highlighted with yellow while two upcoming will be highlighted with orange.*
+```
+~Lv2~{"Name":"UCOB Exaflares next 2 - 1","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":4.0,"IntervalBetweenFreezes":0.5}
+```
+```
+~Lv2~{"Name":"UCOB Exaflares next 2 - 2","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":8.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":5.7,"IntervalBetweenFreezes":0.5}
+```
+```
+~Lv2~{"Name":"UCOB Exaflares next 2 - 3","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":16.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":7.2,"IntervalBetweenFreezes":0.5,"FreezeDisplayDelay":4.0}
+```
+```
+~Lv2~{"Name":"UCOB Exaflares next 2 - 4","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":24.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":8.7,"IntervalBetweenFreezes":0.5,"FreezeDisplayDelay":5.7}
+```
+```
+~Lv2~{"Name":"UCOB Exaflares next 2 - 5","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":32.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":10.2,"IntervalBetweenFreezes":0.5,"FreezeDisplayDelay":7.2}
+```
+```
+~Lv2~{"Name":"UCOB Exaflares next 2 - 6","Group":"UCOB","ZoneLockH":[733],"ElementsL":[{"Name":"","type":1,"offY":40.0,"radius":6.0,"color":1677721855,"refActorNPCNameID":3210,"refActorRequireCast":true,"refActorCastId":[9968],"refActorUseCastTime":true,"refActorCastTimeMax":0.25,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"Freezing":true,"FreezeFor":11.7,"IntervalBetweenFreezes":0.5,"FreezeDisplayDelay":8.7}
+```
 
 # Untested section
 [International] Unknown mechanic
