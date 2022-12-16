@@ -25,6 +25,14 @@
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Stormblood/UCOB%20Heavensfall%20Trio%20Towers.cs
 ```
 
+[EN] [Untested] Grand Octet. **Might conflict with Multipreset, testing is required.**
+```
+~Lv2~{"Name":"Octet Nael","Group":"Octet Bahamut and Twintania","ZoneLockH":[733],"ElementsL":[{"Name":"Nael Indication and Hitbox","type":3,"offY":50.0,"radius":4.0,"color":4278193407,"thicc":5.5,"refActorNPCID":2612,"refActorRequireCast":true,"refActorCastId":[9923],"FillStep":1.0,"refActorComparisonType":4,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Match":"Bahamut Prime readies Grand Octet."},{"Type":3,"Match":"Twintania readies Twisting Dive.","MatchDelay":5.0}]}
+```
+```
+~Lv2~{"Name":"On hitbox color change and movement - dodge.","Group":"Octet Bahamut and Twintania","ZoneLockH":[733],"ElementsL":[{"Name":"Bahamut Dive Hitbox","type":3,"refY":50.0,"radius":6.0,"color":536865792,"thicc":0.0,"refActorModelID":2113,"refActorComparisonType":1,"includeRotation":true,"onlyVisible":true},{"Name":"Twintania Dive Hitbox","type":3,"refY":50.0,"radius":4.0,"color":274385399,"thicc":2.7,"refActorModelID":226,"refActorComparisonType":1,"includeRotation":true},{"Name":"Bahamut Dive Lock-in Indication","type":3,"offY":50.0,"radius":6.0,"color":4294914816,"refActorNPCID":3210,"refActorRequireCast":true,"refActorCastId":[9953],"FillStep":0.75,"refActorComparisonType":4,"includeRotation":true},{"Name":"Twintania Dive Lock-in Indication","type":3,"offY":50.0,"radius":4.0,"color":4278217215,"refActorNPCID":1482,"refActorRequireCast":true,"refActorCastId":[9906],"FillStep":0.75,"refActorComparisonType":4,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Match":"Bahamut Prime readies Grand Octet.","MatchDelay":20.0},{"Type":3,"Match":"Twintania readies Twisting Dive.","MatchDelay":5.0}]}
+```
+
 # Golden Bahamut Prime
 Exaflare helper. Instruction: get close to first exaflare, **go into green box as soon as there will be free space**. Do not step into yellow circles.
 **IMPORT ALL PRESETS LISTED BELOW.**
