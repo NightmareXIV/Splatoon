@@ -25,6 +25,7 @@ namespace SplatoonScriptsOfficial.Generic
     public unsafe class ShowEmote : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new();
+        public override Metadata? Metadata => new(1, "NightmareXIV");
 
         delegate long OnEmoteFuncDelegate(IntPtr a1, GameObject* source, ushort emoteId, long targetId, long a5);
         [Signature("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 30 4C 8B 74 24 ?? 48 8B D9", DetourName = nameof(OnEmoteFuncDetour))]

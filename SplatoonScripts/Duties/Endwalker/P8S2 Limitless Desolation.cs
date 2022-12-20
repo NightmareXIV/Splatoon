@@ -20,6 +20,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
     {
         public override HashSet<uint> ValidTerritories => new() { 1088 }; //We need our script to work in P8S only.
         TickScheduler? Scheduler;
+        public override Metadata? Metadata => new(1, "NightmareXIV");
 
         public override void OnSetup()
         {

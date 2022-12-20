@@ -8,6 +8,7 @@ using Dalamud.Interface.Internal.Notifications;
 using ECommons;
 using ECommons.Events;
 using ECommons.GameFunctions;
+using ECommons.Hooks;
 using ECommons.LanguageHelpers;
 using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
@@ -83,7 +84,6 @@ public unsafe class Splatoon : IDalamudPlugin
     internal MapEffectProcessor mapEffectProcessor;
     internal TetherProcessor TetherProcessor;
     internal ObjectEffectProcessor ObjectEffectProcessor;
-    internal DirectorUpdateProcessor DirectorUpdateProcessor;
     internal HttpClient HttpClient;
 
     internal void Load(DalamudPluginInterface pluginInterface)
@@ -171,7 +171,7 @@ public unsafe class Splatoon : IDalamudPlugin
         mapEffectProcessor = new();
         TetherProcessor = new();
         ObjectEffectProcessor = new();
-        DirectorUpdateProcessor = new();
+        DirectorUpdate.Init(DirectorUpdateProcessor.ProcessDirectorUpdate);
         ProperOnLogin.Register(delegate
         {
             ScriptingProcessor.TerritoryChanged();
@@ -218,7 +218,6 @@ public unsafe class Splatoon : IDalamudPlugin
         Safe(mapEffectProcessor.Dispose);
         Safe(TetherProcessor.Dispose);
         Safe(ObjectEffectProcessor.Dispose);
-        Safe(DirectorUpdateProcessor.Dispose);
         AttachedInfo.Dispose();
         ScriptingProcessor.Dispose();
         ECommonsMain.Dispose();

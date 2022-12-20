@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using ECommons.Hooks;
+
 namespace Splatoon.SplatoonScripting;
 
 public abstract class SplatoonScript

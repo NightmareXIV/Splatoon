@@ -52,6 +52,14 @@ public class Element
     /// 5: Cone at fixed coordinates
     /// </summary>
     public int type;
+    /// <summary>
+    /// 0: Object at fixed coordinates |
+    /// 1: Object relative to actor position | 
+    /// 2: Line between two fixed coordinates | 
+    /// 3: Line relative to object pos | 
+    /// 4: Cone relative to object position |
+    /// 5: Cone at fixed coordinates
+    /// </summary>
     public Element(int t)
     {
         type = t;

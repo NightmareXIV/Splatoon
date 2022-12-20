@@ -18,6 +18,7 @@ internal static class TabContributors
         ImGuiEx.Text("LAMMY - presets"); Link("Github", "https://github.com/LAMMY-33");
         ImGuiEx.Text($"Ry - presets, battle data");
         ImGuiEx.Text($"Errer - presets");
+        ImGuiEx.Text($"Ouyk - presets");
     }
 
     static void Link(string preview, string Url)
