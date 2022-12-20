@@ -28,6 +28,11 @@ public class Controller
     public bool InCombat => Svc.Condition[ConditionFlag.InCombat];
 
     /// <summary>
+    /// Indicates phase of a battle.
+    /// </summary>
+    public int Phase => P.Phase;
+
+    /// <summary>
     /// Amount of seconds that have passed since combat start. Returns -1 if not in combat.
     /// </summary>
     public float CombatSeconds => InCombat ? (float)CombatMiliseconds / 1000f : -1;

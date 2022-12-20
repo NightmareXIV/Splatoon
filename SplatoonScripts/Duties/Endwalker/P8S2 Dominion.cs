@@ -6,6 +6,7 @@ using ECommons.ChatMethods;
 using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
+using ECommons.Hooks;
 using ECommons.ImGuiMethods;
 using ECommons.Logging;
 using ECommons.MathHelpers;
@@ -21,7 +22,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
     public class P8S2_Dominion : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1088 };
-        public override Metadata? Metadata => new(3, "NightmareXIV");
+        public override Metadata? Metadata => new(4, "NightmareXIV");
         int Stage = 0;
         List<uint> FirstPlayers = new();
         List<uint> SecondPlayers = new();
@@ -107,7 +108,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
 
         public override void OnDirectorUpdate(DirectorUpdateCategory category)
         {
-            if(category == DirectorUpdateCategory.Commence)
+            if(category == DirectorUpdateCategory.Commence || (category == DirectorUpdateCategory.Recommence && this.Controller.Phase == 2))
             {
                 SelfTest();
             }
