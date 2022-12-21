@@ -4,7 +4,7 @@ namespace Splatoon.Gui;
 
 class ChlogGui
 {
-    public const int ChlogVersion = 61;
+    public const int ChlogVersion = 62;
     readonly Splatoon p;
     bool open = true;
     internal bool openLoggedOut = false;
@@ -27,12 +27,7 @@ class ChlogGui
         ImGui.Begin("Splatoon has been updated".Loc(), ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
         ImGuiEx.Text(
 @"Attention!
-Please make sure that you have Dynamic resolution option - disabled.
-It's not compatible with Splatoon.");
-        if(ThreadLoadImageHandler.TryGetTextureWrap("https://user-images.githubusercontent.com/5073202/190628533-39274d6f-8b1b-4b22-8c5a-3bae84fb9b3e.png", out var t))
-        {
-            ImGui.Image(t.ImGuiHandle, new Vector2(t.Width, t.Height) / 2);
-        }
+This update brings breaking changes to the scripting system. \nPlease check that all your scripts are installed, updated, loaded and working.");
         if (ImGui.Button("Close this window".Loc()))
         {
             open = false;

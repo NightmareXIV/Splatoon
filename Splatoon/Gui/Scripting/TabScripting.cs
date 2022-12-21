@@ -8,6 +8,7 @@ namespace Splatoon.Gui.Scripting;
 
 internal static class TabScripting
 {
+    internal static volatile bool ForceUpdate = false;
     internal static void Draw()
     {
         if (ScriptingProcessor.ThreadIsRunning)
@@ -19,6 +20,8 @@ internal static class TabScripting
         }
         ImGuiEx.TextWrapped(ImGuiColors.DPSRed, $"Warning: scripting function is under alpha testing. Changes may come to the scripting system at any moment. Any scripts you write now may require manual updates later. There is no guarantee yet that all currently available methods will be kept. There is no guarantee that scripts which have been made now will keep working through further updates.".Loc());
         ImGuiEx.TextWrapped(ImGuiColors.DalamudOrange, "Please note that scripts have direct and unrestricted access to your PC and game. Ensure that you know what you're installing.".Loc());
+        ImGui.Checkbox($"Force Update".Loc(), ref ForceUpdate); ;
+        ImGui.SameLine();
         if(ImGui.Button("Clear cache, rescan directory and reload all scripts".Loc()))
         {
             var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "ScriptCache");

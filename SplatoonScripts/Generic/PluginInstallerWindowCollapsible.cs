@@ -12,6 +12,7 @@ namespace SplatoonScriptsOfficial.Generic
     public class PluginInstallerWindowCollapsible : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 0 };
+        public override Metadata? Metadata => new(1, "NightmareXIV");
 
         public override void OnSetup()
         {

@@ -1,5 +1,6 @@
 ﻿using ECommons.Hooks;
 using ECommons.LanguageHelpers;
+using Splatoon.Gui.Scripting;
 using System.Collections.Immutable;
 using System.Security.Cryptography;
 using System.Threading;
@@ -85,7 +86,7 @@ internal static class ScriptingProcessor
                     if (data.Length == 3 && int.TryParse(data[1], out var ver))
                     {
                         PluginLog.Debug($"Found new valid update data: {data[0]} v{ver} = {data[2]}");
-                        if(Scripts.Any(x => x.InternalData.FullName == data[0] && (x.Metadata?.Version ?? 0) < ver)) // possible CME
+                        if(Scripts.Any(x => x.InternalData.FullName == data[0] && ((x.Metadata?.Version ?? 0) < ver || TabScripting.ForceUpdate) )) // possible CME
                         {
                             PluginLog.Debug($"Adding  {data[2]} to download list");
                             Updates.Add(new(data[2]));

@@ -17,6 +17,7 @@ namespace SplatoonScriptsOfficial.Generic
     public class ActReminder : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new();
+        public override Metadata? Metadata => new(1, "NightmareXIV");
 
         public override void OnDirectorUpdate(DirectorUpdateCategory category)
         {
