@@ -22,7 +22,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
     public class P8S2_Dominion : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1088 };
-        public override Metadata? Metadata => new(5, "NightmareXIV");
+        public override Metadata? Metadata => new(6, "NightmareXIV");
         int Stage = 0;
         List<uint> FirstPlayers = new();
         List<uint> SecondPlayers = new();
@@ -229,21 +229,29 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker
             Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground("= Dominion self-test =", (ushort)UIColor.LightBlue).Build() });
             var people = GetPriority(true);
             var s = people.Count == 4;
-            foreach (var x in people)
+            if (people.ToHashSet().Count == 4)
             {
-                if (Svc.Objects.TryGetFirst(z => z is PlayerCharacter pc && pc.Name.ToString() == x, out var o))
+                foreach (var x in people)
                 {
-                    if (!IsRoleMatching((PlayerCharacter)o))
+                    if (Svc.Objects.TryGetFirst(z => z is PlayerCharacter pc && pc.Name.ToString() == x, out var o))
                     {
-                        DuoLog.Warning($"Role mismatch with {o.Name}");
+                        if (!IsRoleMatching((PlayerCharacter)o))
+                        {
+                            Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground($"Role mismatch with {o.Name}", (ushort)UIColor.Red).Build() });
+                            s = false;
+                        }
+                    }
+                    else
+                    {
+                        Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground($"Could not find player {x}", (ushort)UIColor.Red).Build() });
                         s = false;
                     }
                 }
-                else
-                {
-                    DuoLog.Warning($"Could not find player {x}");
-                    s = false;
-                }
+            }
+            else
+            {
+                Svc.Chat.PrintChat(new() { Message = new SeStringBuilder().AddUiForeground("Could not detect enough valid players", (ushort)UIColor.Red).Build() });
+                s = false;
             }
             if (s)
             {

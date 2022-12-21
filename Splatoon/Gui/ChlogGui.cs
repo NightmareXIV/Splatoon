@@ -1,10 +1,11 @@
 ﻿using ECommons.LanguageHelpers;
+using Splatoon.SplatoonScripting;
 
 namespace Splatoon.Gui;
 
 class ChlogGui
 {
-    public const int ChlogVersion = 62;
+    public const int ChlogVersion = 63;
     readonly Splatoon p;
     bool open = true;
     internal bool openLoggedOut = false;
@@ -27,7 +28,12 @@ class ChlogGui
         ImGui.Begin("Splatoon has been updated".Loc(), ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.AlwaysAutoResize);
         ImGuiEx.Text(
 @"Attention!
-This update brings breaking changes to the scripting system. \nPlease check that all your scripts are installed, updated, loaded and working.");
+This update brings breaking changes to the scripting system. 
+!!! Dominion script needs to be reinstalled manually if you have used it !!!");
+        if(ImGui.Button("Reinstall dominion script"))
+        {
+            ScriptingProcessor.DownloadScript("https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/P8S2%20Dominion.cs");
+        }
         if (ImGui.Button("Close this window".Loc()))
         {
             open = false;
