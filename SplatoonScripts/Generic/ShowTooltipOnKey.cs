@@ -21,21 +21,29 @@ namespace SplatoonScriptsOfficial.Generic
     public unsafe class ShowTooltipOnKey : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new();
-        public override Metadata? Metadata => new(1, "NightmareXIV");
+        public override Metadata? Metadata => new(2, "NightmareXIV");
 
         bool keyState = false;
         Config Conf = null!;
 
-        delegate long AtkTooltipManager_ShowNodeTooltip(long a1, byte a2, uint a3);
-        [Signature("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 20 41 8B F8 0F B6 F2 48 8B D9 E8 ?? ?? ?? ?? F6 80 ?? ?? ?? ?? ?? 74 0F 44 8B C7 40 0F B6 D6 48 8B CB E8 ?? ?? ?? ?? 48 8B 5C 24 ?? 48 8B 74 24 ?? 48 83 C4 20 5F C3 CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24", DetourName = nameof(AtkTooltipManager_ShowNodeTooltipDetour), Fallibility = Fallibility.Fallible)]
-        Hook<AtkTooltipManager_ShowNodeTooltip> AddonItemDetail_Show = null!;
+        delegate long AddonItemDetail_Show(long a1, byte a2, uint a3);
+        [Signature("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 20 41 8B F8 0F B6 F2 48 8B D9 E8 ?? ?? ?? ?? F6 80 ?? ?? ?? ?? ?? 74 0F 44 8B C7 40 0F B6 D6 48 8B CB E8 ?? ?? ?? ?? 48 8B 5C 24 ?? 48 8B 74 24 ?? 48 83 C4 20 5F C3 CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24", DetourName = nameof(AddonItemDetail_ShowDetour), Fallibility = Fallibility.Fallible)]
+        Hook<AddonItemDetail_Show> AddonItemDetail_ShowHook = null!;
 
-        long AtkTooltipManager_ShowNodeTooltipDetour(long a1, byte a2, uint a3)
+        long AddonItemDetail_ShowDetour(long a1, byte a2, uint a3)
         {
-            var ret = AddonItemDetail_Show.Original(a1, a2, a3);
-            if (!Bitmask.IsBitSet(User32.GetKeyState((int)Conf.Key), 15))
+            //DuoLog.Information($"{a1:X16}");
+            var ret = AddonItemDetail_ShowHook.Original(a1, a2, a3);
+            try
             {
-                ((AtkUnitBase*)a1)->Hide(false);
+                if (!Bitmask.IsBitSet(User32.GetKeyState((int)Conf.Key), 15))
+                {
+                    ((AtkUnitBase*)a1)->IsVisible = false;
+                }
+            }
+            catch(Exception e)
+            {
+                e.Log();
             }
             return ret;
         }
@@ -43,13 +51,13 @@ namespace SplatoonScriptsOfficial.Generic
         public override void OnEnable()
         {
             SignatureHelper.Initialise(this);
-            AddonItemDetail_Show?.Enable();
+            AddonItemDetail_ShowHook?.Enable();
         }
 
         public override void OnDisable()
         {
-            AddonItemDetail_Show?.Disable();
-            AddonItemDetail_Show?.Dispose();
+            AddonItemDetail_ShowHook?.Disable();
+            AddonItemDetail_ShowHook?.Dispose();
         }
 
         public override void OnSetup()
