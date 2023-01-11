@@ -25,6 +25,11 @@
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Stormblood/UCOB%20Heavensfall%20Trio%20Towers.cs
 ```
 
+[EN] After dodging the dives a ring will appear in the center, stand in the circle to reach the perfect knockback range without taking lethal damage from the heavensfall tower.
+```
+~Lv2~{"Name":"Heavensfall Knockback","Group":"UCOB","ZoneLockH":[733],"DCond":5,"ElementsL":[{"Name":"","refX":0.013264656,"refY":-0.29209137,"radius":9.74,"Donut":0.99}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":11.0,"Match":"Bahamut Prime readies Heavensfall Trio","MatchDelay":13.0}]}
+```
+
 [EN] [Untested] Grand Octet. **Might conflict with Multipreset, testing is required.**
 ```
 ~Lv2~{"Name":"Octet Nael","Group":"Octet Bahamut and Twintania","ZoneLockH":[733],"ElementsL":[{"Name":"Nael Indication and Hitbox","type":3,"offY":50.0,"radius":4.0,"color":4278193407,"thicc":5.5,"refActorNPCID":2612,"refActorRequireCast":true,"refActorCastId":[9923],"FillStep":1.0,"refActorComparisonType":4,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Match":"Bahamut Prime readies Grand Octet."},{"Type":3,"Match":"Twintania readies Twisting Dive.","MatchDelay":5.0}]}
