@@ -27,19 +27,35 @@ namespace Splatoon.SplatoonScripting
             var references = new List<MetadataReference>();
             foreach (var f in Directory.GetFiles(Path.GetDirectoryName(typeof(object).Assembly.Location), "*", SearchOption.TopDirectoryOnly))
             {
-                if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
+                if (IsValidAssembly(f))
+                {
+                    PluginLog.Debug($"Adding reference: {f}");
+                    references.Add(MetadataReference.CreateFromFile(f));
+                }
             }
             foreach (var f in Directory.GetFiles(Path.GetDirectoryName(typeof(System.Windows.Forms.Form).Assembly.Location), "*", SearchOption.TopDirectoryOnly))
             {
-                if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
+                if (IsValidAssembly(f))
+                {
+                    PluginLog.Debug($"Adding reference: {f}");
+                    references.Add(MetadataReference.CreateFromFile(f));
+                }
             }
             foreach (var f in Directory.GetFiles(Svc.PluginInterface.AssemblyLocation.DirectoryName, "*", SearchOption.AllDirectories))
             {
-                if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
+                if (IsValidAssembly(f))
+                {
+                    PluginLog.Debug($"Adding reference: {f}");
+                    references.Add(MetadataReference.CreateFromFile(f));
+                }
             }
             foreach (var f in Directory.GetFiles(Path.GetDirectoryName(Svc.PluginInterface.GetType().Assembly.Location), "*", SearchOption.AllDirectories))
             {
-                if (IsValidAssembly(f)) references.Add(MetadataReference.CreateFromFile(f));
+                if (IsValidAssembly(f))
+                {
+                    PluginLog.Debug($"Adding reference: {f}");
+                    references.Add(MetadataReference.CreateFromFile(f));
+                }
             }
             return references.ToImmutableList();
         }
