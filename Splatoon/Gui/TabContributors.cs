@@ -16,9 +16,10 @@ internal static class TabContributors
         ImGuiEx.Text("FrostEffects - presets"); Link("Carrd", "https://frostffxiv.carrd.co/");
         ImGuiEx.Text("莫灵喵 - presets");
         ImGuiEx.Text("LAMMY - presets"); Link("Github", "https://github.com/LAMMY-33");
-        ImGuiEx.Text($"Ry - presets, battle data");
-        ImGuiEx.Text($"Errer - presets");
+        ImGuiEx.Text($"Ry - colorblind focus, battle data");
+        ImGuiEx.Text($"Errer - presets"); Link("Github", "https://github.com/Errerer/");
         ImGuiEx.Text($"Ouyk - presets");
+        ImGuiEx.Text($"Exnter - presets"); Link("Github", "https://github.com/Exnter/");
     }
 
     static void Link(string preview, string Url)
