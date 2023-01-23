@@ -186,24 +186,32 @@ internal static class ScriptingProcessor
                     {
                         try
                         {
-                            var md5 = MD5.HashData(Encoding.UTF8.GetBytes(result.code)).Select(x=>$"{x:X2}").Join("");
-                            var cacheFile = Path.Combine(dir, $"{md5}-{P.loader.splatoonVersion}.bin");
-                            PluginLog.Information($"Cache path: {cacheFile}");
                             byte[] code = null;
-                            if (File.Exists(cacheFile))
+                            if (!P.Config.DisableScriptCache)
                             {
-                                PluginLog.Information($"Loading from cache...");
-                                code = File.ReadAllBytes(cacheFile);
+                                var md5 = MD5.HashData(Encoding.UTF8.GetBytes(result.code)).Select(x => $"{x:X2}").Join("");
+                                var cacheFile = Path.Combine(dir, $"{md5}-{P.loader.splatoonVersion}.bin");
+                                PluginLog.Information($"Cache path: {cacheFile}");
+                                if (File.Exists(cacheFile))
+                                {
+                                    PluginLog.Information($"Loading from cache...");
+                                    code = File.ReadAllBytes(cacheFile);
+                                }
+                                else
+                                {
+                                    PluginLog.Information($"Compiling...");
+                                    code = Compiler.Compile(result.code, result.path == null ? "" : Path.GetFileNameWithoutExtension(result.path));
+                                    if (code != null)
+                                    {
+                                        File.WriteAllBytes(cacheFile, code);
+                                        PluginLog.Information($"Compiled and saved");
+                                    }
+                                }
                             }
                             else
-                            {                                    
-                                PluginLog.Information($"Compiling...");
-                                code = Compiler.Compile(result.code, result.path == null?"":Path.GetFileNameWithoutExtension(result.path));
-                                if (code != null)
-                                {
-                                    File.WriteAllBytes(cacheFile, code);
-                                    PluginLog.Information($"Compiled and saved");
-                                }
+                            {
+                                PluginLog.Information($"Compiling, cache bypassed...");
+                                code = Compiler.Compile(result.code, result.path == null ? "" : Path.GetFileNameWithoutExtension(result.path));
                             }
                             if (code != null)
                             {

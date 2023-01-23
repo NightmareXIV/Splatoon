@@ -178,6 +178,7 @@ partial class CGui
         ImGui.Checkbox("Use hexadecimal numbers".Loc(), ref p.Config.Hexadecimal);
         ImGui.Checkbox("Enable tether on Splatoon find command".Loc(), ref p.Config.TetherOnFind);
         ImGui.Checkbox("Force show Splatoon's UI when game UI is hidden".Loc(), ref p.Config.ShowOnUiHide);
+        ImGui.Checkbox("Disable script cache".Loc(), ref p.Config.DisableScriptCache);
         Svc.PluginInterface.UiBuilder.DisableUserUiHide = p.Config.ShowOnUiHide;
         //ImGui.Checkbox("Always compare names directly (debug option, ~4x performance loss)", ref p.Config.DirectNameComparison);
         if(ImGui.Button("Open backup directory".Loc()))

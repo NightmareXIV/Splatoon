@@ -53,6 +53,7 @@ class Configuration : IPluginConfiguration
     public bool NoCircleFix = false;
 
     public HashSet<string> DisabledScripts = new();
+    public bool DisableScriptCache = false;
 
     public bool ShouldSerializeLayouts()
     {
