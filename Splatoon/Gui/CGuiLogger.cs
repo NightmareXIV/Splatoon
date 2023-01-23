@@ -26,10 +26,11 @@ internal partial class CGui
         ImGui.SameLine();
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
         ImGui.InputText("##filterLog", ref LoggerSearch, 100);
-        ImGui.BeginTable("##logObjects", 13, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
+        ImGui.BeginTable("##logObjects", 14, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit);
         ImGui.TableSetupColumn("Object name".Loc(), ImGuiTableColumnFlags.WidthStretch);
         ImGui.TableSetupColumn("Type".Loc());
         ImGui.TableSetupColumn("Object ID".Loc());
+        ImGui.TableSetupColumn("OID Long".Loc());
         ImGui.TableSetupColumn("Data ID".Loc());
         ImGui.TableSetupColumn("Model ID".Loc());
         ImGui.TableSetupColumn("NPC ID".Loc());
@@ -47,6 +48,7 @@ internal partial class CGui
             i++;
             var mid = !x.Value.IsChar ? "--" : $"{x.Key.ModelID.Format()}";
             var oid = x.Key.ObjectID == 0xE0000000 ? "--" : $"{x.Key.ObjectID.Format()}";
+            var oidl = $"{x.Key.ObjectIDLong.Format()}";
             var did = x.Key.DataID == 0 ? "--" : $"{x.Key.DataID.Format()}";
             var npcid = $"{x.Key.NPCID.Format()}";
             var nameid = !x.Value.IsChar ? "--" : $"{x.Key.NameID.Format()}";
@@ -55,6 +57,7 @@ internal partial class CGui
                 if (!x.Key.Name.ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
                     && !x.Key.type.ToString().Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
                     && !oid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
+                    && !oidl.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
                     && !did.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
                     && !mid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)
                     && !nameid.Contains(LoggerSearch, StringComparison.OrdinalIgnoreCase)) continue;
@@ -84,6 +87,8 @@ internal partial class CGui
                     SearchAttribute = 2
                 });
             }
+            ImGui.TableNextColumn();
+            ImGuiEx.TextCopy(oidl);
             ImGui.TableNextColumn();
             ImGuiEx.TextCopy(did);
             ImGui.TableNextColumn();

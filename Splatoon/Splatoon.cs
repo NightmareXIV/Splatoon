@@ -57,7 +57,7 @@ public unsafe class Splatoon : IDalamudPlugin
     internal HashSet<string> CurrentChatMessages = new();
     internal Element Clipboard = null;
     internal int dequeueConcurrency = 1;
-    internal Dictionary<(string Name, uint ObjectID, uint DataID, int ModelID, uint NPCID, uint NameID, ObjectKind type), ObjectInfo> loggedObjectList = new();
+    internal Dictionary<(string Name, uint ObjectID, long ObjectIDLong, uint DataID, int ModelID, uint NPCID, uint NameID, ObjectKind type), ObjectInfo> loggedObjectList = new();
     internal bool LogObjects = false;
     internal bool DisableLineFix = false;
     private int phase = 1;
@@ -376,7 +376,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 foreach(var t in Svc.Objects)
                 {
                     var ischar = t is Character;
-                    var obj = (t.Name.ToString(), t.ObjectId, t.DataId, ischar ? ((Character)t).Struct()->ModelCharaId : 0, t.Struct()->GetNpcID(), ischar ? ((Character)t).NameId : 0, t.ObjectKind);
+                    var obj = (t.Name.ToString(), t.ObjectId, t.Struct()->GetObjectID(), t.DataId, ischar ? ((Character)t).Struct()->ModelCharaId : 0, t.Struct()->GetNpcID(), ischar ? ((Character)t).NameId : 0, t.ObjectKind);
                     loggedObjectList.TryAdd(obj, new ObjectInfo());
                     loggedObjectList[obj].ExistenceTicks++;
                     loggedObjectList[obj].IsChar = ischar;

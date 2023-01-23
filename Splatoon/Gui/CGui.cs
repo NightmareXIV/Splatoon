@@ -103,7 +103,7 @@ unsafe partial class CGui:IDisposable
                     ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X - RightWidth);
                     RightWidth = ImGuiEx.Measure(delegate
                     {
-                        ImGui.SetNextItemWidth(100f);
+                        ImGui.SetNextItemWidth(80f);
                         if (ImGui.BeginCombo("##phaseSelector", $"Phase ??".Loc(p.Phase)))
                         {
                             if (ImGui.Selectable("Phase 1 (doorboss)".Loc())) p.Phase = 1;
@@ -118,7 +118,9 @@ unsafe partial class CGui:IDisposable
                             }
                             ImGui.EndCombo();
                         }
-                    });
+                        ImGui.SameLine();
+                        KoFiButton.DrawButton();
+                    }, false);
                     ImGui.SetCursorPos(curCursor);
 
                     ImGuiEx.EzTabBar("SplatoonSettings",
@@ -138,7 +140,7 @@ unsafe partial class CGui:IDisposable
                             ("Profiling".Loc(), DisplayProfiling, null, true)
                             );
                         }, null, true),
-                        ("Contribute".Loc(), Contribute.Draw, ImGuiColors.ParsedGold, true),
+                        ("Contribute".Loc(), Contribute.Draw, null, true),
                         ("Contributors".Loc(), TabContributors.Draw, null, true)
                         );
                 }

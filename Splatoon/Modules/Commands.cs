@@ -51,6 +51,18 @@ class Commands : IDisposable
                     p.Log(e.Message);
                 }
             }
+            else if (arguments.StartsWith("toggle "))
+            {
+                try
+                {
+                    var name = arguments.Substring(arguments.IndexOf("toggle ") + 7);
+                    SwitchState(name, null);
+                }
+                catch (Exception e)
+                {
+                    p.Log(e.Message);
+                }
+            }
             else if (arguments.StartsWith("settarget "))
             {
                 try
@@ -88,6 +100,7 @@ class Commands : IDisposable
         })
         {
             HelpMessage = "open Splatoon configuration menu \n" +
+            "/splatoon toggle <PresetName> → toggle specified preset \n" +
             "/splatoon disable <PresetName> → disable specified preset \n" +
             "/splatoon enable <PresetName> → enable specified preset"
         });
@@ -138,7 +151,7 @@ class Commands : IDisposable
         });
     }
 
-    internal void SwitchState(string name, bool enable, bool web = false)
+    internal void SwitchState(string name, bool? enable, bool web = false)
     {
         try
         {
@@ -150,7 +163,7 @@ class Commands : IDisposable
                     if (web && x.DisableDisabling) continue;
                     foreach (var z in x.ElementsL.Where(z => z.Name == aname[1]))
                     {
-                        z.Enabled = enable;
+                        z.Enabled = enable ?? !z.Enabled;
                     }
                 }
             }
@@ -159,7 +172,7 @@ class Commands : IDisposable
                 foreach (var x in P.Config.LayoutsL.Where(x => x.Name == name))
                 {
                     if (web && x.DisableDisabling) continue;
-                    x.Enabled = enable;
+                    x.Enabled = enable ?? !x.Enabled;
                 }
             }
         }
