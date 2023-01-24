@@ -1,6 +1,7 @@
 ﻿using ECommons;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
+using Lumina.Excel.GeneratedSheets;
 using Splatoon.Memory;
 using Splatoon.Utils;
 
@@ -21,6 +22,25 @@ unsafe partial class CGui
     void DisplayDebug()
     {
         ImGui.BeginChild("##splatoonmaindbg");
+        if(ImGui.CollapsingHeader("CFC debug"))
+        {
+            try
+            {
+                foreach(var x in Svc.Data.GetExcelSheet<TerritoryType>())
+                {
+                    var n = x.ContentFinderCondition.Value?.Name?.ToString();
+                    if (!n.IsNullOrEmpty())
+                    {
+                        ImGuiEx.Text($"{n}");
+                        ImGui.SameLine();
+                        ImGui.SetCursorPosX(400f);
+                        ImGuiEx.Text($"{x.ContentFinderCondition.Value.ContentType}");
+                        ImGui.Separator();
+                    }
+                }
+            }
+            catch(Exception e) { e.Log(); }
+        }
         ImGui.Checkbox("Disable line fix", ref p.DisableLineFix);
         ImGuiEx.Text($"Line segments: {P.CurrentLineSegments}");
         {
