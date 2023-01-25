@@ -3,7 +3,9 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using ECommons.Configuration;
 using ECommons.GameFunctions;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 #nullable enable
 namespace Splatoon.SplatoonScripting;
 
@@ -177,6 +179,38 @@ public class Controller
     public bool TryUnregisterElement(string name)
     {
         return Elements.Remove(name);
+    }
+
+    public void RegisterElement(string UniqueName, Element element, bool overwrite = false) 
+    {
+        if(!TryRegisterElement(UniqueName, element, overwrite))
+        {
+            throw new InvalidOperationException($"RegisterElement failed: Could not register element {UniqueName}");
+        }
+    }
+
+    public Element RegisterElementFromCode(string UniqueName, string ExportString, bool overwrite = false)
+    {
+        if(TryRegisterElementFromCode(UniqueName, ExportString, out var ret, overwrite))
+        {
+            return ret;
+        }
+        else
+        {
+            throw new InvalidOperationException($"RegisterElementFromCode failed: Could not register element {UniqueName}");
+        }
+    }
+
+    public Element? GetElementByName(string name)
+    {
+        if(TryGetElementByName(name, out var ret))
+        {
+            return ret;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /// <summary>

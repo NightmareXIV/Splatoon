@@ -465,6 +465,21 @@ internal static class ScriptingProcessor
         }
     }
 
+    internal static void OnObjectCreation(nint newObjectPointer)
+    {
+        for (var i = 0; i < Scripts.Count; i++)
+        {
+            if (Scripts[i].IsEnabled)
+            {
+                try
+                {
+                    Scripts[i].OnObjectCreation(newObjectPointer);
+                }
+                catch (Exception e) { e.Log(); }
+            }
+        }
+    }
+
     internal static void TerritoryChanged()
     {
         for (var i = 0; i < Scripts.Count; i++)

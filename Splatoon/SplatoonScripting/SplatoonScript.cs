@@ -124,6 +124,8 @@ public abstract class SplatoonScript
     /// <param name="category">Director update category</param>
     public virtual void OnDirectorUpdate(DirectorUpdateCategory category) { }
 
+    public virtual void OnObjectCreation(nint newObjectPtr) { }
+
     /// <summary>
     /// Will be called every framework update. You can execute general logic of your script here. 
     /// </summary>

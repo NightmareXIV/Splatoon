@@ -183,6 +183,7 @@ public unsafe class Splatoon : IDalamudPlugin
         };
         ScriptingProcessor.TerritoryChanged();
         ScriptingProcessor.ReloadAll();
+        ObjectLife.OnObjectCreation = ScriptingProcessor.OnObjectCreation;
         Init = true;
         SplatoonIPC.Init();
     }
