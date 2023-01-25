@@ -31,17 +31,24 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     public unsafe class Program_Loop : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
-        public override Metadata? Metadata => new(4, "NightmareXIV");
+        public override Metadata? Metadata => new(7, "NightmareXIV");
         Config Conf => Controller.GetConfig<Config>();
         HashSet<uint> TetheredPlayers = new();
         List<uint> Towers = new();
         List<uint> TowerOrder = new();
         List<uint> TetherOrder = new();
+        string NewPlayer = "";
 
 
         public override void OnSetup()
         {
             SetupElements();
+            if(Conf.PlayerToSwap != "")
+            {
+                Conf.Swappers.Add(Conf.PlayerToSwap);
+                Conf.PlayerToSwap = "";
+                Controller.SaveConfig();
+            }
         }
 
         void SetupElements()
@@ -87,7 +94,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             if(items.Length >= 2)
             {
                 var omega = GetOmega();
-                if(Conf.Debug)
+                if(Conf.Debug && Conf.Towers != TowerStartPoint.Disable_towers)
                 {
                     var cTowers = Towers.TakeLast(2).ToArray();
                     if (cTowers.Length == 2)
@@ -97,7 +104,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             {
                                 e.Enabled = true;
                                 e.refActorObjectID = cTowers[0];
-                                e.overlayText = Conf.Debug?$"{(MathHelper.GetRelativeAngle(new(100f, 100f), cTowers[0].GetObject().Position.ToVector2()) + 360 - 45) % 360}":"";
+                                e.overlayText = Conf.Debug?$"{GetTowerAngle(cTowers[0].GetObject())}":"";
                             }
                         }
                         {
@@ -105,7 +112,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             {
                                 e.Enabled = true;
                                 e.refActorObjectID = cTowers[1];
-                                e.overlayText = Conf.Debug?$"{(MathHelper.GetRelativeAngle(new(100f, 100f), cTowers[1].GetObject().Position.ToVector2()) + 360 - 45) % 360}":"";
+                                e.overlayText = Conf.Debug?$"{GetTowerAngle(cTowers[1].GetObject())}":"";
                             }
                         }
                     }
@@ -180,7 +187,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     }
                 }
                 {
-                    if(Controller.TryGetElementByName("SelfTower", out var e))
+                    if(Conf.Towers != TowerStartPoint.Disable_towers && Controller.TryGetElementByName("SelfTower", out var e))
                     {
                         if (IsTakingCurrentTower(Svc.ClientState.LocalPlayer.ObjectId))
                         {
@@ -188,16 +195,16 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             e.color = GradientColor.Get(Conf.TowerColor1, Conf.TowerColor2).ToUint();
                             e.overlayBGColor = e.color;
                             e.overlayTextColor = Conf.OverlayTextColor.ToUint();
-                            var currentTowers = Towers.GetPairNumber(GetCurrentMechanicStep()).OrderBy(x => (MathHelper.GetRelativeAngle(new(100f, 100f), x.GetObject().Position.ToVector2()) + 360-45) % 360).ToArray();
+                            var currentTowers = Towers.GetPairNumber(GetCurrentMechanicStep()).OrderBy(x => GetTowerAngle(x.GetObject())).ToArray();
                             if(currentTowers.Length == 2)
                             {
-                                if(!Conf.PlayerToSwap.IsNullOrEmpty() && Svc.Objects.Any(x => x is PlayerCharacter pc && pc.Name.ToString() == Conf.PlayerToSwap && pc.StatusList.Any(z => z.StatusId == GetDebuffByNumber(GetCurrentMechanicStep()) ) ) )
+                                if(Conf.Swappers.Count != 0 && Svc.Objects.Any(x => x is PlayerCharacter pc && pc.Name.ToString().EqualsAny(Conf.Swappers) && pc.StatusList.Any(z => z.StatusId == GetDebuffByNumber(GetCurrentMechanicStep()) ) ) )
                                 {
-                                    e.refActorObjectID = currentTowers[Conf.MyDirection == Direction.Counter_clockwise ? 1 : 0];
+                                    e.refActorObjectID = currentTowers[Conf.MyDirection == Direction.Counter_clockwise ? 0 : 1];
                                 }
                                 else
                                 {
-                                    e.refActorObjectID = currentTowers[Conf.MyDirection == Direction.Counter_clockwise ? 0 : 1];
+                                    e.refActorObjectID = currentTowers[Conf.MyDirection == Direction.Counter_clockwise ? 1 : 0];
                                 }
                             }
                         }
@@ -219,6 +226,16 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 Controller.GetElementByName("dbg2").Enabled = false;
                 if (Controller.TryGetLayoutByName("Proximity", out var l)){l.Enabled = false;}
             }
+        }
+
+        float GetTowerAngle(GameObject x)
+        {
+            var firstTower =
+                Conf.Towers == TowerStartPoint.Start_NorthEast ? 45 :
+                Conf.Towers == TowerStartPoint.Start_SouthEast ? 45 + 90 :
+                Conf.Towers == TowerStartPoint.Start_SouthWest ? 45 + 90*2 :
+                Conf.Towers == TowerStartPoint.Start_NorthWest ? 45 + 90*3 : throw new Exception("There is a problem in GetTowerAngle function");
+            return (MathHelper.GetRelativeAngle(new(100f, 100f), x.Position.ToVector2()) + 360 - firstTower) % 360;
         }
 
         bool IsTakingCurrentTether(uint p)
@@ -356,16 +373,49 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             ImGui.Separator();
 
             ImGuiEx.Text($"Towers:");
+            ImGui.SetNextItemWidth(200f);
+            ImGuiEx.EnumCombo($"Tower handling", ref Conf.Towers);
             ImGui.SetNextItemWidth(150f);
-            ImGuiEx.EnumCombo("My tower direction, starting from NorthEast", ref Conf.MyDirection);
-            ImGuiEx.Text($"My tower swap partner (leave empty if you are non-swap):");
-            ImGui.SetNextItemWidth(150f);
-            ImGui.InputText($"##swap", ref Conf.PlayerToSwap, 50);
+            ImGuiEx.EnumCombo("My tower direction", ref Conf.MyDirection);
+            
+            ImGuiEx.Text($"If one of these players have same debuff as I, invert direction:");
+            var toRem = -1;
+            for (int i = 0; i < Conf.Swappers.Count; i++)
+            {
+                ImGui.SetCursorPosX(30);
+                ImGuiEx.Text($"{Conf.Swappers[i]}");
+                ImGui.SameLine();
+                if (ImGui.SmallButton("Delete##"+i))
+                {
+                    toRem = i;
+                }
+            }
+            if(toRem != -1)
+            {
+                Conf.Swappers.RemoveAt(toRem);
+            }
+            ImGui.SetCursorPosX(30);
+            if(ImGui.Button("Add new player"))
+            {
+                ImGui.OpenPopup("Addplayer");
+            }
+            if (ImGui.BeginPopup("Addplayer"))
+            {
+                ImGui.SetNextItemWidth(150f);
+                ImGui.InputTextWithHint("##newplayer", "Name without world", ref NewPlayer, 50);
+                ImGui.SameLine();
+                if (ImGui.Button("Add"))
+                {
+                    Conf.Swappers.Add(NewPlayer);
+                    NewPlayer = "";
+                }
+                ImGui.EndPopup();
+            }
             ImGui.SameLine();
             ImGui.SetNextItemWidth(120f);
             if (ImGui.BeginCombo("##partysel","Select from party"))
             {
-                FakeParty.Get().Each((x) => { if (ImGui.Selectable(x.Name.ToString())) Conf.PlayerToSwap = x.Name.ToString(); });
+                FakeParty.Get().Each((x) => { if (ImGui.Selectable(x.Name.ToString())) Conf.Swappers.Add(x.Name.ToString()); });
                 ImGui.EndCombo();
             }
             ImGui.ColorEdit4("Primary tower color", ref Conf.TowerColor1, ImGuiColorEditFlags.NoInputs);
@@ -391,7 +441,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 TetherOrder.Each(x => ImGuiEx.Text($"Tether order: {x.GetObject()}"));
                 TowerOrder.Each(x => ImGuiEx.Text($"Tower order: {x.GetObject()}"));
                 ImGuiEx.Text($"GetCurrentMechanicStep() {GetCurrentMechanicStep()}");
-                Towers.Each(x => ImGuiEx.Text($"Towers: {x.GetObject()?.Position.ToString() ?? "unk position"} {MathHelper.GetRelativeAngle(new(100, 100), x.GetObject().Position.ToVector2())}"));
+                Towers.Each(x => ImGuiEx.Text($"Towers: {x.GetObject()?.Position.ToString() ?? "unk position"}"));
             }
         }
 
@@ -409,11 +459,14 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             public float InvalidOverlayScale = 2f;
             public bool ShowAOEAlways = false;
             public string PlayerToSwap = "";
+            public List<string> Swappers = new();
             public Direction MyDirection = Direction.Counter_clockwise;
             public bool Debug = false;
+            public TowerStartPoint Towers = TowerStartPoint.Start_NorthEast;
         }
 
         public enum Direction { Clockwise, Counter_clockwise}
+        public enum TowerStartPoint { Disable_towers, Start_NorthEast, Start_SouthEast, Start_SouthWest, Start_NorthWest}
     }
 
     internal static class ProgramLoopExtensions
