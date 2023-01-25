@@ -10,6 +10,7 @@ using ECommons.GameFunctions;
 using ECommons.Hooks;
 using ECommons.ImGuiMethods;
 using ECommons.Logging;
+using ECommons.Schedulers;
 using ImGuiNET;
 using Splatoon.SplatoonScripting;
 using System;
@@ -189,23 +190,32 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public override void OnObjectCreation(nint newObjectPtr)
         {
-            var obj = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)newObjectPtr;
-            if(obj->DataID == 2013244)
+            new TickScheduler(delegate
             {
-                PluginLog.Information($"Tower spawned {obj->Position}");
-                Towers.Add(obj->ObjectID);
-                if(TowerOrder.Count == 0)
+                var obj = Svc.Objects.FirstOrDefault(x => x.Address == newObjectPtr);
+                if (obj != null)
                 {
-                    GetPlayersWithNumber(1).Each(x => TowerOrder.Add(x.ObjectId));
-                    GetPlayersWithNumber(2).Each(x => TowerOrder.Add(x.ObjectId));
-                    GetPlayersWithNumber(3).Each(x => TowerOrder.Add(x.ObjectId));
-                    GetPlayersWithNumber(4).Each(x => TowerOrder.Add(x.ObjectId));
-                    GetPlayersWithNumber(3).Each(x => TetherOrder.Add(x.ObjectId));
-                    GetPlayersWithNumber(4).Each(x => TetherOrder.Add(x.ObjectId));
-                    GetPlayersWithNumber(1).Each(x => TetherOrder.Add(x.ObjectId));
-                    GetPlayersWithNumber(2).Each(x => TetherOrder.Add(x.ObjectId));
+                    if (obj.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)
+                    {
+                        PluginLog.Information($"Event obj spawn: {obj} {obj.DataId}");
+                    }
+                    if (obj.DataId == 2013244)
+                    {
+                        Towers.Add(obj.DataId);
+                        if (TowerOrder.Count == 0)
+                        {
+                            GetPlayersWithNumber(1).Each(x => TowerOrder.Add(x.ObjectId));
+                            GetPlayersWithNumber(2).Each(x => TowerOrder.Add(x.ObjectId));
+                            GetPlayersWithNumber(3).Each(x => TowerOrder.Add(x.ObjectId));
+                            GetPlayersWithNumber(4).Each(x => TowerOrder.Add(x.ObjectId));
+                            GetPlayersWithNumber(3).Each(x => TetherOrder.Add(x.ObjectId));
+                            GetPlayersWithNumber(4).Each(x => TetherOrder.Add(x.ObjectId));
+                            GetPlayersWithNumber(1).Each(x => TetherOrder.Add(x.ObjectId));
+                            GetPlayersWithNumber(2).Each(x => TetherOrder.Add(x.ObjectId));
+                        }
+                    }
                 }
-            }
+            });
         }
 
         public override void OnMessage(string Message)
@@ -286,6 +296,16 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 SetupElements();
             }
             ImGui.Checkbox($"Display AOE under incorrect tether", ref Conf.ShowAOEAlways);
+            ImGui.SetNextItemWidth(120f);
+            ImGui.InputText($"My tower swap partner (leave empty if you are non-swap)", ref Conf.PlayerToSwap, 50);
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(120f);
+            if (ImGui.BeginCombo("##partysel","Select from party"))
+            {
+                FakeParty.Get().Each((x) => { if (ImGui.Selectable(x.Name.ToString())) Conf.PlayerToSwap = x.Name.ToString(); });
+                ImGui.EndCombo();
+            }
+
             if (ImGui.CollapsingHeader("Debug"))
             {
                 foreach(var x in TetheredPlayers)
@@ -296,7 +316,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 TetherOrder.Each(x => ImGuiEx.Text($"Tether order: {x.GetObject()}"));
                 TowerOrder.Each(x => ImGuiEx.Text($"Tower order: {x.GetObject()}"));
                 ImGuiEx.Text($"GetCurrentMechanicStep() {GetCurrentMechanicStep()}");
-                Towers.Each(x => ImGuiEx.Text($"Towers: {x.GetObject()}"));
+                Towers.Each(x => ImGuiEx.Text($"Towers: {x.GetObject()?.Position}"));
             }
         }
 
@@ -304,7 +324,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         {
             public Vector4 TetherAOECol = new(0f, 0f, 1f, 0.3f);
             public bool ShowAOEAlways = false;
+            public string PlayerToSwap = "";
+            public Direction MyDirection = Direction.Counter_clockwise;
         }
+
+        public enum Direction { Clockwise, Counter_clockwise}
     }
 
     internal static class ProgramLoopExtensions

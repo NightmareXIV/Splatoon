@@ -260,7 +260,7 @@ public class Controller
     /// Retrieve valid and visible party members. Non cross-world parties only. Duty recorder supported.
     /// </summary>
     /// <returns>Enumberator of PlayerCharacter objects.</returns>
-    public IEnumerator<PlayerCharacter> GetPartyMembers()
+    public IEnumerable<PlayerCharacter> GetPartyMembers()
     {
         return FakeParty.Get();
     }
