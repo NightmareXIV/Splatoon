@@ -244,7 +244,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     {
                         PluginLog.Information($"Event obj spawn: {obj} {obj.DataId}");
                     }
-                    if (obj.DataId == 2013244)
+                    if (obj.DataId == 2013244 && GetOmega() != null)
                     {
                         Towers.Add(obj.ObjectId);
                         if (TowerOrder.Count == 0)
