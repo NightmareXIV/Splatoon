@@ -31,7 +31,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     public unsafe class Program_Loop : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
-        public override Metadata? Metadata => new(2, "NightmareXIV");
+        public override Metadata? Metadata => new(3, "NightmareXIV");
         Config Conf => Controller.GetConfig<Config>();
         HashSet<uint> TetheredPlayers = new();
         List<uint> Towers = new();
@@ -47,55 +47,15 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         void SetupElements()
         {
             Controller.Clear();
-            Controller.RegisterElement("dbg1", new(1) { Enabled = false, refActorComparisonType = 2, overlayVOffset = 1, radius = 3f, color = 0xFFFFFF00 });
-            Controller.RegisterElement("dbg2", new(1) { Enabled = false, refActorComparisonType = 2, overlayVOffset = 1, radius = 3f, color = 0xFFFFFF00 });
-            Controller.RegisterElement("TetherAOE1", new(1)
-            {
-                color = Conf.TetherAOECol.ToUint(),
-                refActorComparisonType = 2,
-                onlyTargetable = true,
-                Filled = true,
-                Enabled = false,
-                radius = 16f
-            });
-            Controller.RegisterElement("TetherAOE2", new(1)
-            {
-                color = Conf.TetherAOECol.ToUint(),
-                refActorComparisonType = 2,
-                onlyTargetable = true,
-                Filled = true,
-                Enabled = false,
-                radius = 16f
-            });
-            Controller.RegisterElement("Tether1", new(2)
-            {
-                thicc = 5f,
-                radius = 0f
-            });
-            Controller.RegisterElement("Tether2", new(2)
-            {
-                thicc = 5f,
-                radius = 0f
-            });
-            Controller.RegisterElement("SelfTetherReminder", new(1)
-            {
-                Enabled = false,
-                refActorType = 1,
-                radius = 0,
-                overlayVOffset = 2f,
-                overlayTextColor = ImGuiColors.DalamudWhite.ToUint()
-            });
-            Controller.RegisterElement("SelfTower", new(1)
-            {
-                Enabled = false,
-                refActorComparisonType = 2,
-                radius = 3f,
-                thicc = 7f,
-                overlayText = "Take tower",
-                overlayTextColor = 0xFF000000,
-                tether = true,
-                overlayBGColor = ImGuiColors.ParsedPink.ToUint()
-            });
+            Controller.RegisterElement("dbg1", new(1) { Enabled = false, refActorComparisonType = 2, overlayVOffset = 1, radius = 3f, color = Conf.TowerColor1.ToUint() });
+            Controller.RegisterElement("dbg2", new(1) { Enabled = false, refActorComparisonType = 2, overlayVOffset = 1, radius = 3f, color = Conf.TowerColor1.ToUint() });
+            Controller.RegisterElement("TetherAOE1", new(1) { color = Conf.TetherAOECol.ToUint(), refActorComparisonType = 2, onlyTargetable = true, Filled = true, Enabled = false, radius = 16f });
+            Controller.RegisterElement("TetherAOE2", new(1) { color = Conf.TetherAOECol.ToUint(), refActorComparisonType = 2, onlyTargetable = true, Filled = true, Enabled = false, radius = 16f });
+            Controller.RegisterElement("Tether1", new(2) { thicc = 5f, radius = 0f });
+            Controller.RegisterElement("Tether2", new(2) { thicc = 5f, radius = 0f });
+            Controller.RegisterElement("SelfTetherReminder", new(1) { Enabled = false, refActorType = 1, radius = 0, overlayVOffset = 2f, overlayTextColor = ImGuiColors.DalamudWhite.ToUint() });
+            Controller.RegisterElement("SelfTower", new(1) { Enabled = false, refActorComparisonType = 2, radius = 3f, thicc = 7f, overlayText = "Take tower", overlayTextColor = 0xFF000000, tether = true, overlayBGColor = ImGuiColors.ParsedPink.ToUint() });
+            Controller.TryRegisterLayoutFromCode("Proximity", "~Lv2~{\"Enabled\":false,\"Name\":\"Proximity\",\"Group\":\"\",\"ZoneLockH\":[1122],\"ElementsL\":[{\"Name\":\"\",\"type\":1,\"radius\":0.0,\"color\":4278129920,\"thicc\":4.0,\"refActorPlaceholder\":[\"<2>\",\"<3>\",\"<4>\",\"<5>\",\"<6>\",\"<7>\",\"<8>\"],\"refActorComparisonType\":5,\"tether\":true}],\"MaxDistance\":16.2,\"UseDistanceLimit\":true,\"DistanceLimitType\":1}", out _);
         }
 
         public override void OnUpdate()
@@ -158,20 +118,30 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             e.Enabled = true;
                             if (items.Contains(Svc.ClientState.LocalPlayer.ObjectId))
                             {
-                                e.overlayBGColor = ImGuiColors.HealerGreen.ToUint();
+                                e.overlayBGColor = Conf.ValidTetherColor.ToUint();
+                                e.overlayTextColor = Conf.OverlayTextColor.ToUint();
                                 e.overlayFScale = 1;
                                 e.overlayText = "Tether";
+                                if (Conf.UseProximity && Controller.TryGetLayoutByName("Proximity", out var l))
+                                {
+                                    l.ElementsL[0].color = Conf.ProximityColor.ToUint();
+                                    l.Enabled = true;
+                                }
                             }
                             else
                             {
-                                e.overlayBGColor = GradientColor.Get(ImGuiColors.DalamudRed, ImGuiColors.DalamudYellow, 500).ToUint();
-                                e.overlayTextColor = 0xFF000000;
-                                e.overlayFScale = 2;
+                                e.overlayBGColor = GradientColor.Get(Conf.InvalidTetherColor1, Conf.InvalidTetherColor2, 500).ToUint();
+                                e.overlayTextColor = Conf.OverlayTextColor.ToUint();
+                                e.overlayFScale = Conf.InvalidOverlayScale;
                                 e.overlayText = "!!! PICK UP TETHER !!!";
                             }
                         }
                         else
                         {
+                            if (Controller.TryGetLayoutByName("Proximity", out var l))
+                            {
+                                l.Enabled = false;
+                            }
                             e.Enabled = false;
                         }
                     }
@@ -189,7 +159,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         e.Enabled = true;
                         e.SetRefPosition(omega.Position);
                         e.SetOffPosition(items[0].GetObject().Position);
-                        e.color = (IsTakingCurrentTether(items[0]) ? ImGuiColors.ParsedGreen : GradientColor.Get(ImGuiColors.DalamudYellow, ImGuiColors.DalamudRed, 500)).ToUint();
+                        e.color = (IsTakingCurrentTether(items[0]) ? Conf.ValidTetherColor : GradientColor.Get(Conf.InvalidTetherColor1, Conf.InvalidTetherColor2, 500)).ToUint();
                     }
                 }
                 {
@@ -205,7 +175,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         e.Enabled = true;
                         e.SetRefPosition(omega.Position);
                         e.SetOffPosition(items[1].GetObject().Position);
-                        e.color = (IsTakingCurrentTether(items[1]) ? ImGuiColors.ParsedGreen : GradientColor.Get(ImGuiColors.DalamudRed, ImGuiColors.DalamudYellow, 500)).ToUint();
+                        e.color = (IsTakingCurrentTether(items[1]) ? Conf.ValidTetherColor : GradientColor.Get(Conf.InvalidTetherColor1, Conf.InvalidTetherColor2, 500)).ToUint();
                     }
                 }
                 {
@@ -214,7 +184,9 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         if (IsTakingCurrentTower(Svc.ClientState.LocalPlayer.ObjectId))
                         {
                             e.Enabled = true;
-                            e.color = GradientColor.Get(ImGuiColors.ParsedGreen, 0xFFFFFF00.ToVector4()).ToUint();
+                            e.color = GradientColor.Get(Conf.TowerColor1, Conf.TowerColor2).ToUint();
+                            e.overlayBGColor = e.color;
+                            e.overlayTextColor = Conf.OverlayTextColor.ToUint();
                             var currentTowers = Towers.GetPairNumber(GetCurrentMechanicStep()).OrderBy(x => (MathHelper.GetRelativeAngle(new(100f, 100f), x.GetObject().Position.ToVector2()) + 360-45) % 360).ToArray();
                             if(currentTowers.Length == 2)
                             {
@@ -244,6 +216,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 Controller.GetElementByName("SelfTetherReminder").Enabled = false;
                 Controller.GetElementByName("dbg1").Enabled = false;
                 Controller.GetElementByName("dbg2").Enabled = false;
+                if (Controller.TryGetLayoutByName("Proximity", out var l)){l.Enabled = false;}
             }
         }
 
@@ -362,15 +335,31 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public override void OnSettingsDraw()
         {
-            if(ImGui.ColorEdit4("Tether's AOE color", ref Conf.TetherAOECol, ImGuiColorEditFlags.NoInputs))
-            {
-                SetupElements();
-            }
+            ImGuiEx.Text($"Tethers:");
+            ImGui.ColorEdit4("Tether's AOE color", ref Conf.TetherAOECol, ImGuiColorEditFlags.NoInputs);
+            ImGui.ColorEdit4("Valid tether color", ref Conf.ValidTetherColor, ImGuiColorEditFlags.NoInputs);
+            ImGui.ColorEdit4("##Invalid1", ref Conf.InvalidTetherColor1, ImGuiColorEditFlags.NoInputs);
+            ImGui.SameLine();
+            ImGui.ColorEdit4("Invalid tether colors", ref Conf.InvalidTetherColor2, ImGuiColorEditFlags.NoInputs);
+            ImGui.SetNextItemWidth(100f);
+            ImGui.SliderFloat("Invalid tether reminder size", ref Conf.InvalidOverlayScale.ValidateRange(1, 5), 1, 5);
+            ImGui.ColorEdit4("Invalid tether reminder color", ref Conf.OverlayTextColor, ImGuiColorEditFlags.NoInputs);
             ImGui.Checkbox($"Display AOE under incorrect tether", ref Conf.ShowAOEAlways);
+            ImGui.Checkbox($"Tether AOE proximity detector", ref Conf.UseProximity);
+            if (Conf.UseProximity)
+            {
+                ImGui.SameLine();
+                ImGui.ColorEdit4("Proximity circle color", ref Conf.ProximityColor, ImGuiColorEditFlags.NoInputs);
+            }
+
+            ImGui.Separator();
+
+            ImGuiEx.Text($"Towers:");
             ImGui.SetNextItemWidth(150f);
             ImGuiEx.EnumCombo("My tower direction, starting from NorthEast", ref Conf.MyDirection);
-            ImGui.SetNextItemWidth(120f);
-            ImGui.InputText($"My tower swap partner (leave empty if you are non-swap)", ref Conf.PlayerToSwap, 50);
+            ImGuiEx.Text($"My tower swap partner (leave empty if you are non-swap):");
+            ImGui.SetNextItemWidth(150f);
+            ImGui.InputText($"##swap", ref Conf.PlayerToSwap, 50);
             ImGui.SameLine();
             ImGui.SetNextItemWidth(120f);
             if (ImGui.BeginCombo("##partysel","Select from party"))
@@ -378,6 +367,17 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 FakeParty.Get().Each((x) => { if (ImGui.Selectable(x.Name.ToString())) Conf.PlayerToSwap = x.Name.ToString(); });
                 ImGui.EndCombo();
             }
+            ImGui.ColorEdit4("Primary tower color", ref Conf.TowerColor1, ImGuiColorEditFlags.NoInputs);
+            ImGui.SameLine();
+            ImGui.ColorEdit4("Secondary tower color", ref Conf.TowerColor2, ImGuiColorEditFlags.NoInputs);
+
+            ImGui.Separator();
+            if(ImGui.Button("Apply settings"))
+            {
+                this.SetupElements();
+            }
+
+            ImGui.Separator();
 
             if (ImGui.CollapsingHeader("Debug"))
             {
@@ -397,6 +397,15 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         public class Config : IEzConfig
         {
             public Vector4 TetherAOECol = new(0f, 0f, 1f, 0.3f);
+            public Vector4 TowerColor1 = 0xFFFF00FF.ToVector4();
+            public Vector4 TowerColor2 = 0xFFFFFF00.ToVector4();
+            public Vector4 ValidTetherColor = ImGuiColors.ParsedGreen;
+            public Vector4 InvalidTetherColor1 = ImGuiColors.DalamudOrange;
+            public Vector4 InvalidTetherColor2 = ImGuiColors.DalamudRed;
+            public Vector4 OverlayTextColor = 0xFF000000.ToVector4();
+            public bool UseProximity = false;
+            public Vector4 ProximityColor = ImGuiColors.ParsedBlue;
+            public float InvalidOverlayScale = 2f;
             public bool ShowAOEAlways = false;
             public string PlayerToSwap = "";
             public Direction MyDirection = Direction.Counter_clockwise;
@@ -411,22 +420,22 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         internal static IEnumerable<T> GetPairNumber<T>(this IEnumerable<T> e, int n)
         {
             var s = e.ToArray();
-            if (n == 1)
+            if (n == 1 && s.Length >=2)
             {
                 yield return s[0];
                 yield return s[1];
             }
-            if (n == 2)
+            if (n == 2 && s.Length >= 4)
             {
                 yield return s[2];
                 yield return s[3];
             }
-            if (n == 3)
+            if (n == 3 && s.Length >= 6)
             {
                 yield return s[4];
                 yield return s[5];
             }
-            if (n == 4)
+            if (n == 4 && s.Length >= 8)
             {
                 yield return s[6];
                 yield return s[7];
