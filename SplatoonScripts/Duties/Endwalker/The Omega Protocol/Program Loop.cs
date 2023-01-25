@@ -87,6 +87,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             if(items.Length >= 2)
             {
                 var omega = GetOmega();
+                if(Conf.Debug)
                 {
                     var cTowers = Towers.TakeLast(2).ToArray();
                     if (cTowers.Length == 2)
