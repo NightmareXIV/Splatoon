@@ -41,6 +41,11 @@
 ~Lv2~{"Name":"P2 - Optmized Fire III","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":7.0,"color":1174470625,"refActorType":1,"Filled":true},{"Name":"Others","type":1,"radius":7.0,"color":3355508705,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"Match":"(7635>31550)","MatchDelay":15.0}],"MaxDistance":7.2,"UseDistanceLimit":true,"DistanceLimitType":1}
 ```
 
+[International] Glitch type reminder
+```
+~Lv2~{"Name":"P2 - glitch type reminder","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"Mid","type":1,"radius":0.0,"overlayBGColor":4278255370,"overlayTextColor":3355443200,"overlayVOffset":3.0,"overlayFScale":1.5,"thicc":0.0,"overlayText":">>> CLOSE <<<","refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3427],"refActorUseBuffTime":true,"refActorBuffTimeMax":20.0,"refActorType":1},{"Name":"Far","type":1,"radius":0.0,"overlayBGColor":4278190335,"overlayTextColor":3355443200,"overlayVOffset":3.0,"overlayFScale":1.5,"thicc":0.0,"overlayText":"<<< FAR >>>","refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3428],"refActorUseBuffTime":true,"refActorBuffTimeMax":20.0,"refActorType":1}]}
+```
+
 P2 Omega-F Kick back / 吹飛安全点
 ```
 ~Lv2~{"Name":"P2 Omega-F Kick back / 吹飛安全点","Group":"Omega / 絶オメガ検証戦","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"31521 - 鋼鉄","type":4,"radius":10.0,"coneAngleMin":-269,"coneAngleMax":90,"color":2516647908,"overlayBGColor":2483027968,"overlayTextColor":4280024832,"overlayVOffset":2.0,"thicc":4.0,"refActorNPCNameID":7633,"FillStep":1.798,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":11.0,"Match":"(7640>31521)","MatchDelay":2.0}]}
