@@ -934,7 +934,13 @@ public unsafe class Splatoon : IDalamudPlugin
             (ignoreVisibility || !e.onlyVisible || (a is Character chr && chr.IsCharacterVisible()))
             && (!e.refActorRequireCast || (e.refActorCastId.Count > 0 && a is BattleChara chr2 && IsCastingMatches(e, chr2)))
             && (!e.refActorRequireBuff || (e.refActorBuffId.Count > 0 && a is BattleChara chr3 && CheckEffect(e, chr3)))
+            && (!e.refActorUseTransformation || (a is BattleChara chr4 && CheckTransformationID(e, chr4)))
             && (!e.LimitRotation || (a.Rotation >= e.RotationMax && a.Rotation <= e.RotationMin));
+    }
+
+    static bool CheckTransformationID(Element e, Character c)
+    {
+        return e.refActorTransformationID == c.GetTransformationID();
     }
 
     static bool IsCastingMatches(Element e, BattleChara chr)
@@ -1143,7 +1149,8 @@ public unsafe class Splatoon : IDalamudPlugin
                     .Replace("$DISTANCE", $"{Vector3.Distance((Svc.ClientState.LocalPlayer?.Position ?? Vector3.Zero), go.Position):F1}")
                     .Replace("$CAST", go is BattleChara chr3?$"[{chr3.CastActionId.Format()}] {chr3.CurrentCastTime}/{chr3.TotalCastTime}":"")
                     .Replace("\\n", "\n")
-                    .Replace("$VFXID", $"{(go is Character chr4 ? chr4.GetStatusVFXId() : 0).Format()}");
+                    .Replace("$VFXID", $"{(go is Character chr4 ? chr4.GetStatusVFXId() : 0).Format()}")
+                    .Replace("$TRANSFORM", $"{(go is Character chr5 ? chr5.GetTransformationID() : 0).Format()}");
             }
             displayObjects.Add(new DisplayObjectText(cx, cy, z + e.offZ + e.overlayVOffset, text, e.overlayBGColor, e.overlayTextColor, e.overlayFScale));
         }

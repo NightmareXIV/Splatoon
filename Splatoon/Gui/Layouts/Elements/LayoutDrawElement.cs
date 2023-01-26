@@ -542,6 +542,16 @@ unsafe partial class CGui
                         ImGuiEx.Text("(in seconds)".Loc());
                     }
                 }
+
+                SImGuiEx.SizedText("Transformation ID:".Loc(), WidthElement);
+                ImGui.SameLine();
+                ImGui.Checkbox("##trans" + i + k, ref el.refActorUseTransformation);
+                if (el.refActorUseTransformation)
+                {
+                    ImGui.SameLine();
+                    ImGui.SetNextItemWidth(100f);
+                    ImGui.InputInt("##transid" + i + k, ref el.refActorTransformationID);
+                }
             }
 
             if (el.type.EqualsAny(0, 2, 3, 5))
