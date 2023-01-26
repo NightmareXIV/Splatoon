@@ -17,9 +17,23 @@
 ~Lv2~{"Name":"P2 Eye ray 24 / 眼睛直線激光 2 4","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"1","type":2,"refX":83.40503,"refY":83.29182,"offX":114.622086,"offY":114.61661,"offZ":-5.456968E-12,"radius":8.0,"color":1677787135,"FillStep":0.2}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":3.5,"Match":"MapEffect: 8, 1, 2","MatchDelay":8.0},{"Type":2,"Duration":3.5,"Match":"MapEffect: 4, 1, 2","MatchDelay":8.0}]}
 ```
 
-[International] Playstation chain extender. Displays chain markers until mechanics resolves.
+[International] Playstation chain extender. Displays chain markers above all players until mechanics resolves.
 ```
 ~Lv2~{"Name":"P2 - Playstation Extender","Group":"TOP","ZoneLockH":[1122,990],"ElementsL":[{"Name":"","type":1,"radius":0.0,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":0.0,"overlayText":"","refActorComparisonType":7,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_01c.avfx","refActorVFXMin":7000,"refActorVFXMax":15000},{"Name":"","type":1,"radius":0.0,"overlayBGColor":0,"overlayTextColor":4290904258,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":0.0,"overlayText":"","refActorComparisonType":7,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_03c.avfx","refActorVFXMin":7000,"refActorVFXMax":15000},{"Name":"","type":1,"radius":0.0,"overlayBGColor":0,"overlayTextColor":4294932224,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":0.0,"overlayText":"","refActorComparisonType":7,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_04c.avfx","refActorVFXMin":7000,"refActorVFXMax":15000},{"Name":"","type":1,"radius":0.0,"overlayBGColor":0,"overlayTextColor":4278236428,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":0.0,"overlayText":"","refActorComparisonType":7,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_02c.avfx","refActorVFXMin":7000,"refActorVFXMax":15000}]}
+```
+
+[International] Dedicated playstation marker and tether for you + your partner for the whole duration of mechanic. Import all presets. Requires Splatoon v3.2.0.8+.
+```
+~Lv2~{"Name":"P2 - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4278190259,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_01c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_01c.avfx spawned on me npc"}]}
+```
+```
+~Lv2~{"Name":"P2 - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4290904258,"overlayBGColor":0,"overlayTextColor":4290904258,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_03c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_03c.avfx spawned on me npc"}]}
+```
+```
+~Lv2~{"Name":"P2 - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4294932224,"overlayBGColor":0,"overlayTextColor":4294932224,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_04c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_04c.avfx spawned on me npc"}]}
+```
+```
+~Lv2~{"Name":"P2 - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4278236428,"overlayBGColor":0,"overlayTextColor":4278236428,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_02c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_02c.avfx spawned on me npc"}]}
 ```
 
 P2 Omega-F Kick back / 吹飛安全点
