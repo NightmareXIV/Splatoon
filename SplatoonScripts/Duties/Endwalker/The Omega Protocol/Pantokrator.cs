@@ -1,8 +1,13 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
+using ECommons;
+using ECommons.Configuration;
 using ECommons.DalamudServices;
+using ECommons.Events;
 using ECommons.GameFunctions;
+using ECommons.ImGuiMethods;
 using ECommons.MathHelpers;
+using ImGuiNET;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
@@ -15,37 +20,80 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
     public class Pantokrator : SplatoonScript
     {
+        public override Metadata? Metadata => new(1, "NightmareXIV");
         public override HashSet<uint> ValidTerritories => new() { 1122 };
         BattleChara? Omega => Svc.Objects.FirstOrDefault(x => x is BattleChara o && o.NameId == 7695 && o.IsTargetable()) as BattleChara;
 
         //  Condensed Wave Cannon Kyrios (3508), Remains = 9.6, Param = 0, Count = 0
-        const uint Laser = 3508;
         //  Guided Missile Kyrios Incoming (3497), Remains = 21.6, Param = 0, Count = 0
-        const uint Rocket = 3497;
         const uint FirstInLine = 3004;
+
+        GameObject[] Lasers => Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(z => z.StatusId.EqualsAny<uint>(3507, 3508, 3509, 3510) && z.RemainingTime <= 6f)).ToArray();
+        GameObject[] Rockets => Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(z => z.StatusId.EqualsAny<uint>(3424, 3495, 3496, 3497) && (z.RemainingTime <= 6f || pc.StatusList.Any(c => c.StatusId == FirstInLine)))).ToArray();
 
         public override void OnSetup()
         {
-            Controller.RegisterElement("Laser1", new(2) { Enabled = false, color = 0xDAFFFF00, radius = 4f, refX = 100f, refY = 100f });
-            Controller.RegisterElement("Laser2", new(2) { Enabled = false, color = 0xDAFFFF00, radius = 4f, refX = 100f, refY = 100f });
+            Controller.RegisterElement("Laser1", new(2) { Enabled = false, radius = 4f, refX = 100f, refY = 100f });
+            Controller.RegisterElement("Laser2", new(2) { Enabled = false, radius = 4f, refX = 100f, refY = 100f });
+            Controller.RegisterElement("Rocket1", new(0) { Enabled = false, radius = 5f, Filled = true });
+            Controller.RegisterElement("Rocket2", new(0) { Enabled = false, radius = 5f, Filled = true });
         }
 
         public override void OnUpdate()
         {
-            if (!Omega) return;
-            var lasers = Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(z => z.StatusId == Laser && z.RemainingTime <= 6f)).ToArray();
-            var rockets = Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(z => z.StatusId == Rocket && (z.RemainingTime <= 6f || pc.StatusList.Any(c => c.StatusId == FirstInLine)))).ToArray();
-            if(lasers.Length == 2)
+            if (!Omega || !ProperOnLogin.PlayerPresent) return;
+            
+            if(Lasers.Length == 2)
             {
-                Controller.GetElementByName("Laser1").Enabled = true;
-                Controller.GetElementByName("Laser2").Enabled = true;
-                var angle = MathHelper.GetRelativeAngle(new(100f, 100f), lasers[0].Position.ToVector2());
-                var point = RotatePoint(100f, 100f, angle, new())
+                void EnableLaser(int which)
+                {
+                    var e = Controller.GetElementByName($"Laser{which+1}");
+                    var angle = GetRelativeAngleRad(new(100f, 100f), Lasers[which].Position.ToVector2());
+                    var point = RotatePoint(100f, 100f, angle, new(100f, 130f, 0f));
+                    e.Enabled = true;
+                    if (Lasers[which].Address == Svc.ClientState.LocalPlayer.Address)
+                    {
+                        e.color = Controller.GetConfig<Config>().LaserColSelf.ToUint();
+                    }
+                    else
+                    {
+                        e.color = Controller.GetConfig<Config>().LaserCol.ToUint() ;
+                    }
+                    e.offX = point.X;
+                    e.offY = point.Y;
+                }
+                EnableLaser(0);
+                EnableLaser(1);
             }
             else
             {
                 Controller.GetElementByName("Laser1").Enabled = false;
                 Controller.GetElementByName("Laser2").Enabled = false;
+            }
+
+            if (Rockets.Length == 2)
+            {
+                void EnableRocket(int which)
+                {
+                    var e = Controller.GetElementByName($"Rocket{which + 1}");
+                    e.Enabled = true;
+                    if (Rockets[which].Address == Svc.ClientState.LocalPlayer.Address)
+                    {
+                        e.color = Controller.GetConfig<Config>().RocketColSelf.ToUint();
+                    }
+                    else
+                    {
+                        e.color = Controller.GetConfig<Config>().RocketCol.ToUint();
+                    }
+                    e.SetRefPosition(Rockets[which].Position);
+                }
+                EnableRocket(0);
+                EnableRocket(1);
+            }
+            else
+            {
+                Controller.GetElementByName("Rocket1").Enabled = false;
+                Controller.GetElementByName("Rocket2").Enabled = false;
             }
         }
 
@@ -67,6 +115,41 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             p.X = xnew + cx;
             p.Y = ynew + cy;
             return p;
+        }
+
+        float GetRelativeAngleRad(Vector2 origin, Vector2 target)
+        {
+            var vector2 = target - origin;
+            var vector1 = new Vector2(0, 1);
+            return ((MathF.Atan2(vector2.Y, vector2.X) - MathF.Atan2(vector1.Y, vector1.X)));
+        }
+
+        public override void OnSettingsDraw()
+        {
+            ImGui.ColorEdit4("Self laser color", ref Controller.GetConfig<Config>().LaserColSelf);
+            ImGui.ColorEdit4("Others laser color", ref Controller.GetConfig<Config>().LaserCol);
+            ImGui.ColorEdit4("Self rocket color", ref Controller.GetConfig<Config>().RocketColSelf);
+            ImGui.ColorEdit4("Others rocket color", ref Controller.GetConfig<Config>().RocketCol);
+            if(ImGui.Button("Apply settings"))
+            {
+                Controller.Clear();
+                this.OnSetup();
+            }
+            if (ImGui.CollapsingHeader("Debug"))
+            {
+                ImGuiEx.Text($"Lasers: ");
+                Lasers.Each(x => ImGuiEx.Text($"{x}"));
+                ImGuiEx.Text($"Rockets: ");
+                Rockets.Each(x => ImGuiEx.Text($"{x}"));
+            }
+        }
+
+        public class Config : IEzConfig
+        {
+            public Vector4 LaserColSelf = 0x500000FFu.ToVector4();
+            public Vector4 LaserCol = 0x50FFFF00u.ToVector4();
+            public Vector4 RocketColSelf = 0x500000FFu.ToVector4();
+            public Vector4 RocketCol = 0x50FFFF00u.ToVector4();
         }
     }
 }
