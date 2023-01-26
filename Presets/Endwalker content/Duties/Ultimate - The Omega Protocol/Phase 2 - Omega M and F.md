@@ -17,6 +17,11 @@
 ~Lv2~{"Name":"P2 Eye ray 24 / 眼睛直線激光 2 4","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"1","type":2,"refX":83.40503,"refY":83.29182,"offX":114.622086,"offY":114.61661,"offZ":-5.456968E-12,"radius":8.0,"color":1677787135,"FillStep":0.2}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":3.5,"Match":"MapEffect: 8, 1, 2","MatchDelay":8.0},{"Type":2,"Duration":3.5,"Match":"MapEffect: 4, 1, 2","MatchDelay":8.0}]}
 ```
 
+[International] Playstation chain extender. Displays chain markers until mechanics resolves.
+```
+~Lv2~{"Name":"P2 - Playstation Extender","Group":"TOP","ZoneLockH":[1122,990],"ElementsL":[{"Name":"","type":1,"radius":0.0,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":0.0,"overlayText":"","refActorComparisonType":7,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_01c.avfx","refActorVFXMin":7000,"refActorVFXMax":15000},{"Name":"","type":1,"radius":0.0,"overlayBGColor":0,"overlayTextColor":4290904258,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":0.0,"overlayText":"","refActorComparisonType":7,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_03c.avfx","refActorVFXMin":7000,"refActorVFXMax":15000},{"Name":"","type":1,"radius":0.0,"overlayBGColor":0,"overlayTextColor":4294932224,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":0.0,"overlayText":"","refActorComparisonType":7,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_04c.avfx","refActorVFXMin":7000,"refActorVFXMax":15000},{"Name":"","type":1,"radius":0.0,"overlayBGColor":0,"overlayTextColor":4278236428,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":0.0,"overlayText":"","refActorComparisonType":7,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_02c.avfx","refActorVFXMin":7000,"refActorVFXMax":15000}]}
+```
+
 P2 Omega-F Kick back / 吹飛安全点
 ```
 ~Lv2~{"Name":"P2 Omega-F Kick back / 吹飛安全点","Group":"Omega / 絶オメガ検証戦","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"31521 - 鋼鉄","type":4,"radius":10.0,"coneAngleMin":-269,"coneAngleMax":90,"color":2516647908,"overlayBGColor":2483027968,"overlayTextColor":4280024832,"overlayVOffset":2.0,"thicc":4.0,"refActorNPCNameID":7633,"FillStep":1.798,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":11.0,"Match":"(7640>31521)","MatchDelay":2.0}]}
