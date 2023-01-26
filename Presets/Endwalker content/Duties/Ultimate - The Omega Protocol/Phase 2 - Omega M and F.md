@@ -46,7 +46,7 @@
 ~Lv2~{"Name":"P2 - glitch type reminder","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"Mid","type":1,"radius":0.0,"overlayBGColor":4278255370,"overlayTextColor":3355443200,"overlayVOffset":3.0,"overlayFScale":1.5,"thicc":0.0,"overlayText":">>> CLOSE <<<","refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3427],"refActorUseBuffTime":true,"refActorBuffTimeMax":20.0,"refActorType":1},{"Name":"Far","type":1,"radius":0.0,"overlayBGColor":4278190335,"overlayTextColor":3355443200,"overlayVOffset":3.0,"overlayFScale":1.5,"thicc":0.0,"overlayText":"<<< FAR >>>","refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3428],"refActorUseBuffTime":true,"refActorBuffTimeMax":20.0,"refActorType":1}]}
 ```
 
-P2 Omega-F Kick back / 吹飛安全点
+[International] Omega-M aoe attack (stacks)
 ```
-~Lv2~{"Name":"P2 Omega-F Kick back / 吹飛安全点","Group":"Omega / 絶オメガ検証戦","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"31521 - 鋼鉄","type":4,"radius":10.0,"coneAngleMin":-269,"coneAngleMax":90,"color":2516647908,"overlayBGColor":2483027968,"overlayTextColor":4280024832,"overlayVOffset":2.0,"thicc":4.0,"refActorNPCNameID":7633,"FillStep":1.798,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":11.0,"Match":"(7640>31521)","MatchDelay":2.0}]}
+~Lv2~{"Name":"P2 - Omega-M aoe","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":10.5,"color":1342242815,"refActorDataID":15714,"refActorComparisonType":3,"onlyVisible":true,"Filled":true},{"Name":"","type":1,"radius":10.5,"color":1342242815,"refActorDataID":15713,"refActorComparisonType":3,"onlyVisible":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":12.0,"Match":"(7635>31550)","MatchDelay":20.0}]}
 ```
