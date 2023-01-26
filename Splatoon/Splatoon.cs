@@ -352,6 +352,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 {
                     t.FiredState = 0;
                     l.TriggerCondition = 0;
+                    t.Disabled = false;
                     t.EnableAt.Clear();
                     t.DisableAt.Clear();
                 }
@@ -1307,7 +1308,7 @@ public unsafe class Splatoon : IDalamudPlugin
             foreach (var t in i.Triggers)
             {
                 if (t.FiredState == 2) continue;
-                if (t.Type == 2 || t.Type == 3)
+                if ((t.Type == 2 || t.Type == 3) && !t.Disabled)
                 {
                     foreach (var CurrentChatMessage in CurrentChatMessages)
                     {
@@ -1332,6 +1333,10 @@ public unsafe class Splatoon : IDalamudPlugin
                             else
                             {
                                 i.TriggerCondition = t.Type == 2 ? 1 : -1;
+                            }
+                            if (t.FireOnce)
+                            {
+                                t.Disabled = true;
                             }
                         }
                     }

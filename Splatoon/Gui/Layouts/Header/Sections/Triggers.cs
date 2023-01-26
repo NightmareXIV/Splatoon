@@ -33,6 +33,11 @@ internal static class Triggers
                 ImGui.Checkbox("Territory change".Loc(), ref layout.Triggers[n].ResetOnTChange);
                 ImGui.SameLine();
                 ImGuiEx.Text("State: ".Loc() + layout.Triggers[n].FiredState);
+                if (layout.Triggers[n].Disabled)
+                {
+                    ImGui.SameLine();
+                    ImGuiEx.Text(ImGuiColors.DalamudRed, $"Disabled until reset");
+                }
                 if (layout.Triggers[n].Type == 0 || layout.Triggers[n].Type == 1)
                 {
                     ImGuiEx.TextV("Time: ".Loc());
@@ -57,6 +62,7 @@ internal static class Triggers
                     //ImGui.InputTextWithHint("##textinput1", "Case-insensitive message", ref layout.Triggers[n].Match, 1000);
 
                     //ImGui.SameLine();
+                    ImGui.Checkbox($"Only fire once until reset", ref layout.Triggers[n].FireOnce);
                     ImGuiEx.TextV("Delay: ".Loc());
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(50f);

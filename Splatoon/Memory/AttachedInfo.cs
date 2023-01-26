@@ -70,7 +70,7 @@ internal unsafe static class AttachedInfo
                 var obj = Svc.Objects.CreateObjectReference(a2);
                 if (obj is Character c)
                 {
-                    var text = $"VFX {vfxPath} spawned on {obj.Name.ToString()} npc id={obj.Struct()->GetNpcID()}, model id={c.Struct()->ModelCharaId}, name npc id={c.NameId}, position={obj.Position.ToString()}";
+                    var text = $"VFX {vfxPath} spawned on {(obj.Address == Svc.ClientState.LocalPlayer.Address?"me":obj.Name.ToString())} npc id={obj.Struct()->GetNpcID()}, model id={c.Struct()->ModelCharaId}, name npc id={c.NameId}, position={obj.Position.ToString()}";
                     P.ChatMessageQueue.Enqueue(text);
                     if(P.Config.Logging) Logger.Log(text);
                 }

@@ -21,6 +21,7 @@ public class Trigger
     [DefaultValue(0f)] public float MatchDelay = 0;
     [DefaultValue(true)] public bool ResetOnCombatExit = true;
     [DefaultValue(true)] public bool ResetOnTChange = true;
+    [DefaultValue(false)] public bool FireOnce = false;
     /// <summary>
     /// 0: not fired |
     /// 1: fired but not ended |
@@ -29,6 +30,7 @@ public class Trigger
     [NonSerialized] public int FiredState = 0;
     [NonSerialized] public List<long> EnableAt = new();
     [NonSerialized] public List<long> DisableAt = new();
+    [NonSerialized] internal bool Disabled = false;
     [DefaultValue(false)] public bool IsRegex = false;
 
     public bool ShouldSerializeMatchIntl()
