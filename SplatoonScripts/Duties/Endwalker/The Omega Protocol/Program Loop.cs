@@ -566,7 +566,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             public TowerStartPoint Towers = TowerStartPoint.Start_NorthEast;
             public bool DisplayTetherSafeSpots = false;
             public bool TetherSafeSpotEnableDetect = true;
-            public Vector4 TetherSafeSpotColor = 0xFFFFFFFF.ToVector4();
+            public Vector4 TetherSafeSpotColor = 0xFF000000.ToVector4();
         }
 
         public enum Direction { Clockwise, Counter_clockwise }
