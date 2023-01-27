@@ -29,7 +29,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         const uint FirstInLine = 3004;
 
         GameObject[] Lasers => Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(z => z.StatusId.EqualsAny<uint>(3507, 3508, 3509, 3510) && z.RemainingTime <= 6f)).ToArray();
-        GameObject[] Rockets => Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(z => z.StatusId.EqualsAny<uint>(3424, 3495, 3496, 3497) && (z.RemainingTime <= 6f || pc.StatusList.Any(c => c.StatusId == FirstInLine)))).ToArray();
+        GameObject[] Rockets => Svc.Objects.Where(x => x is PlayerCharacter pc && pc.StatusList.Any(z => z.StatusId.EqualsAny<uint>(3424, 3495, 3496, 3497) && (z.RemainingTime <= 6f))).ToArray();
 
         public override void OnSetup()
         {
@@ -137,6 +137,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             }
             if (ImGui.CollapsingHeader("Debug"))
             {
+                foreach(var x in Svc.Objects)
+                {
+                    if(x is BattleChara b && !b.IsTargetable() && b.IsCasting)
+                    {
+                        ImGuiEx.TextCopy($"{b} {b.ObjectId} casting {b.CastActionId} -> {b.CastTargetObjectId} {b.CurrentCastTime}/{b.TotalCastTime} heading {MathHelper.GetRelativeAngle(new(100, 100), b.Position.ToVector2()).RadToDeg()}");
+                    }
+                }
                 ImGuiEx.Text($"Lasers: ");
                 Lasers.Each(x => ImGuiEx.Text($"{x}"));
                 ImGuiEx.Text($"Rockets: ");

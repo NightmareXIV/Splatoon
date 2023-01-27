@@ -172,6 +172,7 @@ public unsafe class Splatoon : IDalamudPlugin
         TetherProcessor = new();
         ObjectEffectProcessor = new();
         DirectorUpdate.Init(DirectorUpdateProcessor.ProcessDirectorUpdate);
+        ActionEffect.Init(ActionEffectProcessor.ProcessActionEffect);
         ProperOnLogin.Register(delegate
         {
             ScriptingProcessor.TerritoryChanged();

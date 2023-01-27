@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using ECommons.Hooks;
+using ECommons.Hooks.ActionEffectTypes;
 
 namespace Splatoon.SplatoonScripting;
 
@@ -125,6 +126,8 @@ public abstract class SplatoonScript
     public virtual void OnDirectorUpdate(DirectorUpdateCategory category) { }
 
     public virtual void OnObjectCreation(nint newObjectPtr) { }
+
+    public virtual void OnActionEffect(uint ActionID, ushort animationID, ActionEffectType type, uint sourceID, ulong targetOID, uint damage) { }
 
     /// <summary>
     /// Will be called every framework update. You can execute general logic of your script here. 

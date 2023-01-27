@@ -56,8 +56,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             Controller.Clear();
             Controller.RegisterElement("dbg1", new(1) { Enabled = false, refActorComparisonType = 2, overlayVOffset = 1, radius = 3f, color = Conf.TowerColor1.ToUint() });
             Controller.RegisterElement("dbg2", new(1) { Enabled = false, refActorComparisonType = 2, overlayVOffset = 1, radius = 3f, color = Conf.TowerColor1.ToUint() });
-            Controller.RegisterElement("TetherAOE1", new(1) { color = Conf.TetherAOECol.ToUint(), refActorComparisonType = 2, onlyTargetable = true, Filled = true, Enabled = false, radius = 16f });
-            Controller.RegisterElement("TetherAOE2", new(1) { color = Conf.TetherAOECol.ToUint(), refActorComparisonType = 2, onlyTargetable = true, Filled = true, Enabled = false, radius = 16f });
+            Controller.RegisterElement("TetherAOE1", new(1) { color = Conf.TetherAOECol.ToUint(), refActorComparisonType = 2, onlyTargetable = true, Filled = true, Enabled = false, radius = 15f });
+            Controller.RegisterElement("TetherAOE2", new(1) { color = Conf.TetherAOECol.ToUint(), refActorComparisonType = 2, onlyTargetable = true, Filled = true, Enabled = false, radius = 15f });
             Controller.RegisterElement("Tether1", new(2) { thicc = 5f, radius = 0f });
             Controller.RegisterElement("Tether2", new(2) { thicc = 5f, radius = 0f });
             Controller.RegisterElement("SelfTetherReminder", new(1) { Enabled = false, refActorType = 1, radius = 0, overlayVOffset = 2f, overlayTextColor = ImGuiColors.DalamudWhite.ToUint() });

@@ -1,4 +1,5 @@
 ﻿using ECommons.Hooks;
+using ECommons.Hooks.ActionEffectTypes;
 using ECommons.LanguageHelpers;
 using Splatoon.Gui.Scripting;
 using System.Collections.Immutable;
@@ -474,6 +475,21 @@ internal static class ScriptingProcessor
                 try
                 {
                     Scripts[i].OnObjectCreation(newObjectPointer);
+                }
+                catch (Exception e) { e.Log(); }
+            }
+        }
+    }
+
+    internal static void OnActionEffect(uint ActionID, ushort animationID, ActionEffectType type, uint sourceID, ulong targetOID, uint damage)
+    {
+        for (var i = 0; i < Scripts.Count; i++)
+        {
+            if (Scripts[i].IsEnabled)
+            {
+                try
+                {
+                    Scripts[i].OnActionEffect(ActionID, animationID, type, sourceID, targetOID, damage);
                 }
                 catch (Exception e) { e.Log(); }
             }
