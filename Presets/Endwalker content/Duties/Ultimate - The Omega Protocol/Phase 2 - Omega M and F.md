@@ -44,8 +44,9 @@
 
 # Playstation markers
 [EN] For this strat:
-https://ff14.toolboxgaming.space/?id=109976780281761&preview=1#8
-https://ff14.toolboxgaming.space/?id=109976780281761&preview=1#9
+- https://ff14.toolboxgaming.space/?id=109976780281761&preview=1#8
+- https://ff14.toolboxgaming.space/?id=109976780281761&preview=1#9
+- 
 Only necessary (far/close) part will be displayed.
 ```
 ~Lv2~{"Name":"P2 Playstation spots - far","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":" right","type":1,"offX":-14.7,"offY":57.62,"radius":1.0,"color":4294957568,"overlayBGColor":0,"overlayTextColor":4294957568,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" right","type":1,"offX":-18.9,"offY":49.28,"radius":1.0,"color":4290904258,"overlayBGColor":0,"overlayTextColor":4290904258,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" right","type":1,"offX":-18.9,"offY":40.0,"radius":1.0,"color":4278190259,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" right","type":1,"offX":-14.7,"offY":31.72,"radius":1.0,"color":4278236428,"overlayBGColor":0,"overlayTextColor":4278236428,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" left","type":1,"offX":14.7,"offY":31.72,"radius":1.0,"color":4294957568,"overlayBGColor":0,"overlayTextColor":4294957568,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" left","type":1,"offX":18.9,"offY":40.0,"radius":1.0,"color":4290904258,"overlayBGColor":0,"overlayTextColor":4290904258,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" left","type":1,"offX":18.9,"offY":49.28,"radius":1.0,"color":4278190259,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" left","type":1,"offX":14.7,"offY":57.62,"radius":1.0,"color":4278236428,"overlayBGColor":0,"overlayTextColor":4278236428,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"You suffer the effect of Remote Glitch."},"MatchDelay":6.0}]}
@@ -57,6 +58,7 @@ Only necessary (far/close) part will be displayed.
 # Obsolete
 |These presets are outdated and preserved only as a history|
 |---|
+
 [International] Eye Ray (huge AOE done by eye in background). You must import all 4 presets.
 ```
 ~Lv2~{"Name":"P2 Eye ray AC / 眼睛直線激光 A C","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"1","type":2,"refX":100.27825,"refY":125.0,"offX":99.86256,"offY":75.0,"offZ":-5.456968E-12,"radius":8.0,"color":1677787135,"FillStep":0.2}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.5,"Match":"MapEffect: 5, 1, 2","MatchDelay":8.0},{"Type":2,"Duration":3.5,"Match":"MapEffect: 1, 1, 2","MatchDelay":8.0}]}
