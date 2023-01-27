@@ -31,7 +31,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     public unsafe class Program_Loop : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
-        public override Metadata? Metadata => new(7, "NightmareXIV");
+        public override Metadata? Metadata => new(8, "NightmareXIV");
         Config Conf => Controller.GetConfig<Config>();
         HashSet<uint> TetheredPlayers = new();
         List<uint> Towers = new();
@@ -63,6 +63,10 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             Controller.RegisterElement("SelfTetherReminder", new(1) { Enabled = false, refActorType = 1, radius = 0, overlayVOffset = 2f, overlayTextColor = ImGuiColors.DalamudWhite.ToUint() });
             Controller.RegisterElement("SelfTower", new(1) { Enabled = false, refActorComparisonType = 2, radius = 3f, thicc = 7f, overlayText = "Take tower", overlayTextColor = 0xFF000000, tether = true, overlayBGColor = ImGuiColors.ParsedPink.ToUint() });
             Controller.TryRegisterLayoutFromCode("Proximity", "~Lv2~{\"Enabled\":false,\"Name\":\"Proximity\",\"Group\":\"\",\"ZoneLockH\":[1122],\"ElementsL\":[{\"Name\":\"\",\"type\":1,\"radius\":0.0,\"color\":4278129920,\"thicc\":4.0,\"refActorPlaceholder\":[\"<2>\",\"<3>\",\"<4>\",\"<5>\",\"<6>\",\"<7>\",\"<8>\"],\"refActorComparisonType\":5,\"tether\":true}],\"MaxDistance\":16.2,\"UseDistanceLimit\":true,\"DistanceLimitType\":1}", out _);
+            Controller.RegisterElementFromCode("SafeNorth", "{\"Enabled\":false,\"Name\":\"\",\"refX\":100.0,\"refY\":84.0,\"radius\":4.0,\"color\":4278190080,\"thicc\":5.0}");
+            Controller.RegisterElementFromCode("SafeSouth", "{\"Enabled\":false,\"Name\":\"\",\"refX\":100.0,\"refY\":116.0,\"radius\":4.0,\"color\":4278190080,\"thicc\":5.0}");
+            Controller.RegisterElementFromCode("SafeWest", "{\"Enabled\":false,\"Name\":\"\",\"refX\":84.0,\"refY\":100.0,\"radius\":4.0,\"color\":4278190080,\"thicc\":5.0}");
+            Controller.RegisterElementFromCode("SafeEast", "{\"Enabled\":false,\"Name\":\"\",\"refX\":116.0,\"refY\":100.0,\"radius\":4.0,\"color\":4278190080,\"thicc\":5.0}");
         }
 
         public override void OnUpdate()
@@ -104,7 +108,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             {
                                 e.Enabled = true;
                                 e.refActorObjectID = cTowers[0];
-                                e.overlayText = Conf.Debug ? $"{GetTowerAngle(cTowers[0].GetObject())}" : "";
+                                e.overlayText = Conf.Debug ? $"{GetTowerAngle(cTowers[0].GetObject().Position.ToVector2())}" : "";
                             }
                         }
                         {
@@ -112,7 +116,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             {
                                 e.Enabled = true;
                                 e.refActorObjectID = cTowers[1];
-                                e.overlayText = Conf.Debug ? $"{GetTowerAngle(cTowers[1].GetObject())}" : "";
+                                e.overlayText = Conf.Debug ? $"{GetTowerAngle(cTowers[1].GetObject().Position.ToVector2())}" : "";
                             }
                         }
                     }
@@ -124,6 +128,22 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         if (IsTakingCurrentTether(Svc.ClientState.LocalPlayer.ObjectId))
                         {
                             e.Enabled = true;
+
+                            if (Conf.DisplayTetherSafeSpots)
+                            {
+                                SwitchTetherSafeSpots(true);
+                                var currentTowers = GetCurrentTowers();
+                                if (currentTowers.Length == 2)
+                                {
+                                    { if (Controller.TryGetElementByName($"Safe{MathHelper.GetCardinalDirection(new(100, 100), currentTowers[0].GetObject().Position.ToVector2())}", out var s)) { s.Enabled = false; } }
+                                    { if (Controller.TryGetElementByName($"Safe{MathHelper.GetCardinalDirection(new(100, 100), currentTowers[1].GetObject().Position.ToVector2())}", out var s)) { s.Enabled = false; } }
+                                }
+                            }
+                            else
+                            {
+                                SwitchTetherSafeSpots(false);
+                            }
+
                             if (items.Contains(Svc.ClientState.LocalPlayer.ObjectId))
                             {
                                 e.overlayBGColor = Conf.ValidTetherColor.ToUint();
@@ -134,6 +154,27 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                                 {
                                     l.ElementsL[0].color = Conf.ProximityColor.ToUint();
                                     l.Enabled = true;
+                                }
+
+                                if (Conf.DisplayTetherSafeSpots && Conf.TetherSafeSpotEnableDetect)
+                                {
+                                    var SafeSpots = Enum.GetValues<CardinalDirection>().Select(x => Controller.GetElementByName($"Safe{x}")).Where(x => x != null && x.Enabled).OrderBy(x => GetTowerAngle(new Vector2(x.refX, x.refY))).ToArray();
+
+                                    if (SafeSpots.Length == 2)
+                                    {
+                                        var pair = TowerOrder.GetPairNumber(GetTetherMechanicStep());
+                                        if (pair.Count() == 2)
+                                        {
+                                            if (Conf.Swappers.Count != 0 && pair.Select(x => x.GetObject()).Any(x => x.Name.ToString().EqualsAny(Conf.Swappers)))
+                                            {
+                                                SafeSpots[Conf.MyDirection == Direction.Counter_clockwise ? 0 : 1].tether = true;
+                                            }
+                                            else
+                                            {
+                                                SafeSpots[Conf.MyDirection == Direction.Counter_clockwise ? 1 : 0].tether = true;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             else
@@ -151,6 +192,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                                 l.Enabled = false;
                             }
                             e.Enabled = false;
+                            SwitchTetherSafeSpots(false);
                         }
                     }
                 }
@@ -195,7 +237,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             e.color = GradientColor.Get(Conf.TowerColor1, Conf.TowerColor2).ToUint();
                             e.overlayBGColor = e.color;
                             e.overlayTextColor = Conf.OverlayTextColor.ToUint();
-                            var currentTowers = Towers.GetPairNumber(GetCurrentMechanicStep()).OrderBy(x => GetTowerAngle(x.GetObject())).ToArray();
+                            var currentTowers = GetCurrentTowers();
                             if (currentTowers.Length == 2)
                             {
                                 if (Conf.Swappers.Count != 0 && Svc.Objects.Any(x => x is PlayerCharacter pc && pc.Name.ToString().EqualsAny(Conf.Swappers) && pc.StatusList.Any(z => z.StatusId == GetDebuffByNumber(GetCurrentMechanicStep()))))
@@ -225,17 +267,59 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 Controller.GetElementByName("dbg1").Enabled = false;
                 Controller.GetElementByName("dbg2").Enabled = false;
                 if (Controller.TryGetLayoutByName("Proximity", out var l)) { l.Enabled = false; }
+                SwitchTetherSafeSpots(false);
             }
         }
 
-        float GetTowerAngle(GameObject x)
+        void SwitchTetherSafeSpots(bool enabled)
+        {
+            {
+                if (Controller.TryGetElementByName("SafeNorth", out var e))
+                {
+                    e.Enabled = enabled;
+                    e.tether = false;
+                    if (enabled) e.color = Conf.TetherSafeSpotColor.ToUint();
+                }
+            }
+            {
+                if (Controller.TryGetElementByName("SafeSouth", out var e))
+                {
+                    e.Enabled = enabled;
+                    e.tether = false;
+                    if (enabled) e.color = Conf.TetherSafeSpotColor.ToUint();
+                }
+            }
+            {
+                if (Controller.TryGetElementByName("SafeWest", out var e))
+                {
+                    e.Enabled = enabled;
+                    e.tether = false;
+                    if (enabled) e.color = Conf.TetherSafeSpotColor.ToUint();
+                }
+            }
+            {
+                if (Controller.TryGetElementByName("SafeEast", out var e))
+                {
+                    e.Enabled = enabled;
+                    e.tether = false;
+                    if (enabled) e.color = Conf.TetherSafeSpotColor.ToUint();
+                }
+            }
+        }
+
+        uint[] GetCurrentTowers()
+        {
+            return Towers.GetPairNumber(GetCurrentMechanicStep()).OrderBy(x => GetTowerAngle(x.GetObject().Position.ToVector2())).ToArray();
+        }
+
+        float GetTowerAngle(Vector2 x)
         {
             var firstTower =
                 Conf.Towers == TowerStartPoint.Start_NorthEast ? 45 :
                 Conf.Towers == TowerStartPoint.Start_SouthEast ? 45 + 90 :
                 Conf.Towers == TowerStartPoint.Start_SouthWest ? 45 + 90 * 2 :
                 Conf.Towers == TowerStartPoint.Start_NorthWest ? 45 + 90 * 3 : throw new Exception("There is a problem in GetTowerAngle function");
-            return (MathHelper.GetRelativeAngle(new(100f, 100f), x.Position.ToVector2()) + 360 - firstTower) % 360;
+            return (MathHelper.GetRelativeAngle(new(100f, 100f), x) + 360 - firstTower) % 360;
         }
 
         bool IsTakingCurrentTether(uint p)
@@ -314,6 +398,15 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             return 0;
         }
 
+        int GetTetherMechanicStep()
+        {
+            if (GetPlayersWithNumber(1).Any()) return 3;
+            if (GetPlayersWithNumber(2).Any()) return 4;
+            if (GetPlayersWithNumber(3).Any()) return 1;
+            if (GetPlayersWithNumber(4).Any()) return 2;
+            return 0;
+        }
+
         IEnumerable<PlayerCharacter> GetPlayersWithNumber(int n)
         {
             var debuff = GetDebuffByNumber(n);
@@ -369,6 +462,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 ImGui.SameLine();
                 ImGui.ColorEdit4("Proximity circle color", ref Conf.ProximityColor, ImGuiColorEditFlags.NoInputs);
             }
+            ImGui.Checkbox($"Display tether drop spots when it's my order to take it", ref Conf.DisplayTetherSafeSpots);
+            if (Conf.DisplayTetherSafeSpots)
+            {
+                ImGui.Checkbox($"Detect my designated spot based on same priority as towers", ref Conf.TetherSafeSpotEnableDetect);
+                ImGui.ColorEdit4("Safe spot indicator color", ref Conf.TetherSafeSpotColor, ImGuiColorEditFlags.NoInputs);
+            }
+
 
             ImGui.Separator();
 
@@ -441,6 +541,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 TetherOrder.Each(x => ImGuiEx.Text($"Tether order: {x.GetObject()}"));
                 TowerOrder.Each(x => ImGuiEx.Text($"Tower order: {x.GetObject()}"));
                 ImGuiEx.Text($"GetCurrentMechanicStep() {GetCurrentMechanicStep()}");
+                ImGuiEx.Text($"GetTetherMechanicStep() {GetTetherMechanicStep()}");
                 Towers.Each(x => ImGuiEx.Text($"Towers: {x.GetObject()?.Position.ToString() ?? "unk position"}"));
             }
         }
@@ -463,6 +564,9 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             public Direction MyDirection = Direction.Counter_clockwise;
             public bool Debug = false;
             public TowerStartPoint Towers = TowerStartPoint.Start_NorthEast;
+            public bool DisplayTetherSafeSpots = false;
+            public bool TetherSafeSpotEnableDetect = true;
+            public Vector4 TetherSafeSpotColor = 0xFFFFFFFF.ToVector4();
         }
 
         public enum Direction { Clockwise, Counter_clockwise }
