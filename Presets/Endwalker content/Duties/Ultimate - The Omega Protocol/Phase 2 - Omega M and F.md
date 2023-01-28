@@ -67,6 +67,11 @@ https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwa
 ~Lv2~{"Name":"P2 Optimized Sagittarius Arrow","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"","type":3,"refY":45.0,"radius":5.0,"color":1342242815,"refActorNPCNameID":7633,"refActorRequireCast":true,"refActorCastId":[31539],"refActorComparisonType":6,"includeRotation":true}]}
 ```
 
+[Script] [Untested] Beyond Defense bait indicator
+```
+https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Beyond%20Defense.cs
+```
+
 # Obsolete
 |These presets are outdated and preserved only as a history|
 |---|
