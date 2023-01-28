@@ -2,7 +2,7 @@
 
 unsafe static class Camera
 {
-    static IntPtr cameraAddressPtr;
+    static nint cameraAddressPtr;
     static float* Xptr;
     static float* Yptr;
     static float* ZoomPtr;
@@ -11,8 +11,8 @@ unsafe static class Camera
     {
         try
         {
-            cameraAddressPtr = *(IntPtr*)Svc.SigScanner.GetStaticAddressFromSig("48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B 8B ?? ?? ?? ?? 48 85 C9 74 11 48 8B 01");
-            if (cameraAddressPtr == IntPtr.Zero) throw new Exception("Camera address was zero");
+            cameraAddressPtr = *(nint*)Svc.SigScanner.GetStaticAddressFromSig("48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B 8B ?? ?? ?? ?? 48 85 C9 74 11 48 8B 01");
+            if (cameraAddressPtr == nint.Zero) throw new Exception("Camera address was zero");
             PluginLog.Information($"Camera address ptr: {cameraAddressPtr:X16}");
             Xptr = (float*)(cameraAddressPtr + 0x130);
             Yptr = (float*)(cameraAddressPtr + 0x134);

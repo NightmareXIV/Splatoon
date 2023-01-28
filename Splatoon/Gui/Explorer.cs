@@ -8,17 +8,17 @@ namespace Splatoon.Gui;
 
 internal unsafe static class Explorer
 {
-    internal static IntPtr Ptr = IntPtr.Zero;
+    internal static nint Ptr = nint.Zero;
     internal static void Draw()
     {
         ImGui.BeginChild("##exch");
         var x = Svc.Objects.FirstOrDefault(x => x.Address == Ptr);
         ImGuiEx.Text(ImGuiColors.DalamudOrange, "Beta");
-        if(ImGui.BeginCombo("##selector", $"{(Ptr == IntPtr.Zero?"Target".Loc() : $"{(x == null?$"{Ptr:X16} - "+"invalid pointer".Loc() : $"{x}")}")}"))
+        if(ImGui.BeginCombo("##selector", $"{(Ptr == nint.Zero?"Target".Loc() : $"{(x == null?$"{Ptr:X16} - "+"invalid pointer".Loc() : $"{x}")}")}"))
         {
             if (ImGui.Selectable("Target".Loc()))
             {
-                Ptr = IntPtr.Zero;
+                Ptr = nint.Zero;
             }
             foreach(var o in Svc.Objects)
             {
@@ -29,7 +29,7 @@ internal unsafe static class Explorer
             }
             ImGui.EndCombo();
         }
-        if (Ptr == IntPtr.Zero)
+        if (Ptr == nint.Zero)
         {
             if (Svc.Targets.Target != null && Svc.ClientState.LocalPlayer != null)
             {
@@ -78,11 +78,11 @@ internal unsafe static class Explorer
             ImGuiEx.TextCopy($"ModelCharaId: {c.Struct()->ModelCharaId}");
             ImGuiEx.TextCopy($"ModelCharaId_2: {c.Struct()->ModelCharaId_2}");
             ImGuiEx.TextCopy($"{"Visible".Loc()}: {c.IsCharacterVisible()}");
-            ImGuiEx.TextCopy($"VfxData: {(IntPtr)c.Struct()->VfxData:X16}");
-            ImGuiEx.TextCopy($"VfxData2: {(IntPtr)c.Struct()->VfxData2:X16}");
-            ImGuiEx.TextCopy($"Omen: {(IntPtr)c.Struct()->Omen:X16}");
-            ImGuiEx.TextCopy($"ModelSkeletonId: {(IntPtr)c.Struct()->ModelSkeletonId:X16}");
-            ImGuiEx.TextCopy($"ModelSkeletonId2: {(IntPtr)c.Struct()->ModelSkeletonId_2:X16}");
+            ImGuiEx.TextCopy($"VfxData: {(nint)c.Struct()->VfxData:X16}");
+            ImGuiEx.TextCopy($"VfxData2: {(nint)c.Struct()->VfxData2:X16}");
+            ImGuiEx.TextCopy($"Omen: {(nint)c.Struct()->Omen:X16}");
+            ImGuiEx.TextCopy($"ModelSkeletonId: {(nint)c.Struct()->ModelSkeletonId:X16}");
+            ImGuiEx.TextCopy($"ModelSkeletonId2: {(nint)c.Struct()->ModelSkeletonId_2:X16}");
             ImGuiEx.Text("VFX");
             if(c.TryGetVfx(out var fx))
             {

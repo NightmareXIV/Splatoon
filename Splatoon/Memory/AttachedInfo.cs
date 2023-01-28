@@ -8,15 +8,15 @@ namespace Splatoon.Memory;
 
 internal unsafe static class AttachedInfo
 {
-    delegate IntPtr GameObject_ctor(IntPtr obj);
+    delegate nint GameObject_ctor(nint obj);
     static Hook<GameObject_ctor> GameObject_ctor_hook = null;
-    internal static Dictionary<IntPtr, CachedCastInfo> CastInfos = new();
-    internal static Dictionary<IntPtr, List<CachedObjectEffectInfo>> ObjectEffectInfos = new();
-    internal static Dictionary<IntPtr, Dictionary<string, VFXInfo>> VFXInfos = new();
-    static HashSet<IntPtr> Casters = new();
+    internal static Dictionary<nint, CachedCastInfo> CastInfos = new();
+    internal static Dictionary<nint, List<CachedObjectEffectInfo>> ObjectEffectInfos = new();
+    internal static Dictionary<nint, Dictionary<string, VFXInfo>> VFXInfos = new();
+    static HashSet<nint> Casters = new();
 
     [Function(Reloaded.Hooks.Definitions.X64.CallingConventions.Microsoft)]
-    delegate IntPtr ActorVfxCreateDelegate2(char* a1, IntPtr a2, IntPtr a3, float a4, char a5, ushort a6, char a7);
+    delegate nint ActorVfxCreateDelegate2(char* a1, nint a2, nint a3, float a4, char a5, ushort a6, char a7);
     static Hook<ActorVfxCreateDelegate2> ActorVfxCreateHook;
 
     internal static void Init()
@@ -52,11 +52,11 @@ internal unsafe static class AttachedInfo
         ObjectEffectInfos = null;
     }
 
-    static IntPtr ActorVfxNewHandler(char* a1, IntPtr a2, IntPtr a3, float a4, char a5, ushort a6, char a7)
+    static nint ActorVfxNewHandler(char* a1, nint a2, nint a3, float a4, char a5, ushort a6, char a7)
     {
         try
         {
-            var vfxPath = Dalamud.Memory.MemoryHelper.ReadString(new IntPtr(a1), Encoding.ASCII, 256);
+            var vfxPath = Dalamud.Memory.MemoryHelper.ReadString(new nint(a1), Encoding.ASCII, 256);
             if (!VFXInfos.ContainsKey(a2))
             {
                 VFXInfos[a2] = new();
@@ -111,7 +111,7 @@ internal unsafe static class AttachedInfo
         return false;
     }
 
-    static IntPtr GameObject_ctor_detour(IntPtr ptr)
+    static nint GameObject_ctor_detour(nint ptr)
     {
         CastInfos.Remove(ptr);
         Casters.Remove(ptr);
@@ -151,7 +151,7 @@ internal unsafe static class AttachedInfo
         }
     }
 
-    internal static bool TryGetCastTime(IntPtr ptr, IEnumerable<uint> castId, out float castTime)
+    internal static bool TryGetCastTime(nint ptr, IEnumerable<uint> castId, out float castTime)
     {
         if(CastInfos.TryGetValue(ptr, out var info))
         {

@@ -272,8 +272,8 @@ public static unsafe class Static
         int curIndex = 1;
         for (var i = 1; i <= 8; i++)
         {
-            var result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder($"<{i}>", 0, 0);
-            if (result == IntPtr.Zero) return null;
+            var result = (nint)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder($"<{i}>", 0, 0);
+            if (result == nint.Zero) return null;
             var go = Svc.Objects.CreateObjectReference(result);
             if (go is PlayerCharacter pc)
             {

@@ -78,7 +78,7 @@ public unsafe class Splatoon : IDalamudPlugin
     public bool Loaded = false;
     public bool Disposed = false;
     internal static (Vector2 X, Vector2 Y) Transform = default;
-    internal static Dictionary<string, IntPtr> PlaceholderCache = new();
+    internal static Dictionary<string, nint> PlaceholderCache = new();
     internal static Dictionary<string, uint> NameNpcIDsAll = new();
     internal static Dictionary<string, uint> NameNpcIDs = new();
     internal MapEffectProcessor mapEffectProcessor;
@@ -434,7 +434,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 }
                 if (CurrentChatMessages.Count > 0) PluginLog.Verbose($"Messages dequeued: {CurrentChatMessages.Count}");
                 var pl = Svc.ClientState.LocalPlayer;
-                if (Svc.ClientState.LocalPlayer.Address == IntPtr.Zero)
+                if (Svc.ClientState.LocalPlayer.Address == nint.Zero)
                 {
                     Log("Pointer to LocalPlayer.Address is zero");
                     return;
@@ -1055,7 +1055,7 @@ public unsafe class Splatoon : IDalamudPlugin
         return !string.IsNullOrEmpty(e.refActorNameIntl.Get(e.refActorName)) && (e.refActorNameIntl.Get(e.refActorName) == "*" || o.Name.ToString().ContainsIgnoreCase(e.refActorNameIntl.Get(e.refActorName)));
     }
 
-    static IntPtr ResolvePlaceholder(string ph)
+    static nint ResolvePlaceholder(string ph)
     {
         if(PlaceholderCache.TryGetValue(ph, out var val))
         {
@@ -1063,28 +1063,28 @@ public unsafe class Splatoon : IDalamudPlugin
         }
         else
         {
-            var result = IntPtr.Zero;
+            var result = nint.Zero;
             if (Svc.Condition[ConditionFlag.DutyRecorderPlayback])
             {
-                result = (IntPtr)FakePronoun.Resolve(ph);
+                result = (nint)FakePronoun.Resolve(ph);
             }
             else
             {
                 if (ph.StartsWithIgnoreCase("<t") && int.TryParse(ph[2..3], out var n))
                 {
-                    result = Static.GetRolePlaceholder(CombatRole.Tank, n)?.Address ?? IntPtr.Zero;
+                    result = Static.GetRolePlaceholder(CombatRole.Tank, n)?.Address ?? nint.Zero;
                 }
                 else if (ph.StartsWithIgnoreCase("<h") && int.TryParse(ph[2..3], out n))
                 {
-                    result = Static.GetRolePlaceholder(CombatRole.Healer, n)?.Address ?? IntPtr.Zero;
+                    result = Static.GetRolePlaceholder(CombatRole.Healer, n)?.Address ?? nint.Zero;
                 }
                 else if (ph.StartsWithIgnoreCase("<d") && int.TryParse(ph[2..3], out n))
                 {
-                    result = Static.GetRolePlaceholder(CombatRole.DPS, n)?.Address ?? IntPtr.Zero;
+                    result = Static.GetRolePlaceholder(CombatRole.DPS, n)?.Address ?? nint.Zero;
                 }
                 else
                 {
-                    result = (IntPtr)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder(ph, 0, 0);
+                    result = (nint)FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetPronounModule()->ResolvePlaceholder(ph, 0, 0);
                 }
             }
             PlaceholderCache[ph] = result;

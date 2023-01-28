@@ -173,7 +173,7 @@ unsafe partial class CGui
                 var ph = FakePronoun.Resolve(x);
                 if (ph != null)
                 {
-                    var obj = Svc.Objects.CreateObjectReference((IntPtr)ph);
+                    var obj = Svc.Objects.CreateObjectReference((nint)ph);
                     ImGuiEx.Text($"{obj}");
                 }
                 else
