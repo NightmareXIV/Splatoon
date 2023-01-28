@@ -2,6 +2,7 @@
 using ECommons.GameFunctions;
 using Reloaded.Hooks.Definitions.X64;
 using Splatoon.Modules;
+using Splatoon.SplatoonScripting;
 using Splatoon.Structures;
 
 namespace Splatoon.Memory;
@@ -65,14 +66,15 @@ internal unsafe static class AttachedInfo
             {
                 SpawnTime = Environment.TickCount64
             };
+            var obj = Svc.Objects.CreateObjectReference(a2);
+            ScriptingProcessor.OnVFXSpawn(obj.ObjectId, vfxPath);
             if (!BlacklistedVFX.Contains(vfxPath))
             {
-                var obj = Svc.Objects.CreateObjectReference(a2);
                 if (obj is Character c)
                 {
-                    var text = $"VFX {vfxPath} spawned on {(obj.Address == Svc.ClientState.LocalPlayer.Address?"me":obj.Name.ToString())} npc id={obj.Struct()->GetNpcID()}, model id={c.Struct()->ModelCharaId}, name npc id={c.NameId}, position={obj.Position.ToString()}";
+                    var text = $"VFX {vfxPath} spawned on {(obj.Address == Svc.ClientState.LocalPlayer.Address ? "me" : obj.Name.ToString())} npc id={obj.Struct()->GetNpcID()}, model id={c.Struct()->ModelCharaId}, name npc id={c.NameId}, position={obj.Position.ToString()}";
                     P.ChatMessageQueue.Enqueue(text);
-                    if(P.Config.Logging) Logger.Log(text);
+                    if (P.Config.Logging) Logger.Log(text);
                 }
                 else
                 {

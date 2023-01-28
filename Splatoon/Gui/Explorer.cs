@@ -83,6 +83,8 @@ internal unsafe static class Explorer
             ImGuiEx.TextCopy($"Omen: {(nint)c.Struct()->Omen:X16}");
             ImGuiEx.TextCopy($"ModelSkeletonId: {(nint)c.Struct()->ModelSkeletonId:X16}");
             ImGuiEx.TextCopy($"ModelSkeletonId2: {(nint)c.Struct()->ModelSkeletonId_2:X16}");
+            ImGuiEx.TextCopy($"TargetObject: {c.TargetObject}");
+            ImGuiEx.TextCopy($"TargetObjectID: {c.TargetObjectId}");
             ImGuiEx.Text("VFX");
             if(c.TryGetVfx(out var fx))
             {
