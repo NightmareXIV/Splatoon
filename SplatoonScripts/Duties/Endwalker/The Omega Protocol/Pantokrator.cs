@@ -82,7 +82,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     e.Enabled = true;
                     if (Rockets[which].Address == Svc.ClientState.LocalPlayer.Address)
                     {
-                        if (Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId.EqualsAny<uint>(3424, 3495, 3496, 3497) && x.RemainingTime < 2.5f))
+                        if (Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId.EqualsAny<uint>(3424, 3495, 3496, 3497) && x.RemainingTime < 3f))
                         {
                             e.color = GradientColor.Get(Controller.GetConfig<Config>().RocketColSelf, Controller.GetConfig<Config>().RocketColSelf2, 250).ToUint();
                         }
