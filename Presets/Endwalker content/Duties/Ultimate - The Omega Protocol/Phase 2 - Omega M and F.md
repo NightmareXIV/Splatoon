@@ -56,6 +56,17 @@ Only necessary (far/close) part will be displayed.
 ~Lv2~{"Name":"P2 Playstation spots - Close","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":" right","type":1,"offX":-9.5,"offY":31.72,"radius":1.0,"color":4294957568,"overlayBGColor":0,"overlayTextColor":4294957568,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" right","type":1,"offX":-9.5,"offY":40.0,"radius":1.0,"color":4290904258,"overlayBGColor":0,"overlayTextColor":4290904258,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" right","type":1,"offX":-9.5,"offY":49.28,"radius":1.0,"color":4278190259,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" right","type":1,"offX":-9.5,"offY":57.62,"radius":1.0,"color":4278236428,"overlayBGColor":0,"overlayTextColor":4278236428,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" left","type":1,"offX":9.5,"offY":31.72,"radius":1.0,"color":4294957568,"overlayBGColor":0,"overlayTextColor":4294957568,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" left","type":1,"offX":9.5,"offY":40.0,"radius":1.0,"color":4290904258,"overlayBGColor":0,"overlayTextColor":4290904258,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" left","type":1,"offX":9.5,"offY":49.28,"radius":1.0,"color":4278190259,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true},{"Name":" left","type":1,"offX":9.5,"offY":57.62,"radius":1.0,"color":4278236428,"overlayBGColor":0,"overlayTextColor":4278236428,"overlayFScale":2.0,"thicc":5.0,"overlayText":"","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"MatchIntl":{"En":"You suffer the effect of Mid Glitch."},"MatchDelay":6.0}]}
 ```
 
+# Limitless Synergy
+[Script] [Beta] Tethers indicator
+```
+https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Limitless%20Synergy.cs
+```
+
+[International] [Untested] Optimized Sagittarius Arrow indicator
+```
+~Lv2~{"Name":"P2 Optimized Sagittarius Arrow","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"","type":3,"refY":45.0,"radius":5.0,"color":1342242815,"refActorNPCNameID":7633,"refActorRequireCast":true,"refActorCastId":[31539],"refActorComparisonType":6,"includeRotation":true}]}
+```
+
 # Obsolete
 |These presets are outdated and preserved only as a history|
 |---|
