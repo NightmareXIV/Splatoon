@@ -3,6 +3,7 @@
 - Brightly displays tethers; correctly taken tethers display AOE and display in green colors. 
 - Displays when you have to take tether or tower
 - Explicitly highlights your designated tower at a time when you need to take it; you can configure it to be CW or CCW from certain position in settings; swap partners supported - configure name of your partners and if you have same debuff as they do - your direction will be reversed;
+- Explicitly highlights your designated tether drop spot once you have picked up your tether.
 Requires Splatoon v.3.2.0.6 or higher.
 ```
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Program%20Loop.cs
