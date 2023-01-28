@@ -1,14 +1,14 @@
 ﻿namespace Splatoon.Structures;
 
-internal class ObjectInfo
+public class ObjectInfo
 {
-    internal long ExistenceTicks = 0;
-    internal long TargetableTicks = 0;
-    internal long VisibleTicks = 0;
-    internal bool Visible = false;
-    internal bool Targetable = false;
-    internal bool IsChar = false;
-    internal float HitboxRadius = 0;
-    internal float Distance = 0;
-    internal float Life = 0;
+    public long ExistenceTicks = 0;
+    public long TargetableTicks = 0;
+    public long VisibleTicks = 0;
+    public bool Visible = false;
+    public bool Targetable = false;
+    public bool IsChar = false;
+    public float HitboxRadius = 0;
+    public float Distance = 0;
+    public float Life = 0;
 }

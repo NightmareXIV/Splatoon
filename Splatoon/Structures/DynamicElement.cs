@@ -2,7 +2,7 @@
 
 namespace Splatoon.Structures;
 
-class DynamicElement
+public class DynamicElement
 {
     public string Name;
     public Layout[] Layouts;

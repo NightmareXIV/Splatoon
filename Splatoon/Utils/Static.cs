@@ -11,9 +11,9 @@ namespace Splatoon.Utils;
 public static unsafe class Static
 {
 
-    internal static uint[] BlacklistedMessages = new uint[] { 4777, 4139, 4398, 2091, 2218, 2350, 4397, 2224, 4270, 4269, 2729, 4400, 10537, 10409, 10543, 2222, 4401, 2874, 4905, 12585, 4783, 4140 };
+    public static uint[] BlacklistedMessages = new uint[] { 4777, 4139, 4398, 2091, 2218, 2350, 4397, 2224, 4270, 4269, 2729, 4400, 10537, 10409, 10543, 2222, 4401, 2874, 4905, 12585, 4783, 4140 };
 
-    internal static string[] BlacklistedVFX = new string[]
+    public static string[] BlacklistedVFX = new string[]
     {
         "vfx/common/eff/dk04ht_canc0h.avfx",
         "vfx/common/eff/dk02ht_totu0y.avfx",
@@ -71,7 +71,7 @@ public static unsafe class Static
         }
     }
 
-    internal static bool IsCastInRange(this BattleChara c, float min, float max)
+    public static bool IsCastInRange(this BattleChara c, float min, float max)
     {
         if (c.CurrentCastTime.InRange(min, max))
         {
@@ -80,7 +80,7 @@ public static unsafe class Static
         return false;
     }
 
-    internal static bool IsInRange(this Status buff, float min, float max)
+    public static bool IsInRange(this Status buff, float min, float max)
     {
         if (buff.RemainingTime.InRange(min, max))
         {
@@ -89,12 +89,12 @@ public static unsafe class Static
         return false;
     }
 
-    internal static string SanitizeName(this string s)
+    public static string SanitizeName(this string s)
     {
         return s.Replace(",", "_").Replace("~", "_");
     }
 
-    internal static bool TryImportLayout(string s, out Layout l, bool silent = false)
+    public static bool TryImportLayout(string s, out Layout l, bool silent = false)
     {
         try
         {
@@ -130,7 +130,7 @@ public static unsafe class Static
         }
     }
 
-    internal static Layout DeserializeLegacyLayout(string import)
+    public static Layout DeserializeLegacyLayout(string import)
     {
         if (import.Contains('~'))
         {
@@ -215,19 +215,19 @@ public static unsafe class Static
         }
     }
 
-    internal static void ExportToClipboard(this Layout l)
+    public static void ExportToClipboard(this Layout l)
     {
         ImGui.SetClipboardText("~Lv2~" + JsonConvert.SerializeObject(l, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
         Notify.Success($"{l.GetName()} copied to clipboard.");
     }
 
-    internal static void ExportToClipboard(this Element l)
+    public static void ExportToClipboard(this Element l)
     {
         ImGui.SetClipboardText("~Ev2~" + JsonConvert.SerializeObject(l, Formatting.None, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
         Notify.Success($"{l.GetName()} copied to clipboard.");
     }
 
-    internal static string GetName(this Layout l)
+    public static string GetName(this Layout l)
     {
         if (l.Name.IsNullOrEmpty())
         {
@@ -247,7 +247,7 @@ public static unsafe class Static
         }
     }
 
-    internal static string GetName(this Element e)
+    public static string GetName(this Element e)
     {
         if (e.Name.IsNullOrEmpty())
         {
@@ -267,7 +267,7 @@ public static unsafe class Static
         }
     }
 
-    internal static PlayerCharacter GetRolePlaceholder(CombatRole role, int num)
+    public static PlayerCharacter GetRolePlaceholder(CombatRole role, int num)
     {
         int curIndex = 1;
         for (var i = 1; i <= 8; i++)
@@ -529,7 +529,7 @@ public static unsafe class Static
     /// <param name="offset">Distance from position at 90degrees to p1 and p2- non-percetange based.</param>
     /// <param name="c">Output of the calculated point along p1 and p2. might not be necessary for the ultimate output.</param>
     /// <param name="d">Output of the calculated offset point.</param>
-    static internal void PerpOffset(Vector2 a, Vector2 b, float position, float offset, out Vector2 c, out Vector2 d)
+    static public void PerpOffset(Vector2 a, Vector2 b, float position, float offset, out Vector2 c, out Vector2 d)
     {
         //p3 is located at the x or y delta * position + p1x or p1y original.
         var p3 = new Vector2((b.X - a.X) * position + a.X, (b.Y - a.Y) * position + a.Y);

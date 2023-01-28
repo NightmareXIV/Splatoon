@@ -14,9 +14,9 @@ public class Point3
     }
 }
 
-internal static class Vector3Ex
+public static class Vector3Ex
 {
-    internal static Point3 ToPoint3(this Vector3 v)
+    public static Point3 ToPoint3(this Vector3 v)
     {
         return new Point3
         {

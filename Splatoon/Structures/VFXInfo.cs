@@ -1,10 +1,10 @@
 ﻿namespace Splatoon.Structures;
 
-internal record struct VFXInfo
+public record struct VFXInfo
 {
-    internal long SpawnTime;
+    public long SpawnTime;
 
-    internal long Age
+    public long Age
     {
         get
         {
@@ -12,7 +12,7 @@ internal record struct VFXInfo
         }
     }
 
-    internal float AgeF
+    public float AgeF
     {
         get
         {

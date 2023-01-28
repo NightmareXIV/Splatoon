@@ -1,9 +1,9 @@
 ﻿namespace Splatoon.Structures;
 
-internal record struct CachedCastInfo
+public record struct CachedCastInfo
 {
-    internal uint ID;
-    internal long StartTime;
+    public uint ID;
+    public long StartTime;
 
     public CachedCastInfo(uint iD, long startTime)
     {
@@ -11,7 +11,7 @@ internal record struct CachedCastInfo
         StartTime = startTime;
     }
 
-    internal float StartTimeF
+    public float StartTimeF
     {
         get
         {
@@ -19,7 +19,7 @@ internal record struct CachedCastInfo
         }
     }
 
-    internal long Age
+    public long Age
     {
         get
         {
@@ -27,7 +27,7 @@ internal record struct CachedCastInfo
         }
     }
 
-    internal float AgeF
+    public float AgeF
     {
         get
         {

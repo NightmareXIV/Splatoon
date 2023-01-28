@@ -1,19 +1,19 @@
 ﻿namespace Splatoon.Structures;
 
-internal record struct CachedObjectEffectInfo
+public record struct CachedObjectEffectInfo
 {
-    internal long StartTime;
-    internal ushort data1;
-    internal ushort data2;
+    public long StartTime;
+    public ushort data1;
+    public ushort data2;
 
-    internal CachedObjectEffectInfo(long startTime, ushort data1, ushort data2)
+    public CachedObjectEffectInfo(long startTime, ushort data1, ushort data2)
     {
         this.StartTime = startTime;
         this.data1 = data1;
         this.data2 = data2;
     }
 
-    internal float StartTimeF
+    public float StartTimeF
     {
         get
         {
@@ -21,7 +21,7 @@ internal record struct CachedObjectEffectInfo
         }
     }
 
-    internal long Age
+    public long Age
     {
         get
         {
@@ -29,7 +29,7 @@ internal record struct CachedObjectEffectInfo
         }
     }
 
-    internal float AgeF
+    public float AgeF
     {
         get
         {

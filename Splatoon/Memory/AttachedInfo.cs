@@ -7,13 +7,13 @@ using Splatoon.Structures;
 
 namespace Splatoon.Memory;
 
-internal unsafe static class AttachedInfo
+public unsafe static class AttachedInfo
 {
     delegate nint GameObject_ctor(nint obj);
     static Hook<GameObject_ctor> GameObject_ctor_hook = null;
-    internal static Dictionary<nint, CachedCastInfo> CastInfos = new();
-    internal static Dictionary<nint, List<CachedObjectEffectInfo>> ObjectEffectInfos = new();
-    internal static Dictionary<nint, Dictionary<string, VFXInfo>> VFXInfos = new();
+    public static Dictionary<nint, CachedCastInfo> CastInfos = new();
+    public static Dictionary<nint, List<CachedObjectEffectInfo>> ObjectEffectInfos = new();
+    public static Dictionary<nint, Dictionary<string, VFXInfo>> VFXInfos = new();
     static HashSet<nint> Casters = new();
 
     [Function(Reloaded.Hooks.Definitions.X64.CallingConventions.Microsoft)]
@@ -91,7 +91,7 @@ internal unsafe static class AttachedInfo
         return ActorVfxCreateHook.Original(a1, a2, a3, a4, a5, a6, a7);
     }
 
-    internal static bool TryGetVfx(this GameObject go, out Dictionary<string, VFXInfo> fx)
+    public static bool TryGetVfx(this GameObject go, out Dictionary<string, VFXInfo> fx)
     {
         if (VFXInfos.ContainsKey(go.Address))
         {
@@ -102,7 +102,7 @@ internal unsafe static class AttachedInfo
         return false;
     }
 
-    internal static bool TryGetSpecificVfxInfo(this GameObject go, string path, out VFXInfo info)
+    public static bool TryGetSpecificVfxInfo(this GameObject go, string path, out VFXInfo info)
     {
         if (TryGetVfx(go, out var dict) && dict.ContainsKey(path))
         {
@@ -153,7 +153,7 @@ internal unsafe static class AttachedInfo
         }
     }
 
-    internal static bool TryGetCastTime(nint ptr, IEnumerable<uint> castId, out float castTime)
+    public static bool TryGetCastTime(nint ptr, IEnumerable<uint> castId, out float castTime)
     {
         if(CastInfos.TryGetValue(ptr, out var info))
         {

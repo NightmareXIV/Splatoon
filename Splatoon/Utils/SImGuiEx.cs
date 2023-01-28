@@ -2,9 +2,9 @@
 
 namespace Splatoon.Utils;
 
-static class SImGuiEx //came here to laugh on how scuffed it is? let's do so together.
+public static class SImGuiEx //came here to laugh on how scuffed it is? let's do so together.
 {
-    internal static void DrawLine(Vector2 curpos, float contRegion)
+    public static void DrawLine(Vector2 curpos, float contRegion)
     {
         ImGui.GetForegroundDrawList().PathLineTo(curpos);
         ImGui.GetForegroundDrawList().PathLineTo(curpos with { X = curpos.X + contRegion });
@@ -12,7 +12,7 @@ static class SImGuiEx //came here to laugh on how scuffed it is? let's do so tog
 
     }
 
-    internal static void InputUintDynamic(string id, ref uint u)
+    public static void InputUintDynamic(string id, ref uint u)
     {
         if (P.Config.Hexadecimal)
         {

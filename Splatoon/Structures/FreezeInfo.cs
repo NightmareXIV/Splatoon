@@ -1,28 +1,28 @@
 ﻿namespace Splatoon.Structures;
 
-internal class FreezeInfo
+public class FreezeInfo
 {
-    internal List<FreezeState> States = new();
-    internal long AllowRefreezeAt;
+    public List<FreezeState> States = new();
+    public long AllowRefreezeAt;
 
-    internal bool CanDisplay()
+    public bool CanDisplay()
     {
         return Environment.TickCount64 > AllowRefreezeAt;
     }
 }
 
-internal class FreezeState
+public class FreezeState
 {
-    internal HashSet<DisplayObject> Objects;
-    internal long ShowUntil;
-    internal long ShowAt = 0;
+    public HashSet<DisplayObject> Objects;
+    public long ShowUntil;
+    public long ShowAt = 0;
 
-    internal bool IsActive()
+    public bool IsActive()
     {
         return ShowUntil > Environment.TickCount64 && Environment.TickCount64 >= ShowAt;
     }
 
-    internal bool IsExpired()
+    public bool IsExpired()
     {
         return ShowUntil < Environment.TickCount64;
     }

@@ -1,9 +1,9 @@
 ﻿namespace Splatoon.Structures;
 
-internal class SearchInfo
+public class SearchInfo
 {
-    internal string name = "";
-    internal uint oid;
-    internal int SearchAttribute = 0;
-    internal bool includeUntargetable = false;
+    public string name = "";
+    public uint oid;
+    public int SearchAttribute = 0;
+    public bool includeUntargetable = false;
 }
