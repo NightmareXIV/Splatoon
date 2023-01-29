@@ -75,12 +75,12 @@ Only necessary (far/close) part will be displayed.
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Limitless%20Synergy.cs
 ```
 
-[International] [Untested] Optimized Sagittarius Arrow indicator
+[International] Optimized Sagittarius Arrow indicator
 ```
 ~Lv2~{"Name":"P2 Optimized Sagittarius Arrow","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"","type":3,"refY":45.0,"radius":5.0,"color":1342242815,"refActorNPCNameID":7633,"refActorRequireCast":true,"refActorCastId":[31539],"refActorComparisonType":6,"includeRotation":true}]}
 ```
 
-[Script] [Untested] Beyond Defense bait indicator
+[Script] Beyond Defense bait indicator. **It's not very reliable unless someone clearly baits it out, I'd not recommend to 100% rely on it**. 
 ```
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Beyond%20Defense.cs
 ```
