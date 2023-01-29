@@ -325,7 +325,13 @@ unsafe partial class CGui
                     }
                 }
 
-                SImGuiEx.SizedText("While casting: ".Loc(), WidthElement);
+                ImGui.SetNextItemWidth(WidthElement + ImGui.GetStyle().ItemSpacing.X);
+                if(ImGui.BeginCombo("##whilecasting", el.refActorCastReverse?"While NOT casting":"While casting"))
+                {
+                    if (ImGui.Selectable("While casting")) el.refActorCastReverse = false;
+                    if (ImGui.Selectable("While NOT casting")) el.refActorCastReverse = true;
+                    ImGui.EndCombo();
+                }
                 ImGui.SameLine();
                 ImGui.Checkbox("##casting" + i + k, ref el.refActorRequireCast);
                 if (el.refActorRequireCast)

@@ -93,6 +93,7 @@ public class Element
     [DefaultValue(0)] public uint refActorNPCNameID = 0;
     [DefaultValue(false)] public bool refActorComparisonAnd = false;
     [DefaultValue(false)] public bool refActorRequireCast = false;
+    [DefaultValue(false)] public bool refActorCastReverse = false;
     public List<uint> refActorCastId = new();
     [DefaultValue(false)] public bool refActorUseCastTime = false;
     [DefaultValue(0f)] public float refActorCastTimeMin = 0f;
