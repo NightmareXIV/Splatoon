@@ -102,6 +102,12 @@
 	  <None Update="LanguageChinese.ini">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="LanguageJapanese.ini">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="LanguageKorean.ini">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Splatoon.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

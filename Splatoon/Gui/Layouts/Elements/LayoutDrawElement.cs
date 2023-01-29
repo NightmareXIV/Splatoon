@@ -326,10 +326,10 @@ unsafe partial class CGui
                 }
 
                 ImGui.SetNextItemWidth(WidthElement + ImGui.GetStyle().ItemSpacing.X);
-                if(ImGui.BeginCombo("##whilecasting", el.refActorCastReverse?"While NOT casting":"While casting"))
+                if(ImGui.BeginCombo("##whilecasting", el.refActorCastReverse?"While NOT casting".Loc() : "While casting".Loc()))
                 {
-                    if (ImGui.Selectable("While casting")) el.refActorCastReverse = false;
-                    if (ImGui.Selectable("While NOT casting")) el.refActorCastReverse = true;
+                    if (ImGui.Selectable("While casting".Loc())) el.refActorCastReverse = false;
+                    if (ImGui.Selectable("While NOT casting".Loc())) el.refActorCastReverse = true;
                     ImGui.EndCombo();
                 }
                 ImGui.SameLine();
