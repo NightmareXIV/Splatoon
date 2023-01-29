@@ -31,7 +31,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     public unsafe class Program_Loop : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
-        public override Metadata? Metadata => new(10, "NightmareXIV");
+        public override Metadata? Metadata => new(11, "NightmareXIV");
         Config Conf => Controller.GetConfig<Config>();
         HashSet<uint> TetheredPlayers = new();
         List<uint> Towers = new();
@@ -364,7 +364,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 {
                     if (obj.ObjectKind == Dalamud.Game.ClientState.Objects.Enums.ObjectKind.EventObj)
                     {
-                        PluginLog.Information($"Event obj spawn: {obj} {obj.DataId}");
+                        //PluginLog.Information($"Event obj spawn: {obj} {obj.DataId}");
                     }
                     if (obj.DataId == 2013244 && GetOmega() != null)
                     {
@@ -489,7 +489,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 ImGui.Checkbox($"Detect my designated spot based on same priority as towers", ref Conf.TetherSafeSpotEnableDetect);
                 ImGui.ColorEdit4("Safe spot indicator color", ref Conf.TetherSafeSpotColor, ImGuiColorEditFlags.NoInputs);
             }
-            ImGui.Checkbox($"Detect tether that I'm supposed to pick up and make it larger", ref Conf.EnlargeMyTether);
+            ImGui.Checkbox($"Detect tether that I'm supposed to pick up based on same priority as towers and make it larger", ref Conf.EnlargeMyTether);
 
 
             ImGui.Separator();
