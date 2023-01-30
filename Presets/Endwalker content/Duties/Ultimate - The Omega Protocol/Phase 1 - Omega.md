@@ -1,10 +1,11 @@
 [Beta] [Script] Program Loop complete resolution script.
 - Made for the resolution way described in https://docs.google.com/document/d/1CzWZJ3kdvCtK6i0bT83kyNK1Wydrs3fvI52vVuCKiGM/edit
 - Brightly displays tethers; correctly taken tethers display AOE and display in green colors. 
-- Displays when you have to take tether or tower
+- Displays when you have to take tether or tower. 
 - Explicitly highlights your designated tower at a time when you need to take it; you can configure it to be CW or CCW from certain position in settings; swap partners supported - configure name of your partners and if you have same debuff as they do - your direction will be reversed;
-- Explicitly highlights your designated tether drop spot once you have picked up your tether.
-Requires Splatoon v.3.2.0.6 or higher.
+- Highlights tether that you're supposed to take, according to priority you have set before.
+- Explicitly highlights your designated tether drop spot once you have picked up your tether, according to the priority you have set before.
+- Everything is configurable. You can disable individual functions, change colors of elements, remove things you don't want to see. By default, all functions are enabled.
 ```
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Program%20Loop.cs
 ```
