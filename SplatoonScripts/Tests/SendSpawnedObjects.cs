@@ -42,35 +42,29 @@ namespace SplatoonScriptsOfficial.Tests
             {
                 if(Svc.Objects.TryGetFirst(x => x.Address == newObjectPtr, out var obj))
                 {
-                    var chr = obj is Character ? (Character)obj: null;
-                    var data = new Data(obj.ObjectId, obj.DataId, chr == null ? 0 : chr.Struct()->ModelCharaId, obj.Position, obj.Rotation);
-                    Client?.GetAsync($"http://127.0.0.1:8080/?data={HttpUtility.UrlEncode(data.ToString())}");
+                    var chr = obj is Character character ? character: null;
+                    //{ObjectID}|{DataID}|{ModelID}|TransformID|{Position.X}|{Position.Y}|{Position.Z}|{Angle}
+                    var str = new string[]
+                    {
+                        $"{obj.Name.ExtractText()}",
+                        $"{obj.ObjectId}",
+                        $"{obj.DataId}",
+                        $"{obj.Struct()->GetNpcID()}",
+                        chr == null?"":$"{chr.Struct()->ModelCharaId}",
+                        chr == null?"":$"{chr.GetTransformationID()}",
+                        $"{obj.Position.X}",
+                        $"{obj.Position.Y}",
+                        $"{obj.Position.Z}",
+                        $"{obj.Rotation}"
+                    }.Join("|");
+                    PluginLog.Verbose($"Sending {str}");
+                    Client?.SendAsync(new HttpRequestMessage()
+                    {
+                        Content = new StringContent(str),
+                        RequestUri = new("http://127.0.0.1/")
+                    });
                 }
             });
-        }
-
-        [Serializable]
-        public record struct Data
-        {
-            public uint ObjectID;
-            public uint DataID;
-            public int ModelID;
-            public Vector3 Position;
-            public float Angle;
-
-            public Data(uint objectID, uint dataID, int modelID, Vector3 position, float angle)
-            {
-                ObjectID = objectID;
-                DataID = dataID;
-                ModelID = modelID;
-                Position = position;
-                Angle = angle;
-            }
-
-            public override string ToString()
-            {
-                return $"{ObjectID}|{DataID}|{ModelID}|{Position.X}/{Position.Y}/{Position.Z}|{Angle}";
-            }
         }
     }
 }
