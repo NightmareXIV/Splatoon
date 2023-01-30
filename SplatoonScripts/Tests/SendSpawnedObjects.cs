@@ -43,7 +43,7 @@ namespace SplatoonScriptsOfficial.Tests
                 if(Svc.Objects.TryGetFirst(x => x.Address == newObjectPtr, out var obj))
                 {
                     var chr = obj is Character character ? character: null;
-                    //{ObjectID}|{DataID}|{ModelID}|TransformID|{Position.X}|{Position.Y}|{Position.Z}|{Angle}
+                    //name|ObjectID|DataID|NPCID|ModelID|TransformID|Position.X|Position.Y|Position.Z|Angle
                     var str = new string[]
                     {
                         $"{obj.Name.ExtractText()}",
@@ -61,7 +61,7 @@ namespace SplatoonScriptsOfficial.Tests
                     Client?.SendAsync(new HttpRequestMessage()
                     {
                         Content = new StringContent(str),
-                        RequestUri = new("http://127.0.0.1/")
+                        RequestUri = new("http://127.0.0.1:8080/")
                     });
                 }
             });
