@@ -4,13 +4,13 @@ using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using ECommons.Schedulers;
-using FFXIVClientStructs.FFXIV.Common.Math;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +43,7 @@ namespace SplatoonScriptsOfficial.Tests
                 if(Svc.Objects.TryGetFirst(x => x.Address == newObjectPtr, out var obj))
                 {
                     var chr = obj is Character ? (Character)obj: null;
-                    var data = new Data(obj.ObjectId, obj.DataId, chr == null ? 0 : chr.Struct()->ModelCharaId, obj.Position);
+                    var data = new Data(obj.ObjectId, obj.DataId, chr == null ? 0 : chr.Struct()->ModelCharaId, obj.Position, obj.Rotation);
                     Client?.GetAsync($"http://127.0.0.1:8080/?data={HttpUtility.UrlEncode(data.ToString())}");
                 }
             });
@@ -56,18 +56,20 @@ namespace SplatoonScriptsOfficial.Tests
             public uint DataID;
             public int ModelID;
             public Vector3 Position;
+            public float Angle;
 
-            public Data(uint objectID, uint dataID, int modelID, Vector3 position)
+            public Data(uint objectID, uint dataID, int modelID, Vector3 position, float angle)
             {
                 ObjectID = objectID;
                 DataID = dataID;
                 ModelID = modelID;
                 Position = position;
+                Angle = angle;
             }
 
             public override string ToString()
             {
-                return $"{ObjectID}|{DataID}|{ModelID}|{Position.X}/{Position.Y}/{Position.Z}";
+                return $"{ObjectID}|{DataID}|{ModelID}|{Position.X}/{Position.Y}/{Position.Z}|{Angle}";
             }
         }
     }
