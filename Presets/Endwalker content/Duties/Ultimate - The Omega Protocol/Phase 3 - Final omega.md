@@ -9,6 +9,14 @@
 ~Lv2~{"Name":"P3S Stack/spread debuffs","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"stack","type":1,"radius":5.5,"color":1358954495,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3426],"refActorUseBuffTime":true,"refActorBuffTimeMax":15.0,"Filled":true},{"Name":"spread","type":1,"radius":5.5,"color":1358889215,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3425],"refActorUseBuffTime":true,"refActorBuffTimeMax":15.0,"Filled":true}]}
 ```
 
+[EN] [Beta] Hands explosions, requires Splatoon v3.2.1.0+
+```
+~Lv2~{"Name":"P3 Hands explosion - 1","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":11.0,"color":1174405375,"refActorNameIntl":{"En":" arm unit"},"Filled":true,"LimitDistance":true,"LimitDistanceInvert":true,"DistanceSourceX":100.0,"DistanceSourceY":100.0,"DistanceMax":1.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":1.0,"MatchIntl":{"En":"Final analysis. Drastic overhaul of combat logic required."}}],"Freezing":true,"FreezeFor":13.5,"IntervalBetweenFreezes":20.0}
+```
+```
+~Lv2~{"Name":"P3 Hands explosion - 2","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":11.0,"color":1174405375,"refActorNameIntl":{"En":" arm unit"},"refActorRequireCast":true,"refActorCastReverse":true,"refActorCastId":[31566],"Filled":true,"LimitDistanceInvert":true,"DistanceSourceX":100.0,"DistanceSourceY":100.0,"DistanceMax":1.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":1.0,"Match":">31566)","MatchDelay":0.5,"FireOnce":true}],"Freezing":true,"FreezeFor":5.0,"IntervalBetweenFreezes":5.0,"FreezeDisplayDelay":1.0}
+```
+
 # Battle
 [International] Oversampled Wave Cannon left
 ```
