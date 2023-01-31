@@ -70,6 +70,7 @@ internal static class Triggers
                     ImGui.SameLine();
                     ImGuiEx.Text(DateTimeOffset.FromUnixTimeMilliseconds((long)(layout.Triggers[n].MatchDelay * 1000)).ToString("mm:ss.f"));
                     layout.Triggers[n].Match = layout.Triggers[n].Match.RemoveSymbols(InvalidSymbols);
+                    layout.Triggers[n].MatchIntl.RemoveSymbols(InvalidSymbols);
                 }
                 ImGui.SameLine();
                 ImGuiEx.TextV("Duration: ".Loc());

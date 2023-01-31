@@ -493,6 +493,18 @@ public static unsafe class Static
         return s;
     }
 
+    public static void RemoveSymbols(this InternationalString s, IEnumerable<string> deletions)
+    {
+        foreach (var r in deletions)
+        {
+            s.En = s.En.Replace(r, "");
+            s.Jp = s.Jp.Replace(r, "");
+            s.De = s.De.Replace(r, "");
+            s.Fr = s.Fr.Replace(r, "");
+            s.Other = s.Other.Replace(r, "");
+        }
+    }
+
     public static string ToStringNullSup(this bool? b)
     {
         if (b == null) return "null";
