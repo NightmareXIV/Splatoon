@@ -85,6 +85,7 @@ class Configuration : IPluginConfiguration
             Svc.PluginInterface.SavePluginConfig(this);
             foreach(var x in ScriptingProcessor.Scripts)
             {
+                //PluginLog.Debug($"Saving configuration for {x.InternalData.FullName}");
                 Safe(x.Controller.SaveConfig);
             }
         }

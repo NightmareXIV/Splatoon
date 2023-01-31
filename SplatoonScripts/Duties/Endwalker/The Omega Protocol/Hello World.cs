@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,12 +18,20 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
     public class Hello_World : SplatoonScript
     {
+        public override Metadata? Metadata => new(2, "NightmareXIV");
         public override HashSet<uint> ValidTerritories => new() { 1122 };
         bool RotPicker = false;
         int counter = 0;
 
         public class Effects
         {
+
+            //  Underflow Debugger (3432), Remains = 0.0, Param = 0, Count = 0
+            public const uint NoRedRot = 3432;
+
+            //  _rsv_3433_-1_1_0_0_S74CFC3B0_E74CFC3B0 (3433), Remains = 0.0, Param = 0, Count = 0
+            public const uint NoBlueRot = 3433;
+
             /// <summary>
             /// _rsv_3429_-1_1_0_0_S74CFC3B0_E74CFC3B0 (3429), Remains = 15.2, Param = 0, Count = 0
             /// </summary>
@@ -82,6 +91,10 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public override void OnUpdate()
         {
+            if ((HasEffect(Effects.NoBlueRot) && HasEffect(Effects.NoRedRot)))
+            {
+                RotPicker = false;
+            }
             if (Svc.Objects.Any(x => x is BattleChara b && b.CastActionId == 31599))
             {
                 var isDefamationRed = Svc.Objects.Any(x => x is PlayerCharacter pc && HasEffect(Effects.Defamation, null, pc) && HasEffect(Effects.RedRot, null, pc));
@@ -111,7 +124,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 }
                 else if (HasEffect(Effects.UpcomingCloseTether, 10f))
                 {
-                    if(counter != 4) RotPicker = true;
+                    if(counter != 4 && !(HasEffect(Effects.NoBlueRot) && HasEffect(Effects.NoRedRot))) RotPicker = true;
                     if (isDefamationRed && counter != 4)
                     {
                         TowerRed(true);
@@ -125,7 +138,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 }
                 else if (HasEffect(Effects.UpcomingFarTether, 10))
                 {
-                    if (counter != 4) RotPicker = true;
+                    if (counter != 4 && !(HasEffect(Effects.NoBlueRot) && HasEffect(Effects.NoRedRot))) RotPicker = true;
                     if (isDefamationRed)
                     {
                         TowerBlue(true);
