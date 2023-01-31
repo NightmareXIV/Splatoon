@@ -3,6 +3,8 @@ using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Colors;
 using ECommons;
 using ECommons.DalamudServices;
+using ECommons.Hooks;
+using ECommons.Logging;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
         bool RotPicker = false;
+        int counter = 0;
 
         public class Effects
         {
@@ -68,6 +71,15 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             Controller.RegisterElementFromCode("Reminder", "{\"Name\":\"\",\"type\":1,\"Enabled\":false,\"offZ\":3.5,\"overlayBGColor\":4278190335,\"overlayTextColor\":4294967295,\"overlayFScale\":2.0,\"overlayText\":\"REMINDER\",\"refActorType\":1}");
         }
 
+        public override void OnMessage(string Message)
+        {
+            if (Message.Contains(">31599)"))
+            {
+                counter++;
+                DuoLog.Information("Counter: " + counter);
+            }
+        }
+
         public override void OnUpdate()
         {
             if (Svc.Objects.Any(x => x is BattleChara b && b.CastActionId == 31599))
@@ -85,7 +97,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         Reminder("Inside red tower >>stack<<", ImGuiColors.DalamudRed);
                     }
                 }
-                if (HasEffect(Effects.BlueRot))
+                else if (HasEffect(Effects.BlueRot))
                 {
                     TowerBlue(false);
                     if (HasEffect(Effects.Defamation))
@@ -97,10 +109,10 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         Reminder("Inside blue tower >>stack<<", ImGuiColors.TankBlue);
                     }
                 }
-                if(HasEffect(Effects.UpcomingCloseTether, 10f))
+                else if (HasEffect(Effects.UpcomingCloseTether, 10f))
                 {
-                    RotPicker = true;
-                    if (isDefamationRed)
+                    if(counter != 4) RotPicker = true;
+                    if (isDefamationRed && counter != 4)
                     {
                         TowerRed(true);
                         Reminder("Far out of red tower - pick up DEFAMATION", ImGuiColors.DalamudRed);
@@ -111,18 +123,18 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         Reminder("Far out of blue tower - pick up DEFAMATION", ImGuiColors.TankBlue);
                     }
                 }
-                if (HasEffect(Effects.UpcomingFarTether))
+                else if (HasEffect(Effects.UpcomingFarTether, 10))
                 {
-                    RotPicker = true;
+                    if (counter != 4) RotPicker = true;
                     if (isDefamationRed)
                     {
                         TowerBlue(true);
-                        Reminder("Between blue towers - STACK", ImGuiColors.TankBlue);
+                        Reminder("Between blue towers" + (counter==4?" - stack last": " - STACK"), ImGuiColors.TankBlue);
                     }
                     else
                     {
                         TowerRed(true);
-                        Reminder("Between red towers - STACK", ImGuiColors.DalamudRed);
+                        Reminder("Between red towers" + (counter == 4 ? " - stack last" : " - STACK"), ImGuiColors.DalamudRed);
                     }
                 }
             }
@@ -149,6 +161,18 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         Reminder("Break tethers - go CLOSE", ImGuiColors.ParsedBlue);
                     }
                 }
+            }
+        }
+
+        public override void OnDirectorUpdate(DirectorUpdateCategory category)
+        {
+            if(category.EqualsAny(DirectorUpdateCategory.Recommence, DirectorUpdateCategory.Wipe, DirectorUpdateCategory.Commence))
+            {
+                TowerOff();
+                Reminder(null);
+                counter = 0;
+                RotPicker = false;
+                DuoLog.Information("Counter: " + counter);
             }
         }
 
