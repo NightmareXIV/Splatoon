@@ -18,6 +18,11 @@
 ```
 
 # Battle
+[International] [Beta] [Script] Hello world helper. Work in progress. Based on Maxwell toolbox: https://ff14.toolboxgaming.space/?id=073180945764761&preview=1
+```
+https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Hello%20World.cs
+```
+
 [International] Oversampled Wave Cannon left
 ```
 ~Lv2~{"Name":"P3 Oversampled Wave Cannon left","Group":"Omega / 絶オメガ検証戦","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"omega","type":3,"refX":-10.0,"refY":21.76,"offX":-10.0,"offY":-25.02,"radius":10.0,"color":335544575,"thicc":0.6,"refActorNPCID":7636,"FillStep":0.1,"refActorComparisonType":4,"includeRotation":true,"onlyVisible":true},{"Name":"Player left","type":3,"offY":10.0,"radius":20.0,"color":167772415,"thicc":1.0,"refActorRequireBuff":true,"refActorBuffId":[3453],"FillStep":0.1,"refActorComparisonType":3,"includeRotation":true,"AdditionalRotation":1.5707964,"Filled":true},{"Name":"Player left1","type":3,"offY":-10.0,"radius":20.0,"color":167772415,"thicc":1.0,"refActorRequireBuff":true,"refActorBuffId":[3452],"FillStep":0.1,"refActorComparisonType":1,"includeRotation":true,"AdditionalRotation":1.5707964}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"Match":"(7636>31596)"}]}
