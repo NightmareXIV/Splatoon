@@ -21,10 +21,10 @@ First of all: do not blindly import everything - you will just end up with visua
 
 After you have decided, you need to copy preset code into your clipboard by pressing button on the right side of code block:
 
-!(/docs/preset_import/image_3.png)
+![](/docs/images/preset_import/image_3.png)
 
 And then, to import your preset into Splatoon plugin, open it up with `/splatoon` command, proceed to "Layouts" tab and press "Import from clipboard" button.
 
-!(/docs/preset_import/image_4.png)
+![](/docs/images/preset_import/image_4.png)
 
 If you have done everything correctly, you should have preset added into the plugin.
