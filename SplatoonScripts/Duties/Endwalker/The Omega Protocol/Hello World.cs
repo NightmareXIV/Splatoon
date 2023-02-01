@@ -18,7 +18,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
     public class Hello_World : SplatoonScript
     {
-        public override Metadata? Metadata => new(3, "NightmareXIV");
+        public override Metadata? Metadata => new(4, "NightmareXIV");
         public override HashSet<uint> ValidTerritories => new() { 1122 };
         bool RotPicker = false;
         int counter = 0;
@@ -125,15 +125,31 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 else if (HasEffect(Effects.UpcomingCloseTether, 10f))
                 {
                     if(counter != 4 && !(HasEffect(Effects.NoBlueRot) && HasEffect(Effects.NoRedRot))) RotPicker = true;
-                    if (isDefamationRed && counter != 4)
+                    if (counter != 4)
                     {
-                        TowerRed(true);
-                        Reminder("Far out of red tower - pick up DEFAMATION", ImGuiColors.DalamudRed);
+                        if (isDefamationRed)
+                        {
+                            TowerRed(true);
+                            Reminder("Far out of red tower - pick up DEFAMATION", ImGuiColors.DalamudRed);
+                        }
+                        else
+                        {
+                            TowerBlue(true);
+                            Reminder("Far out of blue tower - pick up DEFAMATION", ImGuiColors.TankBlue);
+                        }
                     }
                     else
                     {
-                        TowerBlue(true);
-                        Reminder("Far out of blue tower - pick up DEFAMATION", ImGuiColors.TankBlue);
+                        if (isDefamationRed)
+                        {
+                            TowerBlue(true);
+                            Reminder("Between blue towers - final stack or avoid", ImGuiColors.TankBlue);
+                        }
+                        else
+                        {
+                            TowerRed(true);
+                            Reminder("Between red towers - final stack or avoid", ImGuiColors.DalamudRed);
+                        }
                     }
                 }
                 else if (HasEffect(Effects.UpcomingFarTether, 10))
@@ -142,12 +158,12 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     if (isDefamationRed)
                     {
                         TowerBlue(true);
-                        Reminder("Between blue towers" + (counter==4?" - stack last": " - STACK"), ImGuiColors.TankBlue);
+                        Reminder("Between blue towers" + (counter==4? " - final STACK" : " - STACK"), ImGuiColors.TankBlue);
                     }
                     else
                     {
                         TowerRed(true);
-                        Reminder("Between red towers" + (counter == 4 ? " - stack last" : " - STACK"), ImGuiColors.DalamudRed);
+                        Reminder("Between red towers" + (counter == 4 ? " - final STACK" : " - STACK"), ImGuiColors.DalamudRed);
                     }
                 }
             }
