@@ -56,6 +56,11 @@
 ~Lv2~{"Name":"P2 Optical unit finder - early circle","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"offY":25.0,"radius":5.0,"color":4294967040,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":"(7635>31550)","MatchDelay":5.0}]}
 ```
 
+[International] [Script] Stack swap informer. Will inform you about need to swap with a player on stacks, and optionally - write in chat (for you only, not sending to server) - for any swap. Can be configured: furthest or closest player to adjust. 
+```
+https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Party%20Synergy.cs
+```
+
 ## Playstation markers
 ### Toolbox strat
 [EN] [JP] For this strat:
