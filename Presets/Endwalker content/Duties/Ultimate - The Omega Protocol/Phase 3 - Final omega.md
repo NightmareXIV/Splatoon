@@ -4,12 +4,12 @@
 ~Lv2~{"Name":"P3 Wave Repeater","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"1","type":1,"radius":6.0,"color":2348810495,"refActorNPCNameID":7636,"refActorRequireCast":true,"refActorCastId":[31567],"refActorUseCastTime":true,"refActorCastTimeMax":5.5,"refActorUseOvercast":true,"refActorComparisonType":6,"Filled":true},{"Name":"2","type":1,"radius":6.0,"Donut":6.0,"thicc":5.0,"refActorNPCNameID":7636,"refActorRequireCast":true,"refActorCastId":[31567],"refActorUseCastTime":true,"refActorCastTimeMin":5.5,"refActorCastTimeMax":7.5,"refActorUseOvercast":true,"refActorComparisonType":6},{"Name":"3","type":1,"radius":12.0,"Donut":6.0,"thicc":5.0,"refActorNPCNameID":7636,"refActorRequireCast":true,"refActorCastId":[31567],"refActorUseCastTime":true,"refActorCastTimeMin":7.5,"refActorCastTimeMax":9.5,"refActorUseOvercast":true,"refActorComparisonType":6},{"Name":"4","type":1,"radius":18.0,"Donut":6.0,"thicc":5.0,"refActorNPCNameID":7636,"refActorRequireCast":true,"refActorCastId":[31567],"refActorUseCastTime":true,"refActorCastTimeMin":9.5,"refActorCastTimeMax":11.5,"refActorUseOvercast":true,"refActorComparisonType":6}]}
 ```
 
-[International] [Untested] Stack/spread indicators
+[International] Stack/spread indicators
 ```
 ~Lv2~{"Name":"P3S Stack/spread debuffs","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"stack","type":1,"radius":5.5,"color":1358954495,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3426],"refActorUseBuffTime":true,"refActorBuffTimeMax":15.0,"Filled":true},{"Name":"spread","type":1,"radius":5.5,"color":1358889215,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3425],"refActorUseBuffTime":true,"refActorBuffTimeMax":15.0,"Filled":true}]}
 ```
 
-[EN] [Beta] Hands explosions, requires Splatoon v3.2.1.0+
+[EN] Hands explosions, requires Splatoon v3.2.1.0+
 ```
 ~Lv2~{"Name":"P3 Hands explosion - 1","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":11.0,"color":1174405375,"refActorNameIntl":{"En":" arm unit"},"Filled":true,"LimitDistance":true,"LimitDistanceInvert":true,"DistanceSourceX":100.0,"DistanceSourceY":100.0,"DistanceMax":1.0}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":1.0,"MatchIntl":{"En":"Final analysis. Drastic overhaul of combat logic required."}}],"Freezing":true,"FreezeFor":13.5,"IntervalBetweenFreezes":20.0}
 ```
@@ -37,6 +37,11 @@ https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwa
 [International] [Beta] AOE indicator with proximity detection
 ```
 ~Lv2~{"Name":"P3 - Oversampled Wave Cannon explosion","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":7.0,"color":1174470625,"refActorType":1,"Filled":true},{"Name":"Others","type":1,"radius":7.0,"color":3355508705,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"Match":">31595)","MatchDelay":5.0},{"Type":2,"Duration":5.0,"Match":">31596)","MatchDelay":5.0}],"MaxDistance":7.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+```
+
+[International] [Script] [Beta] [Configuration required] Attempts to detect your designated spot based on Maxwell toolbox: https://ff14.toolboxgaming.space/?id=073180945764761&preview=1
+```
+https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Oversampled%20Wave%20Cannon.cs
 ```
 
 # Obsolete
