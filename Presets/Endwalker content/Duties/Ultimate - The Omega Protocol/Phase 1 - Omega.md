@@ -1,4 +1,4 @@
-[Beta] [Script] Program Loop complete resolution script.
+[International] [Script] [Configuration required] Program Loop complete resolution script.
 - Made for the resolution way described in https://docs.google.com/document/d/1CzWZJ3kdvCtK6i0bT83kyNK1Wydrs3fvI52vVuCKiGM/edit
 - Brightly displays tethers; correctly taken tethers display AOE and display in green colors. 
 - Displays when you have to take tether or tower. 
@@ -10,7 +10,7 @@
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Program%20Loop.cs
 ```
 
-[Script] Pantoraktor. Simply displays upcoming line AOE and bomb AOE. If it's your - it will be red (by default)
+[International] [Script] Pantoraktor. Simply displays upcoming line AOE and bomb AOE. If it's your - it will be red (by default)
 ```
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Pantokrator.cs
 ```
