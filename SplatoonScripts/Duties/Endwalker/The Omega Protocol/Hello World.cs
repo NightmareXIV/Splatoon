@@ -21,7 +21,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
     public class Hello_World : SplatoonScript
     {
-        public override Metadata? Metadata => new(4, "NightmareXIV");
+        public override Metadata? Metadata => new(5, "NightmareXIV");
         public override HashSet<uint> ValidTerritories => new() { 1122 };
         bool RotPicker = false;
         int counter = 0;
