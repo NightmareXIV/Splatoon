@@ -237,7 +237,7 @@ public class Element
 
     public bool ShouldSerializeconeAngleMin()
     {
-        return type == 4;
+        return type == 4 || type == 5;
     }
 
     public bool ShouldSerializerefActorLifetimeMax()

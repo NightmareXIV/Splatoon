@@ -29,8 +29,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         {
             Controller.RegisterElementFromCode("FreeN", "{\"Name\":\"FreeN\",\"Enabled\":false,\"refX\":100.0,\"refY\":85.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
             Controller.RegisterElementFromCode("FreeS", "{\"Name\":\"FreeS\",\"Enabled\":false,\"refX\":100.0,\"refY\":115.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
-            Controller.RegisterElementFromCode("", "{\"Name\":\"FreeW\",\"Enabled\":false,\"refX\":85.0,\"refY\":100.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
-            Controller.RegisterElementFromCode("", "{\"Name\":\"FreeE\",\"Enabled\":false,\"refX\":115.0,\"refY\":100.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
+            Controller.RegisterElementFromCode("FreeW", "{\"Name\":\"FreeW\",\"Enabled\":false,\"refX\":85.0,\"refY\":100.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
+            Controller.RegisterElementFromCode("FreeE", "{\"Name\":\"FreeE\",\"Enabled\":false,\"refX\":115.0,\"refY\":100.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
 
             Controller.RegisterElementFromCode("EastM1", "{\"Name\":\"EastM1\",\"Enabled\":false,\"refX\":110.13328,\"refY\":90.989174,\"refZ\":-5.456968E-12,\"radius\":1.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Inner edge\",\"tether\":true}");
             Controller.RegisterElementFromCode("EastM2", "{\"Name\":\"EastM2\",\"Enabled\":false,\"refX\":110.057434,\"refY\":108.96221,\"refZ\":-5.456968E-12,\"radius\":1.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Inner edge\",\"tether\":true}");
@@ -39,10 +39,19 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             Controller.RegisterElementFromCode("WestM1", "{\"Name\":\"WestM1\",\"Enabled\":false,\"refX\":89.933,\"refY\":90.989174,\"refZ\":-5.456968E-12,\"radius\":1.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Inner edge\",\"tether\":true}");
             Controller.RegisterElementFromCode("WestM2", "{\"Name\":\"WestM2\",\"Enabled\":false,\"refX\":89.937,\"refY\":108.96221,\"refZ\":-5.456968E-12,\"radius\":1.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Inner edge\",\"tether\":true}");
             Controller.RegisterElementFromCode("WestM3", "{\"Name\":\"WestM3\",\"Enabled\":false,\"refX\":110.04,\"refY\":109.85926,\"refZ\":-9.536798E-07,\"radius\":1.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"IN MARKER\",\"tether\":true}");
+
+            Controller.RegisterElementFromCode("EastM1Point", "{\"Name\":\"EastM1Point\",\"type\":5,\"Enabled\":false,\"refX\":110.13328,\"refY\":90.989174,\"refZ\":-5.456968E-12,\"radius\":3.0,\"coneAngleMin\":153,\"coneAngleMax\":220,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":1.0,\"overlayText\":\"Inner edge\",\"includeRotation\":true,\"tether\":true,\"Filled\":true}");
+            Controller.RegisterElementFromCode("EastM2Point", "{\"Name\":\"EastM2Point\",\"type\":5,\"Enabled\":false,\"refX\":110.057434,\"refY\":108.96221,\"refZ\":-5.456968E-12,\"radius\":3.0,\"coneAngleMin\":-2,\"coneAngleMax\":40,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":1.0,\"overlayText\":\"Inner edge\",\"includeRotation\":true,\"tether\":true,\"Filled\":true}");
+            Controller.RegisterElementFromCode("EastM3Point", "{\"Name\":\"EastM3Point\",\"type\":5,\"Enabled\":false,\"refX\":90.37988,\"refY\":109.85926,\"refZ\":-9.536798E-07,\"radius\":3.0,\"coneAngleMin\":46,\"coneAngleMax\":133,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":1.0,\"overlayText\":\"IN MARKER\",\"includeRotation\":true,\"tether\":true,\"Filled\":true}");
+
+            Controller.RegisterElementFromCode("WestM1Point", "{\"Name\":\"WestM1Point\",\"type\":5,\"Enabled\":false,\"refX\":89.933,\"refY\":90.989174,\"refZ\":-5.456968E-12,\"radius\":3.0,\"coneAngleMin\":146,\"coneAngleMax\":195,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":1.0,\"overlayText\":\"Inner edge\",\"includeRotation\":true,\"tether\":true,\"Filled\":true}");
+            Controller.RegisterElementFromCode("WestM2Point", "{\"Name\":\"WestM2Point\",\"type\":5,\"Enabled\":false,\"refX\":89.937,\"refY\":108.96221,\"refZ\":-5.456968E-12,\"radius\":3.0,\"coneAngleMin\":-38,\"coneAngleMax\":32,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":1.0,\"overlayText\":\"Inner edge\",\"includeRotation\":true,\"tether\":true,\"Filled\":true}");
+            Controller.RegisterElementFromCode("WestM3Point", "{\"Name\":\"WestM3Point\",\"type\":5,\"Enabled\":false,\"refX\":110.04,\"refY\":109.85926,\"refZ\":-9.536798E-07,\"radius\":3.0,\"coneAngleMin\":-117,\"coneAngleMax\":-44,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":1.0,\"overlayText\":\"IN MARKER\",\"includeRotation\":true,\"tether\":true,\"Filled\":true}");
         }
 
         public override void OnUpdate()
         {
+            OffAll();
             if (IsMechanicRunning(out var direction))
             {
                 var prio = ObtainMyPriority();
@@ -50,14 +59,38 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 {
                     if (prio.IsMonitor)
                     {
-
+                        var d = direction == CardinalDirection.West ? "West" : "East";
+                        Controller.GetElementByName($"{d}M{prio.Priority}").Enabled = true;
+                        Controller.GetElementByName($"{d}M{prio.Priority}Point").Enabled = true;
+                    }
+                    else
+                    {
+                        if(prio.Priority.EqualsAny(1, 2))
+                        {
+                            var e = Controller.GetElementByName($"FreeN");
+                            e.Enabled = true;
+                            e.overlayText = prio.Priority == 1 ? "Close to edge" : "Close to middle";
+                        }
+                        else if (prio.Priority.EqualsAny(3, 4))
+                        {
+                            var e = Controller.GetElementByName(direction == CardinalDirection.West ? "FreeE" : "FreeW");
+                            e.Enabled = true;
+                            e.overlayText = prio.Priority == 3 ? "Go Up" : "Go Down";
+                        }
+                        else if (prio.Priority.EqualsAny(5))
+                        {
+                            var e = Controller.GetElementByName($"FreeS");
+                            e.Enabled = true;
+                            e.overlayText = "Close to edge";
+                        }
                     }
                 }
             }
-            else
-            {
+        }
 
-            }
+        void OffAll()
+        {
+            Controller.GetRegisteredElements().Each(x => x.Value.Enabled = false);
         }
 
         public override void OnSettingsDraw()
