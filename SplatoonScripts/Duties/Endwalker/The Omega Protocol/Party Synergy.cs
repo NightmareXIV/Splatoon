@@ -2,6 +2,7 @@
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Colors;
 using ECommons;
+using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ECommons.Logging;
@@ -22,8 +23,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     public class Party_Synergy : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
+
+        public override Metadata? Metadata => new(1, "NightmareXIV");
+
         const string StackVFX = "vfx/lockon/eff/com_share2i.avfx";
         const string ChainVFX = "vfx/lockon/eff/z3oz_firechain_0";
+
+        Config Conf => Controller.GetConfig<Config>();
 
         public override void OnVFXSpawn(uint target, string vfxPath)
         {
@@ -42,24 +48,25 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     if((a1 > 180 && a2 > 180) || (a1 < 180 && a2 < 180))
                     {
                         //DuoLog.Information($"Swap!");
-                        var swapper = stackers.OrderBy(x => Vector3.Distance(opticalUnit.Position, x.Position)).ToArray()[1];
+                        var swapper = stackers.OrderBy(x => Vector3.Distance(opticalUnit.Position, x.Position)).ToArray()[Conf.ReverseAdjust ? 0 : 1];
                         var swappersVfx = AttachedInfo.VFXInfos[swapper.Address].FirstOrDefault(x => x.Key.Contains(ChainVFX) && x.Value.AgeF < 60).Key;
                         //DuoLog.Information($"Swapper: {swapper} Swapper's vfx: {swappersVfx}");
                         var secondSwapper = AttachedInfo.VFXInfos.Where(x => x.Key != swapper.Address && x.Value.Any(z => z.Key.Contains(swappersVfx) && z.Value.AgeF < 60)).Select(x => x.Key).Select(x => Svc.Objects.FirstOrDefault(z => z.Address == x)).FirstOrDefault();
                         //DuoLog.Information($"Second swapper: {secondSwapper}");
-                        DuoLog.Warning($"Swapping! Go {(myAngle<180?"right":"left")} \n{swapper.Name}\n{secondSwapper?.Name}\n============");
+                        var dir = myAngle < 180 ? "right" : "left";
+                        if (Conf.PrintPreciseResultInChat) DuoLog.Warning($"Swapping! Go {dir} \n{swapper.Name}\n{secondSwapper?.Name}\n============");
                         if (Svc.ClientState.LocalPlayer.Address.EqualsAny(swapper.Address, secondSwapper.Address))
                         {
                             new TimedMiddleOverlayWindow("swaponYOU", 10000, () =>
                             {
                                 ImGui.SetWindowFontScale(2f);
-                                ImGuiEx.Text(ImGuiColors.DalamudRed, $"Stack swap position!\n\n  {swapper.Name} \n  {secondSwapper?.Name}");
+                                ImGuiEx.Text(ImGuiColors.DalamudRed, $"Stack swap position!\n\n  {swapper.Name} \n  {secondSwapper?.Name}\n Go {dir}");
                             }, 150);
                         }
                     }
                     else
                     {
-                        DuoLog.Information($"No swap, go {(myAngle > 180 ? "right" : "left")}");
+                        if (Conf.PrintPreciseResultInChat) DuoLog.Information($"No swap, go {(myAngle > 180 ? "right" : "left")}");
                     }
                 }
             }
@@ -67,29 +74,40 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public override void OnSettingsDraw()
         {
-            var opticalUnit = Svc.Objects.FirstOrDefault(x => x is Character c && c.NameId == 7640);
-            if(opticalUnit != null)
+            if (ImGui.RadioButton("Furthest from eye adjusts", !Conf.ReverseAdjust)) Conf.ReverseAdjust = false;
+            if (ImGui.RadioButton("Closest to eye adjusts", Conf.ReverseAdjust)) Conf.ReverseAdjust = true;
+            ImGui.Checkbox($"Print in chat info about not your adjusts", ref Conf.PrintPreciseResultInChat);
+            if (ImGui.CollapsingHeader("Debug"))
             {
-                var mid = MathHelper.GetRelativeAngle(new(100, 100), opticalUnit.Position.ToVector2());
-                ImGuiEx.Text($"Mid: {mid}");
-                foreach(var x in Svc.Objects)
+                var opticalUnit = Svc.Objects.FirstOrDefault(x => x is Character c && c.NameId == 7640);
+                if (opticalUnit != null)
                 {
-                    if(x is PlayerCharacter pc) 
+                    var mid = MathHelper.GetRelativeAngle(new(100, 100), opticalUnit.Position.ToVector2());
+                    ImGuiEx.Text($"Mid: {mid}");
+                    foreach (var x in Svc.Objects)
                     {
-                        var pos = (MathHelper.GetRelativeAngle(pc.Position.ToVector2(), opticalUnit.Position.ToVector2()) - mid + 360) % 360;
-                        ImGuiEx.Text($"{pc.Name} {pos} {(pos > 180?"right":"left")}");
+                        if (x is PlayerCharacter pc)
+                        {
+                            var pos = (MathHelper.GetRelativeAngle(pc.Position.ToVector2(), opticalUnit.Position.ToVector2()) - mid + 360) % 360;
+                            ImGuiEx.Text($"{pc.Name} {pos} {(pos > 180 ? "right" : "left")}");
+                        }
                     }
                 }
-            }
-            if (ImGui.Button("test"))
-            {
-                new TimedMiddleOverlayWindow("swaponYOU", 5000, () =>
+                if (ImGui.Button("test"))
                 {
-                    ImGui.SetWindowFontScale(2f);
-                    ImGuiEx.Text(ImGuiColors.DalamudRed, $"Stack swap position!\n\n  Player 1 \n  Player 2");
-                }, 150);
+                    new TimedMiddleOverlayWindow("swaponYOU", 5000, () =>
+                    {
+                        ImGui.SetWindowFontScale(2f);
+                        ImGuiEx.Text(ImGuiColors.DalamudRed, $"Stack swap position!\n\n  Player 1 \n  Player 2");
+                    }, 150);
+                }
             }
         }
 
+        public class Config : IEzConfig
+        {
+            public bool ReverseAdjust = false;
+            public bool PrintPreciseResultInChat = false;
+        }
     }
 }
