@@ -3,9 +3,12 @@ using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Colors;
 using ECommons;
 using ECommons.DalamudServices;
+using ECommons.GameFunctions;
 using ECommons.Hooks;
+using ECommons.ImGuiMethods;
 using ECommons.Logging;
 using Splatoon.SplatoonScripting;
+using Splatoon.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,11 +76,18 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         }
 
+        public Vector4 ColorBlueTower = 0xFFFF0000.ToVector4();
+        public Vector4 ColorRedTower = 0xFF0000FF.ToVector4();
+
         public override void OnSetup()
         {
-            Controller.RegisterElementFromCode("RedTower", "{\"Name\":\"Red\",\"type\":1,\"Enabled\":false,\"radius\":6.0,\"thicc\":4.0,\"refActorName\":\"*\",\"refActorRequireCast\":true,\"refActorCastId\":[31583],\"includeRotation\":false,\"tether\":true}");
-            Controller.RegisterElementFromCode("BlueTower", "{\"Name\":\"Blue\",\"type\":1,\"Enabled\":false,\"radius\":6.0,\"color\":3372220160,\"thicc\":4.0,\"refActorName\":\"*\",\"refActorRequireCast\":true,\"refActorCastId\":[31584],\"includeRotation\":false,\"tether\":true}");
+            Controller.RegisterElementFromCode("RedTower", "{\"Name\":\"Red\",\"type\":1,\"Enabled\":false,\"radius\":6.0,\"thicc\":7.0,\"refActorName\":\"*\",\"refActorRequireCast\":true,\"refActorCastId\":[31583],\"includeRotation\":false,\"tether\":true}");
+            Controller.RegisterElementFromCode("BlueTower", "{\"Name\":\"Blue\",\"type\":1,\"Enabled\":false,\"radius\":6.0,\"color\":3372220160,\"thicc\":7.0,\"refActorName\":\"*\",\"refActorRequireCast\":true,\"refActorCastId\":[31584],\"includeRotation\":false,\"tether\":true}");
+            Controller.RegisterElementFromCode("RedTowerSolid", "{\"Name\":\"Red\",\"type\":1,\"Enabled\":false,\"radius\":6.0,\"thicc\":4.0,\"refActorName\":\"*\",\"refActorRequireCast\":true,\"refActorCastId\":[31583],\"includeRotation\":false,\"tether\":false}");
+            Controller.RegisterElementFromCode("BlueTowerSolid", "{\"Name\":\"Blue\",\"type\":1,\"Enabled\":false,\"radius\":6.0,\"color\":3372220160,\"thicc\":4.0,\"refActorName\":\"*\",\"refActorRequireCast\":true,\"refActorCastId\":[31584],\"includeRotation\":false,\"tether\":false}");
             Controller.RegisterElementFromCode("Reminder", "{\"Name\":\"\",\"type\":1,\"Enabled\":false,\"offZ\":3.5,\"overlayBGColor\":4278190335,\"overlayTextColor\":4294967295,\"overlayFScale\":2.0,\"overlayText\":\"REMINDER\",\"refActorType\":1}");
+
+            Controller.RegisterElementFromCode("DefaPartner", "{\"Name\":\"\",\"type\":1,\"Enabled\":false,\"radius\":0.5,\"color\":4294902015,\"overlayBGColor\":4294902015,\"overlayTextColor\":4294967295,\"overlayPlaceholders\":true,\"overlayText\":\"Defamation\\\\nTaker\",\"refActorObjectID\":11111,\"FillStep\":0.2,\"refActorComparisonType\":2,\"includeRotation\":true,\"Filled\":true}");
         }
 
         public override void OnMessage(string Message)
@@ -91,6 +101,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public override void OnUpdate()
         {
+            Controller.GetElementByName("DefaPartner").Enabled = false;
             if ((HasEffect(Effects.NoBlueRot) && HasEffect(Effects.NoRedRot)))
             {
                 RotPicker = false;
@@ -127,6 +138,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     if(counter != 4 && !(HasEffect(Effects.NoBlueRot) && HasEffect(Effects.NoRedRot))) RotPicker = true;
                     if (counter != 4)
                     {
+                        var partner = FakeParty.Get().FirstOrDefault(x => x.Address != Svc.ClientState.LocalPlayer.Address && HasEffect(Effects.UpcomingCloseTether, 10f, x));
                         if (isDefamationRed)
                         {
                             TowerRed(true);
@@ -136,6 +148,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         {
                             TowerBlue(true);
                             Reminder("Far out of blue tower - pick up DEFAMATION", ImGuiColors.TankBlue);
+                        }
+                        if(partner != null)
+                        {
+                            Controller.GetElementByName("DefaPartner").Enabled = true;
+                            Controller.GetElementByName("DefaPartner").refActorObjectID = partner.ObjectId;
                         }
                     }
                     else
@@ -201,7 +218,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 Reminder(null);
                 counter = 0;
                 RotPicker = false;
-                DuoLog.Information("Counter: " + counter);
+                Controller.GetElementByName("DefaPartner").Enabled = false;
+                PluginLog.Information("Counter: " + counter);
             }
         }
 
@@ -209,16 +227,26 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         {
             Controller.GetElementByName("RedTower").Enabled = true;
             Controller.GetElementByName("BlueTower").Enabled = false;
-            Controller.GetElementByName("RedTower").color = (Controller.GetElementByName("RedTower").color.ToVector4() with { W = filled ? 0.3f : 0.8f }).ToUint();
-            Controller.GetElementByName("RedTower").Filled = filled;
+            Controller.GetElementByName("RedTower").color = GradientColor.Get(ColorRedTower, ColorRedTower with { W = 0.5f}, 333).ToUint();
+            Controller.GetElementByName("RedTowerSolid").Enabled = filled;
+            if (filled)
+            {
+                Controller.GetElementByName("RedTowerSolid").Filled = true;
+                Controller.GetElementByName("RedTowerSolid").color = (ColorRedTower with { W = 0.3f }).ToUint();
+            }
         }
 
         void TowerBlue(bool filled)
         {
             Controller.GetElementByName("RedTower").Enabled = false;
             Controller.GetElementByName("BlueTower").Enabled = true;
-            Controller.GetElementByName("BlueTower").color = (Controller.GetElementByName("BlueTower").color.ToVector4() with { W = filled ? 0.3f : 0.8f }).ToUint();
-            Controller.GetElementByName("BlueTower").Filled = filled;
+            Controller.GetElementByName("BlueTower").color = GradientColor.Get(ColorBlueTower, ColorBlueTower with { W = 0.5f }, 333).ToUint();
+            Controller.GetElementByName("BlueTowerSolid").Enabled = filled;
+            if (filled)
+            {
+                Controller.GetElementByName("BlueTowerSolid").Filled = true;
+                Controller.GetElementByName("BlueTowerSolid").color = (ColorRedTower with { W = 0.3f }).ToUint();
+            }
         }
 
         void TowerOff()

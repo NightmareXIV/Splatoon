@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,13 +32,14 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             {
                 var stackers = AttachedInfo.VFXInfos.Where(x => x.Value.Any(z => z.Key == StackVFX && z.Value.Age < 1000)).Select(x => x.Key).Select(x => Svc.Objects.FirstOrDefault(z => z.Address == x)).ToArray();
                 var opticalUnit = Svc.Objects.FirstOrDefault(x => x is Character c && c.NameId == 7640);
-                if(stackers.Length == 2 && opticalUnit != null)
+                var mid = MathHelper.GetRelativeAngle(new(100, 100), opticalUnit.Position.ToVector2());
+                var myAngle = (MathHelper.GetRelativeAngle(Svc.ClientState.LocalPlayer.Position, opticalUnit.Position) - mid + 360) % 360;
+                if (stackers.Length == 2 && opticalUnit != null)
                 {
-                    var mid = MathHelper.GetRelativeAngle(new(100, 100), opticalUnit.Position.ToVector2());
-                    var a1 = MathHelper.GetRelativeAngle(stackers[0].Position, opticalUnit.Position);
-                    var a2 = MathHelper.GetRelativeAngle(stackers[1].Position, opticalUnit.Position);
+                    var a1 = (MathHelper.GetRelativeAngle(stackers[0].Position, opticalUnit.Position) - mid + 360) % 360;
+                    var a2 = (MathHelper.GetRelativeAngle(stackers[1].Position, opticalUnit.Position) - mid + 360) % 360;
                     //DuoLog.Information($"Angles: {a1}, {a2}");
-                    if((a1 > mid && a2 > mid) || (a1 < mid && a2 < mid))
+                    if((a1 > 180 && a2 > 180) || (a1 < 180 && a2 < 180))
                     {
                         //DuoLog.Information($"Swap!");
                         var swapper = stackers.OrderBy(x => Vector3.Distance(opticalUnit.Position, x.Position)).ToArray()[1];
@@ -45,19 +47,19 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         //DuoLog.Information($"Swapper: {swapper} Swapper's vfx: {swappersVfx}");
                         var secondSwapper = AttachedInfo.VFXInfos.Where(x => x.Key != swapper.Address && x.Value.Any(z => z.Key.Contains(swappersVfx) && z.Value.AgeF < 60)).Select(x => x.Key).Select(x => Svc.Objects.FirstOrDefault(z => z.Address == x)).FirstOrDefault();
                         //DuoLog.Information($"Second swapper: {secondSwapper}");
-                        DuoLog.Warning($"{swapper.Name} and {secondSwapper?.Name} swap!");
+                        DuoLog.Warning($"Swapping! Go {(myAngle<180?"right":"left")} \n{swapper.Name}\n{secondSwapper?.Name}\n============");
                         if (Svc.ClientState.LocalPlayer.Address.EqualsAny(swapper.Address, secondSwapper.Address))
                         {
-                            new TimedMiddleOverlayWindow("swaponYOU", 5000, () =>
+                            new TimedMiddleOverlayWindow("swaponYOU", 10000, () =>
                             {
                                 ImGui.SetWindowFontScale(2f);
-                                ImGuiEx.Text(ImGuiColors.DalamudRed, $"Stack swap position!\n{swapper.Name} <-> {secondSwapper?.Name}");
-                            }, 300);
+                                ImGuiEx.Text(ImGuiColors.DalamudRed, $"Stack swap position!\n\n  {swapper.Name} \n  {secondSwapper?.Name}");
+                            }, 150);
                         }
                     }
                     else
                     {
-                        DuoLog.Information($"No swap");
+                        DuoLog.Information($"No swap, go {(myAngle > 180 ? "right" : "left")}");
                     }
                 }
             }
@@ -74,10 +76,18 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 {
                     if(x is PlayerCharacter pc) 
                     {
-                        var pos = MathHelper.GetRelativeAngle(pc.Position.ToVector2(), opticalUnit.Position.ToVector2());
-                        ImGuiEx.Text($"{pc.Name} {pos} {(pos > mid?"left":"right")}");
+                        var pos = (MathHelper.GetRelativeAngle(pc.Position.ToVector2(), opticalUnit.Position.ToVector2()) - mid + 360) % 360;
+                        ImGuiEx.Text($"{pc.Name} {pos} {(pos > 180?"right":"left")}");
                     }
                 }
+            }
+            if (ImGui.Button("test"))
+            {
+                new TimedMiddleOverlayWindow("swaponYOU", 5000, () =>
+                {
+                    ImGui.SetWindowFontScale(2f);
+                    ImGuiEx.Text(ImGuiColors.DalamudRed, $"Stack swap position!\n\n  Player 1 \n  Player 2");
+                }, 150);
             }
         }
 
