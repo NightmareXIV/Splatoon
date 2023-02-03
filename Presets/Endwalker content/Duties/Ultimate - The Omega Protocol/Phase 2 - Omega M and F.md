@@ -87,8 +87,8 @@ Only necessary (far/close) part will be displayed.
 
 ### New toolbox strat
 [EN] [JP] [Untested]
-https://ff14.toolboxgaming.space/?id=109976780281761&preview=1#8
-https://ff14.toolboxgaming.space/?id=109976780281761&preview=1#9
+- https://ff14.toolboxgaming.space/?id=109976780281761&preview=1#8
+- https://ff14.toolboxgaming.space/?id=109976780281761&preview=1#9
 
 #### Mid glitch
 <img src="https://user-images.githubusercontent.com/5073202/216631394-6936da3b-2ac6-469b-bbaa-0e8506a89f05.png" width="200"></img>
