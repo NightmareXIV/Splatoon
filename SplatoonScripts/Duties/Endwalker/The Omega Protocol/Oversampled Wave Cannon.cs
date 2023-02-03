@@ -22,15 +22,22 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     public class Oversampled_Wave_Cannon : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new(1122);
-        public override Metadata? Metadata => new(1, "NightmareXIV");
+        public override Metadata? Metadata => new(2, "NightmareXIV");
         Config Conf => Controller.GetConfig<Config>();
 
         public override void OnSetup()
         {
-            Controller.RegisterElementFromCode("FreeN", "{\"Name\":\"FreeN\",\"Enabled\":false,\"refX\":100.0,\"refY\":85.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
-            Controller.RegisterElementFromCode("FreeS", "{\"Name\":\"FreeS\",\"Enabled\":false,\"refX\":100.0,\"refY\":115.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
-            Controller.RegisterElementFromCode("FreeW", "{\"Name\":\"FreeW\",\"Enabled\":false,\"refX\":85.0,\"refY\":100.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
-            Controller.RegisterElementFromCode("FreeE", "{\"Name\":\"FreeE\",\"Enabled\":false,\"refX\":115.0,\"refY\":100.0,\"radius\":4.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Get hit once\",\"tether\":true}");
+            Controller.RegisterElementFromCode("West1", "{\"Name\":\"West1\",\"Enabled\":false,\"refX\":101.767784,\"refY\":81.49996,\"refZ\":-5.456968E-12,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"1\",\"tether\":true}");
+            Controller.RegisterElementFromCode("West2", "{\"Name\":\"West2\",\"Enabled\":false,\"refX\":108.223785,\"refY\":89.81443,\"refZ\":-5.456968E-12,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"2\",\"tether\":true}");
+            Controller.RegisterElementFromCode("West3", "{\"Name\":\"West3\",\"Enabled\":false,\"refX\":118.00965,\"refY\":93.731346,\"refZ\":9.5366886E-07,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"3\",\"tether\":true}");
+            Controller.RegisterElementFromCode("West4", "{\"Name\":\"West4\",\"Enabled\":false,\"refX\":117.579094,\"refY\":106.06494,\"refZ\":-5.456968E-12,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"4\",\"tether\":true}");
+            Controller.RegisterElementFromCode("West5", "{\"Name\":\"West5\",\"Enabled\":false,\"refX\":101.53348,\"refY\":115.84821,\"refZ\":-9.536798E-07,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"5\",\"tether\":true}");
+
+            Controller.RegisterElementFromCode("East1", "{\"Name\":\"East1\",\"Enabled\":false,\"refX\":97.26763,\"refY\":81.4473,\"refZ\":-5.456968E-12,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"1\",\"tether\":true}");
+            Controller.RegisterElementFromCode("East2", "{\"Name\":\"East2\",\"Enabled\":false,\"refX\":92.60179,\"refY\":90.96322,\"refZ\":-3.8147027E-06,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"2\",\"tether\":true}");
+            Controller.RegisterElementFromCode("East3", "{\"Name\":\"East3\",\"Enabled\":false,\"refX\":82.71691,\"refY\":94.52687,\"refZ\":-5.456968E-12,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"3\",\"tether\":true}");
+            Controller.RegisterElementFromCode("East4", "{\"Name\":\"East4\",\"Enabled\":false,\"refX\":83.29329,\"refY\":105.826805,\"refZ\":9.5366886E-07,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"4\",\"tether\":true}");
+            Controller.RegisterElementFromCode("East5", "{\"Name\":\"East5\",\"Enabled\":false,\"refX\":98.28137,\"refY\":116.52846,\"refZ\":9.5366886E-07,\"radius\":1.0,\"thicc\":5.0,\"overlayText\":\"5\",\"tether\":true}");
 
             Controller.RegisterElementFromCode("EastM1", "{\"Name\":\"EastM1\",\"Enabled\":false,\"refX\":110.13328,\"refY\":90.989174,\"refZ\":-5.456968E-12,\"radius\":1.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Inner edge\",\"tether\":true}");
             Controller.RegisterElementFromCode("EastM2", "{\"Name\":\"EastM2\",\"Enabled\":false,\"refX\":110.057434,\"refY\":108.96221,\"refZ\":-5.456968E-12,\"radius\":1.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"thicc\":5.0,\"overlayText\":\"Inner edge\",\"tether\":true}");
@@ -57,32 +64,15 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 var prio = ObtainMyPriority();
                 if(prio.Priority != 0)
                 {
+                    var d = direction == CardinalDirection.West ? "West" : "East";
                     if (prio.IsMonitor)
                     {
-                        var d = direction == CardinalDirection.West ? "West" : "East";
                         Controller.GetElementByName($"{d}M{prio.Priority}").Enabled = true;
                         Controller.GetElementByName($"{d}M{prio.Priority}Point").Enabled = true;
                     }
                     else
                     {
-                        if(prio.Priority.EqualsAny(1, 2))
-                        {
-                            var e = Controller.GetElementByName($"FreeN");
-                            e.Enabled = true;
-                            e.overlayText = prio.Priority == 1 ? "Close to edge" : "Close to middle";
-                        }
-                        else if (prio.Priority.EqualsAny(3, 4))
-                        {
-                            var e = Controller.GetElementByName(direction == CardinalDirection.West ? "FreeE" : "FreeW");
-                            e.Enabled = true;
-                            e.overlayText = prio.Priority == 3 ? "Go Up" : "Go Down";
-                        }
-                        else if (prio.Priority.EqualsAny(5))
-                        {
-                            var e = Controller.GetElementByName($"FreeS");
-                            e.Enabled = true;
-                            e.overlayText = "Close to edge";
-                        }
+                        Controller.GetElementByName($"{d}{prio.Priority}").Enabled = true;
                     }
                 }
             }

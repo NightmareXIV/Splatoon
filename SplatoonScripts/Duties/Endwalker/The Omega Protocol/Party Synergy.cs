@@ -24,7 +24,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(1, "NightmareXIV");
+        public override Metadata? Metadata => new(2, "NightmareXIV");
 
         const string StackVFX = "vfx/lockon/eff/com_share2i.avfx";
         const string ChainVFX = "vfx/lockon/eff/z3oz_firechain_0";
@@ -54,7 +54,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         var secondSwapper = AttachedInfo.VFXInfos.Where(x => x.Key != swapper.Address && x.Value.Any(z => z.Key.Contains(swappersVfx) && z.Value.AgeF < 60)).Select(x => x.Key).Select(x => Svc.Objects.FirstOrDefault(z => z.Address == x)).FirstOrDefault();
                         //DuoLog.Information($"Second swapper: {secondSwapper}");
                         var dir = myAngle < 180 ? "right" : "left";
-                        if (Conf.PrintPreciseResultInChat) DuoLog.Warning($"Swapping! Go {dir} \n{swapper.Name}\n{secondSwapper?.Name}\n============");
+                        if (Conf.PrintPreciseResultInChat) DuoLog.Warning($"Swapping! \n{swapper.Name}\n{secondSwapper?.Name}\n============");
                         if (Svc.ClientState.LocalPlayer.Address.EqualsAny(swapper.Address, secondSwapper.Address))
                         {
                             new TimedMiddleOverlayWindow("swaponYOU", 10000, () =>
