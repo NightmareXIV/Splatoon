@@ -170,7 +170,6 @@ internal static class TabScripting
             }
             ImGui.SameLine();
 
-
             if (ImGuiEx.IconButton(FontAwesomeIcon.Trash) && ImGui.GetIO().KeyCtrl)
             {
                 if (!x.InternalData.Path.IsNullOrEmpty() && x.InternalData.Path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
@@ -200,14 +199,20 @@ internal static class TabScripting
                 ImGuiEx.Text(ImGuiColors.DalamudYellow, $"{openConfig.InternalData.FullName} configuration");
             });
             ImGui.Separator();
-            try
-            {
-                openConfig.OnSettingsDraw();
-            }
-            catch (Exception ex)
-            {
-                ex.Log();
-            }
+            ImGuiEx.EzTabBar("##scriptConfig", 
+                ("Configuration", () => {
+                    try
+                    {
+                        openConfig.OnSettingsDraw();
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.Log();
+                    }
+                }, null, false),
+                ("Registered layouts/elements", openConfig.DrawRegisteredElements, null, false)
+                );
+            
             ImGuiEx.ImGuiLineCentered("ScriptConfig", delegate
             {
                 if (ImGui.Button("Close and save configuration"))

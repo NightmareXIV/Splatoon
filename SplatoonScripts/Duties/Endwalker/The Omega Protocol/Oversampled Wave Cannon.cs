@@ -21,7 +21,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
     public class Oversampled_Wave_Cannon : SplatoonScript
     {
-        public override HashSet<uint> ValidTerritories => new(1122);
+        public override HashSet<uint> ValidTerritories => new() { 1122 };
         public override Metadata? Metadata => new(3, "NightmareXIV");
         Config Conf => Controller.GetConfig<Config>();
 

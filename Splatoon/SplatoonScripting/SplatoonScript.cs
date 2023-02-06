@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using ECommons.Hooks;
 using ECommons.Hooks.ActionEffectTypes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json;
 
 namespace Splatoon.SplatoonScripting;
 
@@ -138,6 +140,26 @@ public abstract class SplatoonScript
     /// If you override this method, settings section will be added to your script. You can call ImGui methods in this function to draw configuration UI. Keep it simple.
     /// </summary>
     public virtual void OnSettingsDraw() { }
+
+    internal void DrawRegisteredElements()
+    {
+        ImGuiEx.Text("Layouts");
+        foreach (var x in Controller.GetRegisteredLayouts())
+        {
+            if (ImGui.Selectable($"[{x.Key}] {x.Value.Name} - {x.Value.ElementsL.Select(z => z.Name).Print()}"))
+            {
+                x.Value.ExportToClipboard();
+            }
+        }
+        ImGuiEx.Text("Elements");
+        foreach (var x in Controller.GetRegisteredElements())
+        {
+            if (ImGui.Selectable($"[{x.Key}] {x.Value.Name}"))
+            {
+                ImGui.SetClipboardText(JsonConvert.SerializeObject(x.Value, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
+            }
+        }
+    }
 
     public bool DoSettingsDraw => this.GetType().GetMethod(nameof(OnSettingsDraw))?.DeclaringType != typeof(SplatoonScript);
 
