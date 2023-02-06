@@ -61,6 +61,11 @@
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Party%20Synergy.cs
 ```
 
+[International] [Partially EN] [Script] Target enforcer. Will not let you select immune target.
+```
+https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/MF%20Target%20Enforcer.cs
+```
+
 ## Playstation markers
 ### Old toolbox strat
 [EN] [JP] For this strat:
