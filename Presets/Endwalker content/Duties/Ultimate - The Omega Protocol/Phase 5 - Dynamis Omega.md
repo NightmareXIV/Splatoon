@@ -22,6 +22,9 @@
 ~Lv2~{"Name":"P5 D1 Arms Turning Bait Spots","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"right circle","type":1,"offY":3.0,"radius":0.5,"thicc":5.0,"refActorComparisonType":7,"includeRotation":true,"AdditionalRotation":1.3962634,"refActorVFXPath":"vfx/lockon/eff/m0515_turning_right01c.avfx","refActorVFXMax":10000},{"Name":"right line","type":3,"offY":3.0,"radius":0.0,"thicc":3.0,"refActorComparisonType":7,"includeRotation":true,"AdditionalRotation":1.3962634,"refActorVFXPath":"vfx/lockon/eff/m0515_turning_right01c.avfx","refActorVFXMax":10000},{"Name":"left circle","type":1,"offY":3.0,"radius":0.5,"thicc":5.0,"refActorComparisonType":7,"includeRotation":true,"AdditionalRotation":4.886922,"refActorVFXPath":"vfx/lockon/eff/m0515_turning_left01c.avfx","refActorVFXMax":10000},{"Name":"left line","type":3,"offY":3.0,"radius":0.0,"thicc":3.0,"refActorComparisonType":7,"includeRotation":true,"AdditionalRotation":4.886922,"refActorVFXPath":"vfx/lockon/eff/m0515_turning_left01c.avfx","refActorVFXMax":10000}]}
 ```
 
+[International] Oversampled Wave Cannon
+- Get it from Phase 3 page https://github.com/NightmareXIV/Splatoon/blob/master/Presets/Endwalker%20content/Duties/Ultimate%20-%20The%20Omega%20Protocol/Phase%203%20-%20Final%20omega.md#oversampled-wave-cannon---also-works-for-p5
+
 [International] P1 Omega's cleave
 ```
 ~Lv2~{"Name":"P5 D1 Omega right","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"OMJ","type":3,"offY":-27.0,"radius":50.0,"color":167772415,"refActorNPCID":7695,"refActorComparisonType":4,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":1.8325957}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"Match":" (7695>31637)"}]}
