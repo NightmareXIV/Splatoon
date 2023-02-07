@@ -1,6 +1,7 @@
 ﻿using ECommons;
 using ECommons.GameFunctions;
 using ECommons.MathHelpers;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
 using Lumina.Excel.GeneratedSheets;
 using Splatoon.Memory;
 using Splatoon.Utils;
@@ -22,6 +23,12 @@ unsafe partial class CGui
     void DisplayDebug()
     {
         ImGui.BeginChild("##splatoonmaindbg");
+        if (ImGui.CollapsingHeader("EnvManager"))
+        {
+            var e = (nint)EnvManager.Instance();
+            ImGuiEx.TextCopy($"Inst: {e:X16}");
+            ImGuiEx.Text($"36: {*(byte*)(e + 36)}");
+        }
         if(ImGui.CollapsingHeader("CFC debug"))
         {
             try

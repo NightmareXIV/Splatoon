@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Splatoon.ConfigGui;
 using Splatoon.ConfigGui.CGuiLayouts.LayoutDrawHeader.Subcommands;
+using Splatoon.Gui.Layouts.Header.Sections;
 using Splatoon.Utils;
 
 namespace Splatoon;
@@ -139,6 +140,12 @@ partial class CGui
             layout.DrawZlockSelector();
 
             ImGui.TableNextColumn();
+
+            ImGuiEx.TextV("Scene (beta)");
+            ImGui.TableNextColumn();
+            layout.DrawSceneSelector();
+
+            ImGui.TableNextColumn();
             ImGuiEx.TextV("Job lock".Loc());
             ImGui.TableNextColumn();
             layout.DrawJlockSelector();
@@ -149,7 +156,7 @@ partial class CGui
             layout.DrawDistanceLimit();
 
             ImGui.TableNextColumn();
-            ImGui.Checkbox("Freeze (beta)".Loc(), ref layout.Freezing);
+            ImGui.Checkbox("Freeze".Loc(), ref layout.Freezing);
             ImGui.TableNextColumn();
             layout.DrawFreezing();
 

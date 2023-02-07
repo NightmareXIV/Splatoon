@@ -1,4 +1,5 @@
-﻿using ECommons.Logging;
+﻿using ECommons.Hooks;
+using ECommons.Logging;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;

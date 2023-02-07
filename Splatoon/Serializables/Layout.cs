@@ -14,6 +14,7 @@ public class Layout
     [NonSerialized] internal string GUID = Guid.NewGuid().ToString();
     [NonSerialized] internal bool Delete = false;
     public HashSet<ushort> ZoneLockH = new();
+    public HashSet<int> Scenes = new();
     [DefaultValue(false)] public bool IsZoneBlacklist = false;
 
     /// <summary>
@@ -55,6 +56,11 @@ public class Layout
     [DefaultValue(true)] public bool FreezeResetTerr = true;
     [DefaultValue(0f)] public float FreezeDisplayDelay = 0f;
     [NonSerialized] internal FreezeInfo freezeInfo = new();
+
+    public bool ShouldSerializeScenes()
+    {
+        return Scenes.Count > 0;
+    }
 
     public bool ShouldSerializeIntervalBetweenFreezes()
     {
