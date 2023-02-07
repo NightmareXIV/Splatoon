@@ -53,7 +53,7 @@
 
 [International] Earlier optical unit finder. Serves the purpose to find it earlier while not turning screen into a complete mess.
 ```
-~Lv2~{"Name":"P2 Optical unit finder - early circle","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":1,"offY":25.0,"radius":5.0,"color":4294967040,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":"(7635>31550)","MatchDelay":5.0}]}
+~Lv2~{"Name":"P2 Optical unit finder - early beam","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":3,"refY":25.0,"refZ":20.0,"offY":25.0,"radius":2.0,"color":3372220160,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"Filled":true},{"Name":"","type":3,"refX":-25.0,"refZ":20.0,"offX":-25.0,"radius":2.0,"color":3372220160,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"AdditionalRotation":1.5707964,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":"(7635>31550)","MatchDelay":5.0}]}
 ```
 
 [International] [Script] [Configuration required] Stack swap informer. Will inform you about need to swap with a player on stacks, and optionally - write in chat (for you only, not sending to server) - for any swap. Can be configured: furthest or closest player to adjust. 
