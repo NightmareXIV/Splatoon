@@ -12,7 +12,7 @@ unsafe partial class CGui
 {
     string ActionName = "";
     string BuffName = "";
-    void LayoutDrawElement(Layout l, Element el)
+    internal void LayoutDrawElement(Layout l, Element el, bool forceEnable = false)
     {
         //var cursor = ImGui.GetCursorPos();
         var i = l.Name;
@@ -478,7 +478,7 @@ unsafe partial class CGui
                     ImGui.SameLine();
                     if (ImGuiEx.IconButton(FontAwesomeIcon.MousePointer, "Screen2World".Loc()+"##dist"))
                     {
-                        if (p.IsLayoutVisible(l) && el.Enabled)
+                        if (p.IsLayoutVisible(l) && (el.Enabled || forceEnable))
                         {
                             SetCursorTo(el.DistanceSourceX, el.DistanceSourceY, el.DistanceSourceZ);
                             p.BeginS2W(el, "DistanceSourceX", "DistanceSourceY", "DistanceSourceZ");
@@ -599,7 +599,7 @@ unsafe partial class CGui
                     ImGui.SameLine();
                     if (ImGuiEx.IconButton(FontAwesomeIcon.MousePointer, "Screen2World".Loc()+"##s2w1" + i + k))
                     {
-                        if (p.IsLayoutVisible(l) && el.Enabled)
+                        if (p.IsLayoutVisible(l) && (el.Enabled || forceEnable))
                         {
                             SetCursorTo(el.refX, el.refZ, el.refY);
                             p.BeginS2W(el, "refX", "refY", "refZ");
@@ -720,7 +720,7 @@ unsafe partial class CGui
                 ImGui.SameLine();
                 if (ImGuiEx.IconButton(FontAwesomeIcon.MousePointer, "Screen2World".Loc()+"##s2w2" + i + k))
                 {
-                    if (p.IsLayoutVisible(l) && el.Enabled/* && p.CamAngleY <= p.Config.maxcamY*/)
+                    if (p.IsLayoutVisible(l) && (el.Enabled || forceEnable)/* && p.CamAngleY <= p.Config.maxcamY*/)
                     {
                         SetCursorTo(el.offX, el.offZ, el.offY);
                         p.BeginS2W(el, "offX", "offY", "offZ");

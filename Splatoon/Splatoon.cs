@@ -12,6 +12,7 @@ using ECommons.Hooks;
 using ECommons.LanguageHelpers;
 using ECommons.MathHelpers;
 using ECommons.ObjectLifeTracker;
+using ECommons.SimpleGui;
 using Lumina.Excel.GeneratedSheets;
 using PInvoke;
 using Splatoon.Gui;
@@ -85,6 +86,7 @@ public unsafe class Splatoon : IDalamudPlugin
     internal TetherProcessor TetherProcessor;
     internal ObjectEffectProcessor ObjectEffectProcessor;
     internal HttpClient HttpClient;
+    internal PinnedElementEdit PinnedElementEditWindow;
 
     internal void Load(DalamudPluginInterface pluginInterface)
     {
@@ -120,6 +122,9 @@ public unsafe class Splatoon : IDalamudPlugin
 
         DrawingGui = new OverlayGui(this);
         ConfigGui = new CGui(this);
+        EzConfigGui.Init(() => { });
+        PinnedElementEditWindow = new();
+        EzConfigGui.WindowSystem.AddWindow(PinnedElementEditWindow);
         Camera.Init();
         Scene.Init();
         Svc.Chat.ChatMessage += OnChatMessage;
@@ -489,6 +494,11 @@ public unsafe class Splatoon : IDalamudPlugin
                     Profiler.MainTickFind.StartTick();
                 }
 
+                if(PinnedElementEditWindow.Script != null && PinnedElementEditWindow.EditingElement != null)
+                {
+                    ProcessElement(PinnedElementEditWindow.EditingElement, null, true);
+                }
+
                 if (SFind.Count > 0)
                 {
                     foreach (var obj in SFind)
@@ -685,9 +695,9 @@ public unsafe class Splatoon : IDalamudPlugin
         injectedElements.Add(e);
     }
 
-    internal void ProcessElement(Element e, Layout i = null)
+    internal void ProcessElement(Element e, Layout i = null, bool forceEnable = false)
     {
-        if (!e.Enabled) return;
+        if (!e.Enabled && !forceEnable) return;
         ElementAmount++;
         float radius = e.radius;
         if (e.type == 0)

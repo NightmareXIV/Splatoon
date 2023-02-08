@@ -143,21 +143,43 @@ public abstract class SplatoonScript
 
     internal void DrawRegisteredElements()
     {
-        ImGuiEx.Text("Layouts");
-        foreach (var x in Controller.GetRegisteredLayouts())
-        {
-            if (ImGui.Selectable($"[{x.Key}] {x.Value.Name} - {x.Value.ElementsL.Select(z => z.Name).Print()}"))
-            {
-                x.Value.ExportToClipboard();
-            }
-        }
-        ImGuiEx.Text("Elements");
+        ImGui.Checkbox($"Unconditional draw", ref InternalData.UnconditionalDraw);
         foreach (var x in Controller.GetRegisteredElements())
         {
-            if (ImGui.Selectable($"[{x.Key}] {x.Value.Name}"))
+            ImGui.PushID(x.Value.GUID);
+            ImGuiEx.HashSetCheckbox($"Enable draw", x.Value.GUID, InternalData.UnconditionalDrawElements);
+            ImGui.SameLine();
+            if (ImGui.Button("Copy"))
             {
                 ImGui.SetClipboardText(JsonConvert.SerializeObject(x.Value, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
             }
+            ImGui.SameLine();
+            if (ImGui.Button("Edit"))
+            {
+                if (!InternalData.Overrides.Elements.ContainsKey(x.Key))
+                {
+                    Notify.Info($"Created override for {x.Key}");
+                    InternalData.Overrides.Elements[x.Key] = x.Value;
+                }
+                P.PinnedElementEditWindow.Open(this, x.Key);
+            }
+            ImGui.SameLine();
+            if (InternalData.Overrides.Elements.ContainsKey(x.Key))
+            {
+                if(ImGui.Button("Reset") && ImGui.GetIO().KeyCtrl)
+                {
+                    if(ReferenceEquals(P.PinnedElementEditWindow.EditingElement, x.Value))
+                    {
+                        P.PinnedElementEditWindow.EditingElement = null;
+                        P.PinnedElementEditWindow.Script = null;
+                    }
+                    InternalData.Overrides.Elements.Remove(x.Key);
+                    Controller.SaveOverrides();
+                }
+            }
+            ImGui.SameLine();
+            ImGuiEx.Text($"[{x.Key}] {x.Value.Name}");
+            ImGui.PopID();
         }
     }
 

@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using ECommons.Configuration;
+
 namespace Splatoon.SplatoonScripting;
 
 public class InternalData
@@ -17,6 +19,13 @@ public class InternalData
 
     internal SplatoonScript Script;
 
+    internal OverrideData Overrides;
+
+    internal string OverridesPath => $"{Path}.overrides.json";
+
+    internal bool UnconditionalDraw = false;
+    internal HashSet<string> UnconditionalDrawElements = new();
+
     public InternalData(string path, SplatoonScript instance)
     {
         Script = instance;
@@ -24,6 +33,7 @@ public class InternalData
         Namespace = instance.GetType().Namespace ?? "Default";
         Name = instance.GetType().Name;
         FullName = $"{Namespace}@{Name}";
+        Overrides = EzConfig.LoadConfiguration<OverrideData>($"{OverridesPath}", false);
         PluginLog.Information($"Script {FullName} ready.");
     }
 

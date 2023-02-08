@@ -210,7 +210,7 @@ internal static class TabScripting
                         ex.Log();
                     }
                 }, null, false),
-                ("Registered layouts/elements", openConfig.DrawRegisteredElements, null, false)
+                ("Registered elements", openConfig.DrawRegisteredElements, null, false)
                 );
             
             ImGuiEx.ImGuiLineCentered("ScriptConfig", delegate

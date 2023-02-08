@@ -264,4 +264,32 @@ public class Controller
     {
         return FakeParty.Get();
     }
+
+    public void ApplyOverrides()
+    {
+        foreach(var x in Script.InternalData.Overrides.Elements)
+        {
+            if (Elements.ContainsKey(x.Key))
+            {
+                PluginLog.Debug($"[{Script.InternalData.FullName}] Overriding {x.Key} element with custom data");
+                Elements[x.Key] = x.Value;
+            }
+        }
+    }
+
+    public void SaveOverrides()
+    {
+        if(Script.InternalData.Overrides.Elements.Count > 0)
+        {
+            EzConfig.SaveConfiguration(Script.InternalData.Overrides, Script.InternalData.OverridesPath, true, false);
+        }
+        else
+        {
+            if (File.Exists(Script.InternalData.OverridesPath))
+            {
+                PluginLog.Debug($"No overrides for {Script.InternalData.FullName}, deleting {Script.InternalData.OverridesPath}");
+                File.Delete(Script.InternalData.OverridesPath);
+            }
+        }
+    }
 }

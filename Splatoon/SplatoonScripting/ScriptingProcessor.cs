@@ -258,6 +258,7 @@ internal static class ScriptingProcessor
                                                     DuoLog.Information($"Script overwritten at {instance.InternalData.Path}");
                                                 }
                                                 instance.OnSetup();
+                                                instance.Controller.ApplyOverrides();
                                                 PluginLog.Information($"Load success");
                                                 instance.UpdateState();
                                             }
