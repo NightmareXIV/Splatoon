@@ -9,7 +9,7 @@ using System.Xml.Linq;
 #nullable enable
 namespace Splatoon.SplatoonScripting;
 
-public class Controller
+public unsafe class Controller
 {
     internal SplatoonScript Script;
     internal Dictionary<string, Layout> Layouts = new();
@@ -43,6 +43,8 @@ public class Controller
     /// Amount of miliseconds that have passed since combat start. Returns -1 if not in combat.
     /// </summary>
     public float CombatMiliseconds => InCombat? Environment.TickCount64 - P.CombatStarted : -1;
+
+    public int Scene => *global::Splatoon.Memory.Scene.ActiveScene;
 
     /// <summary>
     /// Loads if unloaded and returns script configuration file.
