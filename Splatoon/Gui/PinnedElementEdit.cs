@@ -38,6 +38,7 @@ namespace Splatoon.Gui
         {
             Script.Controller.SaveOverrides();
             Notify.Info("Override saved");
+            Script.Controller.ApplyOverrides();
             EditingElement = null;
             Script = null;
         }

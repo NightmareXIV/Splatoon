@@ -164,6 +164,18 @@ internal static class ScriptingProcessor
         }
     }
 
+    internal static void ReloadScript(SplatoonScript s)
+    {
+        if (ThreadIsRunning)
+        {
+            DuoLog.Error("Can not reload yet, please wait");
+            return;
+        }
+        s.Disable();
+        Scripts = Scripts.Remove(s);
+        CompileAndLoad(File.ReadAllText(s.InternalData.Path, Encoding.UTF8), s.InternalData.Path);
+    }
+
     internal static void CompileAndLoad(string sourceCode, string fpath)
     {
         PluginLog.Information($"Requested script loading");

@@ -159,7 +159,7 @@ public abstract class SplatoonScript
                 if (!InternalData.Overrides.Elements.ContainsKey(x.Key))
                 {
                     Notify.Info($"Created override for {x.Key}");
-                    InternalData.Overrides.Elements[x.Key] = x.Value;
+                    InternalData.Overrides.Elements[x.Key] = x.Value.JSONClone();
                 }
                 P.PinnedElementEditWindow.Open(this, x.Key);
             }

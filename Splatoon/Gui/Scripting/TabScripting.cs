@@ -170,6 +170,13 @@ internal static class TabScripting
             }
             ImGui.SameLine();
 
+            if (ImGuiEx.IconButton("\uf0e2"))
+            {
+                ScriptingProcessor.ReloadScript(x);
+            }
+
+            ImGui.SameLine();
+
             if (ImGuiEx.IconButton(FontAwesomeIcon.Trash) && ImGui.GetIO().KeyCtrl)
             {
                 if (!x.InternalData.Path.IsNullOrEmpty() && x.InternalData.Path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))

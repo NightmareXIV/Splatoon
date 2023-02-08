@@ -272,7 +272,7 @@ public class Controller
             if (Elements.ContainsKey(x.Key))
             {
                 PluginLog.Debug($"[{Script.InternalData.FullName}] Overriding {x.Key} element with custom data");
-                Elements[x.Key] = x.Value;
+                Elements[x.Key] = x.Value.JSONClone();
             }
         }
     }

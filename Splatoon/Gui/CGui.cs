@@ -53,7 +53,7 @@ unsafe partial class CGui:IDisposable
             
     void Draw()
     {
-        if (p.s2wInfo != null) return;
+        if (p.s2wInfo != null || P.PinnedElementEditWindow.IsOpen) return;
         if (!Open) 
         { 
             if(WasOpen)
