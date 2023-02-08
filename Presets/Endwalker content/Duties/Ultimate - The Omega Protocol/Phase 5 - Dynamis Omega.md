@@ -1,10 +1,31 @@
 # Delta
+[International] Optical unit finder - early beam
+```
+~Lv2~{"Name":"P5 D1 Optical unit finder - early beam","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":3,"refY":25.0,"refZ":20.0,"offY":25.0,"radius":2.0,"color":3372220160,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"Filled":true},{"Name":"","type":3,"refX":-25.0,"refZ":20.0,"offX":-25.0,"radius":2.0,"color":3372220160,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"AdditionalRotation":1.5707964,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":28.0,"Match":">31624)","MatchDelay":8.0}]}
+```
+
+[International] Optical unit finder - active line attack
+```
+~Lv2~{"Name":"P5 D1 Optical unit finder - line","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":3,"refY":35.0,"offY":65.0,"radius":8.0,"color":1358954240,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"Filled":true},{"Name":"","type":3,"offY":35.0,"radius":8.0,"color":1342177535,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":">31624)","MatchDelay":8.0}]}
+```
+
+[International] Blue and green tethers, blue next to P1 omega, green next to P3 omega
+```
+~Lv2~{"Name":"P5 D1 Blue to Beatle lines - blue","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Outer","type":3,"refX":7.0,"refY":4.0,"offX":-7.0,"offY":4.0,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true},{"Name":"Inner","type":3,"refX":3.0,"refY":9.0,"offX":-3.0,"offY":9.0,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true},{"Name":"Swapper","type":1,"offY":9.0,"radius":0.0,"color":3372154880,"overlayBGColor":4278190080,"overlayTextColor":4294967295,"thicc":0.0,"overlayText":"Swappers","refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":">31624)","MatchDelay":8.0}]}
+```
+```
+~Lv2~{"Name":"P5 D1 Final Omega lines - green","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Outer","type":3,"refX":10.0,"refY":4.0,"offX":-10.0,"offY":4.0,"radius":0.0,"color":3355508480,"thicc":5.0,"refActorModelID":3775,"refActorComparisonType":1,"includeRotation":true},{"Name":"Inner","type":3,"refX":10.0,"refY":9.0,"offX":-10.0,"offY":9.0,"radius":0.0,"color":3355508480,"thicc":5.0,"refActorModelID":3775,"refActorComparisonType":1,"includeRotation":true},{"Name":"Swapper","type":1,"offY":9.0,"radius":0.0,"color":3372154880,"overlayBGColor":4278190080,"overlayTextColor":4294967295,"thicc":0.0,"overlayText":"Swappers","refActorModelID":3775,"refActorComparisonType":1,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":">31624)","MatchDelay":8.0}]}
+```
+
 [International] [Beta] Turning arms bait spot. Displays where you need to stand to bait arm correctly.
 ```
 ~Lv2~{"Name":"P5 D1 Arms Turning Bait Spots","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"right circle","type":1,"offY":3.0,"radius":0.5,"thicc":5.0,"refActorComparisonType":7,"includeRotation":true,"AdditionalRotation":1.3962634,"refActorVFXPath":"vfx/lockon/eff/m0515_turning_right01c.avfx","refActorVFXMax":10000},{"Name":"right line","type":3,"offY":3.0,"radius":0.0,"thicc":3.0,"refActorComparisonType":7,"includeRotation":true,"AdditionalRotation":1.3962634,"refActorVFXPath":"vfx/lockon/eff/m0515_turning_right01c.avfx","refActorVFXMax":10000},{"Name":"left circle","type":1,"offY":3.0,"radius":0.5,"thicc":5.0,"refActorComparisonType":7,"includeRotation":true,"AdditionalRotation":4.886922,"refActorVFXPath":"vfx/lockon/eff/m0515_turning_left01c.avfx","refActorVFXMax":10000},{"Name":"left line","type":3,"offY":3.0,"radius":0.0,"thicc":3.0,"refActorComparisonType":7,"includeRotation":true,"AdditionalRotation":4.886922,"refActorVFXPath":"vfx/lockon/eff/m0515_turning_left01c.avfx","refActorVFXMax":10000}]}
 ```
 
-[International] Phase 1 Omega's cleave
+[International] Oversampled Wave Cannon
+- Get it from Phase 3 page https://github.com/NightmareXIV/Splatoon/blob/master/Presets/Endwalker%20content/Duties/Ultimate%20-%20The%20Omega%20Protocol/Phase%203%20-%20Final%20omega.md#oversampled-wave-cannon---also-works-for-p5
+
+[International] P1 Omega's cleave
 ```
 ~Lv2~{"Name":"P5 D1 Omega right","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"OMJ","type":3,"offY":-27.0,"radius":50.0,"color":167772415,"refActorNPCID":7695,"refActorComparisonType":4,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":1.8325957}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"Match":" (7695>31637)"}]}
 ```
