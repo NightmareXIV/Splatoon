@@ -64,7 +64,7 @@ public class Element
     {
         type = t;
     }
-    [DefaultValue(true)] public bool Enabled;
+    [DefaultValue(true)] public bool Enabled = true;
     [DefaultValue(0f)] public float refX = 0f;
     [DefaultValue(0f)] public float refY = 0f;
     [DefaultValue(0f)] public float refZ = 0f;
