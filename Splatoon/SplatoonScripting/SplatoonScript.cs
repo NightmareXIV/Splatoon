@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using ECommons;
 using ECommons.Hooks;
 using ECommons.Hooks.ActionEffectTypes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -143,12 +144,27 @@ public abstract class SplatoonScript
 
     internal void DrawRegisteredElements()
     {
-        ImGui.Checkbox($"Unconditional draw", ref InternalData.UnconditionalDraw);
+        ImGui.Checkbox($"Enable unconditional element preview", ref InternalData.UnconditionalDraw);
+        if (InternalData.UnconditionalDraw)
+        {
+            if (ImGui.Button("Force draw all"))
+            {
+                Controller.GetRegisteredElements().Each(x => InternalData.UnconditionalDrawElements.Add(x.Key));
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("Force draw none"))
+            {
+                InternalData.UnconditionalDrawElements.Clear();
+            }
+        }
         foreach (var x in Controller.GetRegisteredElements())
         {
             ImGui.PushID(x.Value.GUID);
-            ImGuiEx.HashSetCheckbox($"Enable draw", x.Value.GUID, InternalData.UnconditionalDrawElements);
-            ImGui.SameLine();
+            if (InternalData.UnconditionalDraw)
+            {
+                ImGuiEx.HashSetCheckbox($"Force draw", x.Key, InternalData.UnconditionalDrawElements);
+                ImGui.SameLine();
+            }
             if (ImGui.Button("Copy"))
             {
                 ImGui.SetClipboardText(JsonConvert.SerializeObject(x.Value, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }));
@@ -166,20 +182,23 @@ public abstract class SplatoonScript
             ImGui.SameLine();
             if (InternalData.Overrides.Elements.ContainsKey(x.Key))
             {
-                if(ImGui.Button("Reset") && ImGui.GetIO().KeyCtrl)
-                {
-                    if(ReferenceEquals(P.PinnedElementEditWindow.EditingElement, x.Value))
-                    {
-                        P.PinnedElementEditWindow.EditingElement = null;
-                        P.PinnedElementEditWindow.Script = null;
-                    }
-                    InternalData.Overrides.Elements.Remove(x.Key);
-                    Controller.SaveOverrides();
-                }
+                ImGuiEx.HashSetCheckbox("Reset", x.Key, InternalData.ElementsResets);
             }
             ImGui.SameLine();
             ImGuiEx.Text($"[{x.Key}] {x.Value.Name}");
             ImGui.PopID();
+        }
+        if (InternalData.ElementsResets.Count > 0)
+        {
+            if (ImGui.Button("Reset marked elements and reload script"))
+            {
+                foreach(var x in InternalData.ElementsResets)
+                {
+                    InternalData.Overrides.Elements.Remove(x);
+                }
+                Controller.SaveOverrides();
+                ScriptingProcessor.ReloadScript(this);
+            }
         }
     }
 

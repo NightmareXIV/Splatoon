@@ -579,6 +579,27 @@ unsafe partial class CGui
                 ImGui.SetNextItemWidth(60f);
                 ImGui.DragFloat("##refz" + i + k, ref el.refZ, 0.02f, float.MinValue, float.MaxValue);
                 ImGui.SameLine();
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Copy))
+                {
+                    ImGui.SetClipboardText(JsonConvert.SerializeObject(new Vector3(el.refX, el.refZ, el.refY)));
+                }
+                ImGui.SameLine();
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Paste))
+                {
+                    try
+                    {
+                        var v = JsonConvert.DeserializeObject<Vector3>(ImGui.GetClipboardText());
+                        el.refX = v.X;
+                        el.refY = v.Z;
+                        el.refZ = v.Y;
+                    }
+                    catch(Exception e)
+                    {
+                        e.Log();
+                        Notify.Error(e.Message);
+                    }
+                }
+                ImGui.SameLine();
                 if (ImGuiEx.IconButton(FontAwesomeIcon.Circle, "0 0 0##ref" + i + k))
                 {
                     el.refX = 0;

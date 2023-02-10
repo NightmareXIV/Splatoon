@@ -174,6 +174,7 @@ internal static class TabScripting
             {
                 ScriptingProcessor.ReloadScript(x);
             }
+            ImGuiEx.Tooltip("Reload this script");
 
             ImGui.SameLine();
 

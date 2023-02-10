@@ -123,6 +123,7 @@ public unsafe class Splatoon : IDalamudPlugin
         DrawingGui = new OverlayGui(this);
         ConfigGui = new CGui(this);
         EzConfigGui.Init(() => { });
+        Svc.PluginInterface.UiBuilder.OpenConfigUi -= EzConfigGui.Open;
         PinnedElementEditWindow = new();
         EzConfigGui.WindowSystem.AddWindow(PinnedElementEditWindow);
         Camera.Init();
@@ -494,7 +495,7 @@ public unsafe class Splatoon : IDalamudPlugin
                     Profiler.MainTickFind.StartTick();
                 }
 
-                if(PinnedElementEditWindow.Script != null && PinnedElementEditWindow.EditingElement != null)
+                if(PinnedElementEditWindow.Script != null && PinnedElementEditWindow.EditingElement != null && !PinnedElementEditWindow.Script.InternalData.UnconditionalDraw)
                 {
                     ProcessElement(PinnedElementEditWindow.EditingElement, null, true);
                 }
@@ -538,7 +539,7 @@ public unsafe class Splatoon : IDalamudPlugin
                 }
 
                 ScriptingProcessor.Scripts.ForEach(x => { if (x.IsEnabled) x.Controller.Layouts.Values.Each(ProcessLayout); });
-                ScriptingProcessor.Scripts.ForEach(x => { if (x.IsEnabled) x.Controller.Elements.Values.Each(x => ProcessElement(x)); });
+                ScriptingProcessor.Scripts.ForEach(x => { if (x.IsEnabled || x.InternalData.UnconditionalDraw) x.Controller.Elements.Each(z => ProcessElement(z.Value, null, x.InternalData.UnconditionalDraw && x.InternalData.UnconditionalDrawElements.Contains(z.Key))); });
                 foreach (var e in injectedElements)
                 {
                     ProcessElement(e);

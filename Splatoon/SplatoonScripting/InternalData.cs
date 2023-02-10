@@ -25,6 +25,7 @@ public class InternalData
 
     internal bool UnconditionalDraw = false;
     internal HashSet<string> UnconditionalDrawElements = new();
+    internal HashSet<string> ElementsResets = new();
 
     public InternalData(string path, SplatoonScript instance)
     {
