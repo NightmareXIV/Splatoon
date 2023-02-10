@@ -11,7 +11,7 @@
 
 [International] Blue and green tethers, blue next to P1 omega, green next to P3 omega
 ```
-~Lv2~{"Name":"P5 D1 Blue to Beatle lines - blue","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Outer","type":3,"refX":7.0,"refY":4.0,"offX":-7.0,"offY":4.0,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true},{"Name":"Inner","type":3,"refX":3.0,"refY":9.0,"offX":-3.0,"offY":9.0,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true},{"Name":"Swapper","type":1,"offY":9.0,"radius":0.0,"color":3372154880,"overlayBGColor":4278190080,"overlayTextColor":4294967295,"thicc":0.0,"overlayText":"Swappers","refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":">31624)","MatchDelay":8.0}]}
+~Lv2~{"Name":"P5 D1 Blue to Beetle lines - blue","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Outer","type":3,"refX":7.0,"refY":4.0,"offX":-7.0,"offY":4.0,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true},{"Name":"Inner","type":3,"refX":3.0,"refY":9.0,"offX":-3.0,"offY":9.0,"radius":0.0,"color":3372154880,"thicc":5.0,"refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true},{"Name":"Swapper","type":1,"offY":9.0,"radius":0.0,"color":3372154880,"overlayBGColor":4278190080,"overlayTextColor":4294967295,"thicc":0.0,"overlayText":"Swappers","refActorModelID":3771,"refActorComparisonType":1,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":">31624)","MatchDelay":8.0}]}
 ```
 ```
 ~Lv2~{"Name":"P5 D1 Final Omega lines - green","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Outer","type":3,"refX":10.0,"refY":4.0,"offX":-10.0,"offY":4.0,"radius":0.0,"color":3355508480,"thicc":5.0,"refActorModelID":3775,"refActorComparisonType":1,"includeRotation":true},{"Name":"Inner","type":3,"refX":10.0,"refY":9.0,"offX":-10.0,"offY":9.0,"radius":0.0,"color":3355508480,"thicc":5.0,"refActorModelID":3775,"refActorComparisonType":1,"includeRotation":true},{"Name":"Swapper","type":1,"offY":9.0,"radius":0.0,"color":3372154880,"overlayBGColor":4278190080,"overlayTextColor":4294967295,"thicc":0.0,"overlayText":"Swappers","refActorModelID":3775,"refActorComparisonType":1,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":20.0,"Match":">31624)","MatchDelay":8.0}]}
@@ -34,6 +34,19 @@
 ```
 
 # Sigma
+[International] [Untested] Dedicated playstation marker and tether for you + your partner for the whole duration of mechanic. Import all presets.
+```
+~Lv2~{"Name":"P5 D2 - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4278190259,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_01c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_01c.avfx spawned on me npc"}]}
+```
+```
+~Lv2~{"Name":"P5 D2  - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4290904258,"overlayBGColor":0,"overlayTextColor":4290904258,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_03c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_03c.avfx spawned on me npc"}]}
+```
+```
+~Lv2~{"Name":"P5 D2  - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4294932224,"overlayBGColor":0,"overlayTextColor":4294932224,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_04c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_04c.avfx spawned on me npc"}]}
+```
+```
+~Lv2~{"Name":"P5 D2 - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4278236428,"overlayBGColor":0,"overlayTextColor":4278236428,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_02c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_02c.avfx spawned on me npc"}]}
+```
 
 # Omega
 
