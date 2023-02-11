@@ -84,7 +84,7 @@ internal static class ScriptingProcessor
                 foreach (var line in updateList.Replace("\r", "").Split("\n"))
                 {
                     var data = line.Split(",");
-                    if (data.Length == 3 && int.TryParse(data[1], out var ver))
+                    if (data.Length >= 3 && int.TryParse(data[1], out var ver))
                     {
                         PluginLog.Debug($"Found new valid update data: {data[0]} v{ver} = {data[2]}");
                         if(Scripts.Any(x => x.InternalData.FullName == data[0] && ((x.Metadata?.Version ?? 0) < ver || TabScripting.ForceUpdate) )) // possible CME
@@ -186,119 +186,126 @@ internal static class ScriptingProcessor
             PluginLog.Information($"Beginning new thread");
             new Thread(() =>
             {
-                PluginLog.Information($"Compiler thread started");
-                int idleCount = 0;
-                var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "ScriptCache");
-                if (!Directory.Exists(dir))
+                try
                 {
-                    Directory.CreateDirectory(dir);
-                }
-                while (idleCount < 10)
-                {
-                    if (LoadScriptQueue.TryDequeue(out var result))
+                    PluginLog.Information($"Compiler thread started");
+                    int idleCount = 0;
+                    var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "ScriptCache");
+                    if (!Directory.Exists(dir))
                     {
-                        try
+                        Directory.CreateDirectory(dir);
+                    }
+                    while (idleCount < 10)
+                    {
+                        if (LoadScriptQueue.TryDequeue(out var result))
                         {
-                            byte[] code = null;
-                            if (!P.Config.DisableScriptCache)
+                            try
                             {
-                                var md5 = MD5.HashData(Encoding.UTF8.GetBytes(result.code)).Select(x => $"{x:X2}").Join("");
-                                var cacheFile = Path.Combine(dir, $"{md5}-{P.loader.splatoonVersion}.bin");
-                                PluginLog.Information($"Cache path: {cacheFile}");
-                                if (File.Exists(cacheFile))
+                                byte[] code = null;
+                                if (!P.Config.DisableScriptCache)
                                 {
-                                    PluginLog.Information($"Loading from cache...");
-                                    code = File.ReadAllBytes(cacheFile);
-                                }
-                                else
-                                {
-                                    PluginLog.Information($"Compiling...");
-                                    code = Compiler.Compile(result.code, result.path == null ? "" : Path.GetFileNameWithoutExtension(result.path));
-                                    if (code != null)
+                                    var md5 = MD5.HashData(Encoding.UTF8.GetBytes(result.code)).Select(x => $"{x:X2}").Join("");
+                                    var cacheFile = Path.Combine(dir, $"{md5}-{P.loader.splatoonVersion}.bin");
+                                    PluginLog.Information($"Cache path: {cacheFile}");
+                                    if (File.Exists(cacheFile))
                                     {
-                                        File.WriteAllBytes(cacheFile, code);
-                                        PluginLog.Information($"Compiled and saved");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                PluginLog.Information($"Compiling, cache bypassed...");
-                                code = Compiler.Compile(result.code, result.path == null ? "" : Path.GetFileNameWithoutExtension(result.path));
-                            }
-                            if (code != null)
-                            {
-                                Svc.Framework.RunOnFrameworkThread(delegate
-                                {
-                                    if (P != null && !P.Disposed)
-                                    {
-                                        var assembly = Compiler.Load(code);
-                                        foreach (var t in assembly.GetTypes())
-                                        {
-                                            if (t.BaseType?.FullName == "Splatoon.SplatoonScripting.SplatoonScript")
-                                            {
-                                                var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
-                                                instance.InternalData = new(result.path, instance);
-                                                instance.InternalData.Allowed = UpdateCompleted;
-                                                bool rewrite = false;
-                                                if (Scripts.TryGetFirst(z => z.InternalData.FullName == instance.InternalData.FullName, out var loadedScript))
-                                                {
-                                                    DuoLog.Information($"Script {instance.InternalData.FullName} already loaded, replacing.");
-                                                    result.path = loadedScript.InternalData.Path;
-                                                    loadedScript.Disable();
-                                                    ScriptingProcessor.Scripts = ScriptingProcessor.Scripts.RemoveAll(x => ReferenceEquals(loadedScript, x));
-                                                    rewrite = true;
-                                                }
-                                                Scripts = Scripts.Add(instance);
-                                                if (result.path == null)
-                                                {
-                                                    var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts", instance.InternalData.Namespace);
-                                                    if (!Directory.Exists(dir))
-                                                    {
-                                                        Directory.CreateDirectory(dir);
-                                                    }
-                                                    var newPath = Path.Combine(dir, $"{instance.InternalData.Name}.cs");
-                                                    instance.InternalData.Path = newPath;
-                                                    File.WriteAllText(newPath, result.code, Encoding.UTF8);
-                                                    DuoLog.Information($"Script installed to {newPath}");
-                                                }
-                                                else if (rewrite)
-                                                {
-                                                    //DeleteFileToRecycleBin(result.path);
-                                                    File.WriteAllText(result.path, result.code, Encoding.UTF8);
-                                                    instance.InternalData.Path = result.path;
-                                                    DuoLog.Information($"Script overwritten at {instance.InternalData.Path}");
-                                                }
-                                                instance.OnSetup();
-                                                instance.Controller.ApplyOverrides();
-                                                PluginLog.Information($"Load success");
-                                                instance.UpdateState();
-                                            }
-                                        }
+                                        PluginLog.Information($"Loading from cache...");
+                                        code = File.ReadAllBytes(cacheFile);
                                     }
                                     else
                                     {
-                                        PluginLog.Fatal("Plugin was disposed during script loading");
+                                        PluginLog.Information($"Compiling...");
+                                        code = Compiler.Compile(result.code, result.path == null ? "" : Path.GetFileNameWithoutExtension(result.path));
+                                        if (code != null)
+                                        {
+                                            File.WriteAllBytes(cacheFile, code);
+                                            PluginLog.Information($"Compiled and saved");
+                                        }
                                     }
-                                }).Wait();
+                                }
+                                else
+                                {
+                                    PluginLog.Information($"Compiling, cache bypassed...");
+                                    code = Compiler.Compile(result.code, result.path == null ? "" : Path.GetFileNameWithoutExtension(result.path));
+                                }
+                                if (code != null)
+                                {
+                                    Svc.Framework.RunOnFrameworkThread(delegate
+                                    {
+                                        if (P != null && !P.Disposed)
+                                        {
+                                            var assembly = Compiler.Load(code);
+                                            foreach (var t in assembly.GetTypes())
+                                            {
+                                                if (t.BaseType?.FullName == "Splatoon.SplatoonScripting.SplatoonScript")
+                                                {
+                                                    var instance = (SplatoonScript)assembly.CreateInstance(t.FullName);
+                                                    instance.InternalData = new(result.path, instance);
+                                                    instance.InternalData.Allowed = UpdateCompleted;
+                                                    bool rewrite = false;
+                                                    if (Scripts.TryGetFirst(z => z.InternalData.FullName == instance.InternalData.FullName, out var loadedScript))
+                                                    {
+                                                        DuoLog.Information($"Script {instance.InternalData.FullName} already loaded, replacing.");
+                                                        result.path = loadedScript.InternalData.Path;
+                                                        loadedScript.Disable();
+                                                        ScriptingProcessor.Scripts = ScriptingProcessor.Scripts.RemoveAll(x => ReferenceEquals(loadedScript, x));
+                                                        rewrite = true;
+                                                    }
+                                                    Scripts = Scripts.Add(instance);
+                                                    if (result.path == null)
+                                                    {
+                                                        var dir = Path.Combine(Svc.PluginInterface.GetPluginConfigDirectory(), "Scripts", instance.InternalData.Namespace);
+                                                        if (!Directory.Exists(dir))
+                                                        {
+                                                            Directory.CreateDirectory(dir);
+                                                        }
+                                                        var newPath = Path.Combine(dir, $"{instance.InternalData.Name}.cs");
+                                                        instance.InternalData.Path = newPath;
+                                                        File.WriteAllText(newPath, result.code, Encoding.UTF8);
+                                                        DuoLog.Information($"Script installed to {newPath}");
+                                                    }
+                                                    else if (rewrite)
+                                                    {
+                                                        //DeleteFileToRecycleBin(result.path);
+                                                        File.WriteAllText(result.path, result.code, Encoding.UTF8);
+                                                        instance.InternalData.Path = result.path;
+                                                        DuoLog.Information($"Script overwritten at {instance.InternalData.Path}");
+                                                    }
+                                                    instance.OnSetup();
+                                                    instance.Controller.ApplyOverrides();
+                                                    PluginLog.Information($"Load success");
+                                                    instance.UpdateState();
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            PluginLog.Fatal("Plugin was disposed during script loading");
+                                        }
+                                    }).Wait();
+                                }
+                                else
+                                {
+                                    PluginLog.Error("Loading process ended with error");
+                                }
                             }
-                            else
+                            catch (Exception e)
                             {
-                                PluginLog.Error("Loading process ended with error");
+                                e.Log();
                             }
+                            idleCount = 0;
                         }
-                        catch(Exception e)
+                        else
                         {
-                            e.Log();
+                            //PluginLog.Verbose($"Script loading thread is idling, count {idleCount}");
+                            idleCount++;
+                            Thread.Sleep(250);
                         }
-                        idleCount = 0;
                     }
-                    else
-                    {
-                        //PluginLog.Verbose($"Script loading thread is idling, count {idleCount}");
-                        idleCount++;
-                        Thread.Sleep(250);
-                    }
+                }
+                catch(Exception e)
+                {
+                    e.Log();
                 }
                 ThreadIsRunning = false;
                 PluginLog.Information($"Compiler part of thread is finished");
@@ -306,7 +313,14 @@ internal static class ScriptingProcessor
                 if (!UpdateCompleted)
                 {
                     PluginLog.Information($"Starting updating...");
-                    BlockingBeginUpdate(true);
+                    try
+                    {
+                        BlockingBeginUpdate(true);
+                    }
+                    catch(Exception e)
+                    {
+                        e.Log();
+                    }
                     PluginLog.Information($"Update finished");
                 }
 
