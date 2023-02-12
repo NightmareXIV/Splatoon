@@ -23,7 +23,19 @@
 ```
 
 [International] Oversampled Wave Cannon
-- Get it from Phase 3 page https://github.com/NightmareXIV/Splatoon/blob/master/Presets/Endwalker%20content/Duties/Ultimate%20-%20The%20Omega%20Protocol/Phase%203%20-%20Final%20omega.md#oversampled-wave-cannon---also-works-for-p5
+```
+~Lv2~{"Name":"P5 D1 Oversampled Wave Cannon","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"Self right","type":4,"refY":40.0,"radius":4.5,"coneAngleMax":180,"color":3372155135,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorRequireBuff":true,"refActorBuffId":[3452],"FillStep":10.0,"refActorComparisonType":5,"refActorType":1,"includeRotation":true,"Filled":true},{"Name":"Self left","type":4,"refY":40.0,"radius":4.5,"coneAngleMin":180,"coneAngleMax":360,"color":3372155135,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorRequireBuff":true,"refActorBuffId":[3453],"FillStep":10.0,"refActorComparisonType":5,"refActorType":1,"includeRotation":true,"Filled":true},{"Name":"Omega Right","type":4,"refX":10.0,"refY":20.0,"offY":20.0,"radius":20.0,"coneAngleMax":180,"color":2516647935,"thicc":3.0,"refActorNPCNameID":7636,"refActorRequireCast":true,"refActorCastId":[31638],"FillStep":10.0,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true},{"Name":"Omega Right - Alignment spot","type":4,"refX":10.0,"refY":20.0,"offX":5.0,"offY":23.0,"radius":10.0,"coneAngleMin":180,"coneAngleMax":360,"color":4278190335,"refActorNPCNameID":7636,"refActorRequireCast":true,"refActorCastId":[31638],"FillStep":8.0,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true},{"Name":"Omega Left","type":4,"refX":-10.0,"refY":20.0,"offY":20.0,"radius":20.0,"coneAngleMin":180,"coneAngleMax":360,"color":2516647935,"thicc":3.0,"refActorNPCNameID":7636,"refActorRequireCast":true,"refActorCastId":[31639],"FillStep":10.0,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true},{"Name":"Omega Left - Alignment spot","type":4,"refX":10.0,"refY":20.0,"offX":-5.0,"offY":23.0,"radius":10.0,"coneAngleMax":180,"color":4278190335,"refActorNPCNameID":7636,"refActorRequireCast":true,"refActorCastId":[31639],"FillStep":8.0,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true,"Filled":true}]}
+```
+
+[International] Oversampled Wave Cannon explosion radius
+```
+~Lv2~{"Name":"P5 D1 - Oversampled Wave Cannon explosion","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":7.0,"color":1174470625,"refActorType":1,"Filled":true},{"Name":"Others","type":1,"radius":7.0,"color":3355508705,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"Match":">31638)","MatchDelay":5.0},{"Type":2,"Duration":5.0,"Match":">31639)","MatchDelay":5.0}],"MaxDistance":7.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+```
+
+[International] [Untested] Stack/don't stack reminder
+```
+~Lv2~{"Name":"P5 D1 Stack reminder","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"Don't stack","type":1,"overlayBGColor":4278190335,"overlayTextColor":3355443200,"overlayVOffset":3.0,"overlayFScale":2.0,"overlayText":"DON'T STACK!","refActorRequireBuff":true,"refActorBuffId":[2534],"refActorType":1},{"Name":"Stack","type":1,"color":3355508546,"overlayBGColor":4278255383,"overlayTextColor":3355443200,"overlayVOffset":3.0,"overlayFScale":2.0,"overlayText":">>> stack <<<","refActorRequireBuff":true,"refActorBuffId":[2534,1672],"refActorRequireBuffsInvert":true,"refActorType":1}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":4.0,"Match":">31624)","MatchDelay":34.2}]}
+```
 
 [International] P1 Omega's cleave
 ```
@@ -31,6 +43,11 @@
 ```
 ```
 ~Lv2~{"Name":"P5 D1 Omega left","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"omj","type":3,"refY":27.0,"radius":50.0,"color":1677721855,"refActorNPCID":7695,"refActorComparisonType":4,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":1.3089969}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":10.0,"Match":" (7695>31636)"}]}
+```
+
+[International] Hello near/far world distance indicator
+```
+~Lv2~{"Name":"P5 D1 Hello near/far world distance check","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"ElementsL":[{"Name":"","type":1,"radius":8.0,"color":1358888960,"thicc":5.0,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3442,3443],"refActorUseBuffTime":true,"refActorBuffTimeMax":8.0,"Filled":true}]}
 ```
 
 # Sigma
@@ -64,20 +81,8 @@
 # Uncategorized
 Work in progress on these presets. They were submitted by community members but I am not yet fully aware what they do.
 ```
-~Lv2~{"Name":"P5 HelloWorld near and far","Group":"","ZoneLockH":[1122],"ElementsL":[{"Name":"HelloWord  near","type":1,"radius":8.0,"color":1677721855,"refActorRequireBuff":true,"refActorBuffId":[3442],"refActorUseBuffTime":true,"refActorBuffTimeMax":6.0,"refActorComparisonType":3,"Filled":true},{"Name":"HelloWord  far","type":1,"radius":8.0,"color":1694486272,"refActorRequireBuff":true,"refActorBuffId":[3443],"refActorUseBuffTime":true,"refActorBuffTimeMax":6.0,"refActorComparisonType":3,"Filled":true}]}
-```
-```
 ~Lv2~{"Name":"P5  R2 Omega - F  clones attacks ","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Omega-F staff","type":3,"refY":40.0,"offY":-40.0,"radius":5.2,"color":855613952,"refActorDataID":15720,"refActorComparisonType":3,"includeRotation":true,"onlyUnTargetable":true,"onlyVisible":true,"refActorUseTransformation":true,"refActorTransformationID":11},{"Name":"Omega-F staff","type":3,"refY":40.0,"offY":-40.0,"radius":5.2,"color":855613952,"refActorDataID":15720,"refActorComparisonType":3,"includeRotation":true,"onlyUnTargetable":true,"onlyVisible":true,"AdditionalRotation":1.5707964,"refActorUseTransformation":true,"refActorTransformationID":11},{"Name":"Omega-F feetfighter","type":3,"refX":16.0,"refY":40.0,"offX":16.0,"offY":-40.0,"radius":12.0,"color":855613952,"refActorDataID":15720,"refActorComparisonType":3,"includeRotation":true,"onlyUnTargetable":true,"onlyVisible":true,"refActorUseTransformation":true,"refActorTransformationID":4},{"Name":"Omega-F feetfighter","type":3,"refX":-16.0,"refY":40.0,"offX":-16.0,"offY":-40.0,"radius":12.0,"color":855613952,"refActorDataID":15720,"refActorComparisonType":3,"includeRotation":true,"onlyUnTargetable":true,"onlyVisible":true,"refActorUseTransformation":true,"refActorTransformationID":4}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"Match":">32788)","MatchDelay":52.0}],"FreezeDisplayDelay":0.73}
 ```
 ```
-~Lv2~{"Name":"P5 Optical unit finder - line","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":3,"refY":35.0,"offY":65.0,"radius":8.0,"color":335544575,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"FillStep":0.1,"refActorComparisonType":6,"includeRotation":true,"Filled":true},{"Name":"","type":3,"offY":35.0,"radius":8.0,"color":335544575,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"FillStep":0.1,"refActorComparisonType":6,"includeRotation":true,"Filled":true},{"Name":"Circle with tether","type":1,"Enabled":false,"offY":27.04,"radius":5.0,"color":4294967040,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"tether":true,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"Match":" (12257>31624)","MatchDelay":9.0}]}
-```
-```
 ~Lv2~{"Name":"P5 R2 LINE","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"1","type":3,"refY":21.1,"offY":-23.74,"radius":6.0,"color":335544575,"refActorNPCNameID":7639,"FillStep":0.1,"refActorComparisonType":6,"includeRotation":true,"DistanceSourceX":100.06535,"DistanceSourceY":99.94135,"DistanceSourceZ":-5.456968E-12,"DistanceMax":0.6999999}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":11.0,"Match":">32788)","MatchDelay":42.0}]}
-```
-```
-~Lv2~{"Name":"P5 R1 Omega-M left","Group":"","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"BOOS","type":3,"refY":20.0,"radius":35.0,"color":335544575,"thicc":0.0,"refActorNPCID":7636,"FillStep":0.1,"refActorComparisonType":4,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":1.5707964},{"Name":"Player lefte","type":3,"refY":-18.74,"radius":18.17,"color":184219755,"thicc":0.0,"refActorRequireBuff":true,"refActorBuffId":[3453],"FillStep":0.1,"refActorComparisonType":1,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":1.5707964,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":13.0,"Match":"(7636>31638)","MatchDelay":5.0}]}
-```
-```
-~Lv2~{"Name":"P5 R1 Omega-M  right","Group":"","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"BOOS","type":3,"offY":-20.0,"radius":40.0,"color":335544575,"thicc":0.0,"refActorNPCID":7636,"FillStep":0.1,"refActorComparisonType":4,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":1.5707964},{"Name":"Player right","type":3,"offY":18.0,"radius":18.0,"color":184219755,"thicc":0.0,"refActorRequireBuff":true,"refActorBuffId":[3453],"refActorComparisonType":1,"includeRotation":true,"onlyVisible":true,"AdditionalRotation":1.5707964,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Match":" (7695>31638)"}]}
 ```
