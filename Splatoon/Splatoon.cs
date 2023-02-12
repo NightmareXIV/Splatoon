@@ -659,7 +659,7 @@ public unsafe class Splatoon : IDalamudPlugin
 
     internal S2WInfo s2wInfo;
 
-    internal void BeginS2W(object cls, string x, string y, string z)
+    public void BeginS2W(object cls, string x, string y, string z)
     {
         s2wInfo = new(cls, x, y, z);
     }

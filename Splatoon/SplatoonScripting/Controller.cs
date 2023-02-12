@@ -24,6 +24,8 @@ public unsafe class Controller
         Script = s;
     }
 
+    public Splatoon Plugin => Splatoon.P;
+
     /// <summary>
     /// Indicates whether player is in combat.
     /// </summary>

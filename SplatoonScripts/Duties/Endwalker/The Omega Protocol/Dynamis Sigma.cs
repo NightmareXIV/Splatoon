@@ -8,6 +8,8 @@ using ECommons.Logging;
 using ECommons.MathHelpers;
 using ECommons.Reflection;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using ImGuiNET;
+using Newtonsoft.Json;
 using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
 using System;
@@ -24,6 +26,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
+        public override Metadata? Metadata => new(1, "NightmareXIV");
+
         public const uint TowerSingle = 2013245;
         public const uint TowerDual = 2013246;
         public const uint TowerAny = 2013244;
@@ -32,6 +36,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         public const uint GlitchClose = 3427;
 
         Vector3 OmegaPos = Vector3.Zero;
+
+        Config Conf => Controller.GetConfig<Config>();
 
         GameObject[] GetTowers() => Svc.Objects.Where(x => x.DataId.EqualsAny<uint>(TowerSingle, TowerDual)).ToArray();
 
@@ -52,7 +58,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 if (GetTowers().Length.EqualsAny(5, 6))
                 {
                     var towers = GetTowers().OrderBy(x => GetTowerAngle(x, IsInverted())).ToArray();
-                    Queue<string> enumeration = Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId == GlitchFar)? new(new string[] { "R2", "R3", "R4", "L4", "L3", "L2", "L1", "R1" }) : new(new string[]{ "R1", "R2", "R3", "R4", "L4", "L3", "L2", "L1" });
+                    Queue<string> enumeration = Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId == GlitchFar)? new(Conf.FarTowers) : new(Conf.CloseTowers);
                     for (int i = 0; i < towers.Length; i++)
                     {
                         if (towers[i].DataId == TowerSingle) 
@@ -68,13 +74,22 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             }
         }
 
-        public override void OnMessage(string Message)
+        /*public override void OnMessage(string Message)
         {
             if (Controller.Scene != 6) return;
             if(Message.EqualsAny("The right arm unit uses Hyper Pulse."))
             {
                 OmegaPos = Svc.Objects.FirstOrDefault(x => x.DataId == 15720)?.Position ?? Vector3.Zero;
                 PluginLog.Information($"Omega position captured: {OmegaPos}");
+            }
+        }*/
+
+        public override void OnActionEffect(uint ActionID, ushort animationID, ActionEffectType type, uint sourceID, ulong targetOID, uint damage)
+        {
+            if(Controller.Scene == 6 && ActionID == 31603)
+            {
+                OmegaPos = Svc.Objects.FirstOrDefault(x => x.DataId == 15720)?.Position ?? Vector3.Zero;
+                DuoLog.Information($"Omega position captured: {OmegaPos}");
             }
         }
 
@@ -90,7 +105,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 Array.Sort(s);
                 t.Enabled = true;
                 t.SetRefPosition(obj.Position);
-                t.overlayText = s.Join("\n");
+                t.overlayText = s.Join("\n") + (Conf.Angle?$"\n{GetTowerAngle(obj)}/{GetTowerAngle(obj, IsInverted())}":"");
             }
             else
             {
@@ -101,7 +116,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         float GetTowerAngle(GameObject t, bool inverted = false)
         {
             var z = new Vector3(100, 0, 100);
-            var angle = (MathHelper.GetRelativeAngle(z, t.Position) + (inverted?179:-1) + 360 - MathHelper.GetRelativeAngle(z, OmegaPos)) % 360;
+            var angle = (MathHelper.GetRelativeAngle(z, t.Position) + (inverted?181:1) + 360 - MathHelper.GetRelativeAngle(z, OmegaPos)) % 360;
             return angle;
         }
 
@@ -109,7 +124,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         {
             if(Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId == GlitchFar))
             {
-                return !GetTowers().Any(x => GetTowerAngle(x) > 360-3);
+                return !GetTowers().Any(x => GetTowerAngle(x) < 3);
             }
             else
             {
@@ -117,9 +132,54 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             }
         }
 
+        public override void OnSettingsDraw()
+        {
+            if (ImGui.CollapsingHeader("Far towers, clockwise"))
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    ImGui.InputText($"##{i}", ref Conf.FarTowers[i], 50);
+                }
+
+                if (ImGui.Button("Reset (CTRL+click)"))
+                {
+                    Conf.FarTowers = new Config().FarTowers;
+                }
+            }
+            if (ImGui.CollapsingHeader("Close towers, clockwise"))
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    ImGui.InputText($"##{i}", ref Conf.CloseTowers[i], 50);
+                }
+
+                if (ImGui.Button("Reset (CTRL+click)"))
+                {
+                    Conf.CloseTowers = new Config().CloseTowers;
+                }
+            }
+            if (ImGui.CollapsingHeader("Debug"))
+            {
+                ImGui.InputFloat3("Omega pos", ref OmegaPos);
+                if (ImGui.Button("Copy"))
+                {
+                    ImGui.SetClipboardText(JsonConvert.SerializeObject(OmegaPos));
+                }
+                ImGui.SameLine();
+                if (ImGui.Button("Paste"))
+                {
+                    GenericHelpers.Safe(() => { OmegaPos = JsonConvert.DeserializeObject<Vector3>(ImGui.GetClipboardText()); });
+                }
+                ImGui.SameLine();
+                ImGui.Checkbox("Display tower angle", ref Conf.Angle);
+            }
+        }
+
         public class Config : IEzConfig
         {
-            
+            public string[] FarTowers = new string[] { "R1", "L1", "R2", "R3", "L4", "R4", "L3", "L2" };
+            public string[] CloseTowers = new string[] { "R1", "L4", "R2", "R3", "L3", "R4", "L2", "L1" };
+            public bool Angle = false;
         }
     }
 }

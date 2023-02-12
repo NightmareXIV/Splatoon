@@ -1,4 +1,6 @@
-﻿namespace Splatoon.Structures;
+﻿using ECommons.Reflection;
+
+namespace Splatoon.Structures;
 
 internal class S2WInfo
 {
@@ -17,13 +19,13 @@ internal class S2WInfo
 
     internal void Apply(float xf, float yf, float zf)
     {
-        cls.GetType().GetField(x).SetValue(cls, xf);
-        cls.GetType().GetField(y).SetValue(cls, yf);
-        cls.GetType().GetField(z).SetValue(cls, zf);
+        cls.SetFoP(x, xf);
+        cls.SetFoP(y, yf);
+        cls.SetFoP(z, zf);
     }
 
     internal (float x, float y, float z) GetValues()
     {
-        return ((float)cls.GetType().GetField(x).GetValue(cls), (float)cls.GetType().GetField(y).GetValue(cls), (float)cls.GetType().GetField(z).GetValue(cls));
+        return (cls.GetFoP<float>(x), cls.GetFoP<float>(y), cls.GetFoP<float>(z));
     }
 }
