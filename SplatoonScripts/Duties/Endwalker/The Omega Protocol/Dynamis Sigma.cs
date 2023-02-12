@@ -26,7 +26,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(1, "NightmareXIV");
+        public override Metadata? Metadata => new(2, "NightmareXIV");
 
         public const uint TowerSingle = 2013245;
         public const uint TowerDual = 2013246;
@@ -134,6 +134,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public override void OnSettingsDraw()
         {
+            ImGui.PushID("Far");
             if (ImGui.CollapsingHeader("Far towers, clockwise"))
             {
                 for (int i = 0; i < 8; i++)
@@ -146,6 +147,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     Conf.FarTowers = new Config().FarTowers;
                 }
             }
+            ImGui.PopID();
+            ImGui.PushID("Near");
             if (ImGui.CollapsingHeader("Close towers, clockwise"))
             {
                 for (int i = 0; i < 8; i++)
@@ -158,6 +161,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     Conf.CloseTowers = new Config().CloseTowers;
                 }
             }
+            ImGui.PopID();
             if (ImGui.CollapsingHeader("Debug"))
             {
                 ImGui.InputFloat3("Omega pos", ref OmegaPos);
