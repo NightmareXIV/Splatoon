@@ -87,6 +87,7 @@ class Configuration : IPluginConfiguration
             {
                 //PluginLog.Debug($"Saving configuration for {x.InternalData.FullName}");
                 Safe(x.Controller.SaveConfig);
+                Safe(x.Controller.SaveOverrides);
             }
         }
     }

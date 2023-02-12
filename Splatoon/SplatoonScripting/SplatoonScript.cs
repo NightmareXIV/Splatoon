@@ -165,6 +165,7 @@ public abstract class SplatoonScript
                         if (ImGui.GetIO().KeyShift || x.Elements.All(z => Controller.GetRegisteredElements().ContainsKey(z.Key)))
                         {
                             InternalData.Overrides = x;
+                            Controller.ApplyOverrides();
                             Notify.Success("Import success");
                         }
                         else

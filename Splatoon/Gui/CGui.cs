@@ -7,6 +7,7 @@ using Splatoon.ConfigGui;
 using Splatoon.Gui;
 using Splatoon.Gui.Scripting;
 using Splatoon.Memory;
+using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -62,6 +63,7 @@ unsafe partial class CGui:IDisposable
                 WasOpen = false;
                 Notify.Success("Configuration saved".Loc());
                 if(p.Config.verboselog) p.Log("Configuration saved");
+                ScriptingProcessor.Scripts.Each(x => x.InternalData.UnconditionalDraw = false);
             }
             return;
         }
