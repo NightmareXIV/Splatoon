@@ -1,4 +1,9 @@
 # Delta
+[International] [Script] **EARLY DEVELOPMENT, MAY BE NOT VERY PRECISE. A complete mechanic walkthrough script. Assumes that blue will go to beetle.**
+```
+https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Dynamis%20Delta.cs
+```
+
 [International] Optical unit finder - early beam
 ```
 ~Lv2~{"Name":"P5 D1 Optical unit finder - early beam","Group":"TOP","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"","type":3,"refY":25.0,"refZ":20.0,"offY":25.0,"radius":2.0,"color":3372220160,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"Filled":true},{"Name":"","type":3,"refX":-25.0,"refZ":20.0,"offX":-25.0,"radius":2.0,"color":3372220160,"overlayBGColor":0,"overlayTextColor":4278190080,"overlayFScale":7.0,"thicc":5.0,"overlayText":"EYE","refActorNPCNameID":7640,"refActorComparisonType":6,"includeRotation":true,"AdditionalRotation":1.5707964,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":28.0,"Match":">31624)","MatchDelay":8.0}]}
@@ -29,7 +34,7 @@
 
 [International] Oversampled Wave Cannon explosion radius
 ```
-~Lv2~{"Name":"P5 D1 - Oversampled Wave Cannon explosion","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":7.0,"color":1174470625,"refActorType":1,"Filled":true},{"Name":"Others","type":1,"radius":7.0,"color":3355508705,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorComparisonType":5}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"Match":">31638)","MatchDelay":5.0},{"Type":2,"Duration":5.0,"Match":">31639)","MatchDelay":5.0}],"MaxDistance":7.2,"UseDistanceLimit":true,"DistanceLimitType":1}
+~Lv2~{"Name":"P5 D1 - Oversampled Wave Cannon explosion","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"Self","type":1,"radius":7.0,"color":1174470625,"refActorRequireBuff":true,"refActorBuffId":[3440,1672],"refActorType":1,"Filled":true},{"Name":"Others","type":1,"radius":7.0,"color":3355508705,"thicc":5.0,"refActorPlaceholder":["<2>","<3>","<4>","<5>","<6>","<7>","<8>"],"refActorRequireBuff":true,"refActorBuffId":[3440,1672],"refActorComparisonType":5}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":5.0,"Match":">31638)","MatchDelay":5.0},{"Type":2,"Duration":5.0,"Match":">31639)","MatchDelay":5.0}],"MaxDistance":7.2,"UseDistanceLimit":true,"DistanceLimitType":1}
 ```
 
 [International] [Untested] Stack/don't stack reminder
@@ -51,6 +56,11 @@
 ```
 
 # Sigma
+[International] [Script] **Early development.** Tower marking script. Accounts for flips + configurable. A lot of features will be added into this script at a later time.
+```
+https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Dynamis%20Sigma.cs
+```
+
 [International] [Untested] Dedicated playstation marker and tether for you + your partner for the whole duration of mechanic. Import all presets.
 ```
 ~Lv2~{"Name":"P5 D2 - Playstation Partner ","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":0.0,"color":4278190259,"overlayBGColor":0,"overlayTextColor":4278190259,"overlayVOffset":1.5,"overlayFScale":3.0,"thicc":4.0,"overlayText":"","refActorComparisonType":7,"tether":true,"refActorVFXPath":"vfx/lockon/eff/z3oz_firechain_01c.avfx","refActorVFXMax":25000}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":25.0,"Match":"VFX vfx/lockon/eff/z3oz_firechain_01c.avfx spawned on me npc"}]}
