@@ -42,11 +42,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             {
                 if (Message.Contains("(12256>31651)"))
                 {
-                    var npc = Svc.Objects.Where(x => x is BattleChara b && b.CastActionId == 31651).FirstOrDefault();
-                    if(npc != null && !mechanicResolved)
+                    var npc = Svc.Objects.Where(x => x is BattleChara b && b.CastActionId == 31651);
+                    if(npc.Any() && !mechanicResolved)
                     {
                         mechanicResolved = true;
-                        if (Vector3.Distance(npc.Position, new(80,0,115)) < 1)
+                        if (npc.Any(x => Vector3.Distance(x.Position, new(80,0,115)) < 1))
                         {
                             DisplayOUT();
                         }
