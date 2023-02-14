@@ -26,7 +26,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(1, "NightmareXIV");
+        public override Metadata? Metadata => new(3, "NightmareXIV");
 
         Config Conf => Controller.GetConfig<Config>();
 
@@ -64,8 +64,12 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 Controller.RegisterElement($"Debug{i}", new(0) { Enabled = false});
             }
             Controller.RegisterElementFromCode("Bait", "{\"Name\":\"\",\"Enabled\":false,\"radius\":0.0,\"color\":3355508735,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"overlayFScale\":2.0,\"thicc\":5.0,\"overlayText\":\"BAIT\",\"tether\":true}");
-            base.OnSetup();
             Controller.RegisterElementFromCode("Alert", "{\"Enabled\":false,\"Name\":\"\",\"type\":1,\"radius\":0.0,\"overlayBGColor\":4278190080,\"overlayTextColor\":4294967295,\"overlayVOffset\":3.0,\"overlayFScale\":2.0,\"thicc\":0.0,\"overlayText\":\"WARNING\",\"refActorType\":1}");
+            Controller.RegisterElementFromCode("Stack partner", "{\"Name\":\"\",\"Enabled\":false,\"radius\":0.0,\"color\":4278190335,\"thicc\":4.0,\"tether\":true}");
+            Controller.RegisterElementFromCode("Beetle", "{\"Name\":\"Beetle\",\"type\":1,\"Enabled\":false,\"radius\":0.0,\"color\":3372154880,\"thicc\":3.0,\"refActorModelID\":3771,\"refActorComparisonType\":1,\"includeHitbox\":true,\"includeRotation\":true,\"tether\":true}");
+            Controller.RegisterElementFromCode("Final", "{\"Name\":\"Final\",\"type\":1,\"Enabled\":false,\"radius\":0.0,\"color\":3355493376,\"thicc\":3.0,\"refActorModelID\":3775,\"refActorComparisonType\":1,\"includeHitbox\":true,\"includeRotation\":true,\"tether\":true}");
+
+            base.OnSetup();
         }
 
         //Outer blue seq: break tether, go to partner, stay until monitor appears, go out for bait
@@ -87,7 +91,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         myTether = HasEffect(Effects.UpcomingGreenTether) ? Effects.UpcomingGreenTether : Effects.UpcomingBlueTether;
                         var sameTethers = p.Where(x => x.HasEffect(myTether)).OrderBy(x => GetAngleRelativeToObject(myMob, x, true)).ToArray();
                         var myPartner = (Player.Address.EqualsAny(sameTethers[0..2].Select(x => x.Address)) ? sameTethers[0..2] : sameTethers[2..4]).Where(x => x.Address != Player.Address).First();
-                        for (int i = 0; i < sameTethers.Length; i++)
+
+                        /*for (int i = 0; i < sameTethers.Length; i++)
                         {
                             if (Controller.TryGetElementByName($"Debug{i}", out var e))
                             {
@@ -95,20 +100,22 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                                 e.SetRefPosition(sameTethers[i].Position);
                                 e.overlayText = $"{GetAngleRelativeToObject(myMob, sameTethers[i], true)}" + (myPartner.Address == sameTethers[i].Address ? " Partner" : "");
                             }
-                        }
+                        }*/
                         isMeClose = Vector3.Distance(myPartner.Position, new Vector3(100, 0, 100)) > Vector3.Distance(Player.Position, new Vector3(100, 0, 100));
                         //InternalLog.Information($"Me close: {isMeClose}");
                         if(myTether == Effects.UpcomingBlueTether)
                         {
                             Alert("Blue - to beetle!", ImGuiColors.TankBlue);
+                            Controller.GetElementByName("Beetle").Enabled = true;
                         }
                         else
                         {
                             Alert("Green - to final (stretch)", ImGuiColors.HealerGreen);
+                            Controller.GetElementByName("Final").Enabled = true;
                         }
                         if(Svc.Objects.Any(x => x.DataId == 15710))
                         {
-                            DuoLog.Information($"Snapshotting: you are ${(myTether==Effects.UpcomingBlueTether?"blue":"green")} " + (isMeClose ? "close" : "far"));
+                            DuoLog.Information($"Snapshotting: you are {(myTether==Effects.UpcomingBlueTether?"blue":"green")} " + (isMeClose ? "close" : "far"));
                             Stage = 1;
                             DuoLog.Information("Stage 1");
                         }
@@ -120,10 +127,24 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             if (HasEffect(Effects.UpcomingBlueTether))
                             {
                                 Alert("Prepare to stack!");
+                                var pl = FakeParty.Get().Where(x => x.Address != Svc.ClientState.LocalPlayer.Address).OrderBy(x => Vector3.Distance(Svc.ClientState.LocalPlayer.Position, x.Position)).FirstOrDefault();
+                                if(Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
+                                {
+                                    e.Enabled = true;
+                                    e.SetRefPosition(pl.Position);
+                                    e.color = Colors.Red;
+                                }
                             }
                             else
                             {
                                 Alert("STACK WITH YOUR PARTNER FAST", GradientColor.Get(0xff000000.ToVector4(), ImGuiColors.ParsedPurple, 200));
+                                var pl = FakeParty.Get().Where(x => x.Address != Svc.ClientState.LocalPlayer.Address).OrderBy(x => Vector3.Distance(Svc.ClientState.LocalPlayer.Position, x.Position)).FirstOrDefault();
+                                if (Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
+                                {
+                                    e.Enabled = true;
+                                    e.SetRefPosition(pl.Position);
+                                    e.color = GradientColor.Get(Colors.Red.ToVector4(), ImGuiColors.DalamudYellow, 200).ToUint();
+                                }
                             }
                             if (HasEffect(Effects.BlueTether))
                             {
@@ -140,6 +161,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         else
                         {
                             Alert("Stack together");
+                            var pl = FakeParty.Get().Where(x => x.Address != Svc.ClientState.LocalPlayer.Address).OrderBy(x => Vector3.Distance(Svc.ClientState.LocalPlayer.Position, x.Position)).FirstOrDefault();
+                            if (Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
+                            {
+                                e.Enabled = true;
+                                e.SetRefPosition(pl.Position);
+                                e.color = Colors.Red;
+                            }
                             //green tether
                         }
                         if(FakeParty.Get().Any(x => x.HasEffect(Effects.MonitorLeft) || x.HasEffect(Effects.MonitorRight)))
@@ -213,6 +241,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             else
                             {
                                 Alert("AVOID STACK AND MONITORS", ImGuiColors.DPSRed);
+                                Controller.GetElementByName("Beetle").Enabled = true;
                             }
                         }
                         else
@@ -239,7 +268,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         {
                             if(myTether == Effects.UpcomingBlueTether)
                             {
-                                Alert("Baiter for near");
+                                Alert("Bait near world");
                             }
                             else
                             {
@@ -258,12 +287,12 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                                     }
                                     else
                                     {
-                                        Alert("Chill spot");
+                                        Alert("Go to chill spot");
                                     }
                                 }
                                 else
                                 {
-                                    Alert("Far - maintain tether", ImGuiColors.HealerGreen);
+                                    Alert("Far - maintain tether, bait far world", ImGuiColors.HealerGreen);
                                 }
                             }
                         }
