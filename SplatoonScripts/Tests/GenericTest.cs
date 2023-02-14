@@ -9,6 +9,8 @@ using ECommons.GameFunctions;
 using ECommons.Hooks.ActionEffectTypes;
 using ECommons.Logging;
 using ECommons.MathHelpers;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
+using ImGuiNET;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
@@ -24,11 +26,16 @@ namespace SplatoonScriptsOfficial.Tests
     {
         public override HashSet<uint> ValidTerritories => new() {  };
 
-        public override void OnActionEffect(uint ActionID, ushort animationID, ActionEffectType type, uint sourceID, ulong targetOID, uint damage)
+        int value = 0;
+
+        public override void OnSettingsDraw()
         {
-            if(sourceID.GetObject() is not PlayerCharacter)
+            ImGui.InputInt("", ref value);
+            if (ImGui.Button("Apply"))
             {
-                PluginLog.Information($"{ActionID}, {animationID}, {type}, {sourceID}, {targetOID} {((uint)(targetOID)).GetObject()}");
+                var x = (nint)EnvManager.Instance();
+                x += 36;
+                *(byte*)x = (byte)value;
             }
         }
     }

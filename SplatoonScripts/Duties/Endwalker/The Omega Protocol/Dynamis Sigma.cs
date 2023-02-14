@@ -26,7 +26,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(2, "NightmareXIV");
+        public override Metadata? Metadata => new(3, "NightmareXIV");
 
         public const uint TowerSingle = 2013245;
         public const uint TowerDual = 2013246;
@@ -134,6 +134,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public override void OnSettingsDraw()
         {
+            
             ImGui.PushID("Far");
             if (ImGui.CollapsingHeader("Far towers, clockwise"))
             {
@@ -142,9 +143,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     ImGui.InputText($"##{i}", ref Conf.FarTowers[i], 50);
                 }
 
-                if (ImGui.Button("Reset (CTRL+click)"))
+                if (ImGui.Button("Reset and reconfigure for UCOB strat (CTRL+click)") && ImGui.GetIO().KeyCtrl)
                 {
                     Conf.FarTowers = new Config().FarTowers;
+                }
+                if (ImGui.Button("Reset and reconfigure for marker (CTRL+click)") && ImGui.GetIO().KeyCtrl)
+                {
+                    Conf.FarTowers = new Config().FarTowersMarkers;
                 }
             }
             ImGui.PopID();
@@ -156,9 +161,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     ImGui.InputText($"##{i}", ref Conf.CloseTowers[i], 50);
                 }
 
-                if (ImGui.Button("Reset (CTRL+click)"))
+                if (ImGui.Button("Reset and reconfigure for UCOB strat (CTRL+click)") && ImGui.GetIO().KeyCtrl)
                 {
                     Conf.CloseTowers = new Config().CloseTowers;
+                }
+                if (ImGui.Button("Reset and reconfigure for marker (CTRL+click)") && ImGui.GetIO().KeyCtrl)
+                {
+                    Conf.CloseTowers = new Config().CloseTowersMarkers;
                 }
             }
             ImGui.PopID();
@@ -181,6 +190,9 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public class Config : IEzConfig
         {
+            internal readonly string[] FarTowersMarkers = new string[] { "3", "2", "D", "4", "C", "1", "B", "A" };
+            internal readonly string[] CloseTowersMarkers = new string[] { "4", "D", "2", "C", "B", "1", "A", "3" };
+
             public string[] FarTowers = new string[] { "R1", "L1", "R2", "R3", "L4", "R4", "L3", "L2" };
             public string[] CloseTowers = new string[] { "R1", "L4", "R2", "R3", "L3", "R4", "L2", "L1" };
             public bool Angle = false;
