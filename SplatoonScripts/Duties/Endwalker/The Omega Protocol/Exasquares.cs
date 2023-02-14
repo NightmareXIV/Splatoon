@@ -15,7 +15,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
     public class Exasquares : SplatoonScript
     {
-        public override HashSet<uint> ValidTerritories => new();
+        public override HashSet<uint> ValidTerritories => new() { 1122 };
         bool mechanicResolved = false;
 
         public override void OnSetup()
