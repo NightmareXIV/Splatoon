@@ -2,7 +2,7 @@
 using ECommons;
 using ECommons.DalamudServices;
 using ECommons.Logging;
-using FFXIVClientStructs.FFXIV.Common.Math;
+using System.Numerics;
 using ImGuiNET;
 using Splatoon.SplatoonScripting;
 using System;
