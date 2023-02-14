@@ -26,7 +26,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(3, "NightmareXIV");
+        public override Metadata? Metadata => new(4, "NightmareXIV");
 
         Config Conf => Controller.GetConfig<Config>();
 
@@ -35,6 +35,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         int Stage = 0;
         uint myTether;
         bool isMeClose;
+        Dictionary<uint, uint> PlayerHands = new();
 
         class Effects
         {
@@ -54,6 +55,9 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             public const uint TwiceRuin = 2534;
             public const uint ThriceRuin = 2530;
         }
+
+        uint HandRed = 15710;
+        uint HandBlue = 15709;
 
         bool IsAnyoneUnsafe => FakeParty.Get().Any(x => x.HasEffect(Effects.ThriceRuin) || x.HasEffect(Effects.TwiceRuin));
 
@@ -86,6 +90,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 {
                     if (Stage == 0 && (HasEffect(Effects.UpcomingBlueTether) || HasEffect(Effects.UpcomingGreenTether)))
                     {
+                        PlayerHands.Clear();
                         var p = FakeParty.Get().ToArray();
                         var myMob = HasEffect(Effects.UpcomingGreenTether) ? final : beetle;
                         myTether = HasEffect(Effects.UpcomingGreenTether) ? Effects.UpcomingGreenTether : Effects.UpcomingBlueTether;
@@ -113,62 +118,75 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             Alert("Green - to final (stretch)", ImGuiColors.HealerGreen);
                             Controller.GetElementByName("Final").Enabled = true;
                         }
-                        if(Svc.Objects.Any(x => x.DataId == 15710))
+                        if(Svc.Objects.Count(x => x.DataId.EqualsAny<uint>(HandRed, HandBlue)) == 8)
                         {
                             DuoLog.Information($"Snapshotting: you are {(myTether==Effects.UpcomingBlueTether?"blue":"green")} " + (isMeClose ? "close" : "far"));
+                            foreach(var player in FakeParty.Get())
+                            {
+                                var h = Svc.Objects.Where(x => x.DataId.EqualsAny<uint>(HandRed, HandBlue)).OrderBy(x => Vector3.Distance(x.Position, player.Position)).First();
+                                PlayerHands[player.ObjectId] = h.DataId;
+                                PluginLog.Information($"Player {player} {player.Position}, hand {h} {h.Position} {(PlayerHands[player.ObjectId]==HandBlue?"blue":"red")}");
+                            }
                             Stage = 1;
                             DuoLog.Information("Stage 1");
                         }
                     }
                     else if(Stage == 1)
                     {
-                        if(myTether == Effects.UpcomingBlueTether)
+                        if (isMeClose && PlayerHands[GetClosestPlayer().ObjectId] == PlayerHands[Svc.ClientState.LocalPlayer.ObjectId])
                         {
-                            if (HasEffect(Effects.UpcomingBlueTether))
+                            Alert("Swap to other side!", GradientColor.Get(ImGuiColors.ParsedPink, 0xFF000000.ToVector4(), 200));
+                        }
+                        else
+                        {
+                            if (myTether == Effects.UpcomingBlueTether)
                             {
-                                Alert("Prepare to stack!");
-                                var pl = FakeParty.Get().Where(x => x.Address != Svc.ClientState.LocalPlayer.Address).OrderBy(x => Vector3.Distance(Svc.ClientState.LocalPlayer.Position, x.Position)).FirstOrDefault();
-                                if(Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
+                                if (HasEffect(Effects.UpcomingBlueTether))
+                                {
+                                    Alert("Prepare to break tether then stack!");
+                                    var pl = GetClosestPlayer();
+                                    if (Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
+                                    {
+                                        e.Enabled = true;
+                                        e.SetRefPosition(pl.Position);
+                                        e.color = Colors.Red;
+                                    }
+                                }
+                                else
+                                {
+                                    Alert("STACK WITH YOUR PARTNER FAST", GradientColor.Get(0xff000000.ToVector4(), ImGuiColors.ParsedPurple, 200));
+                                    var pl = GetClosestPlayer();
+                                    if (Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
+                                    {
+                                        e.Enabled = true;
+                                        e.SetRefPosition(pl.Position);
+                                        e.color = GradientColor.Get(Colors.Red.ToVector4(), ImGuiColors.DalamudYellow, 200).ToUint();
+                                    }
+                                }
+                                if (HasEffect(Effects.BlueTether))
+                                {
+                                    if (IsAnyoneUnsafe)
+                                    {
+                                        Alert("Await for debuff before breaking!", Colors.Red.ToVector4());
+                                    }
+                                    else
+                                    {
+                                        Alert("Break - go far!", GradientColor.Get(ImGuiColors.DalamudRed, ImGuiColors.DalamudYellow, 200));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Alert("Stack together");
+                                var pl = GetClosestPlayer();
+                                if (Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
                                 {
                                     e.Enabled = true;
                                     e.SetRefPosition(pl.Position);
                                     e.color = Colors.Red;
                                 }
+                                //green tether
                             }
-                            else
-                            {
-                                Alert("STACK WITH YOUR PARTNER FAST", GradientColor.Get(0xff000000.ToVector4(), ImGuiColors.ParsedPurple, 200));
-                                var pl = FakeParty.Get().Where(x => x.Address != Svc.ClientState.LocalPlayer.Address).OrderBy(x => Vector3.Distance(Svc.ClientState.LocalPlayer.Position, x.Position)).FirstOrDefault();
-                                if (Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
-                                {
-                                    e.Enabled = true;
-                                    e.SetRefPosition(pl.Position);
-                                    e.color = GradientColor.Get(Colors.Red.ToVector4(), ImGuiColors.DalamudYellow, 200).ToUint();
-                                }
-                            }
-                            if (HasEffect(Effects.BlueTether))
-                            {
-                                if (IsAnyoneUnsafe)
-                                {
-                                    Alert("Await for debuff before breaking!", Colors.Red.ToVector4());
-                                }
-                                else
-                                {
-                                    Alert("Break - go far!", GradientColor.Get(ImGuiColors.DalamudRed, ImGuiColors.DalamudYellow, 200));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Alert("Stack together");
-                            var pl = FakeParty.Get().Where(x => x.Address != Svc.ClientState.LocalPlayer.Address).OrderBy(x => Vector3.Distance(Svc.ClientState.LocalPlayer.Position, x.Position)).FirstOrDefault();
-                            if (Controller.TryGetElementByName("Stack partner", out var e) && pl != null)
-                            {
-                                e.Enabled = true;
-                                e.SetRefPosition(pl.Position);
-                                e.color = Colors.Red;
-                            }
-                            //green tether
                         }
                         if(FakeParty.Get().Any(x => x.HasEffect(Effects.MonitorLeft) || x.HasEffect(Effects.MonitorRight)))
                         {
@@ -331,6 +349,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             {
                 Stage = 0;
             }
+        }
+
+        PlayerCharacter GetClosestPlayer()
+        {
+            return FakeParty.Get().Where(x => x.Address != Svc.ClientState.LocalPlayer.Address).OrderBy(x => Vector3.Distance(Svc.ClientState.LocalPlayer.Position, x.Position)).FirstOrDefault();
         }
 
         public override void OnSettingsDraw()
