@@ -1,6 +1,6 @@
 # [⚠ For installation instructions please click here. ⚠](https://github.com/NightmareXIV/MyDalamudPlugins#installation)
 # Splatoon for FFXIV
-## [DSR presets are here](https://github.com/NightmareXIV/Splatoon/tree/master/Presets/Endwalker%20content/Duties/Ultimate%20-%20Dragonsong's%20Reprise)
+## [TOP presets are here](https://github.com/NightmareXIV/Splatoon/tree/master/Presets/Endwalker%20content/Duties/Ultimate%20-%20The%20Omega%20Protocol)
 Splatoon plugin allows you to put infinite amount of waymarks in the world of different size, colors, allows to add custom text to them as well. 
 <p align="center"><img src="https://raw.githubusercontent.com/NightmareXIV/Splatoon/master/Splatoon/res/icon.png"></p>
 
