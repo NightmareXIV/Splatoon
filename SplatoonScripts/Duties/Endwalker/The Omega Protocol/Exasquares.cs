@@ -14,14 +14,18 @@ using ECommons.Configuration;
 using Dalamud.Interface.Colors;
 using ECommons.Schedulers;
 using ECommons.Hooks;
+using ECommons.Hooks.ActionEffectTypes;
+using ECommons.Throttlers;
+using ECommons.MathHelpers;
 
 namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
     public class Exasquares : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
-        public override Metadata? Metadata => new(2, "NightmareXIV");
+        public override Metadata? Metadata => new(3, "NightmareXIV");
         TickScheduler? sch;
+        TickScheduler? doTask;
         bool mechanicResolved = false;
 
         public override void OnSetup()
@@ -61,7 +65,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         sch?.Dispose();
                         sch = new TickScheduler(Reset, 40000);
                         mechanicResolved = true;
-                        if (npc.Any(x => Vector3.Distance(x.Position, new(80, 0, 115)) < 1))
+                        if (!npc.Any(x => x.Position.X.InRange(99f, 101f) || x.Position.Y.InRange(99f, 101f)))
                         {
                             DisplayOUT();
                         }
