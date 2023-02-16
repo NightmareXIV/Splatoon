@@ -12,12 +12,16 @@ using System.Text;
 using System.Threading.Tasks;
 using ECommons.Configuration;
 using Dalamud.Interface.Colors;
+using ECommons.Schedulers;
+using ECommons.Hooks;
 
 namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
     public class Exasquares : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
+        public override Metadata? Metadata => new(2, "NightmareXIV");
+        TickScheduler? sch;
         bool mechanicResolved = false;
 
         public override void OnSetup()
@@ -38,6 +42,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             Off();
         }
 
+        void Reset()
+        {
+            Controller.ClearRegisteredLayouts();
+            this.OnSetup();
+            Controller.ApplyOverrides();
+        }
+
         public override void OnMessage(string Message)
         {
             if (Controller.Scene == 7)
@@ -47,6 +58,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     var npc = Svc.Objects.Where(x => x is BattleChara b && b.CastActionId == 31651);
                     if (npc.Any() && !mechanicResolved)
                     {
+                        sch?.Dispose();
+                        sch = new TickScheduler(Reset, 40000);
                         mechanicResolved = true;
                         if (npc.Any(x => Vector3.Distance(x.Position, new(80, 0, 115)) < 1))
                         {
@@ -62,6 +75,14 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             else
             {
                 mechanicResolved = false;
+            }
+        }
+
+        public override void OnDirectorUpdate(DirectorUpdateCategory category)
+        {
+            if(category.EqualsAny(DirectorUpdateCategory.Wipe, DirectorUpdateCategory.Commence, DirectorUpdateCategory.Recommence))
+            {
+                sch?.Dispose();
             }
         }
 

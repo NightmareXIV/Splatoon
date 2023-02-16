@@ -34,7 +34,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(4, "NightmareXIV");
+        public override Metadata? Metadata => new(5, "NightmareXIV");
 
         public const uint TowerSingle = 2013245;
         public const uint TowerDual = 2013246;
@@ -60,6 +60,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         HashSet<uint> Markers = new();
         List<string> State = new();
         string MyMarker = "";
+        bool isLeft;
+        long StopRegisteringAt;
 
         Config Conf => Controller.GetConfig<Config>();
 
@@ -98,6 +100,12 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             Controller.RegisterElementFromCode($"Close{Directions.FrontRight}", "{\"Name\":\"\",\"type\":1,\"offX\":-8.0,\"offY\":12.0,\"radius\":1.0,\"color\":4278255615,\"thicc\":4.0,\"refActorDataID\":15720,\"refActorComparisonType\":3,\"includeRotation\":true,\"tether\":true}");
             Controller.RegisterElementFromCode($"Close{Directions.BottomLeft}", "{\"Name\":\"\",\"type\":1,\"offX\":8.0,\"offY\":28.0,\"radius\":1.0,\"color\":4278255615,\"thicc\":4.0,\"refActorDataID\":15720,\"refActorComparisonType\":3,\"includeRotation\":true,\"tether\":true}");
             Controller.RegisterElementFromCode($"Close{Directions.BottomRight}", "{\"Name\":\"\",\"type\":1,\"offX\":-8.0,\"offY\":28.0,\"radius\":1.0,\"color\":4278255615,\"thicc\":4.0,\"refActorDataID\":15720,\"refActorComparisonType\":3,\"includeRotation\":true,\"tether\":true}");
+
+            Controller.RegisterElementFromCode("MaleFinder", "{\"Name\":\"OmegaM\",\"type\":1,\"Enabled\":false,\"radius\":0.0,\"color\":4278255615,\"thicc\":5.0,\"refActorDataID\":15720,\"refActorComparisonType\":3,\"includeRotation\":true,\"tether\":true}");
+
+            Controller.RegisterElementFromCode("TetherToCenter", "{\"Name\":\"\",\"Enabled\":false,\"refX\":100.0,\"refY\":100.0,\"radius\":0.0,\"color\":4278255615,\"thicc\":4.0,\"tether\":true}");
+            Controller.RegisterElementFromCode("TowerKB", "{\"Name\":\"\",\"type\":2,\"Enabled\":false,\"refX\":100.0,\"refY\":100.0,\"radius\":0.0,\"color\":4278190335,\"thicc\":7.0,\"tether\":true}");
+
             base.OnSetup();
         }
 
@@ -112,6 +120,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 else if(vfxPath == Headmarkers.Marker)
                 {
                     Markers.Add(target);
+                    StopRegisteringAt = Environment.TickCount64 + 1500;
                 }
             }
         }
@@ -172,7 +181,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                             State.Add($"You are {(first?"first":"second")}");
                             var rota = (MathHelper.GetRelativeAngle(omega.Position, Svc.ClientState.LocalPlayer.Position) + omega.Rotation.RadToDeg()) % 360;
                             var rotaPar = (MathHelper.GetRelativeAngle(omega.Position, partner.Position) + omega.Rotation.RadToDeg()) % 360;
-                            if(rota > rotaPar)
+                            if(Environment.TickCount64 < StopRegisteringAt) isLeft = rota > rotaPar;
+                            if (isLeft)
                             {
                                 //left
                                 if (first)
@@ -256,8 +266,9 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                                     //l.tether = Chains[Svc.ClientState.LocalPlayer.ObjectId] == x;
                                     //r.tether = Chains[Svc.ClientState.LocalPlayer.ObjectId] == x;
                                 }
-                                i += 3.5f;
+                                i += 3f;
                             }
+                            Controller.GetElementByName("MaleFinder").Enabled = true;
                         }
                     }
                 }
@@ -319,7 +330,16 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 t.Enabled = true;
                 t.SetRefPosition(obj.Position);
                 t.overlayText = s.Join("\n") + (Conf.Angle ? $"\n{GetTowerAngle(obj)}/{GetTowerAngle(obj, IsInverted())}" : "");
-                t.tether = tether && Conf.RememberMarker;
+                t.tether = tether && Conf.TetherDirect && Conf.RememberMarker;
+                if(tether && Conf.RememberMarker && !Conf.TetherDirect)
+                {
+                    Controller.GetElementByName("TetherToCenter").Enabled = true;
+                    if(Controller.TryGetElementByName("TowerKB", out var c))
+                    {
+                        c.SetOffPosition(obj.Position);
+                        c.Enabled = true;
+                    }
+                }
             }
             else
             {
@@ -471,6 +491,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 var closeYes = Conf.CloseTowers.All(x => x.GetFirstLetter().EqualsIgnoreCaseAny("a,b,c,d,1,2,3,4".Split(",")) && Conf.CloseTowers.Where(z => z.GetFirstLetter().EqualsIgnoreCase(x.GetFirstLetter())).Count() == 1);
                 ImGuiEx.Text(farYes ? ImGuiColors.ParsedGreen : ImGuiColors.DalamudRed, $"Far towers: " + (farYes ? "check passed" : "LABEL MISMATCH, FUNCTION WILL NOT WORK"));
                 ImGuiEx.Text(closeYes ? ImGuiColors.ParsedGreen : ImGuiColors.DalamudRed, $"Close towers: " + (closeYes ? "check passed" : "LABEL MISMATCH, FUNCTION WILL NOT WORK"));
+                ImGui.Checkbox($"Instead of indicating knockback direction, directly tether to my tower", ref Conf.TetherDirect);
             }
 
             if (ImGui.CollapsingHeader("Debug"))
@@ -510,6 +531,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             public string[] CloseTowers = new string[] { "2", "D", "4", "C", "B", "A", "3", "1" };
             public bool Angle = false;
             public bool RememberMarker = true;
+            public bool TetherDirect = false;
 
             public Dictionary<Position, Directions> DirectionsSpots = new()
             {
