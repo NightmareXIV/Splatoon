@@ -26,7 +26,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(4, "NightmareXIV");
+        public override Metadata? Metadata => new(5, "NightmareXIV");
 
         Config Conf => Controller.GetConfig<Config>();
 
@@ -54,12 +54,13 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
             public const uint TwiceRuin = 2534;
             public const uint ThriceRuin = 2530;
+            public const uint VulnerabilityUp = 2941;
         }
 
         uint HandRed = 15710;
         uint HandBlue = 15709;
 
-        bool IsAnyoneUnsafe => FakeParty.Get().Any(x => x.HasEffect(Effects.ThriceRuin) || x.HasEffect(Effects.TwiceRuin));
+        bool IsAnyoneUnsafe => FakeParty.Get().Any(x => x.HasEffect(Effects.ThriceRuin) || x.HasEffect(Effects.TwiceRuin) || x.HasEffect(Effects.VulnerabilityUp));
 
         public override void OnSetup()
         {

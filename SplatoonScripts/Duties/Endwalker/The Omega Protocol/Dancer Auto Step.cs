@@ -32,6 +32,24 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 Sch?.Dispose();
                 Sch = new TickScheduler(CastStd, 20000);
             }
+            if (Message.Contains(">31624)"))
+            {
+                DuoLog.Information($"Scheduling cast (delta)...");
+                Sch?.Dispose();
+                Sch = new TickScheduler(CastStd, 43000);
+            }
+            if (Message.Contains(">32788)"))
+            {
+                DuoLog.Information($"Scheduling cast (sigma)...");
+                Sch?.Dispose();
+                Sch = new TickScheduler(CastStd, 56000);
+            }
+            if (Message.Contains(">32789)"))
+            {
+                DuoLog.Information($"Scheduling cast (omega)...");
+                Sch?.Dispose();
+                Sch = new TickScheduler(CastStd, 50000);
+            }
         }
 
         public override void OnDirectorUpdate(DirectorUpdateCategory category)

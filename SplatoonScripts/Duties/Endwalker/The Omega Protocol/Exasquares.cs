@@ -23,7 +23,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     public class Exasquares : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
-        public override Metadata? Metadata => new(3, "NightmareXIV");
+        public override Metadata? Metadata => new(4, "NightmareXIV");
         TickScheduler? sch;
         TickScheduler? doTask;
         bool mechanicResolved = false;
@@ -48,6 +48,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         void Reset()
         {
+            mechanicResolved = false;
             Controller.ClearRegisteredLayouts();
             this.OnSetup();
             Controller.ApplyOverrides();
