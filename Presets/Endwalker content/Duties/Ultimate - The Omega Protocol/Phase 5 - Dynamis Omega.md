@@ -1,4 +1,4 @@
-|**Attention! For Hello Near/Distant World spread spots, there are just way too much various strat. I do not currently have wish to make presets for 10 different strats, so presets for spread spots will not be published by me. You can find helpers for the rest of mechanics here though.**|
+|**Attention! For Hello Near/Distant World spread spots, there are just way too much various strats currently. I do not have wish to make presets for like 10 different strats, so presets for spread spots will not be published by me until community will settle down with a single specific strat.**|
 |---|
 
 # Delta
