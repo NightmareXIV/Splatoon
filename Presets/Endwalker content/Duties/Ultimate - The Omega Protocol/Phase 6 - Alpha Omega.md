@@ -1,9 +1,9 @@
-[International] [Script] [Untested] Exasquares.
+[International] [Script] Exasquares.
 ```
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Exasquares.cs
 ```
 
-[International] [Untested] Exaflare predictions. Import all presets.
+[International] Exaflare predictions. Import all presets.
 ```
 ~Lv2~{"Name":"P6 Exaflares 1","Group":"TOP","ZoneLockH":[1122],"ElementsL":[{"Name":"","type":1,"radius":8.0,"color":1174405375,"refActorName":"*","refActorRequireCast":true,"refActorCastId":[31661],"refActorUseCastTime":true,"refActorCastTimeMax":0.5,"Filled":true}],"Freezing":true,"FreezeFor":12.5,"IntervalBetweenFreezes":0.75}
 ```
