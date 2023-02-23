@@ -67,6 +67,10 @@ https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwa
 ```
 
 ## Playstation markers
+
+|**Attention! Due to way too high amount of various strats for this mechanic, I will not be creating any additional presets. However, feel free to edit presets yourself and send them, in this case I will publish it.**|
+|---|
+
 ### Old toolbox strat
 [EN] [JP] For this strat:
 Only necessary (far/close) part will be displayed.
