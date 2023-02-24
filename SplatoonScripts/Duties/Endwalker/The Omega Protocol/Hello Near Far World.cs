@@ -1,4 +1,5 @@
-﻿using ECommons;
+﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
 using Splatoon.SplatoonScripting;
@@ -14,6 +15,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     public class Hello_Near_Far_World : SplatoonScript
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
+
+        public override Metadata? Metadata => new(2, "NightmareXIV");
 
         //  _rsv_3442_-1_1_0_0_S74CFC3B0_E74CFC3B0 (3442), Remains = 21.7, Param = 0, Count = 0
         const uint EffectNear = 3442;
@@ -37,11 +40,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         {
             if(FakeParty.Get().Any(x => x.StatusList.Any(z => z.StatusId == EffectFar && z.RemainingTime < 10f)))
             {
-                var near = FakeParty.Get().FirstOrDefault(x => x.StatusList.Any(z => z.StatusId == EffectNear));
+                var near = FakeParty.Get().FirstOrDefault(x => HasNFDebuff(x, EffectNear));
                 var nearTarget = FakeParty.Get().Where(x => x.Address != near.Address).OrderBy(x => Vector3.Distance(near.Position, x.Position)).FirstOrDefault();
                 var nearTarget2 = FakeParty.Get().Where(x => !x.Address.EqualsAny(near.Address, nearTarget.Address)).OrderBy(x => Vector3.Distance(nearTarget.Position, x.Position)).FirstOrDefault();
 
-                var far = FakeParty.Get().FirstOrDefault(x => x.StatusList.Any(z => z.StatusId == EffectFar));
+                var far = FakeParty.Get().FirstOrDefault(x => HasNFDebuff(x, EffectFar));
                 var farTarget = FakeParty.Get().Where(x => x.Address != far.Address).OrderByDescending(x => Vector3.Distance(far.Position, x.Position)).FirstOrDefault();
                 var farTarget2 = FakeParty.Get().Where(x => !x.Address.EqualsAny(far.Address, farTarget.Address)).OrderByDescending(x => Vector3.Distance(farTarget.Position, x.Position)).FirstOrDefault();
 
@@ -64,6 +67,21 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             else
             {
                 Controller.GetRegisteredElements().Each(x => x.Value.Enabled = false);
+            }
+        }
+
+        const uint FirstInLine = 3004;
+        const uint SecondInLine = 3005;
+        static bool HasNFDebuff(PlayerCharacter pc, uint debuff)
+        {
+            var isFirst = FakeParty.Get().Any(x => x.StatusList.Any(z => z.StatusId == FirstInLine) && x.StatusList.Any(z => z.StatusId == EffectFar));
+            if (isFirst)
+            {
+                return pc.StatusList.Any(x => x.StatusId == debuff) && pc.StatusList.Any(x => x.StatusId == FirstInLine);
+            }
+            else
+            {
+                return pc.StatusList.Any(x => x.StatusId == debuff);
             }
         }
     }

@@ -87,7 +87,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             {
                 var beetle = GetBeetle();
                 var final = GetFinalOmega();
-                if(beetle != null)
+                if(beetle != null || FakeParty.Get().Any(x => x.HasEffect(Effects.GreenTether)))
                 {
                     if (Stage == 0 && (HasEffect(Effects.UpcomingBlueTether) || HasEffect(Effects.UpcomingGreenTether)))
                     {
