@@ -24,7 +24,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(5, "NightmareXIV");
+        public override Metadata? Metadata => new(6, "NightmareXIV");
 
         public const uint TowerSingle = 2013245;
         public const uint TowerDual = 2013246;
@@ -129,7 +129,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     if (!announced)
                     {
                         announced = true;
-                        DuoLog.Information(IsInverted() ? "Inverted pattern" : "Default pattern");
+                        if(!Conf.NoChat) DuoLog.Information(IsInverted() ? "Inverted pattern" : "Default pattern");
                     }
                     var towers = GetTowers().OrderBy(x => GetTowerAngle(x, IsInverted())).ToArray();
                     Queue<string> enumeration = Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId == GlitchFar) ? new(Conf.FarTowers) : new(Conf.CloseTowers);
@@ -289,7 +289,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 if (ActionID == 31603)
                 {
                     OmegaPos = Svc.Objects.FirstOrDefault(x => x.DataId == 15720)?.Position ?? Vector3.Zero;
-                    DuoLog.Information($"Omega position captured: {OmegaPos}");
+                    if (!Conf.NoChat) DuoLog.Information($"Omega position captured: {OmegaPos}");
                     var distance = float.MaxValue;
                     var marker = "A";
                     for (int i = 0; i < MkNum.Length; i++)
@@ -302,7 +302,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                         }
                     }
                     MyMarker = marker;
-                    DuoLog.Information($"You are marker {marker}!");
+                    if (!Conf.NoChat) DuoLog.Information($"You are marker {marker}!");
                     Chains.Clear();
                     Markers.Clear();
                 }
@@ -491,6 +491,8 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 ImGui.Checkbox($"Instead of indicating knockback direction, directly tether to my tower", ref Conf.TetherDirect);
             }
 
+            ImGui.Checkbox($"Disable chat output", ref Conf.NoChat);
+
             if (ImGui.CollapsingHeader("Debug"))
             {
                 ImGui.InputFloat3("Omega pos", ref OmegaPos);
@@ -523,6 +525,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             internal readonly string[] FarTowersUcob = new string[] { "R1", "L1", "R2", "R3", "L4", "R4", "L3", "L2" };
             internal readonly string[] CloseTowersUcob = new string[] { "R1", "L4", "R2", "R3", "L3", "R4", "L2", "L1" };
 
+            public bool NoChat = false;
             public ChainMarker[] MarkerOrder = new ChainMarker[] { ChainMarker.BlueCross, ChainMarker.PurpleSquare, ChainMarker.RedCircle, ChainMarker.GreenTriangle };
             public string[] FarTowers = new string[] { "1", "2", "D", "C", "4", "B", "3", "A" };
             public string[] CloseTowers = new string[] { "2", "D", "4", "C", "B", "A", "3", "1" };
