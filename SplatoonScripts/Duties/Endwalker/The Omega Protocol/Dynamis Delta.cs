@@ -5,20 +5,15 @@ using ECommons;
 using ECommons.Configuration;
 using ECommons.DalamudServices;
 using ECommons.GameFunctions;
-using ECommons.Hooks.ActionEffectTypes;
 using ECommons.ImGuiMethods;
 using ECommons.Logging;
 using ECommons.MathHelpers;
 using ImGuiNET;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
@@ -26,7 +21,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
     {
         public override HashSet<uint> ValidTerritories => new() { 1122 };
 
-        public override Metadata? Metadata => new(5, "NightmareXIV");
+        public override Metadata? Metadata => new(6, "NightmareXIV");
 
         Config Conf => Controller.GetConfig<Config>();
 
@@ -359,23 +354,27 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 
         public override void OnSettingsDraw()
         {
-            ImGui.InputInt("Stage", ref Stage);
-            if (ImGui.RadioButton("Green", myTether == Effects.UpcomingGreenTether))
+            ImGui.Checkbox("Disable alert on top of your head", ref Conf.DisableAlert);
+            if (ImGui.CollapsingHeader("Debug"))
             {
-                myTether = Effects.UpcomingGreenTether;
+                ImGui.InputInt("Stage", ref Stage);
+                if (ImGui.RadioButton("Green", myTether == Effects.UpcomingGreenTether))
+                {
+                    myTether = Effects.UpcomingGreenTether;
+                }
+                if (ImGui.RadioButton("Blue", myTether == Effects.UpcomingBlueTether))
+                {
+                    myTether = Effects.UpcomingBlueTether;
+                }
+                ImGui.Checkbox("Close", ref isMeClose);
             }
-            if (ImGui.RadioButton("Blue", myTether == Effects.UpcomingBlueTether))
-            {
-                myTether = Effects.UpcomingBlueTether;
-            }
-            ImGui.Checkbox("Close", ref isMeClose);
         }
 
         void Alert(string? text = null, Vector4? color = null)
         {
             if (Controller.TryGetElementByName("Alert", out var e))
             {
-                if (text == null)
+                if (text == null || Conf.DisableAlert)
                 {
                     e.Enabled = false;
                 }
@@ -426,6 +425,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         public class Config : IEzConfig
         {
             public bool Debug = false;
+            public bool DisableAlert = false;
         }
     }
 

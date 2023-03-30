@@ -22,6 +22,18 @@ unsafe partial class CGui
 
     void DisplayDebug()
     {
+        {
+            if (ThreadLoadImageHandler.TryGetTextureWrap("ui/icon/063000/063933.tex", out var w))
+            {
+                ImGui.Image(w.ImGuiHandle, new(w.Width, w.Height));
+            }
+        } 
+        {
+            if (ThreadLoadImageHandler.TryGetTextureWrap("d:\\image.jpg", out var w))
+            {
+                ImGui.Image(w.ImGuiHandle, new(w.Width, w.Height));
+            }
+        }
         ImGui.BeginChild("##splatoonmaindbg");
         if (ImGui.CollapsingHeader("EnvManager"))
         {

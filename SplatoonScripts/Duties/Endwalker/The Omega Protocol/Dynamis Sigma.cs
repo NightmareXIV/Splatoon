@@ -1,7 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Colors;
-using Dalamud.Utility.Signatures;
 using ECommons;
 using ECommons.Configuration;
 using ECommons.DalamudServices;
@@ -10,23 +9,14 @@ using ECommons.Hooks.ActionEffectTypes;
 using ECommons.ImGuiMethods;
 using ECommons.Logging;
 using ECommons.MathHelpers;
-using ECommons.Reflection;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using Newtonsoft.Json;
-using Splatoon.Memory;
 using Splatoon.SplatoonScripting;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.AxHost;
 
 namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
 {
@@ -62,6 +52,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
         string MyMarker = "";
         bool isLeft;
         long StopRegisteringAt;
+        bool announced = false;
 
         Config Conf => Controller.GetConfig<Config>();
 
@@ -135,6 +126,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                 if (GetTowers().Length.EqualsAny(5, 6))
                 {
                     State.Add($"Tower phase, yours is {MyMarker}");
+                    if (!announced)
+                    {
+                        announced = true;
+                        DuoLog.Information(IsInverted() ? "Inverted pattern" : "Default pattern");
+                    }
                     var towers = GetTowers().OrderBy(x => GetTowerAngle(x, IsInverted())).ToArray();
                     Queue<string> enumeration = Svc.ClientState.LocalPlayer.StatusList.Any(x => x.StatusId == GlitchFar) ? new(Conf.FarTowers) : new(Conf.CloseTowers);
                     for (int i = 0; i < towers.Length; i++)
@@ -277,6 +273,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             {
                 Markers.Clear();
                 Chains.Clear();
+                announced = false;
             }
         }
 
