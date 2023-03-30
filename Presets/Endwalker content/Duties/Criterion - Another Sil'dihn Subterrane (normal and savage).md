@@ -84,12 +84,12 @@ Brands Display - Self only:
 
 [International] Cryptic Portal 1 (v 3.0.0.0+ required)
 ```
-~Lv2~{"Name":"Cryptic portal 1","Group":"","ZoneLockH":[1075],"DCond":5,"ElementsL":[{"Name":"Right","type":1,"offY":10.0,"radius":12.1,"color":1358954240,"refActorComparisonType":8,"includeRotation":true,"AdditionalRotation":1.5707964,"Filled":true,"refActorObjectEffectData1":64,"refActorObjectEffectData2":128,"refActorObjectEffectMax":12000},{"Name":"Left","type":1,"offY":10.0,"radius":12.1,"color":1358954240,"refActorComparisonType":8,"includeRotation":true,"AdditionalRotation":4.712389,"Filled":true,"refActorObjectEffectData1":256,"refActorObjectEffectData2":512,"refActorObjectEffectMax":12000}],"UseTriggers":true,"Triggers":[{"Duration":60.0}]}
+~Lv2~{"Name":"Cryptic portal 1","Group":"","ZoneLockH":[1075,1076],"DCond":5,"ElementsL":[{"Name":"Right","type":1,"offY":10.0,"radius":12.1,"color":1358954240,"refActorComparisonType":8,"includeRotation":true,"AdditionalRotation":1.5707964,"Filled":true,"refActorObjectEffectData1":64,"refActorObjectEffectData2":128,"refActorObjectEffectMax":12000},{"Name":"Left","type":1,"offY":10.0,"radius":12.1,"color":1358954240,"refActorComparisonType":8,"includeRotation":true,"AdditionalRotation":4.712389,"Filled":true,"refActorObjectEffectData1":256,"refActorObjectEffectData2":512,"refActorObjectEffectMax":12000}],"UseTriggers":true,"Triggers":[{"Duration":60.0}]}
 ```
 
 [International] Cryptic Portal 3 (v 3.0.0.0+ required)
 ```
-~Lv2~{"Name":"Cryptic portal 3","Group":"","ZoneLockH":[1075],"DCond":5,"ElementsL":[{"Name":"Right","type":3,"refX":10.0,"refY":30.0,"offX":10.0,"offY":-30.0,"radius":5.0,"color":1962147584,"refActorComparisonType":8,"includeRotation":true,"Filled":true,"refActorObjectEffectData1":64,"refActorObjectEffectData2":128,"refActorObjectEffectMax":12000},{"Name":"Left","type":3,"refX":-10.0,"refY":40.0,"offX":-10.0,"offY":-40.0,"radius":5.0,"color":1962930944,"refActorComparisonType":8,"includeRotation":true,"Filled":true,"refActorObjectEffectData1":256,"refActorObjectEffectData2":512,"refActorObjectEffectMax":12000}],"UseTriggers":true,"Triggers":[{"TimeBegin":190.0,"Duration":30.0}]}
+~Lv2~{"Name":"Cryptic portal 3","Group":"","ZoneLockH":[1075,1076],"DCond":5,"ElementsL":[{"Name":"Right","type":3,"refX":10.0,"refY":30.0,"offX":10.0,"offY":-30.0,"radius":5.0,"color":1962147584,"refActorComparisonType":8,"includeRotation":true,"Filled":true,"refActorObjectEffectData1":64,"refActorObjectEffectData2":128,"refActorObjectEffectMax":12000},{"Name":"Left","type":3,"refX":-10.0,"refY":40.0,"offX":-10.0,"offY":-40.0,"radius":5.0,"color":1962930944,"refActorComparisonType":8,"includeRotation":true,"Filled":true,"refActorObjectEffectData1":256,"refActorObjectEffectData2":512,"refActorObjectEffectMax":12000}],"UseTriggers":true,"Triggers":[{"TimeBegin":190.0,"Duration":30.0}]}
 ```
 
 # Untested section
