@@ -46,14 +46,14 @@ https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwa
 ```
 
 # Hello world final positions
-### Line strat
+### [International] [Untested] Line strat
 ![image](https://user-images.githubusercontent.com/5073202/232830445-361893d4-ef6e-4aab-9a14-5a7fb0946e6d.png)
 ```
 ~Lv2~{"Name":"P5 D2 Final spots","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"ElementsL":[{"Name":"far source","type":1,"offY":-10.0,"radius":1.0,"color":4288326400,"overlayBGColor":4285363712,"overlayTextColor":4294967295,"thicc":5.0,"overlayText":"FAR SOURCE","refActorNPCNameID":7639,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true},{"Name":"FAR BAITER","type":1,"offY":-18.82,"radius":1.0,"color":3355508503,"overlayBGColor":2617245696,"overlayTextColor":4278255360,"thicc":3.0,"overlayText":"NORTH FAR BAITER","refActorNPCNameID":7639,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true},{"Name":"near source","type":1,"offX":11.0,"offY":3.0,"radius":1.0,"color":4278225677,"overlayBGColor":4278220288,"overlayTextColor":4294967295,"thicc":5.0,"overlayText":"NEAR SOURCE","refActorNPCNameID":7639,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true},{"Name":"near source","type":1,"offX":-11.0,"offY":3.0,"radius":1.0,"color":4278225677,"overlayBGColor":4278220288,"overlayTextColor":4294967295,"thicc":5.0,"overlayText":"NEAR SOURCE","refActorNPCNameID":7639,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true},{"Name":"south baiter","type":1,"offY":18.6,"radius":1.0,"color":4278237622,"overlayBGColor":4278236333,"overlayTextColor":4278190080,"thicc":5.0,"overlayText":"south baiter","refActorNPCNameID":7639,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true},{"Name":"south baiter","type":1,"offY":13.68,"radius":1.0,"color":4278237622,"overlayBGColor":4278236333,"overlayTextColor":4278190080,"thicc":5.0,"overlayText":"south baiter","refActorNPCNameID":7639,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true},{"Name":"south baiter","type":1,"offY":8.66,"radius":1.0,"color":4278237622,"overlayBGColor":4278236333,"overlayTextColor":4278190080,"thicc":5.0,"overlayText":"south baiter","refActorNPCNameID":7639,"refActorComparisonType":6,"includeRotation":true,"onlyVisible":true}],"Freezing":true,"FreezeFor":25.0,"IntervalBetweenFreezes":60.0}
 ```
 
 
-### Sausage strat
+### [International] [Untested] Sausage strat
 ![image](https://user-images.githubusercontent.com/5073202/232841631-913358be-eaaa-4443-aad1-3063f6a8a06b.png)
 
 ```
