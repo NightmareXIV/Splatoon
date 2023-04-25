@@ -300,7 +300,6 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                                     }
                                     i += 3f;
                                 }
-                                Controller.GetElementByName("MaleFinder").Enabled = true;
                             }
                             else if (Conf.AlignmentDirection == MarkerAlignmentDirection.WestToEast) {
                                 var i = 4.5f;
@@ -315,6 +314,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                                     i -= 3f;
                                 }
                             }
+                            Controller.GetElementByName("MaleFinder").Enabled = true;
                         }
                     }
                 }
