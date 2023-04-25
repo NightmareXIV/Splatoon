@@ -286,6 +286,7 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
                     {
                         if(Chains.Count == 8 && Vector3.Distance(new(100,0,100), Svc.Objects.FirstOrDefault(x => x.DataId == 15720).Position) > 10)
                         {
+                            State.Add("Omega-M found");
                             if (Conf.AlignmentDirection == MarkerAlignmentDirection.NorthToSouth) {
                                 var i = 1f;
                                 foreach (var x in Conf.MarkerOrder) {
@@ -428,12 +429,11 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             {
                 ImGuiEx.Text("Marker alignment, ");
                 ImGui.SameLine();
+                ImGui.SetNextItemWidth(150f);
                 var alignmentDirection = Conf.AlignmentDirection;
-                if (ImGuiEx.EnumCombo($"{Conf.AlignmentDirection}", ref alignmentDirection)) {
+                if (ImGuiEx.EnumCombo("(Omega-M is true north)", ref alignmentDirection)) {
                     Conf.AlignmentDirection = alignmentDirection;
                 }
-                ImGui.SameLine();
-                ImGuiEx.Text("(Omega-M is true north)");
                 ImGuiEx.Text("Omega-M");
                 for (int i = 0; i < Conf.MarkerOrder.Length; i++)
                 {
