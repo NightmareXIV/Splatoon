@@ -635,14 +635,14 @@ namespace SplatoonScriptsOfficial.Duties.Endwalker.The_Omega_Protocol
             DoubleMarkerFirstRight,
             DoubleMarkerSecondLeft,
             DoubleMarkerSecondRight,
-            DoubleMarkerFirstUp,
-            DoubleMarkerFirstDown,
-            DoubleMarkerSecondUp,
-            DoubleMarkerSecondDown,
             SingleMarkerFirstMarked,
             SingleMarkerFirstUnmarked,
             SingleMarkerSecondMarked,
             SingleMarkerSecondUnmarked,
+            DoubleMarkerFirstUp,
+            DoubleMarkerFirstDown,
+            DoubleMarkerSecondUp,
+            DoubleMarkerSecondDown,
         }
 
         internal readonly List<Position> PositionsNorthToSouthOnly = new() {
