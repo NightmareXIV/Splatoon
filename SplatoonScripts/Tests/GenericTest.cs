@@ -100,6 +100,7 @@ namespace SplatoonScriptsOfficial.Tests
         {
             try
             {
+                
                 var v3 = *(nint*)(a1 + 32);
                 var r = (int*)(v3 + 4 * a2);
                 if (a1 > 0x0000020F4BD8ADA8 - 0x50 && a1 < 0x0000020F4BD8ADA8 + 0x50)
