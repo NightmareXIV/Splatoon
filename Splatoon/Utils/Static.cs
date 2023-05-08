@@ -113,6 +113,24 @@ public static unsafe class Static
                 if (!silent) Notify.Success($"Layout version 2\n{l.GetName()}");
                 return true;
             }
+            else if (s.StartsWith("~Lv3~"))
+            {
+                s = s[6..];
+                string[] layouts = s.Split('$');
+                foreach (string layout in layouts)
+                {
+                    l = JsonConvert.DeserializeObject<Layout>(layout);
+                    l.Name = l.Name.SanitizeName();
+                    var lname = l.Name;
+                    if (P.Config.LayoutsL.Any(x => x.Name == lname) && !ImGui.GetIO().KeyCtrl)
+                    {
+                        throw new Exception("Error: this name already exists.\nTo override, hold CTRL.");
+                    }
+                    P.Config.LayoutsL.Add(l);
+                }
+                l = null;
+                return true;
+            }
             else
             {
                 if (!silent) Notify.Info("Attempting to perform legacy import");
