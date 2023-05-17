@@ -61,6 +61,11 @@ https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwa
 ~Lv2~{"Name":"P5 D1 Hello near/far world distance check","Group":"TOP","ZoneLockH":[1122],"Scenes":[6],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":8.0,"color":1358888960,"thicc":5.0,"refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3442,3443],"refActorUseBuffTime":true,"refActorBuffTimeMax":8.0,"Filled":true},{"Name":"","type":1,"radius":0.0,"color":1358888960,"overlayBGColor":4278190080,"overlayTextColor":4278255413,"overlayVOffset":2.0,"thicc":0.0,"overlayText":"NEAR WORLD","refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3442],"refActorUseBuffTime":true,"refActorBuffTimeMax":15.0,"Filled":true},{"Name":"","type":1,"radius":0.0,"color":1358888960,"overlayBGColor":4278190080,"overlayTextColor":4294180608,"overlayVOffset":2.0,"thicc":0.0,"overlayText":"FAR WORLD","refActorName":"*","refActorRequireBuff":true,"refActorBuffId":[3443],"refActorUseBuffTime":true,"refActorBuffTimeMax":15.0,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":90.0,"Match":">31624)"}]}
 ```
 
+[International] [Untested] Rotating arms prediction lines
+```
+~Lv2~{"Name":"P5 D1 Arms First Attack Line","Group":"TOP_P5","ZoneLockH":[1122],"DCond":5,"ElementsL":[{"Name":"Arms Line RIGHT","type":3,"refY":19.0,"offY":-1.0,"radius":4.0,"refActorNPCNameID":7638,"refActorRequireCast":true,"refActorCastId":[31600],"FillStep":2.0,"refActorComparisonType":6,"includeRotation":true},{"Name":"Arms Line LEFT","type":3,"refY":19.0,"offY":-1.0,"radius":4.0,"refActorNPCNameID":7637,"refActorRequireCast":true,"refActorCastId":[31600],"FillStep":2.0,"refActorComparisonType":6,"includeRotation":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":50.0,"Match":">31624)"}]}
+```
+
 # Hello world final positions
 ### [International] Original Dylan's toolbox:
 ![image](https://user-images.githubusercontent.com/5073202/232828896-21773456-b667-4318-9576-77a99f5451fa.png)
