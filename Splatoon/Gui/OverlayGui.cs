@@ -1,5 +1,4 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Game.ClientState.JobGauge.Enums;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using Splatoon.Structures;
 using System.Reflection;
