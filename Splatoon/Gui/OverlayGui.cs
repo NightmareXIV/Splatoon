@@ -293,25 +293,47 @@ unsafe class OverlayGui : IDisposable
         foreach (var o in objects) o();
     }*/
 
+    //Without test!
+    public void DrawRingWorldNew(DisplayObjectDonut e)
+    {
+        var ptsInside = GetCircle(e.x, e.y, e.z, e.radius, p.Config.segments);
+        var ptsOutside = GetCircle(e.x, e.y, e.z, e.radius + e.donut, p.Config.segments);
+
+        var length = ptsInside.Length;
+        for (int i = 0; i < length; i++)
+        {
+            var p1 = ptsInside[i];
+            var p2 = ptsOutside[i];
+            var p3 = ptsOutside[(i + 1) % length];
+            var p4 = ptsInside[(i + 1) % length];
+
+            DrawToScreen(GetPtsOnScreen(new Vector3[] { p1, p2, p3, p4 }), true, e.color);
+        }
+    }
+
     //An example of it. 
     //Try to use it in the core code! I didn't test this method.
     public void DrawRingWorldNew(DisplayObjectCircle e)
     {
         var pts3 = GetCircle(e.x, e.y, e.z, e.radius, p.Config.segments);
         var screenPts2 = GetPtsOnScreen(pts3);
+        DrawToScreen(screenPts2, e.filled, e.color, e.thickness);
+    }
 
-        foreach (var pts in screenPts2)
+    private void DrawToScreen(IEnumerable<Vector2> pts, bool filled, uint color, float thickness = 1)
+    {
+        foreach (var pt in pts)
         {
-            ImGui.GetWindowDrawList().PathLineTo(pts);
+            ImGui.GetWindowDrawList().PathLineTo(pt);
         }
 
-        if (e.filled)
+        if (filled)
         {
-            ImGui.GetWindowDrawList().PathFillConvex(e.color);
+            ImGui.GetWindowDrawList().PathFillConvex(color);
         }
         else
         {
-            ImGui.GetWindowDrawList().PathStroke(e.color, ImDrawFlags.Closed, e.thickness);
+            ImGui.GetWindowDrawList().PathStroke(color, ImDrawFlags.Closed, thickness);
         }
     }
 
