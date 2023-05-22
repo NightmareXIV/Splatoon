@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this folder. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 |Attention! Please do not blindly import all presets. Some presets can repeat what they do in different manner. Please read and decide whether you need something first.|
 |---|
 # WARNING! You MUST check that your Splatoon version is THE LATEST before importing any triggers.

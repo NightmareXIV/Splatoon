@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 # Party synergy
 [International] First mechanic clones attack (early display) (v3.2.0.7+ required):
 ```

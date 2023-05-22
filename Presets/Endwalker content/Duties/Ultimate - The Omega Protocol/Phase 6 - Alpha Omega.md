@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [International] [Script] Exasquares.
 ```
 https://github.com/NightmareXIV/Splatoon/raw/master/SplatoonScripts/Duties/Endwalker/The%20Omega%20Protocol/Exasquares.cs

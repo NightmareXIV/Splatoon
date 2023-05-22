@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 ## Dive from Grace
 [EN] Dive from Grace Numbers: Places coloured dots under all party members that matches their Dive from Grace Number
 ```

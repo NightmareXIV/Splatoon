@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 Marker Placement Helper: Puts lines through the cardinals and intercardinals, a ring around the targeted enemy and a ring in the center of arena to help with placing markers.
 Note: Works perfectly in DSR and some other Savage instances.
 ```

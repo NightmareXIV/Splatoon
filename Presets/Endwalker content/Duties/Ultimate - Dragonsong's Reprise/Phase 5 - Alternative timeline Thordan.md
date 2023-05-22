@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 ## Wrath of the heavens
 [EN, JP, DE] Display tethers (make tethers same as red line) and safe spot as blue marker
 ```

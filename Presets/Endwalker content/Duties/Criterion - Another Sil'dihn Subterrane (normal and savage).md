@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 # A.S.S Trash mobs:
 
 Belladona: (aoe not accurate, use as a guide to remember it's being cast)

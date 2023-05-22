@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 Intercardinal arena splitter (help with planet/head evasion):
 ```
 endsigner splitter~{"ZoneLockH":[998,997],"Elements":{"1":{"type":2,"refX":115.0,"refY":85.0,"offX":85.0,"offY":115.0,"radius":0.0},"2":{"type":2,"refX":115.0,"refY":115.0,"offX":85.0,"offY":85.0,"radius":0.0}},"Triggers":[]}

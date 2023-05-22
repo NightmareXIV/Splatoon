@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 Cardinal shifts. Trigger included: only relevant part will be shown when boss starts casting it. Works in P4N as well.
 <img src="https://github.com/NightmareXIV/Splatoon/raw/master/docs/images/p4s%20shifts.jpg">
 ```

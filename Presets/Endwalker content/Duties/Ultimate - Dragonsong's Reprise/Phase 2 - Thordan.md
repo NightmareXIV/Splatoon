@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [EN, JP] Ascalon's Mercy Move Reminder: Flashes "MOVE" on the screen when Ascalon's Mercy is fully cast to remind you to move. 
 
 (While Splatoon isn't really designed for being general-purpose trigger system, it can be used as such)

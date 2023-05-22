@@ -41,7 +41,10 @@ Attack Range Ring (Ranged Jobs Only)
 Attack Range Rings (Ranged Jobs Only)~{"Elements":{"25y Ring":{"type":1,"radius":25.0,"color":4294967295,"refActorType":2,"includeHitbox":true,"includeOwnHitbox":true}},"JobLock":1488734650592}
 ```
 6 Yalm Attack Range Ring (Samurai/Sage Only)
-```
+```## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
+
 Attack Range Rings (SAM/SGE Only)~{"Elements":{"6y Ring":{"type":1,"radius":6.0,"color":4294967295,"refActorType":2,"includeHitbox":true,"includeOwnHitbox":true}},"JobLock":1116691496960}
 ```
 Attack Range Rings (Positional Jobs Only)

@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [International] During quest battle, displays the following:
 - Enemy sight cone to avoid them (always be extra safe)
 - Immobilized magitek reaper - your first goal

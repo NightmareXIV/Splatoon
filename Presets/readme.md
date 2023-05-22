@@ -1,4 +1,4 @@
-## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+## Please note that you are viewing archived version of this folder. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
 
 A collection of user-submitted presets. 
 

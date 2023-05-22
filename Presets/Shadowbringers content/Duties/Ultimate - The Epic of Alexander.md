@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 # P2 Transition:
 
 Limit Cut Numbers: Shows everyone's numbers on their feet, so you can see if the group is split correctly/who needs to be in front/behind, who you need to avoid etc.

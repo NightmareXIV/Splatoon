@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [International] Wave repeater
 - Import from phase 3 page: https://github.com/NightmareXIV/Splatoon/blob/master/Presets/Endwalker%20content/Duties/Ultimate%20-%20The%20Omega%20Protocol/Phase%203%20-%20Final%20omega.md#intermission
 

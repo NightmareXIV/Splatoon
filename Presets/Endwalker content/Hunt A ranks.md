@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 Endwalker A ranks, for easier finding
 ```
 A ranks: Labyrinthos~{"ZoneLockH":[956],"Elements":{"Hulder":{"type":1,"refX":-402.39206,"refY":491.77026,"refZ":37.801872,"color":3355484415,"overlayTextColor":3355506943,"thicc":3.0,"overlayText":"A rank","refActorName":"Hulder","includeHitbox":true,"onlyTargetable":true,"tether":true},"Storsie":{"type":1,"refX":-402.39206,"refY":491.77026,"refZ":37.801872,"color":3355484415,"overlayTextColor":3355506943,"thicc":3.0,"overlayText":"A rank","refActorName":"Storsie","includeHitbox":true,"onlyTargetable":true,"tether":true}},"Triggers":[]}

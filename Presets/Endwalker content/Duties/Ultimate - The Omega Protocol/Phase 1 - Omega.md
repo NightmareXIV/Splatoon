@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [International] [Script] [Configuration required] Program Loop complete resolution script.
 - Made for the resolution way described in https://docs.google.com/document/d/1CzWZJ3kdvCtK6i0bT83kyNK1Wydrs3fvI52vVuCKiGM/edit
 - Brightly displays tethers; correctly taken tethers display AOE and display in green colors. 

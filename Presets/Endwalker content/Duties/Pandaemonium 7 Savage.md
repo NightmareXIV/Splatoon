@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [EN] Stack tankbuster:
 ```
 ~Lv2~{"Name":"P7S Stack Tankbuster","Group":"P7S","ZoneLockH":[1086],"DCond":5,"ElementsL":[{"Name":"","type":1,"radius":9.0,"color":1342242601,"refActorPlaceholder":["<t1>","<t2>"],"refActorComparisonType":5,"Filled":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":8.0,"MatchIntl":{"En":"Agdistis begins casting Condensed Aero II."}}]}

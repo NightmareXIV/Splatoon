@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 # Scripts
 [International] [Script] Based on Dylan Luxor's toolbox: https://ff14.toolboxgaming.space/?id=788186687294761&preview=1
 ```

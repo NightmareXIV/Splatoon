@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [International] Empty/Full Dimension Ring: Places a ring around Ser Grinnaux that displays the edge of Empty/Full Dimension when it is being cast. Additionally shows a red danger zone around Ser Grinnaux if he is casting Full Dimension to tell you to go out.
 ```
 DSR P1 Empty/Full Dimension Ring~{"ZoneLockH":[968],"DCond":5,"Elements":{"1":{"type":1,"radius":2.0,"thicc":5.0,"refActorNPCNameID":3639,"refActorComparisonType":6,"includeHitbox":true},"2":{"type":1,"radius":2.0,"color":503316735,"thicc":5.0,"refActorNPCNameID":3639,"refActorRequireCast":true,"refActorCastId":[25307],"refActorComparisonType":6,"includeHitbox":true,"Filled":true}},"UseTriggers":true,"Triggers":[{"TimeBegin":17.2,"Duration":6.0},{"TimeBegin":98.2,"Duration":6.0}],"Phase":1}

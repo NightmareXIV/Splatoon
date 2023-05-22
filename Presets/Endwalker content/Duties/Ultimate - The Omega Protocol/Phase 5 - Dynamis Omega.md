@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 # Common
 [Script] [International] Hello Near/Far World verification. Will show where hits will land, as well as their path and radius.
 ```

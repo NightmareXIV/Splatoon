@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 # This is developer notes, do not copy from here. Or you can if you know what you're doing, this is beta/wip stuff mostly.
 
 P5S nom nom

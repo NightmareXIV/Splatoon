@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 Auto highlight mining nodes when miner:
 ```
 Mining Nodes~{"ZoneLockH":[],"Elements":{"1":{"type":1,"refX":-423.61624,"refY":404.81842,"refZ":37.41551,"radius":1.0,"refActorName":"Ephemeral Mineral Deposit","includeHitbox":true,"onlyTargetable":true},"2":{"type":1,"refX":-33.29177,"refY":187.68828,"refZ":46.19365,"radius":1.0,"refActorName":"Rocky Outcrop","includeHitbox":true,"onlyTargetable":true},"3":{"type":1,"refX":-41.830532,"refY":642.8633,"refZ":91.52211,"radius":1.0,"refActorName":"Mineral Deposit","includeHitbox":true,"onlyTargetable":true}},"JobLock":65536,"Triggers":[]}

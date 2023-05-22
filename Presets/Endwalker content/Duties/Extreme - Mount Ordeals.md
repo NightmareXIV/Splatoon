@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [International] [Untested] Spread (4/4) / 分組分散
 ```
 ~Lv2~{"Name":"Spread (4/4) / 分組分散","Group":"Rubicante - Ex / 盧比坎特 - 極","ZoneLockH":[1096],"DCond":5,"ElementsL":[{"Name":"32002 - 重畳警察","type":1,"radius":5.0,"color":3355508706,"overlayBGColor":2483027968,"overlayTextColor":4280024832,"overlayVOffset":2.0,"thicc":4.0,"overlayText":"<<< SPREAD >>>","refActorPlaceholder":["<t1>","<t2>","<h2>","<d1>","<d2>","<d3>","<d4>","<h1>"],"refActorUseBuffTime":true,"refActorBuffTimeMax":6.0,"refActorComparisonType":5,"onlyTargetable":true}],"UseTriggers":true,"Triggers":[{"Type":2,"Duration":4.7,"Match":"(12054>32002)"}],"MaxDistance":5.0,"UseDistanceLimit":true,"DistanceLimitType":1}

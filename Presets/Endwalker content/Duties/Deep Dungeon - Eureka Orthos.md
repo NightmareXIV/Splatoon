@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 ```
 ~Lv2~{"Name":"Fitter","Group":"Deep Dungeon","ZoneLockH":[1099,1100,1101,1102,1103,1104,1105,1106,1107,1108,1124],"ElementsL":[{"Name":"Unholy","type":1,"radius":0.0,"Donut":30.0,"color":1677721855,"thicc":3.0,"refActorNPCNameID":12227,"refActorRequireCast":true,"refActorCastId":[2319,2362,3978,32931],"FillStep":0.3,"refActorComparisonType":6,"tether":true}]}
 ```

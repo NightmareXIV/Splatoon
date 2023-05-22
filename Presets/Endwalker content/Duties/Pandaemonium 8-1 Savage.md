@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 [International] Display danger zone on Gorgons mechanic cast.
 ```
 ~Lv2~{"Name":"P8S Out/Gorgons","Group":"P8S-1","ZoneLockH":[1088],"ElementsL":[{"Name":"","type":1,"radius":0.2,"color":2348810495,"refActorNPCNameID":11399,"refActorRequireCast":true,"refActorCastId":[31052],"refActorUseCastTime":true,"refActorCastTimeMax":11.0,"refActorUseOvercast":true,"refActorComparisonType":6,"includeHitbox":true,"onlyTargetable":true,"Filled":true}],"Phase":1}

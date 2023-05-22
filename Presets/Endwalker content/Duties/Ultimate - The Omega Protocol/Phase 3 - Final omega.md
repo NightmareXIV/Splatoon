@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 # Intermission
 [International] Wave Repeater, covers both P3 and P4 mechanic
 ```

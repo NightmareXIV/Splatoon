@@ -1,3 +1,6 @@
+## Please note that you are viewing archived version of this file. For move information, please visit https://github.com/NightmareXIV/Splatoon/blob/master/README.md
+
+
 Vertical hitbox splitter, useful to orientate yourself for hook sweeps. For savage and normal both.
 ```
 p1 hitbox split~{"ZoneLockH":[1002,1003],"Elements":{"1":{"type":3,"refY":10.0,"offY":-10.0,"radius":0.0,"refActorName":"Erichthonios","includeRotation":true,"onlyTargetable":true}},"Triggers":[]}
