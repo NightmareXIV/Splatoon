@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface.Colors;
 using ECommons.LanguageHelpers;
+using Newtonsoft.Json;
 using Splatoon.SplatoonScripting;
 using Splatoon.Utils;
 using static Splatoon.ConfigGui.CGuiLayouts.LayoutDrawSelector;
@@ -242,6 +243,20 @@ partial class CGui
                             groupToRemove = i;
                         }
                         ImGuiEx.Tooltip("Hold CTRL+SHIFT+click".Loc());
+                        if (ImGui.Selectable("Export Group".Loc()))
+                        {
+                            var exporttext = "~Lv3~";
+                            foreach (var l in P.Config.LayoutsL)
+                            {
+                                if (l.Group == g)
+                                {
+                                    exporttext += "$"+JsonConvert.SerializeObject(l, Formatting.None,
+                                        new JsonSerializerSettings
+                                            { DefaultValueHandling = DefaultValueHandling.Ignore });
+                                }
+                            }
+                            ImGui.SetClipboardText(exporttext);
+                        }
                         ImGui.EndPopup();
                     }
                     for (var n = 0; n < takenLayouts.Length; n++)
