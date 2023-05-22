@@ -1,5 +1,7 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using Splatoon.Structures;
+using System.Reflection;
 
 namespace Splatoon.Gui;
 
@@ -289,4 +291,147 @@ unsafe class OverlayGui : IDisposable
         }
         foreach (var o in objects) o();
     }*/
+
+    //Without test!
+    public void DrawRingWorldNew(DisplayObjectDonut e)
+    {
+        var ptsInside = GetCircle(e.x, e.y, e.z, e.radius, p.Config.segments);
+        var ptsOutside = GetCircle(e.x, e.y, e.z, e.radius + e.donut, p.Config.segments);
+
+        var length = ptsInside.Length;
+        for (int i = 0; i < length; i++)
+        {
+            var p1 = ptsInside[i];
+            var p2 = ptsOutside[i];
+            var p3 = ptsOutside[(i + 1) % length];
+            var p4 = ptsInside[(i + 1) % length];
+
+            DrawToScreen(GetPtsOnScreen(new Vector3[] { p1, p2, p3, p4 }), true, e.color);
+        }
+    }
+
+    //An example of it. 
+    //Try to use it in the core code! I didn't test this method.
+    public void DrawRingWorldNew(DisplayObjectCircle e)
+    {
+        var pts3 = GetCircle(e.x, e.y, e.z, e.radius, p.Config.segments);
+        var screenPts2 = GetPtsOnScreen(pts3);
+        DrawToScreen(screenPts2, e.filled, e.color, e.thickness);
+    }
+
+    private void DrawToScreen(IEnumerable<Vector2> pts, bool filled, uint color, float thickness = 1)
+    {
+        foreach (var pt in pts)
+        {
+            ImGui.GetWindowDrawList().PathLineTo(pt);
+        }
+
+        if (filled)
+        {
+            ImGui.GetWindowDrawList().PathFillConvex(color);
+        }
+        else
+        {
+            ImGui.GetWindowDrawList().PathStroke(color, ImDrawFlags.Closed, thickness);
+        }
+    }
+
+
+    public Vector3[] GetCircle(float x, float y, float z, float radius, int segment)
+    {
+        int seg = segment / 2;
+
+        Vector3[] elements = new Vector3[segment];
+
+        for (int i = 0; i < segment; i++)
+        {
+            elements[i] = new Vector3(
+                x + radius * (float)Math.Sin(Math.PI / seg * i),
+                z,
+                y + radius * (float)Math.Cos(Math.PI / seg * i)
+                );
+        }
+
+        return elements;
+    }
+
+    #region API for cut thing behind the camera. These are core code which passed tests.
+    private static IEnumerable<Vector2> GetPtsOnScreen(IEnumerable<Vector3> pts)
+    {
+        var cameraPts = pts.Select(WorldToCamera).ToArray();
+        var changedPts = new List<Vector3>(cameraPts.Length * 2);
+
+        for (int i = 0; i < cameraPts.Length; i++)
+        {
+            var pt1 = cameraPts[i];
+            var pt2 = cameraPts[(i + 1) % cameraPts.Length];
+
+            if (pt1.Z > 0 && pt2.Z <= 0)
+            {
+                GetPointOnPlane(pt1, ref pt2);
+            }
+            if (pt2.Z > 0 && pt1.Z <= 0)
+            {
+                GetPointOnPlane(pt2, ref pt1);
+            }
+
+            if (changedPts.Count > 0 && Vector3.Distance(pt1, changedPts[changedPts.Count - 1]) > 0.001f)
+            {
+                changedPts.Add(pt1);
+            }
+
+            changedPts.Add(pt2);
+        }
+
+        return changedPts.Where(p => p.Z > 0).Select(p =>
+        {
+            CameraToScreen(p, out var screenPos, out _);
+            return screenPos;
+        });
+    }
+
+    const float PLANE_Z = 0.001f;
+    private static void GetPointOnPlane(Vector3 front, ref Vector3 back)
+    {
+        if (front.Z < 0) return;
+        if (back.Z > 0) return;
+
+        var ratio = (PLANE_Z - back.Z) / (front.Z - back.Z);
+        back.X = (front.X - back.X) * ratio + back.X;
+        back.Y = (front.Y - back.Y) * ratio + back.Y;
+        back.Z = PLANE_Z;
+    }
+
+    #region These are the api in the future... Maybe. https://github.com/goatcorp/Dalamud/pull/1203
+    static readonly FieldInfo _matrix = Svc.GameGui.GetType().GetRuntimeFields().FirstOrDefault(f => f.Name == "getMatrixSingleton");
+    private static unsafe Vector3 WorldToCamera(Vector3 worldPos)
+    {
+        var matrix = (MulticastDelegate)_matrix.GetValue(Svc.GameGui);
+        var matrixSingleton = (IntPtr)matrix.DynamicInvoke();
+
+        var viewProjectionMatrix = *(Matrix4x4*)(matrixSingleton + 0x1b4);
+        return Vector3.Transform(worldPos, viewProjectionMatrix);
+    }
+
+    private static unsafe bool CameraToScreen(Vector3 cameraPos, out Vector2 screenPos, out bool inView)
+    {
+        screenPos = new Vector2(cameraPos.X / MathF.Abs(cameraPos.Z), cameraPos.Y / MathF.Abs(cameraPos.Z));
+        var windowPos = ImGuiHelpers.MainViewport.Pos;
+
+        var device = Device.Instance();
+        float width = device->Width;
+        float height = device->Height;
+
+        screenPos.X = (0.5f * width * (screenPos.X + 1f)) + windowPos.X;
+        screenPos.Y = (0.5f * height * (1f - screenPos.Y)) + windowPos.Y;
+
+        var inFront = cameraPos.Z > 0;
+        inView = inFront &&
+                 screenPos.X > windowPos.X && screenPos.X < windowPos.X + width &&
+                 screenPos.Y > windowPos.Y && screenPos.Y < windowPos.Y + height;
+
+        return inFront;
+    }
+    #endregion
+    #endregion
 }

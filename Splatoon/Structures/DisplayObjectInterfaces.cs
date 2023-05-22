@@ -34,6 +34,21 @@ public class DisplayObjectCircle : DisplayObject
     }
 }
 
+public class DisplayObjectDonut : DisplayObject
+{
+    public float x, y, z, radius, donut;
+    public uint color;
+    public DisplayObjectDonut(float x, float y, float z, float radius, float donut, uint color)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.radius = radius;
+        this.donut = donut;
+        this.color = color;
+    }
+}
+
 public class DisplayObjectLine : DisplayObject
 {
     public float ax, ay, az, bx, by, bz, thickness;
